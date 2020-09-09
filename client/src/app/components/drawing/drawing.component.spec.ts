@@ -1,5 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil-service';
@@ -17,18 +16,20 @@ describe('DrawingComponent', () => {
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
 
-    beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService);
-        drawingStub = new DrawingService();
+    beforeEach(
+        waitForAsync(() => {
+            toolStub = new ToolStub({} as DrawingService);
+            drawingStub = new DrawingService();
 
-        TestBed.configureTestingModule({
-            declarations: [DrawingComponent],
-            providers: [
-                { provide: PencilService, useValue: toolStub },
-                { provide: DrawingService, useValue: drawingStub },
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [DrawingComponent],
+                providers: [
+                    { provide: PencilService, useValue: toolStub },
+                    { provide: DrawingService, useValue: drawingStub },
+                ],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(DrawingComponent);
