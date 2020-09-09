@@ -1,5 +1,5 @@
+// Le gabari ou les informations du guide d utilisation. Chaque conpossent doit avoir un titre une descrition et soit un image ou une video
 export abstract class AbsGuideInformation {
-    //le gabari où les informations du guide d'utilisation. Chaque conpossent doit avoir un titre, une descrition et soit un image ou une video
     title: string;
     paragraphInformation: string;
     elementName: string;
@@ -10,10 +10,10 @@ export abstract class AbsGuideInformation {
         this.elementName = elementName;
     }
 
-    public get getTitle(): string {
+    getTitle(): string {
         return this.title;
     }
-    public get getParagraphInformation(): string {
+    getParagraphInformation(): string {
         return this.paragraphInformation;
     }
 }

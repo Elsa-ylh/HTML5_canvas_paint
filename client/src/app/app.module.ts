@@ -52,8 +52,11 @@ import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 
+import { MiscellaneousUserGuideModule } from './modules/miscellaneous-user-guide.module';
+
+
 @NgModule({
-    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent],
+    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent,MiscellaneousUserGuideModule],
     imports: [
         BrowserModule,
         HttpClientModule,
