@@ -16,6 +16,4 @@ export abstract class AbsGuideInformation {
     public get getParagraphInformation(): string {
         return this.paragraphInformation;
     }
-
-    //todo ajout le squelette abs pour asselte chercher un image ou video sur les class qui vont érité de AbsGuideInformation
 }
