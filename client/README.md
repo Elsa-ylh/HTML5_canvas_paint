@@ -30,6 +30,11 @@ Run `npm run lint --fix` to attempt to automatically fix some error. **Note**: t
 
 Run `npm run coverage` to execute the unit tests via [Karma](https://karma-runner.github.io) and calculate the code coverage. A detailed report of the coverage is available in the `/coverage` directory by opening the `index.html` file in your browser.
 
+## Styling guide
+
+Angular Material is the main styling framework used. The primary color is indigo `#3F51B5` and the accent color is `#FF4081`.
+If main indigo need slightly different tone, use the following `#303F9F` and `#283593`. For futher help on color, [click me](https://material.angularjs.org/1.1.0/demo/colors).
+
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
