@@ -1,11 +1,21 @@
 <div class="container">
-    <h1 class="header-item">Bienvenue au cours {{ title }}</h1>
+    <h1 class="header-item">Bienvenue au cours</h1>
 
-    <button mat-raised-button disabled>Continuer</button>
-    <button mat-raised-button color="primary" routerLink="/editor">Ouvir Éditeur</button>
+    <mat-list>
+        <mat-list-item><button mat-raised-button color="primary">Créer un nouveau dessin</button></mat-list-item>
+        <mat-list-item *ngIf="onGoingDrawing"><button mat-raised-button>Continuer un dessin</button></mat-list-item>
+        <mat-list-item><button mat-raised-button disabled>Ouvrir le carrousel de dessins</button></mat-list-item>
+        <mat-list-item>
+            <button mat-icon-button aria-label="Amour" documentation>
+                <mat-icon style="twotone">class</mat-icon>
+                welcome to my website
+            </button>
+        </mat-list-item>
+        <!--<mat-list-item><button mat-raised-button routerLink="/editor">Ouvir Éditeur</button></mat-list-item>-->
+    </mat-list>
 
     <div class="footer-item">
-        <h4 class="team-name">Équipe Poly</h4>
-        <p>Coequipier #1, Coequipier #2, Coequipier #3, Coequipier #4, Coequipier #5, Coequipier #6</p>
+        <h4 class="team-name">Équipe 103</h4>
+        <p>Tai Chen Li, Alphonse Desrosiers, John Maliha, Hugo Lachieze-Rey, Victor Kim, Lucas Tassaux</p>
     </div>
 </div>
