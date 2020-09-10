@@ -7,16 +7,9 @@
     height: auto;
 }
 
-.button {
-    margin-top: 10px;
-    text-align: center;
-}
-
-#documentation {
-}
-
-.mat-raised-button {
-    width: 300px;
+.main-menu-button {
+    text-align: left;
+    width: 100%;
 }
 
 .team-name {
@@ -25,6 +18,7 @@
 }
 
 .header-item {
+    margin-top: 30px;
     justify-content: center;
     text-align: center;
 }
