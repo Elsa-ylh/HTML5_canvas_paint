@@ -1,12 +1,6 @@
 <div class="container">
     <h1 class="header-item">Bienvenue au cours {{ title }}</h1>
 
-    <div id="server-message">
-        <p>Petit message du serveur : {{ message | async }}</p>
-        <button class="button" (click)="getMessagesFromServer()">Récuper un message du serveur</button>
-        <button class="button" (click)="sendTimeToServer()">Envoyer un message au serveur</button>
-    </div>
-
     <button mat-raised-button disabled>Continuer</button>
     <button mat-raised-button color="primary" routerLink="/editor">Ouvir Éditeur</button>
 
