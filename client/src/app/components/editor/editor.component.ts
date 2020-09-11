@@ -6,3 +6,4 @@ import { Component } from '@angular/core';
     styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent {}
+
