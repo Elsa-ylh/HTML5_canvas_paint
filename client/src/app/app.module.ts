@@ -9,6 +9,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
@@ -47,29 +48,16 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
+import { DialogCreateNewDrawingComponent } from './components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { ContinueDrawingDirective } from './directives/main-page/continue-drawing.directive';
-import { CreateNewDrawingDirective } from './directives/main-page/create-new-drawing.directive';
-import { OpenCarouselDirective } from './directives/main-page/open-carousel.directive';
-import { OpenDocumentationDirective } from './directives/main-page/open-documentation.directive';
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        EditorComponent,
-        SidebarComponent,
-        DrawingComponent,
-        MainPageComponent,
-        CreateNewDrawingDirective,
-        OpenCarouselDirective,
-        ContinueDrawingDirective,
-        OpenDocumentationDirective,
-    ],
-    exports: [CreateNewDrawingDirective],
+    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, DialogCreateNewDrawingComponent],
     imports: [
+        FormsModule,
         BrowserModule,
         HttpClientModule,
         AppRoutingModule,
