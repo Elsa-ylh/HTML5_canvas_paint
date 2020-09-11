@@ -51,10 +51,23 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { ContinueDrawingDirective } from './directives/main-page/continue-drawing.directive';
 import { CreateNewDrawingDirective } from './directives/main-page/create-new-drawing.directive';
+import { OpenCarouselDirective } from './directives/main-page/open-carousel.directive';
+import { OpenDocumentationDirective } from './directives/main-page/open-documentation.directive';
 
 @NgModule({
-    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, CreateNewDrawingDirective],
+    declarations: [
+        AppComponent,
+        EditorComponent,
+        SidebarComponent,
+        DrawingComponent,
+        MainPageComponent,
+        CreateNewDrawingDirective,
+        OpenCarouselDirective,
+        ContinueDrawingDirective,
+        OpenDocumentationDirective,
+    ],
     exports: [CreateNewDrawingDirective],
     imports: [
         BrowserModule,
