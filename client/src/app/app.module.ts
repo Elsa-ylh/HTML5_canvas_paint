@@ -51,6 +51,7 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+//import { IgxDialogModule } from '@angular/igniteui';
 
 @NgModule({
     declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent],
@@ -103,6 +104,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
         OverlayModule,
         PortalModule,
         ScrollingModule,
+        //IgxDialogModule,
     ],
     providers: [],
     bootstrap: [AppComponent],
