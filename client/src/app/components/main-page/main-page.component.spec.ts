@@ -36,4 +36,16 @@ describe('MainPageComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it('should have onGoingDrawing as false', () => {
+        expect(component.onGoingDrawing).toBeFalse();
+    });
+
+    it('should open a new drawing modal', () => {
+        //const createNewEventSpy = spyOn(component, 'createNewDrawing').and.callThrough();
+        fixture.whenStable().then(() => {
+            component.createNewDrawing();
+            expect(component.createNewDrawing).toHaveBeenCalled();
+        });
+    });
 });

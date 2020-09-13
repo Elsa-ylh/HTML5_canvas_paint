@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DialogCreateNewDrawingComponent } from 'src/app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 
 @Component({
@@ -9,24 +9,25 @@ import { DialogCreateNewDrawingComponent } from 'src/app/components/dialog-creat
 })
 export class MainPageComponent {
     onGoingDrawing: boolean;
+    dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
 
     constructor(public dialog: MatDialog) {
-        this.onGoingDrawing = true;
+        this.onGoingDrawing = false;
     }
 
     createNewDrawing(): void {
-        this.dialog.open(DialogCreateNewDrawingComponent, {});
+        this.dialogRef = this.dialog.open(DialogCreateNewDrawingComponent, {});
     }
 
-    continueDrawing(): void {
-        alert('On continuera le dessin dans le Sprint 2.');
-    }
+    //continueDrawing(): void {
+    //    alert('On continuera le dessin dans le Sprint 2.');
+    //}
 
-    openCarousel(): void {
-        alert('À continuer dans le Sprint 3.');
-    }
+    //openCarousel(): void {
+    //    alert('À continuer dans le Sprint 3.');
+    //}
 
-    openDocumentation(): void {
-        alert('La documentation est ouverte.');
-    }
+    //openDocumentation(): void {
+    //    alert('La documentation est ouverte.');
+    //}
 }
