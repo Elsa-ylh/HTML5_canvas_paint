@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IndexService } from '@app/services/index/index.service';
 import { of } from 'rxjs';
@@ -21,12 +22,12 @@ describe('MainPageComponent', () => {
             TestBed.configureTestingModule({
                 imports: [RouterTestingModule, HttpClientModule],
                 declarations: [MainPageComponent],
-                providers: [{ provide: IndexService, useValue: indexServiceSpy }],
+                providers: [{ provide: MatDialog, useValue: {} }],
             }).compileComponents();
         }),
     );
 
-    beforeEach(() => {
+    beforeEach(async () => {
         fixture = TestBed.createComponent(MainPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
