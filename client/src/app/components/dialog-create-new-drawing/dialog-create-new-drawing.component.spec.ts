@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogRef } from '@angular/material/dialog';
 import { DialogCreateNewDrawingComponent } from './dialog-create-new-drawing.component';
 
 describe('DialogCreateNewDrawingComponent', () => {
@@ -8,6 +9,7 @@ describe('DialogCreateNewDrawingComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [DialogCreateNewDrawingComponent],
+            providers: [{ provide: MatDialogRef, useValue: {} }],
         }).compileComponents();
     });
 
