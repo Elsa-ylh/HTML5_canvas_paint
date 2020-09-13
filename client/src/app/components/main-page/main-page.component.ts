@@ -19,15 +19,15 @@ export class MainPageComponent {
         this.dialogRef = this.dialog.open(DialogCreateNewDrawingComponent, {});
     }
 
-    //continueDrawing(): void {
+    // continueDrawing(): void {
     //    alert('On continuera le dessin dans le Sprint 2.');
-    //}
+    // }
 
-    //openCarousel(): void {
+    // openCarousel(): void {
     //    alert('À continuer dans le Sprint 3.');
-    //}
+    // }
 
-    //openDocumentation(): void {
+    // openDocumentation(): void {
     //    alert('La documentation est ouverte.');
-    //}
+    // }
 }
