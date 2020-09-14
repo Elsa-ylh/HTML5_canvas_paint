@@ -11,17 +11,15 @@
 .sidebar-container {
     display: flex;
     flex-direction: column;
-
 }
 
 .button {
-  position: relative;
-
+    position: relative;
 }
 
 .button img {
-  margin: 0;
-  align-self: center;
-  width: 40px;
-  padding: .2em;
+    margin: 0;
+    align-self: center;
+    width: 40px;
+    padding: 0.2em;
 }

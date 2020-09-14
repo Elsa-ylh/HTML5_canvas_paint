@@ -1,7 +1,8 @@
-<div class="container">
-    <p>Barre latérale pour vos outils!</p>
-
+<mat-sidenav-container class="container">
+    <mat-sidenav #adminNavMenu mode="side" opened="true" style="min-width: 50px; background: #f3f3f3" class="shadow_right" autosize>
+        <!-- MENU LEFT -->
+    </mat-sidenav>
     <button mat-button class="button" (click)="createNewDrawing()">
         <mat-icon>add</mat-icon>
     </button>
-</div>
+</mat-sidenav-container>
