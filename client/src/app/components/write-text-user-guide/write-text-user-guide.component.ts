@@ -7,6 +7,9 @@ import { UserGuide } from '@app/classes/interface-guide';
     styleUrls: ['./write-text-user-guide.component.scss'],
 })
 export class WriteTextUserGuideComponent {
-    dataGuides = dataUserGuide;
+    dataGuides: UserGuide[];
+    constructor() {
+        this.dataGuides = dataUserGuide;
+    }
     @Input() userGuide: UserGuide;
 }
