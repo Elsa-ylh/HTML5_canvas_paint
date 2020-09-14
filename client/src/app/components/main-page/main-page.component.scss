@@ -7,9 +7,9 @@
     height: auto;
 }
 
-.button {
-    margin-top: 10px;
-    text-align: center;
+.main-menu-button {
+    text-align: left;
+    width: 100%;
 }
 
 .team-name {
@@ -18,16 +18,11 @@
 }
 
 .header-item {
+    margin-top: 30px;
     justify-content: center;
     text-align: center;
 }
 
 .footer-item {
     text-align: center;
-}
-
-.server-message {
-    justify-content: center;
-    width: 20%;
-    min-width: min-content;
 }
