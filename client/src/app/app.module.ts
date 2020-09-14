@@ -53,8 +53,7 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { UserGuideComponent } from './components/user-guide/user-guide.component';
-import { WriteTextUserGuideComponent } from './components/write-text-user-guide/write-text-user-guide.component';
+import { WriteTextDialogUserGuideComponent } from './components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 
 @NgModule({
     declarations: [
@@ -63,9 +62,8 @@ import { WriteTextUserGuideComponent } from './components/write-text-user-guide/
         SidebarComponent,
         DrawingComponent,
         MainPageComponent,
-        UserGuideComponent,
         DialogCreateNewDrawingComponent,
-        WriteTextUserGuideComponent,
+        WriteTextDialogUserGuideComponent,
     ],
     imports: [
         FormsModule,
