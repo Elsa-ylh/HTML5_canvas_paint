@@ -1,16 +1,26 @@
-<mat-sidenav-container class="container">
-    <mat-button-toggle-group vertical="true" #group="matButtonToggleGroup">
-        <mat-button-toggle value="left" (click)="createNewDrawing()">
-            <mat-icon>add</mat-icon>
-        </mat-button-toggle>
-        <mat-button-toggle value="center">
-            <mat-icon>format_align_center</mat-icon>
-        </mat-button-toggle>
-        <mat-button-toggle value="right">
-            <mat-icon>format_align_right</mat-icon>
-        </mat-button-toggle>
-        <mat-button-toggle value="justify">
-            <mat-icon>format_align_justify</mat-icon>
-        </mat-button-toggle>
-    </mat-button-toggle-group>
-</mat-sidenav-container>
+<mat-button-toggle-group vertical="true">
+    <mat-button-toggle value="left" checked="true" (click)="createNewDrawing()">
+        <mat-icon>add</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle value="left">
+        <mat-icon>edit</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle value="left">
+        <mat-icon svgIcon="eraser"></mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle value="left">
+        <mat-icon>brush</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle value="left">
+        <mat-icon>horizontal_rule</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle value="left">
+        <mat-icon>crop_16_9</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle value="left">
+        <mat-icon>panorama_fish_eye</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle value="left">
+        <mat-icon>color_lens</mat-icon>
+    </mat-button-toggle>
+</mat-button-toggle-group>
