@@ -10,7 +10,7 @@ import { DialogCreateNewDrawingComponent } from 'src/app/components/dialog-creat
 export class MainPageComponent {
     onGoingDrawing: boolean;
     dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
-
+    modalGuidRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
     constructor(public dialog: MatDialog) {
         this.onGoingDrawing = false;
     }
@@ -32,13 +32,9 @@ export class MainPageComponent {
     // }
 
     openUserGuide(): void {
-        const modalRef = this.dialog.open(WriteTextDialogUserGuideComponent, {
+        this.modalGuidRef = this.modalGuidRef = this.dialog.open(WriteTextDialogUserGuideComponent, {
             width: '90%',
             height: '100%',
-        });
-
-        modalRef.afterClosed().subscribe((resul) => {
-            console.log('closed help user');
         });
     }
 }

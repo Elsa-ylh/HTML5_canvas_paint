@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { dataUserGuide } from '@app/classes/data-guide';
 import { UserGuide } from '@app/classes/interface-guide';
 @Component({
@@ -11,5 +11,4 @@ export class WriteTextDialogUserGuideComponent {
     constructor() {
         this.dataGuides = dataUserGuide;
     }
-    @Input() userGuide: UserGuide;
 }
