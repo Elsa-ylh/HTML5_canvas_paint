@@ -25,7 +25,7 @@ export class SidebarComponent {
     // keybind control o for new drawing
     @HostListener('window:keydown', ['$event']) onKeyDown(e: KeyboardEvent): void {
         e.preventDefault();
-        if ((e.key === 'o' || e.key === 'O') && e.ctrlKey) {
+        if ((e.ctrlKey || e.metaKey) && e.code === 'KeyO') {
             this.clearCanvas();
         }
     }

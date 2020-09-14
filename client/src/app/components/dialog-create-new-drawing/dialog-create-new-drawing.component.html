@@ -8,6 +8,11 @@
             </mat-form-field>
             <mat-slider> [max]="1920" [min]="250" [step]="1" [thumbLabel]="true" [(ngModel)]="x_axis" [vertical]="vertical">> </mat-slider>
         </mat-list-item>
-        <mat-list-item> </mat-list-item>
+        <mat-list-item>
+            <mat-dialog-actions align="center">
+                <button mat-raised-button color="primary" tabindex="1">Oui</button>
+                <button mat-raised-button mat-dialog-close tabindex="-1">Non</button>
+            </mat-dialog-actions>
+        </mat-list-item>
     </mat-list>
 </mat-dialog-content>
