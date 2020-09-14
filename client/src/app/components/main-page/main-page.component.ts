@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { IndexService } from '@app/services/index/index.service';
-import { Message } from '@common/communication/message';
-import { BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { DialogCreateNewDrawingComponent } from 'src/app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 
 @Component({
     selector: 'app-main-page',
@@ -10,29 +8,26 @@ import { map } from 'rxjs/operators';
     styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent {
-    readonly title: string = 'LOG2990';
-    message: BehaviorSubject<string> = new BehaviorSubject<string>('');
+    onGoingDrawing: boolean;
+    dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
 
-    constructor(private basicService: IndexService) {}
-
-    sendTimeToServer(): void {
-        const newTimeMessage: Message = {
-            title: 'Hello from the client',
-            body: 'Time is : ' + new Date().toString(),
-        };
-        // Important de ne pas oublier "subscribe" ou l'appel ne sera jamais lancé puisque personne l'observe
-        this.basicService.basicPost(newTimeMessage).subscribe();
+    constructor(public dialog: MatDialog) {
+        this.onGoingDrawing = false;
     }
 
-    getMessagesFromServer(): void {
-        this.basicService
-            .basicGet()
-            // Cette étape transforme le Message en un seul string
-            .pipe(
-                map((message: Message) => {
-                    return `${message.title} ${message.body}`;
-                }),
-            )
-            .subscribe(this.message);
+    createNewDrawing(): void {
+        this.dialogRef = this.dialog.open(DialogCreateNewDrawingComponent, {});
     }
+
+    // continueDrawing(): void {
+    //    alert('On continuera le dessin dans le Sprint 2.');
+    // }
+
+    // openCarousel(): void {
+    //    alert('À continuer dans le Sprint 3.');
+    // }
+
+    // openDocumentation(): void {
+    //    alert('La documentation est ouverte.');
+    // }
 }
