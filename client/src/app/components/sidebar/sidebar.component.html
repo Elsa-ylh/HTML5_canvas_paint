@@ -1,8 +1,16 @@
 <mat-sidenav-container class="container">
-    <mat-sidenav #adminNavMenu mode="side" opened="true" style="min-width: 50px; background: #f3f3f3" class="shadow_right" autosize>
-        <!-- MENU LEFT -->
-    </mat-sidenav>
-    <button mat-button class="button" (click)="createNewDrawing()">
-        <mat-icon>add</mat-icon>
-    </button>
+    <mat-button-toggle-group vertical="true" #group="matButtonToggleGroup">
+        <mat-button-toggle value="left" (click)="createNewDrawing()">
+            <mat-icon>add</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="center">
+            <mat-icon>format_align_center</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="right">
+            <mat-icon>format_align_right</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="justify">
+            <mat-icon>format_align_justify</mat-icon>
+        </mat-button-toggle>
+    </mat-button-toggle-group>
 </mat-sidenav-container>
