@@ -54,6 +54,7 @@ import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { UserGuideComponent } from './components/user-guide/user-guide.component';
+import { WriteTextUserGuideComponent } from './components/write-text-user-guide/write-text-user-guide.component';
 
 @NgModule({
     declarations: [
@@ -64,6 +65,7 @@ import { UserGuideComponent } from './components/user-guide/user-guide.component
         MainPageComponent,
         UserGuideComponent,
         DialogCreateNewDrawingComponent,
+        WriteTextUserGuideComponent,
     ],
     imports: [
         FormsModule,
