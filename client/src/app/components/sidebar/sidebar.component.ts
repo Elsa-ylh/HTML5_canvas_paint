@@ -14,10 +14,12 @@ export class SidebarComponent {
     constructor(
         private drawingService: DrawingService,
         private dialogNewDrawing: MatDialog,
-        public iconRegistry: MatIconRegistry,
-        public sanitizer: DomSanitizer,
-    ) {
-        iconRegistry.addSvgIcon('eraser', sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
+        private iconRegistry: MatIconRegistry,
+        private sanitizer: DomSanitizer,
+    ) {}
+
+    ngOnInit() {
+        this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
     }
 
     clearCanvas(): void {

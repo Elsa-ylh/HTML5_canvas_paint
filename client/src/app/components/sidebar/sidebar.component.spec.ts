@@ -21,9 +21,7 @@ describe('SidebarComponent', () => {
                 { provide: MatIconRegistry, useValue: {} },
                 {
                     provide: DomSanitizer,
-                    useValue: {
-                        useValue: { bypassSecurityTrustResourceUrl() {} },
-                    },
+                    useValue: {},
                 },
             ],
         }).compileComponents();
