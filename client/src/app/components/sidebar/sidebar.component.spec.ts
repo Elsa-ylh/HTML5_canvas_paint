@@ -18,10 +18,17 @@ describe('SidebarComponent', () => {
             providers: [
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: MatDialog, useValue: {} },
-                { provide: MatIconRegistry, useValue: {} },
+                {
+                    provide: MatIconRegistry,
+                    useValue: {
+                        addSvgIcon: () => '',
+                    },
+                },
                 {
                     provide: DomSanitizer,
-                    useValue: {},
+                    useValue: {
+                        bypassSecurityTrustResourceUrl: () => '',
+                    },
                 },
             ],
         }).compileComponents();
