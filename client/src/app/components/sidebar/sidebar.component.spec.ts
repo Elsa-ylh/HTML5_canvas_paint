@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MatDialogRef } from '@angular/material/dialog';
 import { SidebarComponent } from './sidebar.component';
 
 describe('SidebarComponent', () => {
@@ -9,6 +10,7 @@ describe('SidebarComponent', () => {
         waitForAsync(() => {
             TestBed.configureTestingModule({
                 declarations: [SidebarComponent],
+                providers: [{ data: { message: 'Créer un nouveau dessin avec les dimensions' }, provide: MatDialogRef }],
             }).compileComponents();
         }),
     );
