@@ -4,5 +4,9 @@
 
 .mat-dialog-content {
     width: 100%;
-    height: auto;
+    height: 180px;
+}
+
+mat-dialog-actions {
+  margin: auto;
 }

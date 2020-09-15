@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
-import { DialogNewDrawingComponent } from '@app/components/dialog-new-drawing/dialog-new-drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Component({
@@ -14,7 +13,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class SidebarComponent {
     constructor(
         private drawingService: DrawingService,
-        private dialogClear: MatDialog,
         private dialogNewDrawing: MatDialog,
         public iconRegistry: MatIconRegistry,
         public sanitizer: DomSanitizer,
@@ -24,7 +22,7 @@ export class SidebarComponent {
 
     clearCanvas(): void {
         if (!this.drawingService.isCanvasBlank()) {
-            this.dialogClear.open(DialogNewDrawingComponent);
+            this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
         }
     }
 
