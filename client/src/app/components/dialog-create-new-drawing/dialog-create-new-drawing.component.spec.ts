@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DialogCreateNewDrawingComponent } from './dialog-create-new-drawing.component';
 
@@ -12,12 +12,12 @@ describe('DialogCreateNewDrawingComponent', () => {
 
     beforeEach(async () => {
         drawingStub = new DrawingService();
-        newDrawingDialogRef = dialog.open(DialogCreateNewDrawingComponent);
+        dialog.open(DialogCreateNewDrawingComponent);
 
         await TestBed.configureTestingModule({
             declarations: [DialogCreateNewDrawingComponent],
             providers: [
-                { provide: 'string' },
+                { provide: MAT_DIALOG_DATA },
                 { provide: MatDialogRef, useValue: newDrawingDialogRef },
                 { provide: DrawingService, useValue: drawingStub },
             ],
