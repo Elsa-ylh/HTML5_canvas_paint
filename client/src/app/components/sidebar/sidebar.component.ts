@@ -33,9 +33,9 @@ export class SidebarComponent implements OnInit {
     }
 
     // keybind control o for new drawing
-    @HostListener('window:keydown', ['$event']) onKeyDown(e: KeyboardEvent): void {
-        e.preventDefault();
-        if (e.ctrlKey && e.code === 'KeyO') {
+    @HostListener('window:keydown', ['$event']) onKeyDown(o: KeyboardEvent): void {
+        o.preventDefault();
+        if (o.ctrlKey && o.code === 'KeyO') {
             this.clearCanvas();
         }
     }

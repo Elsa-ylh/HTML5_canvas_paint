@@ -38,16 +38,18 @@ export class PencilService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
+        this.clearPath();
+
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
         this.mouseDown = false;
-        this.clearPath();
     }
 
     onMouseMove(event: MouseEvent): void {
+       
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
