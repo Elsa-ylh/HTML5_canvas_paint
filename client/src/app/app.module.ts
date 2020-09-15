@@ -53,10 +53,10 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { EffaceComponent } from './efface/efface.component';
+
 
 @NgModule({
-    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, DialogCreateNewDrawingComponent, EffaceComponent],
+    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, DialogCreateNewDrawingComponent],
     imports: [
         FormsModule,
         BrowserModule,
@@ -111,4 +111,4 @@ import { EffaceComponent } from './efface/efface.component';
     providers: [],
     bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }
