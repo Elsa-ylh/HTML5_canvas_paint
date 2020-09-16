@@ -14,8 +14,8 @@ export class SidebarComponent {
         this.drawing.previewCtx.strokeStyle = '#000000';
     }
     changeEraser() {
-        this.drawing.baseCtx.strokeStyle = '#FFF';
-        this.drawing.previewCtx.strokeStyle = '#FFF';
+        this.drawing.baseCtx.strokeStyle = '#FFFF';
+        this.drawing.previewCtx.strokeStyle = '#FFFF';
         this.drawing.baseCtx.lineWidth = 5;
         this.drawing.previewCtx.lineWidth = 5;
     }
