@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, HostListener, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Data } from '@angular/router';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Component({
     selector: 'app-dialog-create-new-drawing',
@@ -9,6 +11,28 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class DialogCreateNewDrawingComponent {
     xAxis: number;
     yAxis: number;
+    message: string = 'Etes vous sur de vouloir effacer votre dessin actuel ?';
 
-    constructor(public dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>) {}
+    constructor(
+        @Inject(MAT_DIALOG_DATA) private data: Data,
+        public dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>,
+        private drawingService: DrawingService,
+    ) {
+        if (this.data) {
+            this.message = data.message;
+        }
+    }
+
+    @HostListener('window:keydown', ['$event']) onKeyDown(e: KeyboardEvent): void {
+        e.preventDefault();
+        if (e.key === 'Enter') {
+            this.onConfirmClick();
+        }
+    }
+
+    onConfirmClick(): void {
+        this.dialogRef.close(true);
+        this.drawingService.clearCanvas(this.drawingService.baseCtx);
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    }
 }

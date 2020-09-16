@@ -5,8 +5,11 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
-export const DEFAULT_WIDTH = 1000;
-export const DEFAULT_HEIGHT = 800;
+export const DEFAULT_WIDTH = window.innerWidth / 2;
+export const DEFAULT_HEIGHT = window.innerHeight / 2;
+const sizeSidebar = 200;
+const minSizeWindow = 500;
+const minSizeCanvas = 250;
 
 @Component({
     selector: 'app-drawing',
@@ -59,5 +62,17 @@ export class DrawingComponent implements AfterViewInit {
 
     get height(): number {
         return this.canvasSize.y;
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event: Event): void {
+        if (window.innerWidth <= minSizeWindow && window.innerHeight <= minSizeWindow) {
+            this.canvasSize.x = minSizeCanvas;
+            this.canvasSize.y = minSizeCanvas;
+        } else {
+            // Might be made responsive
+            this.canvasSize.x = DEFAULT_WIDTH - sizeSidebar;
+            this.canvasSize.y = DEFAULT_HEIGHT;
+        }
     }
 }
