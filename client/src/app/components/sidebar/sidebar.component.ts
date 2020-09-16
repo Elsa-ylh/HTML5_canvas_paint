@@ -39,6 +39,8 @@ export class SidebarComponent implements OnInit {
             this.clearCanvas();
         }
     }
-    //Parmet d'avoir un pinceau
-    naturalBrushTool() {}
+    // Parmet d'avoir un pinceau
+    naturalBrushTool() {
+        // activer pinceau
+    }
 }
