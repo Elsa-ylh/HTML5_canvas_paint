@@ -9,5 +9,4 @@ export class BrushToolComponent implements OnInit {
     constructor() {}
 
     ngOnInit(): void {}
-    naturalBrushTool() {}
 }
