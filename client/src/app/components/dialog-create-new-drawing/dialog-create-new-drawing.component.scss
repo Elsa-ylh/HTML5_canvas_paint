@@ -1,12 +1,22 @@
+p {
+    margin-top: 2px;
+    font-size: 20px;
+}
+
 .mat-slider-horizontal {
-    width: 100%;
+    width: 90%;
 }
 
 .mat-dialog-content {
-    width: 100%;
-    height: 180px;
+    margin-top: 20px;
+    width: 500px;
+    height: auto;
+}
+
+.mat-form-field {
+    width: 90%;
 }
 
 mat-dialog-actions {
-  margin: auto;
+    margin: auto;
 }

@@ -11,12 +11,18 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit {
+    showAttributes: boolean;
+    whichTools: number;
+
     constructor(
         private drawingService: DrawingService,
         private dialogNewDrawing: MatDialog,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
-    ) {}
+    ) {
+        this.showAttributes = true;
+        this.whichTools = 1;
+    }
 
     ngOnInit(): void {
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
@@ -33,10 +39,8 @@ export class SidebarComponent implements OnInit {
     }
 
     // keybind control o for new drawing
-    @HostListener('window:keydown', ['$event']) onKeyDown(o: KeyboardEvent): void {
-        o.preventDefault();
-        if (o.ctrlKey && o.code === 'KeyO') {
-            this.clearCanvas();
-        }
+    @HostListener('window:keydown.control.o', ['$event']) onKeyDown(event: KeyboardEvent): void {
+        event.preventDefault();
+        this.clearCanvas();
     }
 }
