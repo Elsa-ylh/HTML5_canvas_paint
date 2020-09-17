@@ -6,7 +6,7 @@
         <mat-button-toggle>
             <mat-icon svgIcon="eraser"></mat-icon>
         </mat-button-toggle>
-        <mat-button-toggle [matMenuTriggerFor]="menu">
+        <mat-button-toggle>
             <mat-icon>brush</mat-icon>
         </mat-button-toggle>
         <app-brush-tool></app-brush-tool>
@@ -24,14 +24,7 @@
         </mat-button-toggle>
     </mat-button-toggle-group>
 </mat-list>
-
-<mat-menu #menu="matMenu">
-    <button mat-raised-button (click)="naturalBrushTool()">pinceau 1</button>
-    <button mat-raised-button>pinceau 2</button>
-    <button mat-raised-button>pinceau 3</button>
-    <button mat-raised-button>pinceau 4</button>
-    <button mat-raised-button>pinceau 5</button>
-</mat-menu>
+<app-brush-tool></app-brush-tool>
 
 <mat-list class="extended-navigation-sidebar">
     <mat-button-toggle-group vertical="true">

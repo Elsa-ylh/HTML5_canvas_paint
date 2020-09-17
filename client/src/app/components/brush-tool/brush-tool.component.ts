@@ -5,4 +5,9 @@ import { Component } from '@angular/core';
     templateUrl: './brush-tool.component.html',
     styleUrls: ['./brush-tool.component.scss'],
 })
-export class BrushToolComponent {}
+export class BrushToolComponent {
+    // Parmet d'avoir un pinceau
+    naturalBrushTool() {
+        // activer pinceau
+    }
+}

@@ -20,4 +20,11 @@ describe('BrushToolComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it('click natural rush tool ', () => {
+        fixture.whenStable().then(() => {
+            component.naturalBrushTool();
+            expect(component.naturalBrushTool).toHaveBeenCalled();
+        });
+    });
 });
