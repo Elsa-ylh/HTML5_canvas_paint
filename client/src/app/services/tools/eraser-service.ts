@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Tool } from '@app/classes/tool';
+import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '../drawing/drawing.service';
-import { MouseButton } from './pencil-service';
 
 @Injectable({
     providedIn: 'root',
@@ -13,14 +12,15 @@ export class EraserService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
-
-        this.drawingService.baseCtx.lineWidth = 5;
-        this.drawingService.previewCtx.lineWidth = 5;
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
+            this.drawingService.baseCtx.strokeStyle = '#FFF'; //draw in white
+            this.drawingService.previewCtx.strokeStyle = '#FFF';
+            this.drawingService.baseCtx.lineWidth = 5; // minimal size is 5 px.
+            this.drawingService.previewCtx.lineWidth = 5;
             this.clearPath();
 
             this.mouseDownCoord = this.getPositionFromMouse(event);
@@ -34,6 +34,8 @@ export class EraserService extends Tool {
             this.pathData.push(mousePosition);
             this.RemoveLine(this.drawingService.baseCtx, this.pathData);
         }
+
+        this.drawingService;
         this.mouseDown = false;
         this.clearPath();
     }
@@ -47,6 +49,7 @@ export class EraserService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.RemoveLine(this.drawingService.previewCtx, this.pathData);
         }
+        //console.log('efface');
     }
 
     private RemoveLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -54,8 +57,7 @@ export class EraserService extends Tool {
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
-        this.drawingService.baseCtx.strokeStyle = '#FFF';
-        this.drawingService.previewCtx.strokeStyle = '#FFF';
+        ctx.stroke();
     }
 
     private clearPath(): void {

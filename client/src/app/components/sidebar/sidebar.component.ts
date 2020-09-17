@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DrawingService } from '@app/services/drawing/drawing.service';
+import { SwitchToolService } from '@app/services/switchTool-service';
 
 @Component({
     selector: 'app-sidebar',
@@ -7,16 +7,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private drawing: DrawingService) {}
+    constructor(private switchToolServ: SwitchToolService) {}
 
-    changePencil() {
-        this.drawing.baseCtx.strokeStyle = '#000000';
-        this.drawing.previewCtx.strokeStyle = '#000000';
-    }
-    changeEraser() {
-        this.drawing.baseCtx.strokeStyle = '#FFFF';
-        this.drawing.previewCtx.strokeStyle = '#FFFF';
-        this.drawing.baseCtx.lineWidth = 5;
-        this.drawing.previewCtx.lineWidth = 5;
-    }
+    SetPencil = () => this.switchToolServ.switchTool(0);
+    SetEraser = () => this.switchToolServ.switchTool(1);
 }
