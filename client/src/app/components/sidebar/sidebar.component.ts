@@ -11,12 +11,18 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit {
+    showAttributes: boolean;
+    whichTools: number;
+
     constructor(
         private drawingService: DrawingService,
         private dialogNewDrawing: MatDialog,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
-    ) {}
+    ) {
+        this.showAttributes = true;
+        this.whichTools = 1;
+    }
 
     ngOnInit(): void {
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));

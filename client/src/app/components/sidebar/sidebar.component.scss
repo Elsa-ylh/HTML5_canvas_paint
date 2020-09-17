@@ -1,20 +1,34 @@
-.mat-list {
-    display: flex;
-    margin-top: -8px;
+.toolbar {
+    position: relative;
+    top: 0;
+    height: 100%;
+    text-align: center;
+    float: left;
 }
 
-.simple-toolbar-sidebar {
+.small-buttons {
+    width: 50px;
+}
+
+.attributes {
+    position: relative;
+    top: 0;
+    margin: 0px;
+    width: 226px;
+    float: right;
+}
+
+mat-slider {
+    width: 90%;
+}
+
+.tools-buttons {
+    position: relative;
     height: auto;
+    margin-top: -7px;
 }
 
-.extended-navigation-sidebar {
+.miscellaneous-buttons {
     position: absolute;
-    left: 0;
     bottom: 0;
-}
-
-.mat-button {
-    margin: 8px 8px 8px 0;
-    width: 100%;
-    height: 50px;
 }
