@@ -20,6 +20,7 @@ describe('DrawingComponent', () => {
         waitForAsync(() => {
             toolStub = new ToolStub({} as DrawingService);
             drawingStub = new DrawingService();
+            
 
             TestBed.configureTestingModule({
                 declarations: [DrawingComponent],
