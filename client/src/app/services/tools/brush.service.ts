@@ -23,14 +23,14 @@ export class BrushService extends Tool {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-            //  console.log('crayon');
+            console.log('bruch');
         }
     }
-    sizeSmale(): void {
+    sizeSmall(): void {
         this.drawingService.baseCtx.lineWidth = 4;
         this.drawingService.previewCtx.lineWidth = 4;
     }
-    sizeMedime(): void {
+    sizeMedium(): void {
         this.drawingService.baseCtx.lineWidth = 8;
         this.drawingService.previewCtx.lineWidth = 8;
     }

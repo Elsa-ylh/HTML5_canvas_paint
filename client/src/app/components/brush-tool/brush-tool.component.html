@@ -9,7 +9,7 @@
 
 <button mat-button [matMenuTriggerFor]="menuSize">Menu taille</button>
 <mat-menu #menuSize="matMenu">
-    <button mat-menu-item>taille 1</button>
-    <button mat-menu-item>taille 2</button>
-    <button mat-menu-item>taille 3</button>
+    <button mat-menu-item (click)="sizeSmall()">taille 1</button>
+    <button mat-menu-item (click)="sizeMedium()">taille 2</button>
+    <button mat-menu-item (click)="sizeBig()">taille 3</button>
 </mat-menu>
