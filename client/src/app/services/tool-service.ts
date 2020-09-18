@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Tool } from '@app/classes/tool';
+import { Tool, ToolUsed } from '@app/classes/tool';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { PencilService } from '@app/services/tools/pencil-service';
 
@@ -7,14 +7,23 @@ import { PencilService } from '@app/services/tools/pencil-service';
     providedIn: 'root',
 })
 export class ToolService {
+    currentToolName: ToolUsed;
     currentTool: Tool;
-    TableTool: Tool[];
+    private TableTool: Array<Tool> = new Array<Tool>();
 
-    constructor(protected pencilService: PencilService, eraserService: EraserService) {
-        this.TableTool = [pencilService, eraserService]; // put all the services of tools here.
+    constructor(protected pencilService: PencilService, protected eraserService: EraserService) {
+        this.TableTool[ToolUsed.NONE] = pencilService;
+        this.TableTool[ToolUsed.Pencil] = pencilService;
+        this.TableTool[ToolUsed.Eraser] = eraserService;
+        //this.TableTool[ToolUsed.Brush] =
+        //this.TableTool[ToolUsed.Line] =
+        //this.TableTool[ToolUsed.Rectangle] =
+        //this.TableTool[ToolUsed.Ellipse] =
+        //this.TableTool[ToolUsed.Color] =
     }
 
-    public switchTool(num: number): void {
-        this.currentTool = this.TableTool[num];
+    public switchTool(toolUsed: ToolUsed): void {
+        this.currentTool = this.TableTool[toolUsed];
+        this.currentToolName = toolUsed;
     }
 }
