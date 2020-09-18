@@ -74,8 +74,6 @@ export class SidebarComponent implements OnInit {
 
     // keybind control o for new drawing
     @HostListener('window:keydown.control.o', ['$event']) onKeyDown(event: KeyboardEvent): void {
-        console.log(this.isDialogOpen);
-        debugger;
         if (!this.isDialogOpen && !this.drawingService.isCanvasBlank()) {
             event.preventDefault();
             this.clearCanvas();
