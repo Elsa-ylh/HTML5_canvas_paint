@@ -1,9 +1,12 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PencilService } from '@app/services/tools/pencil-service';
+import { RectangleService } from '@app/services/tools/rectangle.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -12,16 +15,17 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class SidebarComponent implements OnInit {
     showAttributes: boolean;
-    whichTools: number;
+    isDialogOpen: boolean = false;
+    dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
 
     constructor(
-        private drawingService: DrawingService,
+        public drawingService: DrawingService,
         private dialogNewDrawing: MatDialog,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
     ) {
         this.showAttributes = true;
-        this.whichTools = 1;
+        drawingService.whichTools = ToolUsed.NONE;
     }
 
     ngOnInit(): void {
@@ -30,7 +34,10 @@ export class SidebarComponent implements OnInit {
 
     clearCanvas(): void {
         if (!this.drawingService.isCanvasBlank()) {
-            this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
+            this.dialogRef = this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
+            this.dialogRef.afterClosed().subscribe(() => {
+                this.isDialogOpen = false;
+            });
         }
     }
 
@@ -38,9 +45,42 @@ export class SidebarComponent implements OnInit {
         this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
     }
 
+    pickPencil(): void {
+        this.drawingService.currentTool = new PencilService(this.drawingService);
+        this.drawingService.whichTools = ToolUsed.Pencil;
+    }
+
+    pickEraser(): void {
+        this.drawingService.whichTools = ToolUsed.Eraser;
+    }
+
+    pickBrush(): void {
+        this.drawingService.whichTools = ToolUsed.Brush;
+    }
+
+    pickLine(): void {
+        this.drawingService.whichTools = ToolUsed.Line;
+    }
+
+    pickRectangle(): void {
+        this.drawingService.currentTool = new RectangleService(this.drawingService);
+        this.drawingService.whichTools = ToolUsed.Rectangle;
+    }
+
+    pickEllipse(): void {
+        this.drawingService.whichTools = ToolUsed.Ellipse;
+    }
+
+    pickColor(): void {
+        this.drawingService.whichTools = ToolUsed.Color;
+    }
+
     // keybind control o for new drawing
     @HostListener('window:keydown.control.o', ['$event']) onKeyDown(event: KeyboardEvent): void {
-        event.preventDefault();
-        this.clearCanvas();
+        if (!this.isDialogOpen && !this.drawingService.isCanvasBlank()) {
+            event.preventDefault();
+            this.clearCanvas();
+            this.isDialogOpen = true;
+        }
     }
 }

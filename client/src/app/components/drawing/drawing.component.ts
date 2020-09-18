@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil-service';
@@ -26,11 +25,9 @@ export class DrawingComponent implements AfterViewInit {
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
-    private tools: Tool[];
-    currentTool: Tool;
+
     constructor(private drawingService: DrawingService, pencilService: PencilService) {
-        this.tools = [pencilService];
-        this.currentTool = this.tools[0];
+        drawingService.currentTool = pencilService;
     }
 
     ngAfterViewInit(): void {
@@ -43,17 +40,17 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        this.currentTool.onMouseMove(event);
+        this.drawingService.currentTool.onMouseMove(event);
     }
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
-        this.currentTool.onMouseDown(event);
+        this.drawingService.currentTool.onMouseDown(event);
     }
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        this.currentTool.onMouseUp(event);
+        this.drawingService.currentTool.onMouseUp(event);
     }
 
     get width(): number {

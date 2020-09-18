@@ -49,7 +49,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should get stubTool', () => {
-        const currentTool = component.currentTool;
+        const currentTool = drawingStub.currentTool;
         expect(currentTool).toEqual(toolStub);
     });
 
