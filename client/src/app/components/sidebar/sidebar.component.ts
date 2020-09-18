@@ -82,7 +82,7 @@ export class SidebarComponent implements OnInit {
         }
     }
     @HostListener('window:keydown.e', ['$event'])
-    handleKeyboardEvent(event: KeyboardEvent) {
+    handleKeyboardEvent(event: KeyboardEvent): void {
         this.toolService.switchTool(ToolUsed.Eraser);
     }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { DrawingService } from '../drawing/drawing.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
     providedIn: 'root',
@@ -16,11 +16,12 @@ export class EraserService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        const minimalPx = 5;
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
-            this.drawingService.baseCtx.strokeStyle = '#FFF'; //draw in white
-            this.drawingService.previewCtx.strokeStyle = '#FFF'; //when changecolor is implemented call pencil weith white.
-            this.drawingService.baseCtx.lineWidth = 5; // minimal size is 5 px.
+            this.drawingService.baseCtx.strokeStyle = '#FFF'; // draw in white
+            this.drawingService.previewCtx.strokeStyle = '#FFF'; // when changecolor is implemented call pencil weith white.
+            this.drawingService.baseCtx.lineWidth = minimalPx; // minimal size is 5 px.
             // this.drawingService.previewCtx.lineWidth = 5;
 
             this.mouseDownCoord = this.getPositionFromMouse(event);
@@ -35,7 +36,6 @@ export class EraserService extends Tool {
             this.RemoveLine(this.drawingService.baseCtx, this.pathData);
         }
 
-        this.drawingService;
         this.mouseDown = false;
         this.clearPath();
     }

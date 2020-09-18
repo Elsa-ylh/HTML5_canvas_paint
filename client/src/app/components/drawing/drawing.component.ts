@@ -24,10 +24,7 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
-   
-
-    constructor(private drawingService: DrawingService, private toolService: ToolService) {
-    }
+    constructor(private drawingService: DrawingService, private toolService: ToolService) {}
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;

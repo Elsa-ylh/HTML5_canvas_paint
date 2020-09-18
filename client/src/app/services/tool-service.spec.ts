@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { SwitchToolService } from '@app/services/tool-service';
+import { ToolService } from '@app/services/tool-service';
 
 describe('SwitchToolServiceService', () => {
-    let service: SwitchToolService;
+    let service: ToolService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(SwitchToolService);
+        service = TestBed.inject(ToolService);
     });
 
     it('should be created', () => {

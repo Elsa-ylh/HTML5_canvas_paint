@@ -9,21 +9,21 @@ import { PencilService } from '@app/services/tools/pencil-service';
 export class ToolService {
     currentToolName: ToolUsed;
     currentTool: Tool;
-    private TableTool: Array<Tool> = new Array<Tool>();
+    private tableTool: Array<Tool> = new Array<Tool>();
 
     constructor(protected pencilService: PencilService, protected eraserService: EraserService) {
-        this.TableTool[ToolUsed.NONE] = pencilService;
-        this.TableTool[ToolUsed.Pencil] = pencilService;
-        this.TableTool[ToolUsed.Eraser] = eraserService;
-        //this.TableTool[ToolUsed.Brush] =
-        //this.TableTool[ToolUsed.Line] =
-        //this.TableTool[ToolUsed.Rectangle] =
-        //this.TableTool[ToolUsed.Ellipse] =
-        //this.TableTool[ToolUsed.Color] =
+        this.tableTool[ToolUsed.NONE] = pencilService;
+        this.tableTool[ToolUsed.Pencil] = pencilService;
+        this.tableTool[ToolUsed.Eraser] = eraserService;
+        // this.TableTool[ToolUsed.Brush] =
+        // this.TableTool[ToolUsed.Line] =
+        // this.TableTool[ToolUsed.Rectangle] =
+        // this.TableTool[ToolUsed.Ellipse] =
+        // this.TableTool[ToolUsed.Color] =
     }
 
-    public switchTool(toolUsed: ToolUsed): void {
-        this.currentTool = this.TableTool[toolUsed];
+    switchTool(toolUsed: ToolUsed): void {
+        this.currentTool = this.tableTool[toolUsed];
         this.currentToolName = toolUsed;
     }
 }
