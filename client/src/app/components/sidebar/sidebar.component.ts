@@ -5,6 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { RectangleService } from '@app/services/tools/rectangle.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -13,18 +14,17 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class SidebarComponent implements OnInit {
     showAttributes: boolean;
-    whichTools: ToolUsed;
     isDialogOpen: boolean = false;
     dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
 
     constructor(
-        private drawingService: DrawingService,
+        public drawingService: DrawingService,
         private dialogNewDrawing: MatDialog,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
     ) {
         this.showAttributes = true;
-        this.whichTools = ToolUsed.NONE;
+        drawingService.whichTools = ToolUsed.NONE;
     }
 
     ngOnInit(): void {
@@ -45,31 +45,32 @@ export class SidebarComponent implements OnInit {
     }
 
     pickPencil(): void {
-        this.whichTools = ToolUsed.Pencil;
+        this.drawingService.whichTools = ToolUsed.Pencil;
     }
 
     pickEraser(): void {
-        this.whichTools = ToolUsed.Eraser;
+        this.drawingService.whichTools = ToolUsed.Eraser;
     }
 
     pickBrush(): void {
-        this.whichTools = ToolUsed.Brush;
+        this.drawingService.whichTools = ToolUsed.Brush;
     }
 
     pickLine(): void {
-        this.whichTools = ToolUsed.Line;
+        this.drawingService.whichTools = ToolUsed.Line;
     }
 
     pickRectangle(): void {
-        this.whichTools = ToolUsed.Rectangle;
+        this.drawingService.currentTool = new RectangleService(this.drawingService);
+        this.drawingService.whichTools = ToolUsed.Rectangle;
     }
 
     pickEllipse(): void {
-        this.whichTools = ToolUsed.Ellipse;
+        this.drawingService.whichTools = ToolUsed.Ellipse;
     }
 
     pickColor(): void {
-        this.whichTools = ToolUsed.Color;
+        this.drawingService.whichTools = ToolUsed.Color;
     }
 
     // keybind control o for new drawing

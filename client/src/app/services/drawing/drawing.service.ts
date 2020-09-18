@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Tool } from '@app/classes/tool';
+import { Tool, ToolUsed } from '@app/classes/tool';
 
 @Injectable({
     providedIn: 'root',
@@ -9,7 +9,7 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
 
-    tools: Tool[];
+    whichTools: ToolUsed = ToolUsed.NONE;
     currentTool: Tool;
 
     clearCanvas(context: CanvasRenderingContext2D): void {
