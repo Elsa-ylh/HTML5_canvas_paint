@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-const startpx = 4;
 @Injectable({
     providedIn: 'root',
 })

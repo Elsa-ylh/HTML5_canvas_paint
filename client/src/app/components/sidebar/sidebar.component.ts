@@ -85,12 +85,12 @@ export class SidebarComponent implements OnInit {
             this.isDialogOpen = true;
         }
     }
-    public naturalBrushTool(): void {
+    naturalBrushTool(): void {
         this.showAttributes = true;
         this.drawingService.baseCtx.lineWidth = this.pxSize;
         this.drawingService.previewCtx.lineWidth = this.pxSize;
     }
-    public sliderSliding(args: MatSliderChange): void {
+    sliderSliding(args: MatSliderChange): void {
         console.log(args.value);
         if (args.value) {
             this.drawingService.baseCtx.lineWidth = args.value;
