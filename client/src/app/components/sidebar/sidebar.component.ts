@@ -17,8 +17,7 @@ export class SidebarComponent implements OnInit {
     showAttributes: boolean;
     isDialogOpen: boolean = false;
     dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
-    sliderSize = false;
-    pxSize = 4;
+    pxSize: number;
     constructor(
         public drawingService: DrawingService,
         private dialogNewDrawing: MatDialog,
@@ -61,7 +60,6 @@ export class SidebarComponent implements OnInit {
 
     pickLine(): void {
         this.drawingService.whichTools = ToolUsed.Line;
-        this.sliderSize = true;
         this.drawingService.baseCtx.lineWidth = this.pxSize;
         this.drawingService.previewCtx.lineWidth = this.pxSize;
     }
@@ -87,7 +85,7 @@ export class SidebarComponent implements OnInit {
             this.isDialogOpen = true;
         }
     }
-    naturalBrushTool() {
+    public naturalBrushTool(): void {
         this.showAttributes = true;
         this.drawingService.baseCtx.lineWidth = this.pxSize;
         this.drawingService.previewCtx.lineWidth = this.pxSize;
