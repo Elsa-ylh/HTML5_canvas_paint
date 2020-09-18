@@ -18,8 +18,8 @@ export class BrushService extends Tool {
         if (this.mouseDown) {
             this.drawingService.baseCtx.strokeStyle = '#000000'; //to draw after erasing
             this.drawingService.previewCtx.strokeStyle = '#000000';
-            this.drawingService.baseCtx.lineWidth = 2; // conserve same size a before
-            this.drawingService.previewCtx.lineWidth = 2;
+            this.drawingService.baseCtx.lineWidth = 4; // conserve same size a before
+            this.drawingService.previewCtx.lineWidth = 4;
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);

@@ -6,10 +6,9 @@
         <mat-button-toggle>
             <mat-icon svgIcon="eraser" (click)="SetEraser()"></mat-icon>
         </mat-button-toggle>
-        <mat-button-toggle>
+        <mat-button-toggle [matMenuTriggerFor]="menuBrush">
             <mat-icon>brush</mat-icon>
         </mat-button-toggle>
-        <app-brush-tool></app-brush-tool>
         <mat-button-toggle>
             <mat-icon>horizontal_rule</mat-icon>
         </mat-button-toggle>
@@ -22,9 +21,11 @@
         <mat-button-toggle>
             <mat-icon>color_lens</mat-icon>
         </mat-button-toggle>
+        <mat-button-toggle *ngIf="sliderSize" [matMenuTriggerFor]="menuSize">
+            <p>taille</p>
+        </mat-button-toggle>
     </mat-button-toggle-group>
 </mat-list>
-<app-brush-tool></app-brush-tool>
 
 <mat-list class="extended-navigation-sidebar">
     <mat-button-toggle-group vertical="true">
@@ -36,3 +37,15 @@
         </mat-button-toggle>
     </mat-button-toggle-group>
 </mat-list>
+
+<mat-menu #menuSize>
+    <mat-slider max="50" min="1" [(ngModel)]="pxSize"> </mat-slider><samp>{{ pxSize }}px</samp>
+</mat-menu>
+
+<mat-menu #menuBrush="matMenu">
+    <button mat-raised-button (click)="naturalBrushTool()">pinceau 1</button>
+    <button mat-raised-button (click)="naturalBrushTool()">pinceau 2</button>
+    <button mat-raised-button (click)="naturalBrushTool()">pinceau 3</button>
+    <button mat-raised-button (click)="naturalBrushTool()">pinceau 4</button>
+    <button mat-raised-button (click)="naturalBrushTool()">pinceau 5</button>
+</mat-menu>

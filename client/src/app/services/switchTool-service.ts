@@ -8,7 +8,7 @@ import { PencilService } from '@app/services/tools/pencil-service';
 })
 export class SwitchToolService {
     currentTool: Tool;
-    TableTool: Tool[];
+    private TableTool: Tool[];
 
     constructor(protected pencilService: PencilService, eraserService: EraserService, brushServie: BrushService) {
         this.TableTool = [pencilService, eraserService, brushServie]; // put all the services of tools here.
@@ -19,7 +19,7 @@ export class SwitchToolService {
     }
 }
 export enum ServiceTool {
-    pencilService = 1,
-    eraserService = 2,
-    brushServie = 3,
+    pencilService = 0,
+    eraserService = 1,
+    brushServie = 2,
 }

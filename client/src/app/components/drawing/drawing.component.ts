@@ -1,15 +1,9 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH, minSizeCanvas, minSizeWindow, sizeSidebar } from '@app/classes/info-Window';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SwitchToolService } from '@app/services/switchTool-service';
-//import { SwitchToolService} from '@app/services/switchTool-service';
-
+import { ServiceTool, SwitchToolService } from '@app/services/switchTool-service';
 // TODO : Avoir un fichier séparé pour les constantes ?
-export const DEFAULT_WIDTH = window.innerWidth / 2;
-export const DEFAULT_HEIGHT = window.innerHeight / 2;
-const sizeSidebar = 200;
-const minSizeWindow = 500;
-const minSizeCanvas = 250;
 
 @Component({
     selector: 'app-drawing',
@@ -29,7 +23,7 @@ export class DrawingComponent implements AfterViewInit {
     // private tools: Tool[];
     //currentTool: Tool;
     constructor(private drawingService: DrawingService, private switchToolServ: SwitchToolService) {
-        switchToolServ.switchTool(0);
+        switchToolServ.switchTool(ServiceTool.pencilService);
     }
 
     ngAfterViewInit(): void {

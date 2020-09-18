@@ -4,7 +4,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SwitchToolService } from '@app/services/switchTool-service';
+import { ServiceTool, SwitchToolService } from '@app/services/switchTool-service';
 
 @Component({
     selector: 'app-sidebar',
@@ -12,6 +12,8 @@ import { SwitchToolService } from '@app/services/switchTool-service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit {
+    sliderSize = false;
+    pxSize = 4;
     constructor(
         private switchToolServ: SwitchToolService,
         private drawingService: DrawingService,
@@ -40,5 +42,10 @@ export class SidebarComponent implements OnInit {
         if (o.ctrlKey && o.code === 'KeyO') {
             this.clearCanvas();
         }
+    }
+
+    naturalBrushTool() {
+        this.switchToolServ.switchTool(ServiceTool.brushServie);
+        this.sliderSize = true;
     }
 }
