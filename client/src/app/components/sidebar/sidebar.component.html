@@ -59,7 +59,18 @@
             <mat-grid-tile colspan="6"></mat-grid-tile>
         </mat-grid-list>
         <mat-grid-list cols="6" *ngSwitchCase="3">
-            <mat-grid-tile colspan="6"></mat-grid-tile>
+            <mat-grid-tile colspan="6">
+                <div>
+                    <button mat-raised-button (click)="naturalBrushTool()">pinceau 1</button>
+                    <button mat-raised-button (click)="naturalBrushTool()">pinceau 2</button>
+                    <button mat-raised-button (click)="naturalBrushTool()">pinceau 3</button>
+                    <button mat-raised-button (click)="naturalBrushTool()">pinceau 4</button>
+                    <button mat-raised-button (click)="naturalBrushTool()">pinceau 5</button>
+                </div>
+                <div>
+                    <mat-slider max="50" min="1" [(ngModel)]="pxSize" (input)="sliderSliding($event)"> </mat-slider><samp>{{ pxSize }}px</samp>
+                </div>
+            </mat-grid-tile>
         </mat-grid-list>
         <mat-grid-list cols="6" *ngSwitchCase="4">
             <mat-grid-tile colspan="6"></mat-grid-tile>
@@ -105,14 +116,6 @@
     </mat-button-toggle-group>
 </mat-list>-->
 
-<mat-menu #menuSize>
-    <mat-slider max="50" min="1" [(ngModel)]="pxSize" (input)="sliderSliding($event)"> </mat-slider><samp>{{ pxSize }}px</samp>
-</mat-menu>
+<mat-menu #menuSize> </mat-menu>
 
-<mat-menu #menuBrush="matMenu">
-    <button mat-raised-button (click)="naturalBrushTool()">pinceau 1</button>
-    <button mat-raised-button (click)="naturalBrushTool()">pinceau 2</button>
-    <button mat-raised-button (click)="naturalBrushTool()">pinceau 3</button>
-    <button mat-raised-button (click)="naturalBrushTool()">pinceau 4</button>
-    <button mat-raised-button (click)="naturalBrushTool()">pinceau 5</button>
-</mat-menu>
+<mat-menu #menuBrush="matMenu"> </mat-menu>

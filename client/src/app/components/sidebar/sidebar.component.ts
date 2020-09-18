@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
+import { MatSliderChange } from '@angular/material/slider';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
@@ -16,7 +17,8 @@ export class SidebarComponent implements OnInit {
     showAttributes: boolean;
     isDialogOpen: boolean = false;
     dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
-
+    sliderSize = false;
+    pxSize = 4;
     constructor(
         public drawingService: DrawingService,
         private dialogNewDrawing: MatDialog,
@@ -59,6 +61,9 @@ export class SidebarComponent implements OnInit {
 
     pickLine(): void {
         this.drawingService.whichTools = ToolUsed.Line;
+        this.sliderSize = true;
+        this.drawingService.baseCtx.lineWidth = this.pxSize;
+        this.drawingService.previewCtx.lineWidth = this.pxSize;
     }
 
     pickRectangle(): void {
@@ -80,6 +85,18 @@ export class SidebarComponent implements OnInit {
             event.preventDefault();
             this.clearCanvas();
             this.isDialogOpen = true;
+        }
+    }
+    naturalBrushTool() {
+        this.showAttributes = true;
+        this.drawingService.baseCtx.lineWidth = this.pxSize;
+        this.drawingService.previewCtx.lineWidth = this.pxSize;
+    }
+    public sliderSliding(args: MatSliderChange): void {
+        console.log(args.value);
+        if (args.value) {
+            this.drawingService.baseCtx.lineWidth = args.value;
+            this.drawingService.previewCtx.lineWidth = args.value;
         }
     }
 }
