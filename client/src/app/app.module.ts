@@ -53,9 +53,17 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-
+import { WriteTextDialogUserGuideComponent } from './components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 @NgModule({
-    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, DialogCreateNewDrawingComponent],
+    declarations: [
+        AppComponent,
+        EditorComponent,
+        SidebarComponent,
+        DrawingComponent,
+        WriteTextDialogUserGuideComponent,
+        MainPageComponent,
+        DialogCreateNewDrawingComponent,
+    ],
     imports: [
         FormsModule,
         BrowserModule,

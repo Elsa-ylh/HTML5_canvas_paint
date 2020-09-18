@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
-import { MouseButton, Tool } from '@app/classes/tool';
+import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+export enum MouseButton {
+    Left = 0,
+    Middle = 1,
+    Right = 2,
+    Back = 3,
+    Forward = 4,
+}
 @Injectable({
     providedIn: 'root',
 })

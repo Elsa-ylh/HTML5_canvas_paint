@@ -1,9 +1,10 @@
-<div><h1>test</h1></div>
 <div *ngFor="let tool of dataGuides">
-    <h1>{{ tool.title }}</h1>
+    <h1 mat-dialog-title>{{ tool.title }}</h1>
     <p>
         {{ tool.description }}
     </p>
     <img class="pictureSize" src="{{ tool.path }}" />
 </div>
-<button mat-button mat-dialog-close>Close</button>
+<div mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+</div>

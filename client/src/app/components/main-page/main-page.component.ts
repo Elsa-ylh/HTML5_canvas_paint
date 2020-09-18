@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { DialogCreateNewDrawingComponent } from 'src/app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 
 @Component({
     selector: 'app-main-page',
@@ -10,7 +11,7 @@ import { DialogCreateNewDrawingComponent } from 'src/app/components/dialog-creat
 export class MainPageComponent {
     onGoingDrawing: boolean;
     dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
-
+    modalGuidRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
     constructor(public dialog: MatDialog) {
         this.onGoingDrawing = false;
     }
@@ -30,4 +31,10 @@ export class MainPageComponent {
     // openDocumentation(): void {
     //    alert('La documentation est ouverte.');
     // }
+    openUserGuide(): void {
+        this.modalGuidRef = this.dialog.open(WriteTextDialogUserGuideComponent, {
+            width: '90%',
+            height: '100%',
+        });
+    }
 }
