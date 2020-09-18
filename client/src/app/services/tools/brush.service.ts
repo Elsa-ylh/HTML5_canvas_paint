@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-
+const startpx = 4;
 @Injectable({
     providedIn: 'root',
 })
@@ -16,28 +16,17 @@ export class BrushService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Right;
         if (this.mouseDown) {
-            this.drawingService.baseCtx.strokeStyle = '#000000'; //to draw after erasing
+            this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
             this.drawingService.previewCtx.strokeStyle = '#000000';
-            this.drawingService.baseCtx.lineWidth = 4; // conserve same size a before
-            this.drawingService.previewCtx.lineWidth = 4;
+            // this.drawingService.baseCtx.lineWidth = startpx; // conserve same size a before
+            // this.drawingService.previewCtx.lineWidth = startpx;
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-            console.log('bruch');
+            // console.log('bruch');
         }
     }
-    sizeSmall(): void {
-        this.drawingService.baseCtx.lineWidth = 4;
-        this.drawingService.previewCtx.lineWidth = 4;
-    }
-    sizeMedium(): void {
-        this.drawingService.baseCtx.lineWidth = 8;
-        this.drawingService.previewCtx.lineWidth = 8;
-    }
-    sizeBig(): void {
-        this.drawingService.baseCtx.lineWidth = 12;
-        this.drawingService.previewCtx.lineWidth = 12;
-    }
+
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);

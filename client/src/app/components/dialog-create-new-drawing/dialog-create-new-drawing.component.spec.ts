@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DialogCreateNewDrawingComponent } from './dialog-create-new-drawing.component';
 
@@ -18,6 +19,7 @@ describe('DialogCreateNewDrawingComponent', () => {
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: {} },
                 { provide: DrawingService, useValue: drawingStub },
+                { provide: Router, useValue: {} },
             ],
         }).compileComponents();
     });

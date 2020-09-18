@@ -55,7 +55,6 @@ import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 
-
 @NgModule({
     declarations: [
         AppComponent,
@@ -120,4 +119,4 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     providers: [],
     bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
