@@ -5,6 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 
 @Component({
@@ -45,6 +46,7 @@ export class SidebarComponent implements OnInit {
     }
 
     pickPencil(): void {
+        this.drawingService.currentTool = new PencilService(this.drawingService);
         this.drawingService.whichTools = ToolUsed.Pencil;
     }
 
