@@ -1,9 +1,56 @@
-<div class="container">
-    <p>Barre latérale pour vos outils!</p>
-    <p>
-        Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet <br />
-        L'implémentation ici ne couvre pas tous les critères d'acceptation du projet<br />
-        Vous êtes encouragés de modifier et compléter le code.<br />
-        N'oubliez pas de regarder les tests dans les fichiers spec.ts aussi!
-    </p>
+<div class="toolbar">
+    <div class="small-buttons">
+        <mat-list class="tools-buttons">
+            <mat-button-toggle-group vertical="true">
+                <mat-button-toggle>
+                    <mat-icon>edit</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle>
+                    <mat-icon svgIcon="eraser"></mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle>
+                    <mat-icon>brush</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle>
+                    <mat-icon>horizontal_rule</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle>
+                    <mat-icon>crop_16_9</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle>
+                    <mat-icon>panorama_fish_eye</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle>
+                    <mat-icon>color_lens</mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </mat-list>
+        <mat-list class="miscellaneous-buttons">
+            <mat-button-toggle-group vertical="true">
+                <mat-button-toggle appearance="radio" (click)="createNewDrawing()">
+                    <mat-icon>add</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle>
+                    <mat-icon>article</mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </mat-list>
+    </div>
+</div>
+<div class="toolbar" *ngIf="showAttributes">
+    <div class="attributes" [ngSwitch]="whichTools">
+        <mat-grid-list cols="6" *ngSwitchCase="0">
+            <mat-grid-tile colspan="6"> This is the settings to decrease or increase the size of a button</mat-grid-tile>
+            <mat-grid-tile colspan="6" rowspan="4">This is a great software for everyone. Let's keep doing UI with this tooling.</mat-grid-tile>
+            <mat-grid-tile colspan="6">
+                <mat-slider tickInterval="1000" min="1" max="100000"></mat-slider>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="6">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Leave a comment</mat-label>
+                    <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </div>
 </div>

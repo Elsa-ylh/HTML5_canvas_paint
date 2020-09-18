@@ -1,13 +1,33 @@
 <mat-dialog-content>
-    <mat-list>
-        <mat-list-item>Créer un nouveau dessin avec les dimensions</mat-list-item>
-        <mat-list-item>
+    <p>{{ message }}</p>
+
+    <mat-grid-list cols="12">
+        <mat-grid-tile colspan="6" rowspan="2">
+            <mat-slider> [max]="1920" [min]="250" [step]="1" [thumbLabel]="true" [(ngModel)]="x_axis" [vertical]="vertical"> </mat-slider>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="6" rowspan="2">
             <mat-form-field>
-                <mat-label>Value</mat-label>
-                <input matInput type="number" />
+                <mat-label>Hauteur</mat-label>
+                <input matInput type="number" placeholder="Ex: 300" min="250" />
+                <span matSuffix>px</span>
             </mat-form-field>
-            <mat-slider> [max]="1920" [min]="250" [step]="1" [thumbLabel]="true" [(ngModel)]="x_axis" [vertical]="vertical">> </mat-slider>
-        </mat-list-item>
-        <mat-list-item> </mat-list-item>
-    </mat-list>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="6" rowspan="2">
+            <mat-slider> [max]="1920" [min]="250" [step]="1" [thumbLabel]="true" [(ngModel)]="x_axis" [vertical]="vertical"> </mat-slider>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="6" rowspan="2">
+            <mat-form-field>
+                <mat-label>Hauteur</mat-label>
+                <input matInput type="number" placeholder="Ex: 300" min="250" />
+                <span matSuffix>px</span>
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="8"> </mat-grid-tile>
+        <mat-grid-tile colspan="2">
+            <button mat-raised-button color="primary" (click)="onConfirmClick()" tabindex="1" routerLink="/editor">Oui</button>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="2">
+            <button mat-raised-button mat-dialog-close tabindex="-1">Non</button>
+        </mat-grid-tile>
+    </mat-grid-list>
 </mat-dialog-content>
