@@ -5,6 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ToolService } from '@app/services/tool-service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 
@@ -23,6 +24,7 @@ export class SidebarComponent implements OnInit {
         private dialogNewDrawing: MatDialog,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
+        private switchToolService: ToolService,
     ) {
         this.showAttributes = true;
         drawingService.whichTools = ToolUsed.NONE;
@@ -82,5 +84,18 @@ export class SidebarComponent implements OnInit {
             this.clearCanvas();
             this.isDialogOpen = true;
         }
+    }
+
+    // to change tools
+    setPencil(): void {
+        this.switchToolService.switchTool(0);
+    }
+    setEraser(): void {
+        this.switchToolService.switchTool(1);
+    }
+
+    @HostListener('window:keydown.e', ['$event'])
+    handleKeyboardEvent(event: KeyboardEvent) {
+        this.switchToolService.switchTool(1);
     }
 }
