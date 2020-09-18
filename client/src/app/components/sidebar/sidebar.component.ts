@@ -1,7 +1,8 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
@@ -12,7 +13,9 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class SidebarComponent implements OnInit {
     showAttributes: boolean;
-    whichTools: number;
+    whichTools: ToolUsed;
+    isDialogOpen: boolean = false;
+    dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
 
     constructor(
         private drawingService: DrawingService,
@@ -21,7 +24,7 @@ export class SidebarComponent implements OnInit {
         private sanitizer: DomSanitizer,
     ) {
         this.showAttributes = true;
-        this.whichTools = 1;
+        this.whichTools = ToolUsed.NONE;
     }
 
     ngOnInit(): void {
@@ -30,7 +33,10 @@ export class SidebarComponent implements OnInit {
 
     clearCanvas(): void {
         if (!this.drawingService.isCanvasBlank()) {
-            this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
+            this.dialogRef = this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
+            this.dialogRef.afterClosed().subscribe(() => {
+                this.isDialogOpen = false;
+            });
         }
     }
 
@@ -38,9 +44,41 @@ export class SidebarComponent implements OnInit {
         this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
     }
 
+    pickPencil(): void {
+        this.whichTools = ToolUsed.Pencil;
+    }
+
+    pickEraser(): void {
+        this.whichTools = ToolUsed.Eraser;
+    }
+
+    pickBrush(): void {
+        this.whichTools = ToolUsed.Brush;
+    }
+
+    pickLine(): void {
+        this.whichTools = ToolUsed.Line;
+    }
+
+    pickRectangle(): void {
+        this.whichTools = ToolUsed.Rectangle;
+    }
+
+    pickEllipse(): void {
+        this.whichTools = ToolUsed.Ellipse;
+    }
+
+    pickColor(): void {
+        this.whichTools = ToolUsed.Color;
+    }
+
     // keybind control o for new drawing
     @HostListener('window:keydown.control.o', ['$event']) onKeyDown(event: KeyboardEvent): void {
-        event.preventDefault();
-        this.clearCanvas();
+        console.log(this.isDialogOpen);
+        if (!this.isDialogOpen) {
+            event.preventDefault();
+            this.clearCanvas();
+            this.isDialogOpen = true;
+        }
     }
 }

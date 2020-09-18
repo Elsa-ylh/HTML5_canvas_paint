@@ -2,25 +2,25 @@
     <div class="small-buttons">
         <mat-list class="tools-buttons">
             <mat-button-toggle-group vertical="true">
-                <mat-button-toggle>
+                <mat-button-toggle (click)="pickPencil()">
                     <mat-icon>edit</mat-icon>
                 </mat-button-toggle>
-                <mat-button-toggle>
+                <mat-button-toggle (click)="pickEraser()">
                     <mat-icon svgIcon="eraser"></mat-icon>
                 </mat-button-toggle>
-                <mat-button-toggle>
+                <mat-button-toggle (click)="pickBrush()">
                     <mat-icon>brush</mat-icon>
                 </mat-button-toggle>
-                <mat-button-toggle>
+                <mat-button-toggle (click)="pickLine()">
                     <mat-icon>horizontal_rule</mat-icon>
                 </mat-button-toggle>
-                <mat-button-toggle>
+                <mat-button-toggle (click)="pickRectangle()">
                     <mat-icon>crop_16_9</mat-icon>
                 </mat-button-toggle>
-                <mat-button-toggle>
+                <mat-button-toggle (click)="pickEllipse()">
                     <mat-icon>panorama_fish_eye</mat-icon>
                 </mat-button-toggle>
-                <mat-button-toggle>
+                <mat-button-toggle (click)="pickColor()">
                     <mat-icon>color_lens</mat-icon>
                 </mat-button-toggle>
             </mat-button-toggle-group>
@@ -51,6 +51,27 @@
                     <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
                 </mat-form-field>
             </mat-grid-tile>
+        </mat-grid-list>
+        <mat-grid-list cols="6" *ngSwitchCase="1">
+            <mat-grid-tile colspan="6"></mat-grid-tile>
+        </mat-grid-list>
+        <mat-grid-list cols="6" *ngSwitchCase="2">
+            <mat-grid-tile colspan="6"></mat-grid-tile>
+        </mat-grid-list>
+        <mat-grid-list cols="6" *ngSwitchCase="3">
+            <mat-grid-tile colspan="6"></mat-grid-tile>
+        </mat-grid-list>
+        <mat-grid-list cols="6" *ngSwitchCase="4">
+            <mat-grid-tile colspan="6"></mat-grid-tile>
+        </mat-grid-list>
+        <mat-grid-list cols="6" *ngSwitchCase="5">
+            <mat-grid-tile colspan="6"></mat-grid-tile>
+        </mat-grid-list>
+        <mat-grid-list cols="6" *ngSwitchCase="6">
+            <mat-grid-tile colspan="6"></mat-grid-tile>
+        </mat-grid-list>
+        <mat-grid-list cols="6" *ngSwitchCase="7">
+            <mat-grid-tile colspan="6"></mat-grid-tile>
         </mat-grid-list>
     </div>
 </div>
