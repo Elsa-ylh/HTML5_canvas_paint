@@ -12,13 +12,13 @@ export class ToolService {
     currentTool: Tool;
     private tableTool: Tool[] = new Array();
 
-    constructor(protected pencilService: PencilService, protected eraserService: EraserService, protected rectangleService: RectangleService) {
-        this.tableTool[ToolUsed.NONE] = pencilService;
-        this.tableTool[ToolUsed.Pencil] = pencilService;
-        this.tableTool[ToolUsed.Eraser] = eraserService;
+    constructor(private pencilService: PencilService, private eraserService: EraserService, private rectangleService: RectangleService) {
+        this.tableTool[ToolUsed.NONE] = this.pencilService;
+        this.tableTool[ToolUsed.Pencil] = this.pencilService;
+        this.tableTool[ToolUsed.Eraser] = this.eraserService;
         // this.tableTool[ToolUsed.Brush] = brushService;
         // this.tableTool[ToolUsed.Line] = lineService;
-        this.tableTool[ToolUsed.Rectangle] = rectangleService;
+        this.tableTool[ToolUsed.Rectangle] = this.rectangleService;
 
         this.switchTool(ToolUsed.Pencil); // default tools
     }
