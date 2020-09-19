@@ -19,6 +19,8 @@ export class ToolService {
         // this.tableTool[ToolUsed.Brush] = brushService;
         // this.tableTool[ToolUsed.Line] = lineService;
         this.tableTool[ToolUsed.Rectangle] = rectangleService;
+
+        this.switchTool(ToolUsed.Pencil); // default tools
     }
 
     switchTool(toolUsed: ToolUsed): void {

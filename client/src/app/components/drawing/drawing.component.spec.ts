@@ -26,7 +26,6 @@ describe('DrawingComponent', () => {
 
     beforeEach(
         waitForAsync(() => {
-            toolStub = new ToolStub({} as DrawingService);
             drawingStub = new DrawingService();
 
             pencilStub = new PencilService(drawingStub);
@@ -34,6 +33,8 @@ describe('DrawingComponent', () => {
             rectangleStub = new RectangleService(drawingStub);
 
             toolServiceStub = new ToolService(pencilStub, eraserStub, rectangleStub);
+
+            toolStub = toolServiceStub.currentTool;
 
             TestBed.configureTestingModule({
                 declarations: [DrawingComponent],
@@ -62,7 +63,7 @@ describe('DrawingComponent', () => {
         expect(width).toEqual(DEFAULT_WIDTH);
     });
 
-    it('should get stubTool', () => {
+    it('should get toolStub', () => {
         const currentTool = toolServiceStub.currentTool;
         expect(currentTool).toEqual(toolStub);
     });
