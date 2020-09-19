@@ -1,7 +1,7 @@
 export enum MouseButton {
-    Left = 0,
+    Left = 2,
     Middle = 1,
-    Right = 2,
+    Right = 0,
     Back = 3,
     Forward = 4,
 }
