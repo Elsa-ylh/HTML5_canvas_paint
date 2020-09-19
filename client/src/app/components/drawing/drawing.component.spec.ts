@@ -2,7 +2,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
+import { BrushService } from '@app/services/tools/brush.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { DrawingComponent } from './drawing.component';
@@ -22,6 +24,8 @@ describe('DrawingComponent', () => {
 
     let pencilStub: PencilService;
     let eraserStub: EraserService;
+    let brushStub: BrushService;
+    let lineStub: LineService;
     let rectangleStub: RectangleService;
 
     beforeEach(
@@ -30,9 +34,11 @@ describe('DrawingComponent', () => {
 
             pencilStub = new PencilService(drawingStub);
             eraserStub = new EraserService(drawingStub);
+            brushStub = new BrushService(drawingStub);
+            lineStub = new LineService(drawingStub);
             rectangleStub = new RectangleService(drawingStub);
 
-            toolServiceStub = new ToolService(pencilStub, eraserStub, rectangleStub);
+            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub);
 
             toolStub = toolServiceStub.currentTool;
 
