@@ -38,7 +38,7 @@
     </div>
 </div>
 <div class="toolbar" *ngIf="showAttributes">
-    <div class="attributes" [ngSwitch]="this.drawingService.whichTools">
+    <div class="attributes" [ngSwitch]="this.toolService.currentToolName">
         <mat-grid-list cols="6" *ngSwitchCase="0">
             <mat-grid-tile colspan="6"> This is the settings to decrease or increase the size of a button</mat-grid-tile>
             <mat-grid-tile colspan="6" rowspan="4">This is a great software for everyone. Let's keep doing UI with this tooling.</mat-grid-tile>
