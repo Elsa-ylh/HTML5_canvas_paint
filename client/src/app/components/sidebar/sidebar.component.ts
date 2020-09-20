@@ -61,8 +61,9 @@ export class SidebarComponent implements OnInit {
         this.toolService.switchTool(ToolUsed.Line);
     }
 
-    pickRectangle(): void {
+    pickRectangle(subTool: number): void {
         this.toolService.switchTool(ToolUsed.Rectangle);
+        this.toolService.currentTool.subToolSelect = subTool;
     }
 
     pickEllipse(): void {
@@ -81,8 +82,25 @@ export class SidebarComponent implements OnInit {
             this.isDialogOpen = true;
         }
     }
+
+    @HostListener('window:keydown.1', ['$event']) onKeyDown1(event: KeyboardEvent): void {
+        this.pickRectangle(1);
+    }
+
     @HostListener('window:keydown.e', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): void {
         this.toolService.switchTool(ToolUsed.Eraser);
     }
+
+    // @HostListener('window:keydown.shift', ['$event'])
+    // onShiftKeyDown(event: KeyboardEvent): void {
+    //     this.drawingService.shiftPressed = true;
+    //     console.log("test");
+    // }
+
+    // @HostListener('window:keyup.shift', ['$event'])
+    // onShiftKeyUp(event: KeyboardEvent): void {
+    //   this.drawingService.shiftPressed = false;
+    //   console.log("shiftup");
+    // }
 }
