@@ -4,6 +4,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DrawingInformationsService } from '@app/services/drawing-info/drawing-informations.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 
@@ -16,6 +17,7 @@ export class SidebarComponent implements OnInit {
     showAttributes: boolean;
     isDialogOpen: boolean = false;
     dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
+    lineWidth: number;
 
     constructor(
         public drawingService: DrawingService,
@@ -23,6 +25,7 @@ export class SidebarComponent implements OnInit {
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
         public toolService: ToolService,
+        public drawingInfos: DrawingInformationsService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.NONE);

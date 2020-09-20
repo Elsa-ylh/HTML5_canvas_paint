@@ -3,6 +3,7 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingInformationsService } from '@app/services/drawing-info/drawing-informations.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 // Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
@@ -13,7 +14,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class RectangleService extends Tool {
-    outlineWidth: number = 5;
     fillColor: string = '#ffb366';
     strokeColor: string = '#00ccff';
     square: boolean = false;
@@ -22,7 +22,7 @@ export class RectangleService extends Tool {
     mousePosition: Vec2;
     leftMouseDown: boolean = false;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, public drawingInfos: DrawingInformationsService) {
         super(drawingService);
     }
 
@@ -131,7 +131,13 @@ export class RectangleService extends Tool {
                 }
 
                 case SubToolselected.tool2: {
-                    this.drawRectangleOutline(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.outlineWidth, this.strokeColor);
+                    this.drawRectangleOutline(
+                        this.drawingService.baseCtx,
+                        this.mouseDownCoord,
+                        mousePosition,
+                        this.drawingInfos.lineWidth,
+                        this.strokeColor,
+                    );
                     break;
                 }
 
@@ -140,7 +146,7 @@ export class RectangleService extends Tool {
                         this.drawingService.baseCtx,
                         this.mouseDownCoord,
                         mousePosition,
-                        this.outlineWidth,
+                        this.drawingInfos.lineWidth,
                         this.fillColor,
                         this.strokeColor,
                     );
@@ -158,7 +164,7 @@ export class RectangleService extends Tool {
                         this.drawingService.previewCtx,
                         this.mouseDownCoord,
                         mousePosition,
-                        this.outlineWidth,
+                        this.drawingInfos.lineWidth,
                         this.strokeColor,
                     );
                     break;
@@ -168,7 +174,7 @@ export class RectangleService extends Tool {
                         this.drawingService.previewCtx,
                         this.mouseDownCoord,
                         mousePosition,
-                        this.outlineWidth,
+                        this.drawingInfos.lineWidth,
                         this.fillColor,
                         this.strokeColor,
                     );
