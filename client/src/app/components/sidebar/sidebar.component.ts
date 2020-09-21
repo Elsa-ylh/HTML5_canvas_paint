@@ -4,6 +4,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DrawingInformationsService } from '@app/services/drawing-info/drawing-informations.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 
@@ -16,6 +17,7 @@ export class SidebarComponent implements OnInit {
     showAttributes: boolean;
     isDialogOpen: boolean = false;
     dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
+    lineWidth: number;
 
     constructor(
         public drawingService: DrawingService,
@@ -23,6 +25,7 @@ export class SidebarComponent implements OnInit {
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
         public toolService: ToolService,
+        public drawingInfos: DrawingInformationsService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.NONE);
@@ -61,8 +64,9 @@ export class SidebarComponent implements OnInit {
         this.toolService.switchTool(ToolUsed.Line);
     }
 
-    pickRectangle(): void {
+    pickRectangle(subTool: number): void {
         this.toolService.switchTool(ToolUsed.Rectangle);
+        this.toolService.currentTool.subToolSelect = subTool;
     }
 
     pickEllipse(): void {
@@ -81,8 +85,25 @@ export class SidebarComponent implements OnInit {
             this.isDialogOpen = true;
         }
     }
+
+    @HostListener('window:keydown.1', ['$event']) onKeyDown1(event: KeyboardEvent): void {
+        this.pickRectangle(1);
+    }
+
     @HostListener('window:keydown.e', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): void {
         this.toolService.switchTool(ToolUsed.Eraser);
     }
+
+    // @HostListener('window:keydown.shift', ['$event'])
+    // onShiftKeyDown(event: KeyboardEvent): void {
+    //     this.drawingService.shiftPressed = true;
+    //     console.log("test");
+    // }
+
+    // @HostListener('window:keyup.shift', ['$event'])
+    // onShiftKeyUp(event: KeyboardEvent): void {
+    //   this.drawingService.shiftPressed = false;
+    //   console.log("shiftup");
+    // }
 }

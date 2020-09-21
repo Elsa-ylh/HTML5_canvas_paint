@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
+import { DrawingInformationsService } from '@app/services/drawing-info/drawing-informations.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -27,6 +28,7 @@ describe('DrawingComponent', () => {
     let brushStub: BrushService;
     let lineStub: LineService;
     let rectangleStub: RectangleService;
+    const drawingInfos: DrawingInformationsService = new DrawingInformationsService();
 
     beforeEach(
         waitForAsync(() => {
@@ -36,7 +38,7 @@ describe('DrawingComponent', () => {
             eraserStub = new EraserService(drawingStub);
             brushStub = new BrushService(drawingStub);
             lineStub = new LineService(drawingStub);
-            rectangleStub = new RectangleService(drawingStub);
+            rectangleStub = new RectangleService(drawingStub, drawingInfos);
 
             toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub);
 

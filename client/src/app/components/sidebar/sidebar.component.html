@@ -14,7 +14,7 @@
                 <mat-button-toggle (click)="pickLine()">
                     <mat-icon>horizontal_rule</mat-icon>
                 </mat-button-toggle>
-                <mat-button-toggle (click)="pickRectangle()">
+                <mat-button-toggle (click)="pickRectangle(1)">
                     <mat-icon>crop_16_9</mat-icon>
                 </mat-button-toggle>
                 <mat-button-toggle (click)="pickEllipse()">
@@ -66,6 +66,20 @@
         </mat-grid-list>
         <mat-grid-list cols="6" *ngSwitchCase="5">
             <mat-grid-tile colspan="6"></mat-grid-tile>
+            <mat-grid-tile colspan="6"> This is the settings to decrease or increase the size of a button</mat-grid-tile>
+            <mat-grid-tile colspan="2">
+                <button mat-button color="primary" (click)="pickRectangle(1)">Plein</button>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="3">
+                <button mat-button color="primary" (click)="pickRectangle(2)">Contour</button>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="5">
+                <button mat-button color="primary" (click)="pickRectangle(3)">Plein avec contour</button>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="6" rowspan="3"> Ce slider permet de modifier l'épaisseur des lignes des rectangles</mat-grid-tile>
+            <mat-grid-tile colspan="6">
+              <mat-slider min="1" max="20" step="1" value="10" [(ngModel)]="this.drawingInfos.lineWidth"></mat-slider>
+            </mat-grid-tile>
         </mat-grid-list>
         <mat-grid-list cols="6" *ngSwitchCase="6">
             <mat-grid-tile colspan="6"></mat-grid-tile>
