@@ -28,7 +28,7 @@ describe('DrawingComponent', () => {
     let brushStub: BrushService;
     let lineStub: LineService;
     let rectangleStub: RectangleService;
-    let drawingInfos:DrawingInformationsService
+    const drawingInfos: DrawingInformationsService = new DrawingInformationsService();
 
     beforeEach(
         waitForAsync(() => {
@@ -38,7 +38,7 @@ describe('DrawingComponent', () => {
             eraserStub = new EraserService(drawingStub);
             brushStub = new BrushService(drawingStub);
             lineStub = new LineService(drawingStub);
-            rectangleStub = new RectangleService(drawingStub,drawingInfos);
+            rectangleStub = new RectangleService(drawingStub, drawingInfos);
 
             toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub);
 
