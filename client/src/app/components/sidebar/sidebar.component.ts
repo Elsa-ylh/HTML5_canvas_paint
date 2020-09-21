@@ -71,6 +71,7 @@ export class SidebarComponent implements OnInit {
 
     pickEllipse(): void {
         this.toolService.switchTool(ToolUsed.Ellipse);
+        this.toolService.currentTool.subToolSelect = 1;
     }
 
     pickColor(): void {
