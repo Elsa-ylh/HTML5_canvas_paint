@@ -55,6 +55,7 @@ export class SidebarComponent implements OnInit {
     }
 
     pickBrush(): void {
+        this.cleanEffectTool();
         this.toolService.switchTool(ToolUsed.Brush);
     }
 
@@ -82,7 +83,12 @@ export class SidebarComponent implements OnInit {
             this.isDialogOpen = true;
         }
     }
-    shadowBrushTool(): void {}
+    shadowBrushTool(): void {
+        this.cleanEffectTool();
+        this.pickBrush();
+        this.drawingService.baseCtx.shadowColor = 'rgb(0, 0, 0)';
+        this.drawingService.baseCtx.shadowBlur = this.pxSize + 2;
+    }
 
     thickBrush(): void {
         this.cleanEffectTool();
