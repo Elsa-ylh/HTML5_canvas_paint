@@ -28,11 +28,11 @@ export class DialogCreateNewDrawingComponent {
         if (this.data) {
             this.message = data.message;
         }
-        this.widthControl = this.fb.control(this.canvasResizerService.MIN_CANVAS_SIZE, [
+        this.widthControl = this.fb.control(this.canvasResizerService.DEFAULT_WIDTH, [
             Validators.min(this.canvasResizerService.MIN_CANVAS_SIZE),
             Validators.max(this.canvasResizerService.MAX_WIDTH_SIZE),
         ]);
-        this.heightControl = this.fb.control(this.canvasResizerService.MIN_CANVAS_SIZE, [
+        this.heightControl = this.fb.control(this.canvasResizerService.DEFAULT_HEIGHT, [
             Validators.min(this.canvasResizerService.MIN_CANVAS_SIZE),
             Validators.max(this.canvasResizerService.MAX_HEIGHT_SIZE),
         ]);
