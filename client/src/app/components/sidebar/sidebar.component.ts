@@ -69,9 +69,9 @@ export class SidebarComponent implements OnInit {
         this.toolService.currentTool.subToolSelect = subTool;
     }
 
-    pickEllipse(): void {
+    pickEllipse(subTool2: number): void {
         this.toolService.switchTool(ToolUsed.Ellipse);
-        this.toolService.currentTool.subToolSelect = 1;
+        this.toolService.currentTool.subToolSelect = subTool2;
     }
 
     pickColor(): void {
@@ -90,6 +90,10 @@ export class SidebarComponent implements OnInit {
     @HostListener('window:keydown.1', ['$event']) onKeyDown1(event: KeyboardEvent): void {
         this.pickRectangle(1);
     }
+
+    @HostListener('window:keydown.2', ['$event']) onKeyDown2(event: KeyboardEvent): void {
+      this.pickEllipse(1);
+  }
 
     @HostListener('window:keydown.e', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): void {

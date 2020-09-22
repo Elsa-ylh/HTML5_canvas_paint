@@ -7,175 +7,217 @@ import { DrawingInformationsService } from '@app/services/drawing-info/drawing-i
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class EllipseService extends Tool {
-    fillColor: string = '#ffb366';
-    strokeColor: string = '#00ccff';
-    square: boolean = false;
-    height: number;
-    width: number;
-    mousePosition: Vec2;
-    leftMouseDown: boolean = false;
+  fillColor: string = '#ffb366';
+  strokeColor: string = '#00ccff';
+  strokeRectColor: string = '#000000';
+  lineRectWidht: number = 1;
+  circle: boolean = false;
+  height: number;
+  width: number;
+  mousePosition: Vec2;
+  leftMouseDown: boolean = false;
 
-    constructor(drawingService: DrawingService, public drawingInfos: DrawingInformationsService) {
-        super(drawingService);
+  constructor(drawingService: DrawingService, public drawingInfos: DrawingInformationsService) {
+    super(drawingService);
+  }
+
+  onMouseDown(event: MouseEvent): void {
+    this.mouseDown = event.button === MouseButton.Right;
+    this.leftMouseDown = true;
+    if (this.mouseDown) {
+      this.mouseDownCoord = this.getPositionFromMouse(event);
     }
+  }
 
-    onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Right;
-        this.leftMouseDown = true;
-        if (this.mouseDown) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);
+  onMouseUp(event: MouseEvent): void {
+    if (this.mouseDown) {
+      const mousePosition = this.getPositionFromMouse(event);
+      this.mousePosition = mousePosition;
+      this.selectEllipse(mousePosition, true);
+    }
+    this.mouseDown = false;
+    this.leftMouseDown = false;
+  }
+
+  onMouseMove(event: MouseEvent): void {
+    if (this.mouseDown) {
+      const mousePosition = this.getPositionFromMouse(event);
+      this.mousePosition = mousePosition;
+
+      // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+      this.drawingService.clearCanvas(this.drawingService.previewCtx);
+      this.selectEllipse(mousePosition, false);
+    }
+  }
+
+  OnShiftKeyDown(event: KeyboardEvent): void {
+    this.circle = true;
+    if (this.leftMouseDown) {
+      this.drawingService.clearCanvas(this.drawingService.previewCtx);
+      this.selectEllipse(this.mousePosition, false);
+    }
+  }
+
+  OnShiftKeyUp(event: KeyboardEvent): void {
+    this.circle = false;
+    if (this.leftMouseDown) {
+      this.drawingService.clearCanvas(this.drawingService.previewCtx);
+      this.selectEllipse(this.mousePosition, false);
+    }
+  }
+
+  calcSign(x: number): number {
+    if (x < 0) return -Math.abs(x / x);
+    else return 1;
+  }
+
+  selectEllipse(mousePosition: Vec2, base: boolean): void {
+    if (base) {
+      switch (this.subToolSelect) {
+        case SubToolselected.tool1: {
+          this.drawFillEllipse(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.fillColor);
+          break;
         }
-    }
 
-    onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.mousePosition = mousePosition;
-            this.selectRectangle(mousePosition, true);
+        case SubToolselected.tool2: {
+          this.drawEllipseOutline(
+            this.drawingService.baseCtx,
+            this.mouseDownCoord,
+            mousePosition,
+            this.drawingInfos.lineWidth,
+            this.strokeColor,
+          );
+          break;
         }
-        this.mouseDown = false;
-        this.leftMouseDown = false;
-    }
 
-    onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.mousePosition = mousePosition;
-
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.selectRectangle(mousePosition, false);
+        case SubToolselected.tool3: {
+          this.drawFillEllipseOutline(
+            this.drawingService.baseCtx,
+            this.mouseDownCoord,
+            mousePosition,
+            this.drawingInfos.lineWidth,
+            this.fillColor,
+            this.strokeColor,
+          );
+          break;
         }
+      }
+    } else {
+      switch (this.subToolSelect) {
+        case SubToolselected.tool1:
+          this.drawFillEllipse(this.drawingService.previewCtx, this.mouseDownCoord, mousePosition, this.fillColor);
+          break;
+
+        case SubToolselected.tool2:
+          this.drawEllipseOutline(
+            this.drawingService.previewCtx,
+            this.mouseDownCoord,
+            mousePosition,
+            this.drawingInfos.lineWidth,
+            this.strokeColor,
+          );
+          break;
+
+        case SubToolselected.tool3:
+          this.drawFillEllipseOutline(
+            this.drawingService.previewCtx,
+            this.mouseDownCoord,
+            mousePosition,
+            this.drawingInfos.lineWidth,
+            this.fillColor,
+            this.strokeColor,
+          );
+          break;
+      }
     }
+  }
 
-    OnShiftKeyDown(event: KeyboardEvent): void {
-        this.square = true;
-        if (this.leftMouseDown) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.selectRectangle(this.mousePosition, false);
-        }
+  // draw a basic ellipse + circle if shift pressed
+  private drawEllipse(ctx: CanvasRenderingContext2D, radiusX: number, radiusY: number): void {
+    let centerX = 0;
+    let centerY = 0;
+    centerX = this.mouseDownCoord.x + radiusX;
+    centerY = this.mouseDownCoord.y + radiusY;
+    if (this.circle) {
+      ctx.ellipse(centerX, centerY, Math.abs(Math.min(radiusX,radiusY)), Math.abs(Math.min(radiusX,radiusY)), 0, 0, 2 * Math.PI);
+    } else {
+      ctx.ellipse(centerX, centerY, Math.abs(radiusX), Math.abs(radiusY), 0, 0, 2 * Math.PI);
     }
+  }
 
-    OnShiftKeyUp(event: KeyboardEvent): void {
-        this.square = false;
-        if (this.leftMouseDown) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.selectRectangle(this.mousePosition, false);
-        }
-    }
+  drawFillEllipse(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2, fillColor: string): void {
+    this.drawingService.previewCtx.beginPath();
+    this.drawingService.baseCtx.beginPath();
+    let height = mouseUpPos.y - mouseDownPos.y;
+    let widht = mouseUpPos.x - mouseDownPos.x;
+    ctx.fillStyle = fillColor;
+    ctx.strokeStyle = this.strokeRectColor;
+    ctx.setLineDash([10, 10]);
+    this.drawEllipse(ctx, widht / 2, height / 2);
+    ctx.fill();
+    ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, widht, height);
 
-    calcSign(x: number): number {
-        if (x < 0) return -Math.abs(x / x);
-        else return 1;
-    }
+  }
 
-    drawFillRectangle(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2, fillColor: string): void {
-        this.height = this.calcSign(mouseUpPos.y - mouseDownPos.y) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
-        this.width = this.calcSign(mouseUpPos.x - mouseDownPos.x) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
-        ctx.fillStyle = fillColor;
-        if (this.square) {
-            ctx.fillRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
-        } else {
-            ctx.fillRect(mouseDownPos.x, mouseDownPos.y, mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y);
-        }
-    }
+  drawEllipseOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2, lineWidth: number, strokeColor: string): void {
+    this.drawingService.baseCtx.beginPath();
+    this.drawingService.previewCtx.beginPath();
+    let height = mouseUpPos.y - mouseDownPos.y;
+    let widht = mouseUpPos.x - mouseDownPos.x;
+    ctx.lineWidth = lineWidth;
+    ctx.strokeStyle = strokeColor;
+    ctx.setLineDash([0, 0]);
+    this.drawEllipse(ctx, widht / 2, height / 2);
+    ctx.stroke();
 
-    drawRectangleOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2, lineWidth: number, strokeColor: string): void {
-        ctx.strokeStyle = strokeColor;
-        ctx.lineWidth = lineWidth;
-        this.height = this.calcSign(mouseUpPos.y - mouseDownPos.y) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
-        this.width = this.calcSign(mouseUpPos.x - mouseDownPos.x) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
+    ctx.beginPath();  //Define new path for outlined rectangle
 
-        if (this.square) {
-            ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
-        } else {
-            ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y);
-        }
-    }
+    ctx.strokeStyle = this.strokeRectColor;
+    ctx.lineWidth = this.lineRectWidht;
+    ctx.setLineDash([10, 10]);
+    ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, widht, height);
 
-    drawFillRectangleOutline(
-        ctx: CanvasRenderingContext2D,
-        mouseDownPos: Vec2,
-        mouseUpPos: Vec2,
-        lineWidth: number,
-        fillColor: string,
-        strokeColor: string,
-    ): void {
-        ctx.fillStyle = fillColor;
-        ctx.strokeStyle = strokeColor;
-        ctx.lineWidth = lineWidth;
-        this.height = this.calcSign(mouseUpPos.y - mouseDownPos.y) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
-        this.width = this.calcSign(mouseUpPos.x - mouseDownPos.x) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
-        if (this.square) {
-            ctx.fillRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
-            ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
-        } else {
-            ctx.fillRect(mouseDownPos.x, mouseDownPos.y, mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y);
-            ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y);
-        }
-    }
+  }
 
-    selectRectangle(mousePosition: Vec2, base: boolean): void {
-        if (base) {
-            switch (this.subToolSelect) {
-                case SubToolselected.tool1: {
-                    this.drawFillRectangle(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.fillColor);
-                    break;
-                }
+  drawFillEllipseOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2, lineWidth: number, fillColor: string, strokeColor: string): void {
+    ctx.fillStyle = fillColor;
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = lineWidth;
+    this.drawingService.previewCtx.beginPath();
+    this.drawingService.baseCtx.beginPath();
+    let height = mouseUpPos.y - mouseDownPos.y;
+    let widht = mouseUpPos.x - mouseDownPos.x;
+    ctx.setLineDash([0, 0]);
 
-                case SubToolselected.tool2: {
-                    this.drawRectangleOutline(
-                        this.drawingService.baseCtx,
-                        this.mouseDownCoord,
-                        mousePosition,
-                        this.drawingInfos.lineWidth,
-                        this.strokeColor,
-                    );
-                    break;
-                }
+    this.drawEllipse(ctx, widht / 2, height / 2);
+    ctx.stroke();
+    ctx.fill();
 
-                case SubToolselected.tool3: {
-                    this.drawFillRectangleOutline(
-                        this.drawingService.baseCtx,
-                        this.mouseDownCoord,
-                        mousePosition,
-                        this.drawingInfos.lineWidth,
-                        this.fillColor,
-                        this.strokeColor,
-                    );
-                    break;
-                }
-            }
-        } else {
-            switch (this.subToolSelect) {
-                case SubToolselected.tool1:
-                    this.drawFillRectangle(this.drawingService.previewCtx, this.mouseDownCoord, mousePosition, this.fillColor);
-                    break;
+    ctx.beginPath();  //Define new path for outlined rectangle
 
-                case SubToolselected.tool2:
-                    this.drawRectangleOutline(
-                        this.drawingService.previewCtx,
-                        this.mouseDownCoord,
-                        mousePosition,
-                        this.drawingInfos.lineWidth,
-                        this.strokeColor,
-                    );
-                    break;
+    ctx.strokeStyle = this.strokeRectColor;
+    ctx.lineWidth = this.lineRectWidht;
+    ctx.setLineDash([10, 10]);
+    ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, widht, height);
 
-                case SubToolselected.tool3:
-                    this.drawFillRectangleOutline(
-                        this.drawingService.previewCtx,
-                        this.mouseDownCoord,
-                        mousePosition,
-                        this.drawingInfos.lineWidth,
-                        this.fillColor,
-                        this.strokeColor,
-                    );
-                    break;
-            }
-        }
-    }
+  }
+
 }
+
+
+    // if (this.square) {
+    //   if (Math.abs(widht) > Math.abs(height)) {
+    //     height = widht * Math.sign(height) * Math.sign(widht);
+    //   } else {
+    //     widht = height * Math.sign(height) * Math.sign(widht);
+    //   }
+    // }
+
+    //   if (this.square) {
+    //     ctx.fillRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
+    // } else {
+    //     ctx.fillRect(mouseDownPos.x, mouseDownPos.y, mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y);
+    // }
