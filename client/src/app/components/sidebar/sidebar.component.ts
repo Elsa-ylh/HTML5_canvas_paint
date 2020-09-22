@@ -55,10 +55,6 @@ export class SidebarComponent implements OnInit {
         this.drawingService.whichTools = ToolUsed.Eraser;
     }
 
-    pickBrush(): void {
-        this.drawingService.whichTools = ToolUsed.Brush;
-    }
-
     pickLine(): void {
         this.drawingService.whichTools = ToolUsed.Line;
         this.drawingService.baseCtx.lineWidth = this.pxSize;
@@ -86,16 +82,40 @@ export class SidebarComponent implements OnInit {
             this.isDialogOpen = true;
         }
     }
-    naturalBrushTool(): void {
-        this.showAttributes = true;
-        this.drawingService.baseCtx.lineWidth = this.pxSize;
-        this.drawingService.previewCtx.lineWidth = this.pxSize;
+    // racoussi pour pinceau marche pas
+    @HostListener('window:keydown.control.w', ['$event']) onKeyBrush(event: KeyboardEvent): void {
+        this.pickBrush();
     }
+    pickBrush(): void {
+        this.cleanEffectTool();
+        this.drawingService.whichTools = ToolUsed.Brush;
+        this.pxSize = this.drawingService.baseCtx.lineWidth;
+    }
+
+    shadowBrushTool(): void {
+        this.cleanEffectTool();
+        this.pickBrush();
+        this.drawingService.baseCtx.shadowColor = 'rgb(0, 0, 0)';
+        this.drawingService.baseCtx.shadowBlur = this.pxSize + 2;
+    }
+
+    thickBrush(): void {
+        this.drawingService.whichTools = ToolUsed.thickBrush;
+    }
+
     sliderSliding(args: MatSliderChange): void {
         console.log(args.value);
         if (args.value) {
             this.drawingService.baseCtx.lineWidth = args.value;
             this.drawingService.previewCtx.lineWidth = args.value;
         }
+    }
+
+    private cleanEffectTool() {
+        this.drawingService.baseCtx.shadowColor = 'rgba(0,0,0,0)';
+        this.drawingService.baseCtx.lineWidth = this.pxSize;
+        this.drawingService.previewCtx.lineWidth = this.pxSize;
+        this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
+        this.drawingService.previewCtx.strokeStyle = '#000000';
     }
 }

@@ -3,5 +3,4 @@ export interface UserGuide {
     isTool: string;
     description: string;
     path: string;
-    Tooltip: string;
 }
