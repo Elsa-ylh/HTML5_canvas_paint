@@ -57,6 +57,7 @@ export class SidebarComponent implements OnInit {
     pickBrush(): void {
         this.cleanEffectTool();
         this.toolService.switchTool(ToolUsed.Brush);
+        this.pxSize = this.drawingService.baseCtx.lineWidth;
     }
 
     pickLine(): void {

@@ -27,6 +27,7 @@ export class ThichBrushService extends Tool {
         this.drawingService.baseCtx.lineCap = 'butt';
         this.drawingService.baseCtx.lineWidth = startpx; // conserve same size a before
         this.drawingService.previewCtx.lineWidth = startpx;
+        this.drawingService.baseCtx.strokeStyle = '#000000';
     }
 
     //private
