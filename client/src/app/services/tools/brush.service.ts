@@ -15,19 +15,23 @@ export class BrushService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.initBrushService();
+    }
+
+    private initBrushService() {
+        this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
+        this.drawingService.baseCtx.lineWidth = this.pixelThickness; // conserve same size a before
+        this.drawingService.previewCtx.lineWidth = this.pixelThickness;
+        this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
+        this.drawingService.previewCtx.strokeStyle = '#000000';
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Right;
         if (this.mouseDown) {
-            this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
-            this.drawingService.previewCtx.strokeStyle = '#000000';
-            // this.drawingService.baseCtx.lineWidth = startpx; // conserve same size a before
-            // this.drawingService.previewCtx.lineWidth = startpx;
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-            // console.log('bruch');
         }
     }
 

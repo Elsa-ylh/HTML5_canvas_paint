@@ -7,8 +7,8 @@ import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { ThichBrushService } from '@app/services/tools/thich-brush.service';
 import { DrawingComponent } from './drawing.component';
-
 class ToolStub extends Tool {}
 
 // TODO : Déplacer dans un fichier accessible à tous
@@ -27,7 +27,7 @@ describe('DrawingComponent', () => {
     let brushStub: BrushService;
     let lineStub: LineService;
     let rectangleStub: RectangleService;
-
+    let thichBrushStub: ThichBrushService;
     beforeEach(
         waitForAsync(() => {
             drawingStub = new DrawingService();
@@ -37,8 +37,8 @@ describe('DrawingComponent', () => {
             brushStub = new BrushService(drawingStub);
             lineStub = new LineService(drawingStub);
             rectangleStub = new RectangleService(drawingStub);
-
-            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub);
+            thichBrushStub = new ThichBrushService(drawingStub);
+            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, thichBrushStub);
 
             toolStub = toolServiceStub.currentTool;
 
@@ -69,13 +69,8 @@ describe('DrawingComponent', () => {
         expect(width).toEqual(DEFAULT_WIDTH);
     });
 
-<<<<<<< HEAD
     it('should get stubTool', () => {
         const currentTool = drawingStub.currentTool;
-=======
-    it('should get toolStub', () => {
-        const currentTool = toolServiceStub.currentTool;
->>>>>>> 3-outil-pinceau-3
         expect(currentTool).toEqual(toolStub);
     });
 
