@@ -1,12 +1,3 @@
-import { A11yModule } from '@angular/cdk/a11y';
-import { ClipboardModule } from '@angular/cdk/clipboard';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { OverlayModule } from '@angular/cdk/overlay';
-import { PortalModule } from '@angular/cdk/portal';
-import { ScrollingModule } from '@angular/cdk/scrolling';
-import { CdkStepperModule } from '@angular/cdk/stepper';
-import { CdkTableModule } from '@angular/cdk/table';
-import { CdkTreeModule } from '@angular/cdk/tree';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -72,12 +63,6 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         HttpClientModule,
         AppRoutingModule,
         BrowserAnimationsModule,
-        A11yModule,
-        ClipboardModule,
-        CdkStepperModule,
-        CdkTableModule,
-        CdkTreeModule,
-        DragDropModule,
         MatAutocompleteModule,
         MatBadgeModule,
         MatBottomSheetModule,
@@ -113,9 +98,6 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         MatToolbarModule,
         MatTooltipModule,
         MatTreeModule,
-        OverlayModule,
-        PortalModule,
-        ScrollingModule,
     ],
     providers: [],
     bootstrap: [AppComponent],
