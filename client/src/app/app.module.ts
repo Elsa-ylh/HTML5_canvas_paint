@@ -9,7 +9,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
@@ -66,6 +66,7 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         WriteTextDialogUserGuideComponent,
     ],
     imports: [
+        ReactiveFormsModule,
         FormsModule,
         BrowserModule,
         HttpClientModule,
