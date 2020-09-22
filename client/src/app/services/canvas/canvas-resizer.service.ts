@@ -10,11 +10,13 @@ export class CanvasResizerService {
     MAX_HEIGHT_SIZE: number = 1080;
     minSizeWindow: number = 500;
 
-    sidebarSize: number = 226 + 50;
-    offset: number = 5;
+    sidebarIconSize: number = 226;
+    sidebarAttributesSize: number = 50;
+    sidebarTotalSize: number = this.sidebarIconSize + this.sidebarAttributesSize;
+    offset: number = 20;
 
-    DEFAULT_WIDTH = 1280;
-    DEFAULT_HEIGHT = 720;
+    DEFAULT_WIDTH: number = 640;
+    DEFAULT_HEIGHT: number = 480;
 
     // Cette variable est très importante.
     // La variable ci-dessous est la taille du canvas.
@@ -22,8 +24,8 @@ export class CanvasResizerService {
     canvasSize: Vec2 = { x: this.DEFAULT_WIDTH, y: this.DEFAULT_HEIGHT };
 
     onResize(event: Event): void {
-        if (window.innerWidth - this.sidebarSize + this.offset < this.canvasSize.x) {
-            this.canvasSize.x = window.innerWidth - this.sidebarSize - this.offset;
+        if (window.innerWidth - this.sidebarTotalSize + this.offset < this.canvasSize.x) {
+            this.canvasSize.x = window.innerWidth - this.sidebarTotalSize - this.offset;
         }
         if (window.innerHeight + this.offset < this.canvasSize.y) {
             this.canvasSize.y = window.innerHeight;
