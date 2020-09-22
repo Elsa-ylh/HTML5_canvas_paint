@@ -2,6 +2,7 @@ import { Component, HostListener, Inject } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Data, Router } from '@angular/router';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Component({
@@ -10,9 +11,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     styleUrls: ['./dialog-create-new-drawing.component.scss'],
 })
 export class DialogCreateNewDrawingComponent {
-    MIN_CANVAS_SIZE: number = 250;
-    MAX_WIDTH_SIZE: number = 1920; // Selon le fichier .gitlab-ci.yml
-    MAX_HEIGHT_SIZE: number = 1080; // Selon le fichier .gitlab-ci.yml
     message: string = 'Êtes-vous sûr de vouloir effacer votre dessin actuel ?';
 
     formBuilder: FormBuilder;
@@ -25,12 +23,19 @@ export class DialogCreateNewDrawingComponent {
         private drawingService: DrawingService,
         private router: Router,
         private fb: FormBuilder,
+        public canvasResizerService: CanvasResizerService,
     ) {
         if (this.data) {
             this.message = data.message;
         }
-        this.widthControl = this.fb.control(this.MIN_CANVAS_SIZE, [Validators.min(this.MIN_CANVAS_SIZE), Validators.max(this.MAX_WIDTH_SIZE)]);
-        this.heightControl = this.fb.control(this.MIN_CANVAS_SIZE, [Validators.min(this.MIN_CANVAS_SIZE), Validators.max(this.MAX_HEIGHT_SIZE)]);
+        this.widthControl = this.fb.control(this.canvasResizerService.MIN_CANVAS_SIZE, [
+            Validators.min(this.canvasResizerService.MIN_CANVAS_SIZE),
+            Validators.max(this.canvasResizerService.MAX_WIDTH_SIZE),
+        ]);
+        this.heightControl = this.fb.control(this.canvasResizerService.MIN_CANVAS_SIZE, [
+            Validators.min(this.canvasResizerService.MIN_CANVAS_SIZE),
+            Validators.max(this.canvasResizerService.MAX_HEIGHT_SIZE),
+        ]);
     }
 
     @HostListener('window:keydown.enter', ['$event']) onEnter(event: KeyboardEvent): void {
@@ -39,10 +44,10 @@ export class DialogCreateNewDrawingComponent {
 
     onConfirmClick(): void {
         if (
-            this.widthControl.value >= this.MIN_CANVAS_SIZE &&
-            this.widthControl.value <= this.MAX_WIDTH_SIZE &&
-            this.heightControl.value >= this.MIN_CANVAS_SIZE &&
-            this.heightControl.value <= this.MAX_HEIGHT_SIZE
+            this.widthControl.value >= this.canvasResizerService.MIN_CANVAS_SIZE &&
+            this.widthControl.value <= this.canvasResizerService.MAX_WIDTH_SIZE &&
+            this.heightControl.value >= this.canvasResizerService.MIN_CANVAS_SIZE &&
+            this.heightControl.value <= this.canvasResizerService.MAX_HEIGHT_SIZE
         ) {
             this.dialogRef.close(true);
             if (!this.data) {
