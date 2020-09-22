@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { Vec2 } from '@app/classes/vec2';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
@@ -16,7 +15,6 @@ export class DrawingComponent implements AfterViewInit {
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
-    private canvasSize: Vec2 = { x: this.canvasResizerService.DEFAULT_WIDTH, y: this.canvasResizerService.DEFAULT_HEIGHT };
 
     constructor(private drawingService: DrawingService, private toolService: ToolService, private canvasResizerService: CanvasResizerService) {}
 
@@ -54,15 +52,15 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     get width(): number {
-        return this.canvasSize.x;
+        return this.canvasResizerService.canvasSize.x;
     }
 
     get height(): number {
-        return this.canvasSize.y;
+        return this.canvasResizerService.canvasSize.y;
     }
 
     @HostListener('window:resize', ['$event'])
     onResize(event: Event): void {
-        this.canvasResizerService.onResize(event, this.canvasSize);
+        this.canvasResizerService.onResize(event);
     }
 }

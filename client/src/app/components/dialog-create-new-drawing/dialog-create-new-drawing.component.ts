@@ -49,6 +49,8 @@ export class DialogCreateNewDrawingComponent {
             this.heightControl.value >= this.canvasResizerService.MIN_CANVAS_SIZE &&
             this.heightControl.value <= this.canvasResizerService.MAX_HEIGHT_SIZE
         ) {
+            this.canvasResizerService.canvasSize.x = this.widthControl.value;
+            this.canvasResizerService.canvasSize.y = this.heightControl.value;
             this.dialogRef.close(true);
             if (!this.data) {
                 this.drawingService.clearCanvas(this.drawingService.baseCtx);
