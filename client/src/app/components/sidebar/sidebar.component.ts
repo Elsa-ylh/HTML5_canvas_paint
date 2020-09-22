@@ -83,6 +83,7 @@ export class SidebarComponent implements OnInit {
             this.isDialogOpen = true;
         }
     }
+
     shadowBrushTool(): void {
         this.cleanEffectTool();
         this.pickBrush();
