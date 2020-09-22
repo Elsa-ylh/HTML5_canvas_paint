@@ -6,6 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { BrushService } from '@app/services/tools/brush.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 
@@ -47,12 +48,34 @@ export class SidebarComponent implements OnInit {
     }
 
     pickPencil(): void {
+        this.cleanEffectTool();
         this.drawingService.currentTool = new PencilService(this.drawingService);
         this.drawingService.whichTools = ToolUsed.Pencil;
+        this.drawingService.baseCtx.lineWidth = 1; // le
+        this.drawingService.previewCtx.lineWidth = 1;
     }
 
     pickEraser(): void {
         this.drawingService.whichTools = ToolUsed.Eraser;
+    }
+    // racoussi pour pinceau marche pas
+    @HostListener('window:keydown.control.w', ['$event']) onKeyBrush(event: KeyboardEvent): void {
+        this.pickBrush();
+    }
+
+    pickBrush(): void {
+        this.cleanEffectTool();
+        this.drawingService.currentTool = new BrushService(this.drawingService);
+        this.drawingService.whichTools = ToolUsed.Brush;
+        this.pxSize = this.drawingService.baseCtx.lineWidth;
+    }
+
+    shadowBrushTool(): void {
+        this.cleanEffectTool();
+        this.drawingService.currentTool = new BrushService(this.drawingService);
+        this.drawingService.whichTools = ToolUsed.Brush;
+        this.drawingService.baseCtx.shadowColor = 'rgb(0, 0, 0)';
+        this.drawingService.baseCtx.shadowBlur = this.pxSize + 2;
     }
 
     pickLine(): void {
@@ -81,22 +104,6 @@ export class SidebarComponent implements OnInit {
             this.clearCanvas();
             this.isDialogOpen = true;
         }
-    }
-    // racoussi pour pinceau marche pas
-    @HostListener('window:keydown.control.w', ['$event']) onKeyBrush(event: KeyboardEvent): void {
-        this.pickBrush();
-    }
-    pickBrush(): void {
-        this.cleanEffectTool();
-        this.drawingService.whichTools = ToolUsed.Brush;
-        this.pxSize = this.drawingService.baseCtx.lineWidth;
-    }
-
-    shadowBrushTool(): void {
-        this.cleanEffectTool();
-        this.pickBrush();
-        this.drawingService.baseCtx.shadowColor = 'rgb(0, 0, 0)';
-        this.drawingService.baseCtx.shadowBlur = this.pxSize + 2;
     }
 
     thickBrush(): void {
