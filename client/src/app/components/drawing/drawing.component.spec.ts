@@ -1,7 +1,12 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ToolService } from '@app/services/tool-service';
+import { BrushService } from '@app/services/tools/brush.service';
+import { EraserService } from '@app/services/tools/eraser-service';
+import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { RectangleService } from '@app/services/tools/rectangle.service';
 import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
@@ -15,17 +20,33 @@ describe('DrawingComponent', () => {
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
+    let toolServiceStub: ToolService;
+
+    let pencilStub: PencilService;
+    let eraserStub: EraserService;
+    let brushStub: BrushService;
+    let lineStub: LineService;
+    let rectangleStub: RectangleService;
 
     beforeEach(
         waitForAsync(() => {
-            toolStub = new ToolStub({} as DrawingService);
             drawingStub = new DrawingService();
+
+            pencilStub = new PencilService(drawingStub);
+            eraserStub = new EraserService(drawingStub);
+            brushStub = new BrushService(drawingStub);
+            lineStub = new LineService(drawingStub);
+            rectangleStub = new RectangleService(drawingStub);
+
+            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub);
+
+            toolStub = toolServiceStub.currentTool;
 
             TestBed.configureTestingModule({
                 declarations: [DrawingComponent],
                 providers: [
-                    { provide: PencilService, useValue: toolStub },
                     { provide: DrawingService, useValue: drawingStub },
+                    { provide: ToolService, useValue: toolServiceStub },
                 ],
             }).compileComponents();
         }),
@@ -48,8 +69,13 @@ describe('DrawingComponent', () => {
         expect(width).toEqual(DEFAULT_WIDTH);
     });
 
+<<<<<<< HEAD
     it('should get stubTool', () => {
         const currentTool = drawingStub.currentTool;
+=======
+    it('should get toolStub', () => {
+        const currentTool = toolServiceStub.currentTool;
+>>>>>>> 3-outil-pinceau-3
         expect(currentTool).toEqual(toolStub);
     });
 

@@ -60,9 +60,9 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         EditorComponent,
         SidebarComponent,
         DrawingComponent,
-        WriteTextDialogUserGuideComponent,
         MainPageComponent,
         DialogCreateNewDrawingComponent,
+        WriteTextDialogUserGuideComponent,
     ],
     imports: [
         FormsModule,

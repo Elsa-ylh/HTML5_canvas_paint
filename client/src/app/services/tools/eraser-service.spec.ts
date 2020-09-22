@@ -2,11 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { BrushService } from './brush.service';
+import { PencilService } from './pencil-service';
 
 // tslint:disable:no-any
-describe('BrushService', () => {
-    let service: BrushService;
+describe('PencilService', () => {
+    let service: PencilService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
@@ -22,7 +22,7 @@ describe('BrushService', () => {
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
-        service = TestBed.inject(BrushService);
+        service = TestBed.inject(PencilService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
         // Configuration du spy du service

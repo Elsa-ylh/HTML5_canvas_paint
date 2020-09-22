@@ -6,9 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { BrushService } from '@app/services/tools/brush.service';
-import { PencilService } from '@app/services/tools/pencil-service';
-import { RectangleService } from '@app/services/tools/rectangle.service';
+import { ToolService } from '@app/services/tool-service';
 
 @Component({
     selector: 'app-sidebar',
@@ -25,9 +23,10 @@ export class SidebarComponent implements OnInit {
         private dialogNewDrawing: MatDialog,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
+        public toolService: ToolService,
     ) {
         this.showAttributes = true;
-        drawingService.whichTools = ToolUsed.NONE;
+        this.toolService.switchTool(ToolUsed.NONE);
     }
 
     ngOnInit(): void {
@@ -48,53 +47,31 @@ export class SidebarComponent implements OnInit {
     }
 
     pickPencil(): void {
-        this.cleanEffectTool();
-        this.drawingService.currentTool = new PencilService(this.drawingService);
-        this.drawingService.whichTools = ToolUsed.Pencil;
-        this.drawingService.baseCtx.lineWidth = 1; // le
-        this.drawingService.previewCtx.lineWidth = 1;
+        this.toolService.switchTool(ToolUsed.Pencil);
     }
 
     pickEraser(): void {
-        this.drawingService.whichTools = ToolUsed.Eraser;
-    }
-    // racoussi pour pinceau marche pas
-    @HostListener('window:keydown.control.w', ['$event']) onKeyBrush(event: KeyboardEvent): void {
-        this.pickBrush();
+        this.toolService.switchTool(ToolUsed.Eraser);
     }
 
     pickBrush(): void {
-        this.cleanEffectTool();
-        this.drawingService.currentTool = new BrushService(this.drawingService);
-        this.drawingService.whichTools = ToolUsed.Brush;
-        this.pxSize = this.drawingService.baseCtx.lineWidth;
-    }
-
-    shadowBrushTool(): void {
-        this.cleanEffectTool();
-        this.drawingService.currentTool = new BrushService(this.drawingService);
-        this.drawingService.whichTools = ToolUsed.Brush;
-        this.drawingService.baseCtx.shadowColor = 'rgb(0, 0, 0)';
-        this.drawingService.baseCtx.shadowBlur = this.pxSize + 2;
+        this.toolService.switchTool(ToolUsed.Brush);
     }
 
     pickLine(): void {
-        this.drawingService.whichTools = ToolUsed.Line;
-        this.drawingService.baseCtx.lineWidth = this.pxSize;
-        this.drawingService.previewCtx.lineWidth = this.pxSize;
+        this.toolService.switchTool(ToolUsed.Line);
     }
 
     pickRectangle(): void {
-        this.drawingService.currentTool = new RectangleService(this.drawingService);
-        this.drawingService.whichTools = ToolUsed.Rectangle;
+        this.toolService.switchTool(ToolUsed.Rectangle);
     }
 
     pickEllipse(): void {
-        this.drawingService.whichTools = ToolUsed.Ellipse;
+        this.toolService.switchTool(ToolUsed.Ellipse);
     }
 
     pickColor(): void {
-        this.drawingService.whichTools = ToolUsed.Color;
+        this.toolService.switchTool(ToolUsed.Color);
     }
 
     // keybind control o for new drawing
@@ -105,9 +82,11 @@ export class SidebarComponent implements OnInit {
             this.isDialogOpen = true;
         }
     }
+    shadowBrushTool(): void {}
 
     thickBrush(): void {
-        this.drawingService.whichTools = ToolUsed.thickBrush;
+        this.cleanEffectTool();
+        this.toolService.switchTool(ToolUsed.thickBrush);
     }
 
     sliderSliding(args: MatSliderChange): void {
@@ -124,5 +103,9 @@ export class SidebarComponent implements OnInit {
         this.drawingService.previewCtx.lineWidth = this.pxSize;
         this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
         this.drawingService.previewCtx.strokeStyle = '#000000';
+    }
+    @HostListener('window:keydown.e', ['$event'])
+    handleKeyboardEvent(event: KeyboardEvent): void {
+        this.toolService.switchTool(ToolUsed.Eraser);
     }
 }

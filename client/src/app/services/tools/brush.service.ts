@@ -1,42 +1,33 @@
 import { Injectable } from '@angular/core';
+import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-//
-export enum MouseButton {
-    Left = 2,
-    Middle = 1,
-    Right = 0,
-    Back = 3,
-    Forward = 4,
-}
-const startpx: number = 8; // on veut que le pinceau au debut est une dimention de 8 px pour le diférencier du crayon
+
 @Injectable({
     providedIn: 'root',
 })
 export class BrushService extends Tool {
+    pixelThickness: number = 4;
+
     private pathData: Vec2[];
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
-        this.initBrushService();
-    }
-
-    private initBrushService() {
-        this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
-        this.drawingService.baseCtx.lineWidth = startpx; // conserve same size a before
-        this.drawingService.previewCtx.lineWidth = startpx;
-        this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
-        this.drawingService.previewCtx.strokeStyle = '#000000';
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Right;
         if (this.mouseDown) {
+            this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
+            this.drawingService.previewCtx.strokeStyle = '#000000';
+            // this.drawingService.baseCtx.lineWidth = startpx; // conserve same size a before
+            // this.drawingService.previewCtx.lineWidth = startpx;
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
+            // console.log('bruch');
         }
     }
 
