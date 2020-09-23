@@ -69,7 +69,4 @@ export class DrawingComponent implements AfterViewInit {
     get workHeight(): number {
         return this.height + this.WORK_AREA_PADDING_SIZE;
     }
-
-    @HostListener('window:resize', ['$event'])
-    onResize(event: Event): void {}
 }
