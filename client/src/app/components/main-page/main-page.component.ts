@@ -34,7 +34,7 @@ export class MainPageComponent {
     // }
 
     openUserGuide(): void {
-        this.modalGuidRef = this.modalGuidRef = this.dialog.open(WriteTextDialogUserGuideComponent, {
+        this.modalGuidRef = this.dialog.open(WriteTextDialogUserGuideComponent, {
             width: '90%',
             height: '100%',
         });

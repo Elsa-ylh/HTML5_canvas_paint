@@ -3,23 +3,37 @@
 
     <mat-grid-list cols="12">
         <mat-grid-tile colspan="6" rowspan="2">
-            <mat-slider> [max]="1920" [min]="250" [step]="1" [thumbLabel]="true" [(ngModel)]="x_axis" [vertical]="vertical"> </mat-slider>
-        </mat-grid-tile>
-        <mat-grid-tile colspan="6" rowspan="2">
             <mat-form-field>
-                <mat-label>Hauteur</mat-label>
-                <input matInput type="number" placeholder="Ex: 300" min="250" />
+                <mat-label>Largeur</mat-label>
+                <input
+                    matInput
+                    required
+                    type="number"
+                    placeholder="Ex: 250"
+                    [formControl]="widthControl"
+                    [min]="canvasResizerService.MIN_CANVAS_SIZE"
+                    [max]="canvasResizerService.MAX_WIDTH_SIZE"
+                />
                 <span matSuffix>px</span>
+                <mat-error *ngIf="widthControl.invalid">Minimum de 250 px</mat-error>
+                <mat-error *ngIf="widthControl.invalid">Maximum de 1980 px</mat-error>
             </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile colspan="6" rowspan="2">
-            <mat-slider> [max]="1920" [min]="250" [step]="1" [thumbLabel]="true" [(ngModel)]="x_axis" [vertical]="vertical"> </mat-slider>
-        </mat-grid-tile>
-        <mat-grid-tile colspan="6" rowspan="2">
             <mat-form-field>
                 <mat-label>Hauteur</mat-label>
-                <input matInput type="number" placeholder="Ex: 300" min="250" />
+                <input
+                    matInput
+                    required
+                    type="number"
+                    placeholder="Ex: 250"
+                    [formControl]="heightControl"
+                    [min]="canvasResizerService.MIN_CANVAS_SIZE"
+                    [max]="canvasResizerService.MAX_HEIGHT_SIZE"
+                />
                 <span matSuffix>px</span>
+                <mat-error *ngIf="heightControl.invalid">Minimale de 250 px</mat-error>
+                <mat-error *ngIf="heightControl.invalid">Maximum de 1080 px</mat-error>
             </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile colspan="8"> </mat-grid-tile>
