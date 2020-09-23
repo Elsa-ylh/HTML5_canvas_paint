@@ -19,11 +19,11 @@ export class EraserService extends Tool {
         const minimalPx = 5;
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
-            this.clearPath();
             this.mouseMove = false;
             this.drawingService.baseCtx.strokeStyle = '#FFF'; // draw in white
             this.drawingService.previewCtx.strokeStyle = '#FFF'; // when changecolor is implemented call pencil weith white.
             this.drawingService.baseCtx.lineWidth = minimalPx; // minimal size is 5 px.
+            // this.drawingService.previewCtx.lineWidth = 5;
 
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
@@ -35,9 +35,9 @@ export class EraserService extends Tool {
             if (this.mouseMove) {
                 const mousePosition = this.getPositionFromMouse(event);
                 this.pathData.push(mousePosition);
-                this.RemoveLine(this.drawingService.previewCtx, this.pathData);
+                this.RemoveLine(this.drawingService.baseCtx, this.pathData);
             } else {
-                // dessiner un pt blanc
+                // code to draw line
             }
         }
 
@@ -53,7 +53,8 @@ export class EraserService extends Tool {
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.RemoveLine(this.drawingService.baseCtx, this.pathData);
+            this.RemoveLine(this.drawingService.previewCtx, this.pathData);
+            this.RemoveLine(this.drawingService.baseCtx, this.pathData); // to see in real time the  changes.
         }
     }
 
