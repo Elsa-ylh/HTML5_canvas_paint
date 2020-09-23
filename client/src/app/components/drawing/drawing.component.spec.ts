@@ -4,6 +4,7 @@ import { DrawingInformationsService } from '@app/services/drawing-info/drawing-i
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
+import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
@@ -28,6 +29,8 @@ describe('DrawingComponent', () => {
     let brushStub: BrushService;
     let lineStub: LineService;
     let rectangleStub: RectangleService;
+    let ellipseStub: EllipseService;
+
     const drawingInfos: DrawingInformationsService = new DrawingInformationsService();
 
     beforeEach(
@@ -39,8 +42,9 @@ describe('DrawingComponent', () => {
             brushStub = new BrushService(drawingStub);
             lineStub = new LineService(drawingStub);
             rectangleStub = new RectangleService(drawingStub, drawingInfos);
+            ellipseStub = new EllipseService(drawingStub,drawingInfos);
 
-            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub);
+            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub);
 
             toolStub = toolServiceStub.currentTool;
 

@@ -92,8 +92,8 @@ export class SidebarComponent implements OnInit {
     }
 
     @HostListener('window:keydown.2', ['$event']) onKeyDown2(event: KeyboardEvent): void {
-      this.pickEllipse(1);
-  }
+        this.pickEllipse(1);
+    }
 
     @HostListener('window:keydown.e', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): void {
