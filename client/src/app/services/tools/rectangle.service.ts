@@ -71,14 +71,9 @@ export class RectangleService extends Tool {
         }
     }
 
-    calcSign(x: number): number {
-        if (x < 0) return -Math.abs(x / x);
-        else return 1;
-    }
-
     drawFillRectangle(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2, fillColor: string): void {
-        this.height = this.calcSign(mouseUpPos.y - mouseDownPos.y) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
-        this.width = this.calcSign(mouseUpPos.x - mouseDownPos.x) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
+        this.height = Math.sign(mouseUpPos.y - mouseDownPos.y) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
+        this.width = Math.sign(mouseUpPos.x - mouseDownPos.x) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
         ctx.fillStyle = fillColor;
         if (this.square) {
             ctx.fillRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
@@ -90,8 +85,8 @@ export class RectangleService extends Tool {
     drawRectangleOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2, lineWidth: number, strokeColor: string): void {
         ctx.strokeStyle = strokeColor;
         ctx.lineWidth = lineWidth;
-        this.height = this.calcSign(mouseUpPos.y - mouseDownPos.y) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
-        this.width = this.calcSign(mouseUpPos.x - mouseDownPos.x) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
+        this.height = Math.sign(mouseUpPos.y - mouseDownPos.y) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
+        this.width = Math.sign(mouseUpPos.x - mouseDownPos.x) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
 
         if (this.square) {
             ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
@@ -111,8 +106,8 @@ export class RectangleService extends Tool {
         ctx.fillStyle = fillColor;
         ctx.strokeStyle = strokeColor;
         ctx.lineWidth = lineWidth;
-        this.height = this.calcSign(mouseUpPos.y - mouseDownPos.y) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
-        this.width = this.calcSign(mouseUpPos.x - mouseDownPos.x) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
+        this.height = Math.sign(mouseUpPos.y - mouseDownPos.y) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
+        this.width = Math.sign(mouseUpPos.x - mouseDownPos.x) * Math.abs(Math.min(mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y));
         if (this.square) {
             ctx.fillRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
             ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
