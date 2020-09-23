@@ -6,7 +6,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 
-
 // Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
 // L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
 // Vous êtes encouragés de modifier et compléter le code.
@@ -40,7 +39,7 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -53,7 +52,7 @@ export class PencilService extends Tool {
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
     }
 
