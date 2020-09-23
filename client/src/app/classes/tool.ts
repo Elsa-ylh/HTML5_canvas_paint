@@ -10,7 +10,6 @@ export enum ToolUsed {
     Rectangle = 5,
     Ellipse = 6,
     Color = 7,
-    thickBrush = 8,
 }
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant

@@ -8,7 +8,7 @@
                 <mat-button-toggle (click)="pickEraser()">
                     <mat-icon svgIcon="eraser"></mat-icon>
                 </mat-button-toggle>
-                <mat-button-toggle (click)="pickBrush()">
+                <mat-button-toggle (click)="pickBrush(1)">
                     <mat-icon>brush</mat-icon>
                 </mat-button-toggle>
                 <mat-button-toggle (click)="pickLine()">
@@ -60,19 +60,19 @@
         </mat-grid-list>
         <mat-grid-list cols="6" *ngSwitchCase="3">
             <mat-grid-tile colspan="6">
-                <button mat-raised-button (click)="pickBrush()">pinceau 1</button>
+                <button mat-raised-button (click)="pickBrush(1)">pinceau 1</button>
             </mat-grid-tile>
             <mat-grid-tile colspan="6">
-                <button mat-raised-button (click)="shadowBrushTool()">pinceau 2</button>
+                <button mat-raised-button (click)="pickBrush(2)">pinceau 2</button>
             </mat-grid-tile>
             <mat-grid-tile colspan="6">
-                <button mat-raised-button (click)="thickBrush()">pinceau 3</button>
+                <button mat-raised-button (click)="pickBrush(3)">pinceau 3</button>
             </mat-grid-tile>
             <mat-grid-tile colspan="6">
-                <button mat-raised-button (click)="pickBrush()">pinceau 4</button>
+                <button mat-raised-button (click)="pickBrush(4)">pinceau 4</button>
             </mat-grid-tile>
             <mat-grid-tile colspan="6">
-                <button mat-raised-button (click)="pickBrush()">pinceau 5</button>
+                <button mat-raised-button (click)="pickBrush(5)">pinceau 5</button>
             </mat-grid-tile>
             <mat-grid-tile colspan="6">
                 <mat-slider max="50" min="1" [(ngModel)]="pxSize" (input)="sliderSliding($event)"> </mat-slider><samp>{{ pxSize }}px</samp>
@@ -89,26 +89,6 @@
         </mat-grid-list>
         <mat-grid-list cols="6" *ngSwitchCase="7">
             <mat-grid-tile colspan="6"></mat-grid-tile>
-        </mat-grid-list>
-        <mat-grid-list cols="6" *ngSwitchCase="8">
-            <mat-grid-tile colspan="6">
-                <button mat-raised-button (click)="pickBrush()">pinceau 1</button>
-            </mat-grid-tile>
-            <mat-grid-tile colspan="6">
-                <button mat-raised-button (click)="shadowBrushTool()">pinceau 2</button>
-            </mat-grid-tile>
-            <mat-grid-tile colspan="6">
-                <button mat-raised-button (click)="thickBrush()">pinceau 3</button>
-            </mat-grid-tile>
-            <mat-grid-tile colspan="6">
-                <button mat-raised-button (click)="pickBrush()">pinceau 4</button>
-            </mat-grid-tile>
-            <mat-grid-tile colspan="6">
-                <button mat-raised-button (click)="pickBrush()">pinceau 5</button>
-            </mat-grid-tile>
-            <mat-grid-tile colspan="6">
-                <mat-slider max="50" min="1" [(ngModel)]="pxSize" (input)="sliderSliding($event)"> </mat-slider><samp>{{ pxSize }}px</samp>
-            </mat-grid-tile>
         </mat-grid-list>
     </div>
 </div>

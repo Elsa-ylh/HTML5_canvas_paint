@@ -54,10 +54,12 @@ export class SidebarComponent implements OnInit {
         this.toolService.switchTool(ToolUsed.Eraser);
     }
 
-    pickBrush(): void {
+    pickBrush(selector: number): void {
         this.cleanEffectTool();
         this.toolService.switchTool(ToolUsed.Brush);
         this.pxSize = this.drawingService.baseCtx.lineWidth;
+        /*currentToolName: ToolUsed;
+        currentTool: Tool;*/
     }
 
     pickLine(): void {
@@ -85,18 +87,6 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    shadowBrushTool(): void {
-        this.cleanEffectTool();
-        this.pickBrush();
-        this.drawingService.baseCtx.shadowColor = 'rgb(0, 0, 0)';
-        this.drawingService.baseCtx.shadowBlur = this.pxSize + 2;
-    }
-
-    thickBrush(): void {
-        this.cleanEffectTool();
-        this.toolService.switchTool(ToolUsed.thickBrush);
-    }
-
     sliderSliding(args: MatSliderChange): void {
         console.log(args.value);
         if (args.value) {
@@ -105,13 +95,14 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    private cleanEffectTool() {
+    private cleanEffectTool(): void {
         this.drawingService.baseCtx.shadowColor = 'rgba(0,0,0,0)';
         this.drawingService.baseCtx.lineWidth = this.pxSize;
         this.drawingService.previewCtx.lineWidth = this.pxSize;
         this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
         this.drawingService.previewCtx.strokeStyle = '#000000';
     }
+
     @HostListener('window:keydown.e', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): void {
         this.toolService.switchTool(ToolUsed.Eraser);
