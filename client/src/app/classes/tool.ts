@@ -17,7 +17,7 @@ export enum ToolUsed {
 export abstract class Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
-    mouseMove: Boolean = false; // pr le point
+    mouseMove: boolean = false; // pr le point
     constructor(protected drawingService: DrawingService) {}
 
     onMouseDown(event: MouseEvent): void {}
