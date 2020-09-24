@@ -7,6 +7,8 @@ import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-n
 import { DrawingInformationsService } from '@app/services/drawing-info/drawing-informations.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
+import { EraserService } from '@app/services/tools/eraser-service';
+
 
 @Component({
     selector: 'app-sidebar',
@@ -26,6 +28,7 @@ export class SidebarComponent implements OnInit {
         private sanitizer: DomSanitizer,
         public toolService: ToolService,
         public drawingInfos: DrawingInformationsService,
+        public eraserService: EraserService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.NONE);
@@ -93,6 +96,7 @@ export class SidebarComponent implements OnInit {
     @HostListener('window:keydown.e', ['$event'])
     changeEraserMode(event: KeyboardEvent): void {
         this.toolService.switchTool(ToolUsed.Eraser);
+        this.eraserService.buttonClicked();
     }
 
     @HostListener('window:keydown.c', ['$event'])
@@ -111,4 +115,11 @@ export class SidebarComponent implements OnInit {
     //   this.drawingService.shiftPressed = false;
     //   console.log("shiftup");
     // }
+
+    // function will be called when eraser button is clicked
+    eraserClicked(): void {
+        this.eraserService.buttonClicked();
+    }
+
+
 }

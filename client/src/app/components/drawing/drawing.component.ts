@@ -2,6 +2,8 @@ import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
+import { EraserService } from '@app/services/tools/eraser-service';
+
 
 @Component({
     selector: 'app-drawing',
@@ -16,7 +18,8 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
 
-    constructor(private drawingService: DrawingService, private toolService: ToolService, private canvasResizerService: CanvasResizerService) {}
+
+    constructor(private drawingService: DrawingService, private toolService: ToolService, private canvasResizerService: CanvasResizerService, private eraserService: EraserService) { }
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -63,4 +66,12 @@ export class DrawingComponent implements AfterViewInit {
     onResize(event: Event): void {
         this.canvasResizerService.onResize(event);
     }
+
+    ngOnInit(): void {
+        this.eraserService.eraserStateObservable.subscribe(() => {
+            this.baseCanvas.nativeElement.style.cursor = "none";
+            this.previewCanvas.nativeElement.style.cursor = "none";
+        });
+    }
+
 }
