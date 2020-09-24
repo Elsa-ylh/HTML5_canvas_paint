@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingInformationsService } from '@app/services/drawing-info/drawing-informations.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
@@ -12,16 +13,13 @@ import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
 
-// TODO : Déplacer dans un fichier accessible à tous
-const DEFAULT_WIDTH = window.innerWidth / 2;
-const DEFAULT_HEIGHT = window.innerHeight / 2;
-
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
     let toolServiceStub: ToolService;
+    let canvasResizerStub: CanvasResizerService;
 
     let pencilStub: PencilService;
     let eraserStub: EraserService;
@@ -33,6 +31,7 @@ describe('DrawingComponent', () => {
     beforeEach(
         waitForAsync(() => {
             drawingStub = new DrawingService();
+            canvasResizerStub = new CanvasResizerService();
 
             pencilStub = new PencilService(drawingStub);
             eraserStub = new EraserService(drawingStub);
@@ -49,6 +48,7 @@ describe('DrawingComponent', () => {
                 providers: [
                     { provide: DrawingService, useValue: drawingStub },
                     { provide: ToolService, useValue: toolServiceStub },
+                    { provide: CanvasResizerService, useValue: canvasResizerStub },
                 ],
             }).compileComponents();
         }),
@@ -65,10 +65,8 @@ describe('DrawingComponent', () => {
     });
 
     it('should have a default WIDTH and HEIGHT', () => {
-        const height = component.height;
-        const width = component.width;
-        expect(height).toEqual(DEFAULT_HEIGHT);
-        expect(width).toEqual(DEFAULT_WIDTH);
+        expect(canvasResizerStub.canvasSize.x).toEqual(component.width);
+        expect(canvasResizerStub.canvasSize.y).toEqual(component.height);
     });
 
     it('should get toolStub', () => {

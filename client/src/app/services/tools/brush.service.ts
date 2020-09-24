@@ -18,7 +18,7 @@ export class BrushService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Right;
+        this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
             this.drawingService.previewCtx.strokeStyle = '#000000';

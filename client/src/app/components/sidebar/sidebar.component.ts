@@ -91,8 +91,13 @@ export class SidebarComponent implements OnInit {
     }
 
     @HostListener('window:keydown.e', ['$event'])
-    handleKeyboardEvent(event: KeyboardEvent): void {
+    changeEraserMode(event: KeyboardEvent): void {
         this.toolService.switchTool(ToolUsed.Eraser);
+    }
+
+    @HostListener('window:keydown.c', ['$event'])
+    changePencilMode(event: KeyboardEvent): void {
+        this.toolService.switchTool(ToolUsed.Pencil);
     }
 
     // @HostListener('window:keydown.shift', ['$event'])

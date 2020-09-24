@@ -1,3 +1,7 @@
+.sidebar {
+    min-width: 276px;
+}
+
 .toolbar {
     position: relative;
     top: 0;
@@ -7,6 +11,11 @@
 }
 
 .small-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100vh;
     width: 50px;
 }
 
@@ -29,8 +38,7 @@ mat-slider {
 }
 
 .miscellaneous-buttons {
-    position: absolute;
-    bottom: 0;
+    position: relative;
 }
 
 .sub-button {
