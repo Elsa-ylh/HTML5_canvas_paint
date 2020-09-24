@@ -1,13 +1,14 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
+import { MatSliderChange } from '@angular/material/slider';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DrawingInformationsService } from '@app/services/drawing-info/drawing-informations.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
-
+const pxMinBrush = 6; // Le crayon fait deja pour plus petit
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
@@ -18,7 +19,7 @@ export class SidebarComponent implements OnInit {
     isDialogOpen: boolean = false;
     dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     lineWidth: number;
-
+    pxSize: number;
     constructor(
         public drawingService: DrawingService,
         private dialogNewDrawing: MatDialog,
@@ -56,8 +57,12 @@ export class SidebarComponent implements OnInit {
         this.toolService.switchTool(ToolUsed.Eraser);
     }
 
-    pickBrush(): void {
+    pickBrush(subTool: number): void {
         this.toolService.switchTool(ToolUsed.Brush);
+        if (this.drawingService.baseCtx.lineWidth < pxMinBrush) {
+            this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.pxSize = pxMinBrush;
+        } else this.pxSize = this.drawingService.previewCtx.lineWidth = this.drawingService.baseCtx.lineWidth;
+        this.toolService.currentTool.subToolSelect = subTool;
     }
 
     pickLine(): void {
@@ -75,6 +80,14 @@ export class SidebarComponent implements OnInit {
 
     pickColor(): void {
         this.toolService.switchTool(ToolUsed.Color);
+    }
+
+    sliderSliding(args: MatSliderChange): void {
+        console.log(args.value);
+        if (args.value) {
+            this.drawingService.baseCtx.lineWidth = args.value;
+            this.drawingService.previewCtx.lineWidth = args.value;
+        }
     }
 
     // keybind control o for new drawing
