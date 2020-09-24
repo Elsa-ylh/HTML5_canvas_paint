@@ -24,6 +24,8 @@ export class BrushService extends Tool {
             this.drawingService.previewCtx.strokeStyle = '#000000';
             // this.drawingService.baseCtx.lineWidth = startpx; // conserve same size a before
             // this.drawingService.previewCtx.lineWidth = startpx;
+            this.drawingService.baseCtx.setLineDash([0, 0]); // reset
+            this.drawingService.previewCtx.setLineDash([0, 0]); // reset
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);

@@ -3,13 +3,13 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { DrawingInformationsService } from '@app/services/drawing-info/drawing-informations.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class EllipseService extends Tool {
+    lineWidth: number = 2;
     fillColor: string = '#ffb366';
     strokeColor: string = '#00ccff';
     strokeRectColor: string = '#000000';
@@ -19,15 +19,18 @@ export class EllipseService extends Tool {
     width: number;
     mousePosition: Vec2;
     leftMouseDown: boolean = false;
+    dottedLineWidth: number = 2;
     dottedSpace: number = 10;
 
-    constructor(drawingService: DrawingService, public drawingInfos: DrawingInformationsService) {
+    constructor(drawingService: DrawingService) {
         super(drawingService);
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         this.leftMouseDown = true;
+        this.drawingService.baseCtx.lineWidth = this.dottedLineWidth;
+        this.drawingService.previewCtx.lineWidth = this.dottedLineWidth;
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
@@ -84,13 +87,7 @@ export class EllipseService extends Tool {
                 }
 
                 case SubToolselected.tool2: {
-                    this.drawEllipseOutline(
-                        this.drawingService.baseCtx,
-                        this.mouseDownCoord,
-                        mousePosition,
-                        this.drawingInfos.lineWidth,
-                        this.strokeColor,
-                    );
+                    this.drawEllipseOutline(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.lineWidth, this.strokeColor);
                     break;
                 }
 
@@ -99,7 +96,7 @@ export class EllipseService extends Tool {
                         this.drawingService.baseCtx,
                         this.mouseDownCoord,
                         mousePosition,
-                        this.drawingInfos.lineWidth,
+                        this.lineWidth,
                         this.fillColor,
                         this.strokeColor,
                     );
@@ -113,13 +110,7 @@ export class EllipseService extends Tool {
                     break;
 
                 case SubToolselected.tool2:
-                    this.drawEllipseOutline(
-                        this.drawingService.previewCtx,
-                        this.mouseDownCoord,
-                        mousePosition,
-                        this.drawingInfos.lineWidth,
-                        this.strokeColor,
-                    );
+                    this.drawEllipseOutline(this.drawingService.previewCtx, this.mouseDownCoord, mousePosition, this.lineWidth, this.strokeColor);
                     break;
 
                 case SubToolselected.tool3:
@@ -127,7 +118,7 @@ export class EllipseService extends Tool {
                         this.drawingService.previewCtx,
                         this.mouseDownCoord,
                         mousePosition,
-                        this.drawingInfos.lineWidth,
+                        this.lineWidth,
                         this.fillColor,
                         this.strokeColor,
                     );

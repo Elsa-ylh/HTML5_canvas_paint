@@ -4,9 +4,10 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
-import { DrawingInformationsService } from '@app/services/drawing-info/drawing-informations.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
+import { EllipseService } from '@app/services/tools/ellipse.service';
+import { RectangleService } from '@app/services/tools/rectangle.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -25,7 +26,8 @@ export class SidebarComponent implements OnInit {
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
         public toolService: ToolService,
-        public drawingInfos: DrawingInformationsService,
+        public rectangleService: RectangleService,
+        public ellipseService: EllipseService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.NONE);

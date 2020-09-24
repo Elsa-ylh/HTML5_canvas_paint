@@ -27,6 +27,8 @@ export class PencilService extends Tool {
             this.drawingService.previewCtx.strokeStyle = '#000000';
             this.drawingService.baseCtx.lineWidth = 2; // conserve same size a before
             this.drawingService.previewCtx.lineWidth = 2;
+            this.drawingService.baseCtx.setLineDash([0, 0]); // reset
+            this.drawingService.previewCtx.setLineDash([0, 0]); // reset
 
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
@@ -55,7 +57,6 @@ export class PencilService extends Tool {
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.setLineDash([0, 0]);
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);

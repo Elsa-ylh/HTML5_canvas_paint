@@ -8,6 +8,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class EraserService extends Tool {
+    minimalPx: number = 5;
+
     private pathData: Vec2[];
 
     constructor(drawingService: DrawingService) {
@@ -16,14 +18,15 @@ export class EraserService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        const minimalPx = 5;
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.mouseMove = false;
             this.drawingService.baseCtx.strokeStyle = '#FFF'; // draw in white
             this.drawingService.previewCtx.strokeStyle = '#FFF'; // when changecolor is implemented call pencil weith white.
-            this.drawingService.baseCtx.lineWidth = minimalPx; // minimal size is 5 px.
-            // this.drawingService.previewCtx.lineWidth = 5;
+            this.drawingService.baseCtx.lineWidth = this.minimalPx; // minimal size is 5 px.
+            this.drawingService.previewCtx.lineWidth = this.minimalPx;
+            this.drawingService.baseCtx.setLineDash([0, 0]); // reset
+            this.drawingService.previewCtx.setLineDash([0, 0]); // reset
 
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
@@ -58,7 +61,6 @@ export class EraserService extends Tool {
     }
 
     private RemoveLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.setLineDash([0, 0]); // reset
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
