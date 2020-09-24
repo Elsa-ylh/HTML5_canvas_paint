@@ -11,18 +11,18 @@ export class MainPageComponent {
     onGoingDrawing: boolean;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
-    constructor(private dialog: MatDialog) {
+    constructor(private dialogCreator: MatDialog) {
         this.onGoingDrawing = false;
     }
 
     createNewDrawing(): void {
-        this.newDrawingRef = this.dialog.open(DialogCreateNewDrawingComponent, {
+        this.newDrawingRef = this.dialogCreator.open(DialogCreateNewDrawingComponent, {
             data: { message: 'Créer un nouveau dessin avec les dimensions suivantes' },
         });
     }
 
     openUserGuide(): void {
-        this.checkDocumentationRef = this.dialog.open(WriteTextDialogUserGuideComponent, {
+        this.checkDocumentationRef = this.dialogCreator.open(WriteTextDialogUserGuideComponent, {
             width: '90%',
             height: '100%',
         });

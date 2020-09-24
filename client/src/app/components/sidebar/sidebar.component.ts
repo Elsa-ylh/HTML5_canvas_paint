@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -15,7 +15,7 @@ import { WriteTextDialogUserGuideComponent } from '../write-text-dialog-user-gui
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
     showAttributes: boolean;
     isDialogOpen: boolean = false;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
@@ -23,7 +23,7 @@ export class SidebarComponent implements OnInit {
 
     constructor(
         public drawingService: DrawingService,
-        private dialogNewDrawing: MatDialog,
+        private dialogCreator: MatDialog,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
         public toolService: ToolService,
@@ -32,15 +32,12 @@ export class SidebarComponent implements OnInit {
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.NONE);
-    }
-
-    ngOnInit(): void {
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
     }
 
     clearCanvas(): void {
         if (!this.drawingService.isCanvasBlank()) {
-            this.newDrawingRef = this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
+            this.newDrawingRef = this.dialogCreator.open(DialogCreateNewDrawingComponent);
             this.newDrawingRef.afterClosed().subscribe(() => {
                 this.isDialogOpen = false;
             });
@@ -48,11 +45,11 @@ export class SidebarComponent implements OnInit {
     }
 
     createNewDrawing(): void {
-        this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
+        this.dialogCreator.open(DialogCreateNewDrawingComponent);
     }
 
     openUserGuide(): void {
-        this.checkDocumentationRef = this.dialogNewDrawing.open(WriteTextDialogUserGuideComponent, {
+        this.checkDocumentationRef = this.dialogCreator.open(WriteTextDialogUserGuideComponent, {
             width: '90%',
             height: '100%',
         });
