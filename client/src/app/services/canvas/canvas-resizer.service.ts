@@ -10,8 +10,10 @@ export class CanvasResizerService {
     MAX_HEIGHT_SIZE: number = 1080;
     minSizeWindow: number = 500;
 
-    DEFAULT_WIDTH: number = 640;
-    DEFAULT_HEIGHT: number = 480;
+    DEFAULT_WIDTH: number = window.innerWidth / 2;
+    DEFAULT_HEIGHT: number = window.innerHeight / 2;
+
+    WORK_AREA_PADDING_SIZE: number = 50;
 
     // Cette variable est très importante.
     // La variable ci-dessous est la taille du canvas.
