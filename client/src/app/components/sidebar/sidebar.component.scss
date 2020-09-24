@@ -1,4 +1,38 @@
-.container {
+.sidebar {
+    min-width: 276px;
+}
+
+.toolbar {
+    position: relative;
+    top: 0;
+    height: 100%;
+    text-align: center;
+    float: left;
+}
+
+.small-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100vh;
+    width: 50px;
+}
+
+.attributes {
+    position: relative;
+    top: 0;
+    margin: 0px;
+    width: 226px;
+    float: right;
+}
+
+mat-slider {
+    width: 90%;
+}
+
+.tools-buttons {
+    position: relative;
     height: auto;
     min-height: 98vh;
     border: 1px solid black;
@@ -6,7 +40,10 @@
     margin-right: 5px;
 }
 
-.sidebar-container {
-    display: flex;
-    flex-direction: column;
+.miscellaneous-buttons {
+    position: relative;
+}
+
+.sub-button {
+    width: 150px;
 }

@@ -1,0 +1,18 @@
+<div class="btnWhichUserGuide">
+    <mat-list class="tools-buttons">
+        <mat-button-toggle-group>
+            <mat-button-toggle (click)="diversListSelection()"> Divers </mat-button-toggle>
+            <mat-button-toggle (click)="drawListSelection()"> Dessiner </mat-button-toggle>
+        </mat-button-toggle-group>
+    </mat-list>
+</div>
+<div *ngFor="let tool of dataGuides">
+    <div *ngIf="testDataGuide(tool.isTool)">
+        <h1>{{ tool.title }}</h1>
+        <p>
+            {{ tool.description }}
+        </p>
+        <img class="pictureSize" src="{{ tool.path }}" />
+    </div>
+</div>
+<button mat-button mat-dialog-close>Close</button>

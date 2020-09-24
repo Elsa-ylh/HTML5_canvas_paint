@@ -1,12 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { Tool } from '@app/classes/tool';
-import { Vec2 } from '@app/classes/vec2';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from '@app/services/tools/pencil-service';
-
-// TODO : Avoir un fichier séparé pour les constantes ?
-export const DEFAULT_WIDTH = 1000;
-export const DEFAULT_HEIGHT = 800;
+import { ToolService } from '@app/services/tool-service';
 
 @Component({
     selector: 'app-drawing',
@@ -15,20 +10,14 @@ export const DEFAULT_HEIGHT = 800;
 })
 export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
-    // On utilise ce canvas pour dessiner sans affecter le dessin final
+    // On utilise ce canvas pour dessiner sans affecter le dessin final, aussi utilisé pour sauvegarder
+    // une version du dessin avant de l'appliquer au final.
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
-    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
-    // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
-    private tools: Tool[];
-    currentTool: Tool;
-    constructor(private drawingService: DrawingService, pencilService: PencilService) {
-        this.tools = [pencilService];
-        this.currentTool = this.tools[0];
-    }
+    constructor(private drawingService: DrawingService, private toolService: ToolService, private canvasResizerService: CanvasResizerService) {}
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -40,24 +29,42 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        this.currentTool.onMouseMove(event);
+        this.toolService.currentTool.onMouseMove(event);
     }
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
-        this.currentTool.onMouseDown(event);
+        this.toolService.currentTool.onMouseDown(event);
     }
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        this.currentTool.onMouseUp(event);
+        this.toolService.currentTool.onMouseUp(event);
+    }
+
+    @HostListener('window:keydown.shift', ['$event'])
+    onKeyShiftDown(event: KeyboardEvent): void {
+        this.toolService.currentTool.OnShiftKeyDown(event);
+    }
+
+    @HostListener('window:keyup.shift', ['$event'])
+    onKeyShiftUp(event: KeyboardEvent): void {
+        this.toolService.currentTool.OnShiftKeyUp(event);
     }
 
     get width(): number {
-        return this.canvasSize.x;
+        return this.canvasResizerService.canvasSize.x;
+    }
+
+    get workWidth(): number {
+        return this.width + this.canvasResizerService.WORK_AREA_PADDING_SIZE;
     }
 
     get height(): number {
-        return this.canvasSize.y;
+        return this.canvasResizerService.canvasSize.y;
+    }
+
+    get workHeight(): number {
+        return this.height + this.canvasResizerService.WORK_AREA_PADDING_SIZE;
     }
 }

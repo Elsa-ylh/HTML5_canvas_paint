@@ -6,14 +6,18 @@ canvas {
     top: 0;
 }
 
-#canvas{
-    z-index: 0;
+#previewLayer {
+    z-index: 2;
 }
 
-#drawCanvas{
+#canvas {
     z-index: 1;
 }
 
-#canvas-container{
+#drawCanvas {
+    z-index: 1;
+}
+
+#canvas-container {
     position: relative;
 }
