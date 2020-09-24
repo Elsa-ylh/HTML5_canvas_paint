@@ -69,8 +69,8 @@ export class DrawingComponent implements AfterViewInit {
 
     ngOnInit(): void {
         this.eraserService.eraserStateObservable.subscribe(() => {
-            this.baseCanvas.nativeElement.style.cursor = "none";
-            this.previewCanvas.nativeElement.style.cursor = "none";
+            this.baseCanvas.nativeElement.style.cursor = "url('square.png'),auto";
+            this.previewCanvas.nativeElement.style.cursor = "url('square.png'),auto";
         });
     }
 
