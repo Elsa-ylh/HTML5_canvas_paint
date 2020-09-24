@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
-import { DrawingInformationsService } from '@app/services/drawing-info/drawing-informations.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -29,8 +28,6 @@ describe('DrawingComponent', () => {
     let rectangleStub: RectangleService;
     let ellipseStub: EllipseService;
 
-    const drawingInfos: DrawingInformationsService = new DrawingInformationsService();
-
     beforeEach(
         waitForAsync(() => {
             drawingStub = new DrawingService();
@@ -40,8 +37,8 @@ describe('DrawingComponent', () => {
             eraserStub = new EraserService(drawingStub);
             brushStub = new BrushService(drawingStub);
             lineStub = new LineService(drawingStub);
-            rectangleStub = new RectangleService(drawingStub, drawingInfos);
-            ellipseStub = new EllipseService(drawingStub,drawingInfos);
+            rectangleStub = new RectangleService(drawingStub);
+            ellipseStub = new EllipseService(drawingStub);
 
             toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub);
 
