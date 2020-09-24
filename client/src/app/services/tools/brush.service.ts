@@ -8,7 +8,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class BrushService extends Tool {
-    pixelThickness: number = 4;
+    thickness: number = 4;
 
     private pathData: Vec2[];
 
@@ -22,12 +22,13 @@ export class BrushService extends Tool {
         if (this.mouseDown) {
             this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
             this.drawingService.previewCtx.strokeStyle = '#000000';
-            // this.drawingService.baseCtx.lineWidth = startpx; // conserve same size a before
-            // this.drawingService.previewCtx.lineWidth = startpx;
+            this.drawingService.baseCtx.lineWidth = this.thickness; // conserve same size a before
+            this.drawingService.previewCtx.lineWidth = this.thickness;
+            this.drawingService.baseCtx.setLineDash([0, 0]); // reset
+            this.drawingService.previewCtx.setLineDash([0, 0]); // reset
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-            // console.log('bruch');
         }
     }
 

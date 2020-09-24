@@ -9,8 +9,6 @@ import { ToolService } from '@app/services/tool-service';
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit {
-    WORK_AREA_PADDING_SIZE: number = 50;
-
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final, aussi utilisé pour sauvegarder
     // une version du dessin avant de l'appliquer au final.
@@ -59,7 +57,7 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     get workWidth(): number {
-        return this.width + this.WORK_AREA_PADDING_SIZE;
+        return this.width + this.canvasResizerService.WORK_AREA_PADDING_SIZE;
     }
 
     get height(): number {
@@ -67,6 +65,6 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     get workHeight(): number {
-        return this.height + this.WORK_AREA_PADDING_SIZE;
+        return this.height + this.canvasResizerService.WORK_AREA_PADDING_SIZE;
     }
 }
