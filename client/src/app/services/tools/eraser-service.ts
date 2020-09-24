@@ -19,6 +19,7 @@ export class EraserService extends Tool {
         const minimalPx = 5;
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
+            this.mouseMove = false;
             this.drawingService.baseCtx.strokeStyle = '#FFF'; // draw in white
             this.drawingService.previewCtx.strokeStyle = '#FFF'; // when changecolor is implemented call pencil weith white.
             this.drawingService.baseCtx.lineWidth = minimalPx; // minimal size is 5 px.
@@ -31,9 +32,13 @@ export class EraserService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-            this.RemoveLine(this.drawingService.baseCtx, this.pathData);
+            if (this.mouseMove) {
+                const mousePosition = this.getPositionFromMouse(event);
+                this.pathData.push(mousePosition);
+                this.RemoveLine(this.drawingService.baseCtx, this.pathData);
+            } else {
+                // code to draw line
+            }
         }
 
         this.mouseDown = false;
@@ -42,6 +47,7 @@ export class EraserService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
+            this.mouseMove = true;
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
@@ -52,6 +58,7 @@ export class EraserService extends Tool {
     }
 
     private RemoveLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.setLineDash([0, 0]); // reset
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
