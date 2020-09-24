@@ -1,52 +1,62 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatSliderChange } from '@angular/material/slider';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
-import { DrawingInformationsService } from '@app/services/drawing-info/drawing-informations.service';
+import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
+import { EllipseService } from '@app/services/tools/ellipse.service';
+import { RectangleService } from '@app/services/tools/rectangle.service';
+
 const pxMinBrush = 6; // Le crayon fait deja pour plus petit
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
     showAttributes: boolean;
     isDialogOpen: boolean = false;
-    dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     lineWidth: number;
     pxSize: number;
+    newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
+    checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
+
     constructor(
         public drawingService: DrawingService,
-        private dialogNewDrawing: MatDialog,
+        private dialogCreator: MatDialog,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
         public toolService: ToolService,
-        public drawingInfos: DrawingInformationsService,
+        public rectangleService: RectangleService,
+        public ellipseService: EllipseService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.NONE);
-    }
-
-    ngOnInit(): void {
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
     }
 
     clearCanvas(): void {
         if (!this.drawingService.isCanvasBlank()) {
-            this.dialogRef = this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
-            this.dialogRef.afterClosed().subscribe(() => {
+            this.newDrawingRef = this.dialogCreator.open(DialogCreateNewDrawingComponent);
+            this.newDrawingRef.afterClosed().subscribe(() => {
                 this.isDialogOpen = false;
             });
         }
     }
 
     createNewDrawing(): void {
-        this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
+        this.dialogCreator.open(DialogCreateNewDrawingComponent);
+    }
+
+    openUserGuide(): void {
+        this.checkDocumentationRef = this.dialogCreator.open(WriteTextDialogUserGuideComponent, {
+            width: '90%',
+            height: '100%',
+        });
     }
 
     pickPencil(): void {
@@ -74,8 +84,9 @@ export class SidebarComponent implements OnInit {
         this.toolService.currentTool.subToolSelect = subTool;
     }
 
-    pickEllipse(): void {
+    pickEllipse(subTool2: number): void {
         this.toolService.switchTool(ToolUsed.Ellipse);
+        this.toolService.currentTool.subToolSelect = subTool2;
     }
 
     pickColor(): void {
@@ -101,6 +112,10 @@ export class SidebarComponent implements OnInit {
 
     @HostListener('window:keydown.1', ['$event']) onKeyDown1(event: KeyboardEvent): void {
         this.pickRectangle(1);
+    }
+
+    @HostListener('window:keydown.2', ['$event']) onKeyDown2(event: KeyboardEvent): void {
+        this.pickEllipse(1);
     }
 
     @HostListener('window:keydown.e', ['$event'])

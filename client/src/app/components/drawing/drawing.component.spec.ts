@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
-import { DrawingInformationsService } from '@app/services/drawing-info/drawing-informations.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
+import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
@@ -26,7 +26,7 @@ describe('DrawingComponent', () => {
     let brushStub: BrushService;
     let lineStub: LineService;
     let rectangleStub: RectangleService;
-    const drawingInfos: DrawingInformationsService = new DrawingInformationsService();
+    let ellipseStub: EllipseService;
 
     beforeEach(
         waitForAsync(() => {
@@ -37,9 +37,10 @@ describe('DrawingComponent', () => {
             eraserStub = new EraserService(drawingStub);
             brushStub = new BrushService(drawingStub);
             lineStub = new LineService(drawingStub);
-            rectangleStub = new RectangleService(drawingStub, drawingInfos);
+            rectangleStub = new RectangleService(drawingStub);
+            ellipseStub = new EllipseService(drawingStub);
 
-            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub);
+            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub);
 
             toolStub = toolServiceStub.currentTool;
 
