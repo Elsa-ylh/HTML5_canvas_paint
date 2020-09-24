@@ -54,7 +54,6 @@ export class EraserService extends Tool {
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.RemoveLine(this.drawingService.previewCtx, this.pathData);
-            this.RemoveLine(this.drawingService.baseCtx, this.pathData); // to see in real time the  changes.
         }
     }
 
