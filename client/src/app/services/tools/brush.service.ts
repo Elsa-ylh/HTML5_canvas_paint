@@ -120,11 +120,52 @@ export class BrushService extends Tool {
                 // son fonctionnement est dans la fonction drawBrushTool4
                 break;
             case SubToolselected.tool5:
+                this.drawLineBrush(ctx, path);
                 break;
             default:
                 break;
         }
     }
+    private drawLineBrush(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.beginPath();
+        const sizePx = ctx.lineWidth;
+        this.lastPoint = path[0];
+        if (ctx === this.drawingService.baseCtx)
+            for (const point of path) {
+                const x = (this.lastPoint.x + point.x) / 2;
+                const y = (this.lastPoint.y + point.y) / 2;
+                if (sizePx < this.lastPoint.x - point.x || sizePx < this.lastPoint.y - point.y) {
+                    for (let index = 0; index < (sizePx * 6) / 8; index += 1) {
+                        ctx.beginPath();
+                        ctx.globalAlpha = index / (sizePx + 2);
+                        ctx.moveTo(x, y + sizePx - index * 1.2);
+                        ctx.lineTo(x, y + sizePx - index * 1.1);
+                        ctx.stroke();
+
+                        ctx.moveTo(point.x, point.y + sizePx - index * 1.2);
+                        ctx.lineTo(point.x, point.y + sizePx - index * 1.1);
+                        ctx.stroke();
+                    }
+                } else {
+                    for (let index = 0; index < (sizePx * 6) / 8; sizePx < 15 ? (index += 3) : (index += 1)) {
+                        ctx.beginPath();
+                        ctx.globalAlpha = index / sizePx;
+                        ctx.moveTo(point.x, point.y + sizePx - index * 1.4);
+                        ctx.lineTo(point.x, point.y + sizePx - index * 1.3);
+                        ctx.stroke();
+                    }
+                }
+                this.lastPoint = point;
+            }
+        ctx.beginPath();
+        ctx.lineCap = 'round';
+        ctx.globalAlpha = 0.95;
+        for (const point of path) {
+            ctx.lineTo(point.x, point.y);
+        }
+        ctx.stroke();
+    }
+
     private witchBrush(select: number): void {
         this.clearEffectTool();
         switch (select) {
@@ -152,6 +193,8 @@ export class BrushService extends Tool {
 
                 break;
             case SubToolselected.tool5:
+                this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
+                this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
                 break;
             default:
                 break;
