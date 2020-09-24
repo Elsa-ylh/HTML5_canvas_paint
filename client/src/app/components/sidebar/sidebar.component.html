@@ -40,7 +40,20 @@
     </div>
     <div class="toolbar" *ngIf="showAttributes">
         <div class="attributes" [ngSwitch]="this.toolService.currentToolName">
-            <mat-grid-list cols="6" *ngSwitchCase="0"> </mat-grid-list>
+            <mat-grid-list cols="6" *ngSwitchCase="0">
+                <mat-grid-tile colspan="6"> This is the settings to decrease or increase the size of a button</mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">This is a great software for everyone. Let's keep doing UI with this tooling.</mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider tickInterval="1000" min="1" max="100000"></mat-slider>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Leave a comment</mat-label>
+                        <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+                    </mat-form-field>
+                </mat-grid-tile>
+            </mat-grid-list>
+
             <mat-grid-list cols="6" *ngSwitchCase="1">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
             </mat-grid-list>
