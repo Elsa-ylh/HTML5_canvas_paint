@@ -9,32 +9,20 @@ import { DialogCreateNewDrawingComponent } from 'src/app/components/dialog-creat
 })
 export class MainPageComponent {
     onGoingDrawing: boolean;
-    dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
-    modalGuidRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
-    constructor(public dialog: MatDialog) {
+    newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
+    checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
+    constructor(private dialog: MatDialog) {
         this.onGoingDrawing = false;
     }
 
     createNewDrawing(): void {
-        this.dialogRef = this.dialog.open(DialogCreateNewDrawingComponent, {
+        this.newDrawingRef = this.dialog.open(DialogCreateNewDrawingComponent, {
             data: { message: 'Créer un nouveau dessin avec les dimensions suivantes' },
         });
     }
 
-    // continueDrawing(): void {
-    //    alert('On continuera le dessin dans le Sprint 2.');
-    // }
-
-    // openCarousel(): void {
-    //    alert('À continuer dans le Sprint 3.');
-    // }
-
-    // openDocumentation(): void {
-    //    alert('La documentation est ouverte.');
-    // }
-
     openUserGuide(): void {
-        this.modalGuidRef = this.dialog.open(WriteTextDialogUserGuideComponent, {
+        this.checkDocumentationRef = this.dialog.open(WriteTextDialogUserGuideComponent, {
             width: '90%',
             height: '100%',
         });

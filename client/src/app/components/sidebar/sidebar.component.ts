@@ -8,6 +8,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { WriteTextDialogUserGuideComponent } from '../write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 
 @Component({
     selector: 'app-sidebar',
@@ -17,8 +18,8 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
 export class SidebarComponent implements OnInit {
     showAttributes: boolean;
     isDialogOpen: boolean = false;
-    dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
-    lineWidth: number;
+    newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
+    checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
 
     constructor(
         public drawingService: DrawingService,
@@ -39,8 +40,8 @@ export class SidebarComponent implements OnInit {
 
     clearCanvas(): void {
         if (!this.drawingService.isCanvasBlank()) {
-            this.dialogRef = this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
-            this.dialogRef.afterClosed().subscribe(() => {
+            this.newDrawingRef = this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
+            this.newDrawingRef.afterClosed().subscribe(() => {
                 this.isDialogOpen = false;
             });
         }
@@ -48,6 +49,13 @@ export class SidebarComponent implements OnInit {
 
     createNewDrawing(): void {
         this.dialogNewDrawing.open(DialogCreateNewDrawingComponent);
+    }
+
+    openUserGuide(): void {
+        this.checkDocumentationRef = this.dialogNewDrawing.open(WriteTextDialogUserGuideComponent, {
+            width: '90%',
+            height: '100%',
+        });
     }
 
     pickPencil(): void {
@@ -106,16 +114,4 @@ export class SidebarComponent implements OnInit {
     changePencilMode(event: KeyboardEvent): void {
         this.toolService.switchTool(ToolUsed.Pencil);
     }
-
-    // @HostListener('window:keydown.shift', ['$event'])
-    // onShiftKeyDown(event: KeyboardEvent): void {
-    //     this.drawingService.shiftPressed = true;
-    //     console.log("test");
-    // }
-
-    // @HostListener('window:keyup.shift', ['$event'])
-    // onShiftKeyUp(event: KeyboardEvent): void {
-    //   this.drawingService.shiftPressed = false;
-    //   console.log("shiftup");
-    // }
 }
