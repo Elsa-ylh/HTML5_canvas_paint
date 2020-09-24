@@ -100,7 +100,11 @@ export class BrushService extends Tool {
                 this.lastPoint = path[0];
                 for (const point of path) {
                     ctx.beginPath();
-                    ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
+                    if (this.lastPoint.x === point.x && point.y === this.lastPoint.y) {
+                        ctx.moveTo(this.lastPoint.x - 1, this.lastPoint.y - 1);
+                    } else {
+                        ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
+                    }
                     ctx.lineTo(point.x, point.y);
                     ctx.stroke();
 
@@ -112,8 +116,8 @@ export class BrushService extends Tool {
                 }
                 break;
             case SubToolselected.tool4:
-                // if (ctx === this.drawingService.previewCtx) break;
-
+                window.alert('un problèment au niveau du fonctionnement du pinceau 4 sais produit');
+                // son fonctionnement est dans la fonction drawBrushTool4
                 break;
             case SubToolselected.tool5:
                 break;
@@ -161,11 +165,13 @@ export class BrushService extends Tool {
     private clearEffectTool(): void {
         this.drawingService.baseCtx.shadowColor = 'rgba(0,0,0,0)';
         this.drawingService.previewCtx.shadowColor = 'rgba(0,0,0,0)';
-        /*this.drawingService.baseCtx.lineWidth = this.pxSize;
-        this.drawingService.previewCtx.lineWidth = this.pxSize;*/
         this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
         this.drawingService.previewCtx.strokeStyle = '#000000';
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
+        this.drawingService.baseCtx.setLineDash([0, 0]); // reset
+        this.drawingService.previewCtx.setLineDash([0, 0]);
+        this.drawingService.baseCtx.globalAlpha = 1;
+        this.drawingService.previewCtx.globalAlpha = 1;
     }
     private remdomInt(): number {
         const min = this.drawingService.baseCtx.lineWidth / 8;

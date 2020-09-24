@@ -112,6 +112,10 @@ export class SidebarComponent implements OnInit {
     changePencilMode(event: KeyboardEvent): void {
         this.toolService.switchTool(ToolUsed.Pencil);
     }
+    @HostListener('window:keydown.w', ['$event'])
+    changeBrushMode(event: KeyboardEvent): void {
+        this.pickBrush(1);
+    }
 
     // @HostListener('window:keydown.shift', ['$event'])
     // onShiftKeyDown(event: KeyboardEvent): void {
