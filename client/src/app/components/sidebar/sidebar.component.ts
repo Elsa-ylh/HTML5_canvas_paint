@@ -21,6 +21,8 @@ export class SidebarComponent implements OnInit {
     dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     lineWidth: number;
 
+    public showEraserWindow: boolean = false;
+
     constructor(
         public drawingService: DrawingService,
         private dialogNewDrawing: MatDialog,
@@ -118,7 +120,19 @@ export class SidebarComponent implements OnInit {
 
     // function will be called when eraser button is clicked
     eraserClicked(): void {
-        this.eraserService.buttonClicked();
+        if (this.toolService.currentToolName == ToolUsed.Eraser) {
+            this.showEraserSetting();
+            this.eraserService.buttonClicked();
+        }
+    }
+
+    showEraserSetting(): void {
+        this.showEraserWindow = true;
+    }
+
+    setEraserSize(size: number): void {
+        this.drawingService.baseCtx.lineWidth = size;
+        this.drawingService.previewCtx.lineWidth = size;
     }
 
 

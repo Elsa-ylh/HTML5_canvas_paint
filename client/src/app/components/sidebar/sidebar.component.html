@@ -5,7 +5,7 @@
                 <mat-button-toggle (click)="pickPencil()">
                     <mat-icon>edit</mat-icon>
                 </mat-button-toggle>
-                <mat-button-toggle (click)="pickEraser();eraserClicked()">
+                <mat-button-toggle (click)="pickEraser();eraserClicked();">
                     <mat-icon svgIcon="eraser"></mat-icon>
                 </mat-button-toggle>
                 <mat-button-toggle (click)="pickBrush()">
@@ -92,4 +92,14 @@
             <mat-grid-tile colspan="6"></mat-grid-tile>
         </mat-grid-list>
     </div>
+
+    <ng-container *ngIf="showEraserWindow">
+        <div>
+            <form action="/action_page.php">
+                <label>size: </label>
+                <input type="number" #eraserSize>px<br><br>
+                <button (click)="setEraserSize(eraserSize.value)">Submit</button>
+            </form>
+        </div>
+    </ng-container>
 </div>
