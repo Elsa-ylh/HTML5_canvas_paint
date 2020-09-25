@@ -10,6 +10,7 @@ import { BrushService } from './brush.service';
 describe('BrushService', () => {
     let service: BrushService;
     let mouseEvent: MouseEvent;
+    let mouseEvent1: MouseEvent;
     let mouseEventRight: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let subToolselected: SubToolselected;
@@ -41,7 +42,11 @@ describe('BrushService', () => {
             offsetY: 10,
             button: MouseButton.Left,
         } as MouseEvent;
-
+        mouseEvent1 = {
+            offsetX: 25,
+            offsetY: 12,
+            button: MouseButton.Left,
+        } as MouseEvent;
         mouseEventRight = {
             offsetX: 10,
             offsetY: 25,
@@ -183,7 +188,8 @@ describe('BrushService', () => {
     it('onMouseDown and onMouseUp should call drawLineSpy if mouse was already down 3', () => {
         service.subToolSelect = SubToolselected.tool3;
         service.mouseDownCoord = { x: 0, y: 0 };
-        service.onMouseMove(mouseEvent);
+        service.mouseDown = true;
+        service.onMouseMove(mouseEvent1);
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
     });

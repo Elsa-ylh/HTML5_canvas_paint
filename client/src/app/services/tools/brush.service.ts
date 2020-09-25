@@ -11,6 +11,7 @@ const citcle = Math.PI * 2;
     providedIn: 'root',
 })
 export class BrushService extends Tool {
+    pixelMinBrush: number = 6;
     pixelThickness: number = 4;
     private lastPoint: Vec2;
     private pathData: Vec2[];
@@ -101,8 +102,11 @@ export class BrushService extends Tool {
                 this.lastPoint = path[0];
                 for (const point of path) {
                     ctx.beginPath();
-                    ctx.moveTo(this.lastPoint.x - 1, this.lastPoint.y - 1);
-
+                    if (this.lastPoint.x === point.x && point.y === this.lastPoint.y) {
+                        ctx.moveTo(this.lastPoint.x - 1, this.lastPoint.y - 1);
+                    } else {
+                        ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
+                    }
                     ctx.lineTo(point.x, point.y);
                     ctx.stroke();
 

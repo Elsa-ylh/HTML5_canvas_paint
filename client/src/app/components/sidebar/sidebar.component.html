@@ -3,25 +3,25 @@
         <div class="small-buttons">
             <mat-list class="tools-buttons">
                 <mat-button-toggle-group vertical="true">
-                    <mat-button-toggle (click)="pickPencil()">
+                    <mat-button-toggle (click)="pickPencil()" [checked]="pencilChecked">
                         <mat-icon>edit</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickEraser()">
+                    <mat-button-toggle (click)="pickEraser()" [checked]="eraserChecked">
                         <mat-icon svgIcon="eraser"></mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickBrush(1)">
+                    <mat-button-toggle (click)="pickBrush(1)" [checked]="brushChecked">
                         <mat-icon>brush</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickLine()">
+                    <mat-button-toggle (click)="pickLine()" [checked]="lineChecked">
                         <mat-icon>horizontal_rule</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickRectangle(1)">
+                    <mat-button-toggle (click)="pickRectangle(1)" [checked]="rectangleChecked">
                         <mat-icon>crop_16_9</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickEllipse(1)">
+                    <mat-button-toggle (click)="pickEllipse(1)" [checked]="ellipseChecked">
                         <mat-icon>panorama_fish_eye</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickColor()">
+                    <mat-button-toggle (click)="pickColor()" [checked]="colorChecked">
                         <mat-icon>color_lens</mat-icon>
                     </mat-button-toggle>
                 </mat-button-toggle-group>
@@ -97,10 +97,24 @@
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="3"> Ce slider permet de modifier l'épaisseur des lignes des rectangles</mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-slider min="1" max="20" step="1" value="10" [(ngModel)]="ellipseService.lineWidth"></mat-slider>
+                    <mat-slider min="1" max="20" step="1" value="10" [(ngModel)]="rectangleService.lineWidth"></mat-slider>
                 </mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="6">
+                <mat-grid-tile colspan="6" rowspan="6">Pesez sur SHIFT en même temps pour avoir un disque/cercle.</mat-grid-tile>
+                <mat-grid-tile colspan="2">
+                    <button mat-button color="primary" (click)="pickEllipse(1)">Plein</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="3">
+                    <button mat-button color="primary" (click)="pickEllipse(2)">Contour</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="5">
+                    <button mat-button color="primary" (click)="pickEllipse(3)">Plein avec contour</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="3"> Epaisseur des lignes des ellipse</mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider min="1" max="20" step="1" value="10" [(ngModel)]="ellipseService.lineWidth"></mat-slider>
+                </mat-grid-tile>
                 <mat-grid-tile colspan="6"></mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="7">
