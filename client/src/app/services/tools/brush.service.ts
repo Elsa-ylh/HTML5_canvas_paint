@@ -6,7 +6,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 const motionDifference = 4; // Cette constante fait fonctionner thickBrush
-const citcle = Math.PI * 2;
+const circle = Math.PI * 2;
 @Injectable({
     providedIn: 'root',
 })
@@ -76,7 +76,7 @@ export class BrushService extends Tool {
         for (const point of path) {
             ctx.beginPath();
             ctx.globalAlpha = point.opacity;
-            ctx.arc(point.vec2.x, point.vec2.y, point.radius, 0, citcle);
+            ctx.arc(point.vec2.x, point.vec2.y, point.radius, 0, circle);
             ctx.fill();
         }
     }
