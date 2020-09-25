@@ -122,30 +122,22 @@ export class BrushService extends Tool {
         }
     }
     private drawLinePattern(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        const px1 = 2;
+        const px2 = 2;
+        const dividerRadius = 3;
         const sizePx = ctx.lineWidth;
         const stringStrokeStyle = ctx.strokeStyle;
-        const moveModify = sizePx / 3;
+        const moveModify = sizePx / dividerRadius;
 
-        this.lastPoint = path[0];
         ctx.beginPath();
         for (const point of path) {
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = stringStrokeStyle;
-            ctx.lineWidth = sizePx;
-            /*
-            ctx.moveTo(this.lastPoint.x + moveModify, this.lastPoint.y + moveModify);
             ctx.lineTo(point.x, point.y);
-            ctx.moveTo(this.lastPoint.x - moveModify, this.lastPoint.y - moveModify);*/
-            ctx.lineTo(point.x, point.y);
-
             this.lastPoint = point;
         }
         ctx.stroke();
-        ctx.stroke();
+
+        // le motif en forme de flaiche comment ici
         ctx.beginPath();
-        ctx.lineWidth = px1;
-        ctx.lineCap = 'round';
+        ctx.lineWidth = px2;
         ctx.strokeStyle = 'rgba(255,255,255,0.4)';
         this.lastPoint = path[0];
         for (const point of path) {
