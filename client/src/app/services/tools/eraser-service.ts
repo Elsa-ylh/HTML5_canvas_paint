@@ -17,15 +17,12 @@ export class EraserService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        const minimalPx = 5;
+
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.mouseMove = false;
             this.drawingService.baseCtx.strokeStyle = '#FFF'; // draw in white
             this.drawingService.previewCtx.strokeStyle = '#FFF'; // when changecolor is implemented call pencil weith white.
-            this.drawingService.baseCtx.lineWidth = minimalPx; // minimal size is 5 px.
-            this.drawingService.previewCtx.lineWidth = minimalPx;
-
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -76,6 +73,9 @@ export class EraserService extends Tool {
     private eraserState = new Subject<boolean>();
     eraserStateObservable = this.eraserState.asObservable();
     buttonClicked(): void {
-        this.eraserState.next(true)
+        this.eraserState.next(true);
+        const minimalPx = 5;
+        this.drawingService.baseCtx.lineWidth = minimalPx;
+        this.drawingService.previewCtx.lineWidth = minimalPx;
     }
 }
