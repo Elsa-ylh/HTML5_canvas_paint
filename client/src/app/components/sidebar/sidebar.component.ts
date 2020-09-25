@@ -9,7 +9,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { EraserService } from '@app/services/tools/eraser-service';
 
-
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
@@ -21,7 +20,7 @@ export class SidebarComponent implements OnInit {
     dialogRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     lineWidth: number;
 
-    public showEraserWindow: boolean = false;
+    showEraserWindow: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -120,22 +119,9 @@ export class SidebarComponent implements OnInit {
 
     // function will be called when eraser button is clicked
     eraserClicked(): void {
-        if (this.toolService.currentToolName == ToolUsed.Eraser) {
+        if (this.toolService.currentToolName === ToolUsed.Eraser) {
             //   this.showEraserSetting();
             this.eraserService.buttonClicked();
         }
     }
-
-    /* showEraserSetting(): void {
-        this.showEraserWindow = true;
-    }
-
-    setEraserSize(size: number): void {
-        this.drawingService.baseCtx.lineWidth = size;
-        this.drawingService.previewCtx.lineWidth = size;
-    }
-    
-    */
-
-
 }

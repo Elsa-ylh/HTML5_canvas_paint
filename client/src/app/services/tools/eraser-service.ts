@@ -3,21 +3,22 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
-
+    private eraserState: Subject<boolean> = new Subject<boolean>();
+    eraserStateObservable: Observable<boolean> = this.eraserState.asObservable();
+    private minimalPx: number = 5;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
     }
 
     onMouseDown(event: MouseEvent): void {
-
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.mouseMove = false;
@@ -30,12 +31,14 @@ export class EraserService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
             if (this.mouseMove) {
-                const mousePosition = this.getPositionFromMouse(event);
                 this.pathData.push(mousePosition);
                 this.RemoveLine(this.drawingService.baseCtx, this.pathData);
             } else {
-                // code to draw line
+                // code to draw dot
+                this.drawingService.baseCtx.fillStyle = '#FFF';
+                this.drawingService.baseCtx.fillRect(mousePosition.x, mousePosition.y, this.minimalPx, this.minimalPx);
             }
         }
 
@@ -68,14 +71,11 @@ export class EraserService extends Tool {
         this.pathData = [];
     }
 
-
     // for eraser cursor change, eraserState becomes an observable
-    private eraserState = new Subject<boolean>();
-    eraserStateObservable = this.eraserState.asObservable();
     buttonClicked(): void {
         this.eraserState.next(true);
-        const minimalPx = 5;
-        this.drawingService.baseCtx.lineWidth = minimalPx;
-        this.drawingService.previewCtx.lineWidth = minimalPx;
+
+        this.drawingService.baseCtx.lineWidth = this.minimalPx;
+        this.drawingService.previewCtx.lineWidth = this.minimalPx;
     }
 }
