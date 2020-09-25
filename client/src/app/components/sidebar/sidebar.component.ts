@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -21,6 +21,7 @@ export class SidebarComponent implements OnInit {
     lineWidth: number;
 
     showEraserWindow: boolean = false;
+    @ViewChild('slideBarText', { static: false }) eraserText: ElementRef<HTMLCanvasElement>;
 
     constructor(
         public drawingService: DrawingService,
