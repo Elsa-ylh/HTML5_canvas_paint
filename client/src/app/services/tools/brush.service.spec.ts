@@ -162,7 +162,8 @@ describe('BrushService', () => {
     });
 
     it('onMouseMove and onMouseUp should call drawLineSpy if mouse was already down 6 si def', () => {
-        service.subToolSelect = 6;
+        const tool6 = 6; // tools exite pas
+        service.subToolSelect = tool6;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         service.onMouseMove(mouseEvent);
