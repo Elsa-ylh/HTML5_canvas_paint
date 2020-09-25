@@ -6,7 +6,6 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
 import { BrushService } from './tools/brush.service';
 import { EllipseService } from './tools/ellipse.service';
 import { LineService } from './tools/line.service';
-
 @Injectable({
     providedIn: 'root',
 })

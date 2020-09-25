@@ -76,7 +76,6 @@ export class BrushService extends Tool {
             ctx.arc(point.vec2.x, point.vec2.y, point.radius, 0, citcle);
             ctx.fill();
         }
-        ctx.stroke();
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
