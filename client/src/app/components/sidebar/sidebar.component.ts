@@ -18,20 +18,20 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    isPencilChecked: boolean;
-    isEraserChecked: boolean;
-    isBrushChecked: boolean;
-    isLineChecked: boolean;
-    isRectangleChecked: boolean;
-    isEllipseChecked: boolean;
-    isColorChecked: boolean;
-
     showAttributes: boolean;
     isDialogOpen: boolean = false;
     lineWidth: number;
     pxSize: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
+
+    isPencilChecked: boolean = false;
+    isEraserChecked: boolean = false;
+    isBrushChecked: boolean = false;
+    isLineChecked: boolean = false;
+    isRectangleChecked: boolean = false;
+    isEllipseChecked: boolean = false;
+    isColorChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -141,8 +141,13 @@ export class SidebarComponent {
     }
 
     resetCheckedButton(): void {
-        // this.pencilChecked = false;
-        // this.eraserChecked = false;
+        this.isPencilChecked = false;
+        this.isEraserChecked = false;
+        this.isBrushChecked = false;
+        this.isLineChecked = false;
+        this.isRectangleChecked = false;
+        this.isEllipseChecked = false;
+        this.isColorChecked = false;
     }
 
     // keybind control o for new drawing
@@ -155,25 +160,34 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.1', ['$event']) onKeyDown1(event: KeyboardEvent): void {
+        this.resetCheckedButton();
         this.isRectangleChecked = true;
         this.pickRectangle(1);
     }
 
     @HostListener('window:keydown.2', ['$event']) onKeyDown2(event: KeyboardEvent): void {
+        this.resetCheckedButton();
+        this.isEllipseChecked = true;
         this.pickEllipse(1);
     }
 
     @HostListener('window:keydown.e', ['$event'])
     changeEraserMode(event: KeyboardEvent): void {
+        this.resetCheckedButton();
+        this.isEraserChecked = true;
         this.toolService.switchTool(ToolUsed.Eraser);
     }
 
     @HostListener('window:keydown.c', ['$event'])
     changePencilMode(event: KeyboardEvent): void {
+        this.resetCheckedButton();
+        this.isPencilChecked = true;
         this.toolService.switchTool(ToolUsed.Pencil);
     }
     @HostListener('window:keydown.w', ['$event'])
     changeBrushMode(event: KeyboardEvent): void {
+        this.resetCheckedButton();
+        this.isBrushChecked = true;
         this.pickBrush(1);
     }
 }
