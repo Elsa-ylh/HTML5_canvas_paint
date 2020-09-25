@@ -68,7 +68,8 @@ export class BrushService extends Tool {
             }
         }
     }
-    private drawBrushTool4(ctx: CanvasRenderingContext2D, path: PointArc[]) {
+
+    private drawBrushTool4(ctx: CanvasRenderingContext2D, path: PointArc[]): void {
         ctx.beginPath();
         for (const point of path) {
             ctx.beginPath();
@@ -192,7 +193,7 @@ export class BrushService extends Tool {
         this.drawingService.previewCtx.globalAlpha = 1;
     }
     private remdomInt(): number {
-        const min = this.drawingService.baseCtx.lineWidth / 8;
+        const min = this.drawingService.baseCtx.lineWidth / motionDifference; // le cercle vont avoir une grande entre le rayon et son quarte
         const differnve = this.drawingService.baseCtx.lineWidth - min;
         return Math.floor(Math.random() * differnve) + min;
     }
