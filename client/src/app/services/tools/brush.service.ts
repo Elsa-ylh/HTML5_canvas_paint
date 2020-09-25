@@ -87,6 +87,7 @@ export class BrushService extends Tool {
                     ctx.lineTo(point.x, point.y);
                 }
                 ctx.stroke();
+
                 break;
             case SubToolselected.tool2:
                 ctx.beginPath();
@@ -100,11 +101,8 @@ export class BrushService extends Tool {
                 this.lastPoint = path[0];
                 for (const point of path) {
                     ctx.beginPath();
-                    if (this.lastPoint.x === point.x && point.y === this.lastPoint.y) {
-                        ctx.moveTo(this.lastPoint.x - 1, this.lastPoint.y - 1);
-                    } else {
-                        ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
-                    }
+                    ctx.moveTo(this.lastPoint.x - 1, this.lastPoint.y - 1);
+
                     ctx.lineTo(point.x, point.y);
                     ctx.stroke();
 
@@ -115,14 +113,11 @@ export class BrushService extends Tool {
                     this.lastPoint = point;
                 }
                 break;
-            case SubToolselected.tool4:
-                window.alert('un problèment au niveau du fonctionnement du pinceau 4 sais produit');
-                // son fonctionnement est dans la fonction drawBrushTool4
-                break;
             case SubToolselected.tool5:
                 this.drawLineBrush(ctx, path);
                 break;
             default:
+                window.alert('un problèment au niveau du fonctionnement du pinceau 4 produit ou ne pas un outil de pinceau');
                 break;
         }
     }
