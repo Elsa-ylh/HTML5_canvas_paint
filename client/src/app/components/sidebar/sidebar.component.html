@@ -3,25 +3,25 @@
         <div class="small-buttons">
             <mat-list class="tools-buttons">
                 <mat-button-toggle-group vertical="true">
-                    <mat-button-toggle (click)="pickPencil()">
+                    <mat-button-toggle (click)="pickPencil()" [checked]="pencilChecked">
                         <mat-icon>edit</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickEraser()">
+                    <mat-button-toggle (click)="pickEraser()" [checked]="eraserChecked">
                         <mat-icon svgIcon="eraser"></mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickBrush()">
+                    <mat-button-toggle (click)="pickBrush(1)" [checked]="brushChecked">
                         <mat-icon>brush</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickLine()">
+                    <mat-button-toggle (click)="pickLine()" [checked]="lineChecked">
                         <mat-icon>horizontal_rule</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickRectangle(1)">
+                    <mat-button-toggle (click)="pickRectangle(1)" [checked]="rectangleChecked">
                         <mat-icon>crop_16_9</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickEllipse(1)">
+                    <mat-button-toggle (click)="pickEllipse(1)" [checked]="ellipseChecked">
                         <mat-icon>panorama_fish_eye</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickColor()">
+                    <mat-button-toggle (click)="pickColor()" [checked]="colorChecked">
                         <mat-icon>color_lens</mat-icon>
                     </mat-button-toggle>
                 </mat-button-toggle-group>
@@ -38,57 +38,88 @@
             </mat-list>
         </div>
     </div>
-</div>
-<div class="toolbar" *ngIf="showAttributes">
-    <div class="attributes" [ngSwitch]="this.toolService.currentToolName">
-        <mat-grid-list cols="6" *ngSwitchCase="0"> </mat-grid-list>
-        <mat-grid-list cols="6" *ngSwitchCase="1">
-            <mat-grid-tile colspan="6"></mat-grid-tile>
-        </mat-grid-list>
-        <mat-grid-list cols="6" *ngSwitchCase="2">
-            <mat-grid-tile colspan="6"></mat-grid-tile>
-        </mat-grid-list>
-        <mat-grid-list cols="6" *ngSwitchCase="3">
-            <mat-grid-tile colspan="6"></mat-grid-tile>
-        </mat-grid-list>
-        <mat-grid-list cols="6" *ngSwitchCase="4">
-            <mat-grid-tile colspan="6"></mat-grid-tile>
-        </mat-grid-list>
-        <mat-grid-list cols="6" *ngSwitchCase="5">
-            <mat-grid-tile colspan="6"></mat-grid-tile>
-            <mat-grid-tile colspan="6" rowspan="6">Pesez sur SHIFT en même temps pour avoir un carré.</mat-grid-tile>
-            <mat-grid-tile colspan="6"> choisissez un type de rectangle</mat-grid-tile>
-            <mat-grid-tile colspan="6" rowspan="4">
-                <mat-button-toggle-group vertical="true">
-                    <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickRectangle(1)">Plein</mat-button-toggle>
-                    <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickRectangle(2)">Contour</mat-button-toggle>
-                    <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickRectangle(3)">Plein avec contour</mat-button-toggle>
-                </mat-button-toggle-group>
-            </mat-grid-tile>
-            <mat-grid-tile colspan="6" rowspan="3"> Ce slider permet de modifier l'épaisseur des lignes des rectangles</mat-grid-tile>
-            <mat-grid-tile colspan="6">
-                <mat-slider min="1" max="20" step="1" value="10" [(ngModel)]="rectangleService.lineWidth"></mat-slider>
-            </mat-grid-tile>
-        </mat-grid-list>
-        <mat-grid-list cols="6" *ngSwitchCase="6">
-            <mat-grid-tile colspan="6" rowspan="6">Pesez sur SHIFT en même temps pour avoir un disque/cercle.</mat-grid-tile>
-            <mat-grid-tile colspan="2">
-                <button mat-button color="primary" (click)="pickEllipse(1)">Plein</button>
-            </mat-grid-tile>
-            <mat-grid-tile colspan="3">
-                <button mat-button color="primary" (click)="pickEllipse(2)">Contour</button>
-            </mat-grid-tile>
-            <mat-grid-tile colspan="5">
-                <button mat-button color="primary" (click)="pickEllipse(3)">Plein avec contour</button>
-            </mat-grid-tile>
-            <mat-grid-tile colspan="6" rowspan="3"> Epaisseur des lignes des ellipse</mat-grid-tile>
-            <mat-grid-tile colspan="6">
-                <mat-slider min="1" max="20" step="1" value="10" [(ngModel)]="ellipseService.lineWidth"></mat-slider>
-            </mat-grid-tile>
-            <mat-grid-tile colspan="6"></mat-grid-tile>
-        </mat-grid-list>
-        <mat-grid-list cols="6" *ngSwitchCase="7">
-            <mat-grid-tile colspan="6"></mat-grid-tile>
-        </mat-grid-list>
+    <div class="toolbar" *ngIf="showAttributes">
+        <div class="attributes" [ngSwitch]="this.toolService.currentToolName">
+            <mat-grid-list cols="6" *ngSwitchCase="0">
+                <mat-grid-tile colspan="6"> This is the settings to decrease or increase the size of a button</mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">This is a great software for everyone. Let's keep doing UI with this tooling.</mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider tickInterval="1000" min="1" max="100000"></mat-slider>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Leave a comment</mat-label>
+                        <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+                    </mat-form-field>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            <mat-grid-list cols="6" *ngSwitchCase="1">
+                <mat-grid-tile colspan="6"></mat-grid-tile>
+            </mat-grid-list>
+            <mat-grid-list cols="6" *ngSwitchCase="2">
+                <mat-grid-tile colspan="6"></mat-grid-tile>
+            </mat-grid-list>
+            <mat-grid-list cols="6" *ngSwitchCase="3">
+                <mat-grid-tile colspan="6">
+                    <button mat-raised-button (click)="pickBrush(1)">pinceau 1</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <button mat-raised-button (click)="pickBrush(2)">pinceau 2</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <button mat-raised-button (click)="pickBrush(3)">pinceau 3</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <button mat-raised-button (click)="pickBrush(4)">pinceau 4</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <button mat-raised-button (click)="pickBrush(5)">pinceau 5</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider max="50" min="6" [(ngModel)]="pxSize" (input)="sliderSliding($event)"> </mat-slider><samp>{{ pxSize }}px</samp>
+                </mat-grid-tile>
+            </mat-grid-list>
+            <mat-grid-list cols="6" *ngSwitchCase="4">
+                <mat-grid-tile colspan="6"></mat-grid-tile>
+            </mat-grid-list>
+            <mat-grid-list cols="6" *ngSwitchCase="5">
+                <mat-grid-tile colspan="6"></mat-grid-tile>
+                <mat-grid-tile colspan="6"> This is the settings to decrease or increase the size of a button</mat-grid-tile>
+                <mat-grid-tile colspan="2">
+                    <button mat-button color="primary" (click)="pickRectangle(1)">Plein</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="3">
+                    <button mat-button color="primary" (click)="pickRectangle(2)">Contour</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="5">
+                    <button mat-button color="primary" (click)="pickRectangle(3)">Plein avec contour</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="3"> Ce slider permet de modifier l'épaisseur des lignes des rectangles</mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider min="1" max="20" step="1" value="10" [(ngModel)]="rectangleService.lineWidth"></mat-slider>
+                </mat-grid-tile>
+            </mat-grid-list>
+            <mat-grid-list cols="6" *ngSwitchCase="6">
+                <mat-grid-tile colspan="6" rowspan="6">Pesez sur SHIFT en même temps pour avoir un disque/cercle.</mat-grid-tile>
+                <mat-grid-tile colspan="2">
+                    <button mat-button color="primary" (click)="pickEllipse(1)">Plein</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="3">
+                    <button mat-button color="primary" (click)="pickEllipse(2)">Contour</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="5">
+                    <button mat-button color="primary" (click)="pickEllipse(3)">Plein avec contour</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="3"> Epaisseur des lignes des ellipse</mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider min="1" max="20" step="1" value="10" [(ngModel)]="ellipseService.lineWidth"></mat-slider>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6"></mat-grid-tile>
+            </mat-grid-list>
+            <mat-grid-list cols="6" *ngSwitchCase="7">
+                <mat-grid-tile colspan="6"></mat-grid-tile>
+            </mat-grid-list>
+        </div>
     </div>
 </div>
