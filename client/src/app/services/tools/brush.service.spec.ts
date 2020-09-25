@@ -18,7 +18,7 @@ describe('BrushService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
     let drawBrushToolSpy: jasmine.Spy<any>;
-    let drawLineBrush: jasmine.Spy<any>;
+    let drawLineBrushSpy: jasmine.Spy<any>;
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -31,7 +31,7 @@ describe('BrushService', () => {
         service = TestBed.inject(BrushService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         drawBrushToolSpy = spyOn<any>(service, 'drawBrushTool4').and.callThrough();
-        drawLineBrush = spyOn<any>(service, 'drawLineBrush').and.callThrough();
+        drawLineBrushSpy = spyOn<any>(service, 'drawLineBrush5').and.callThrough();
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
@@ -152,13 +152,13 @@ describe('BrushService', () => {
         expect(drawBrushToolSpy).toHaveBeenCalled();
     });
 
-    it('onMouseMove and onMouseUp should call drawLineBrush if mouse was already down tool5 ', () => {
+    it('onMouseMove and onMouseUp should call drawLineBrushSpy if mouse was already down tool5 ', () => {
         service.subToolSelect = SubToolselected.tool5;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         service.onMouseMove(mouseEvent);
         service.onMouseUp(mouseEvent);
-        expect(drawLineBrush).toHaveBeenCalled();
+        expect(drawLineBrushSpy).toHaveBeenCalled();
     });
 
     it('onMouseMove and onMouseUp should call drawLineSpy if mouse was already down 6 si def', () => {

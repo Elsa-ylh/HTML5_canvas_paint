@@ -51,6 +51,7 @@ export class BrushService extends Tool {
         }
         this.mouseDown = false;
         this.clearPath();
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -83,12 +84,7 @@ export class BrushService extends Tool {
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         switch (this.subToolSelect) {
             case SubToolselected.tool1:
-                ctx.beginPath();
-                for (const point of path) {
-                    ctx.lineTo(point.x, point.y);
-                }
-                ctx.stroke();
-
+                this.drawLinePattern(ctx, path);
                 break;
             case SubToolselected.tool2:
                 ctx.beginPath();
@@ -109,7 +105,7 @@ export class BrushService extends Tool {
                     }
                     ctx.lineTo(point.x, point.y);
                     ctx.stroke();
-
+                    ctx.beginPath();
                     ctx.moveTo(this.lastPoint.x - motionDifference, this.lastPoint.y - motionDifference);
                     ctx.lineTo(point.x - motionDifference, point.y - motionDifference);
                     ctx.stroke();
@@ -118,18 +114,61 @@ export class BrushService extends Tool {
                 }
                 break;
             case SubToolselected.tool5:
-                this.drawLineBrush(ctx, path);
+                this.drawLineBrush5(ctx, path);
                 break;
             default:
                 window.alert('un problèment au niveau du fonctionnement du pinceau 4 produit ou ne pas un outil de pinceau');
                 break;
         }
     }
-    private drawLineBrush(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawLinePattern(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        const px1 = 2;
+        const sizePx = ctx.lineWidth;
+        const stringStrokeStyle = ctx.strokeStyle;
+        const moveModify = sizePx / 3;
+
+        this.lastPoint = path[0];
+        ctx.beginPath();
+        for (const point of path) {
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = stringStrokeStyle;
+            ctx.lineWidth = sizePx;
+            /*
+            ctx.moveTo(this.lastPoint.x + moveModify, this.lastPoint.y + moveModify);
+            ctx.lineTo(point.x, point.y);
+            ctx.moveTo(this.lastPoint.x - moveModify, this.lastPoint.y - moveModify);*/
+            ctx.lineTo(point.x, point.y);
+
+            this.lastPoint = point;
+        }
+        ctx.stroke();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.lineWidth = px1;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+        this.lastPoint = path[0];
+        for (const point of path) {
+            ctx.moveTo(this.lastPoint.x, this.lastPoint.y + moveModify);
+            ctx.lineTo(this.lastPoint.x, this.lastPoint.y - moveModify);
+            ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
+            ctx.lineTo(point.x, point.y);
+            ctx.moveTo(this.lastPoint.x, this.lastPoint.y + moveModify);
+            ctx.lineTo(point.x, point.y);
+            ctx.moveTo(this.lastPoint.x, this.lastPoint.y - moveModify);
+            ctx.lineTo(point.x, point.y);
+            this.lastPoint = point;
+        }
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.strokeStyle = stringStrokeStyle;
+        ctx.lineWidth = sizePx;
+    }
+
+    private drawLineBrush5(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const sizePx = ctx.lineWidth;
-        ctx.lineWidth = sizePx / motionDifference; // on divise par catre
-        ctx.lineCap = 'round';
+        ctx.lineWidth = sizePx / motionDifference; // on divise par quatre
         for (let index = 1; index <= sizePx; index += 1) {
             ctx.beginPath();
             ctx.globalAlpha = index / sizePx;
