@@ -5,12 +5,13 @@ import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-const motionDifference = 4; // le numbre va faire marcher le ThichBrush
+const motionDifference = 4; // Cette constante fait fonctionner thickBrush
 const citcle = Math.PI * 2;
 @Injectable({
     providedIn: 'root',
 })
 export class BrushService extends Tool {
+    pixelMinBrush: number = 6;
     pixelThickness: number = 4;
     private lastPoint: Vec2;
     private pathData: Vec2[];
@@ -21,7 +22,7 @@ export class BrushService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.witchBrush(this.subToolSelect);
+        this.whichBrush(this.subToolSelect);
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
@@ -50,6 +51,7 @@ export class BrushService extends Tool {
         }
         this.mouseDown = false;
         this.clearPath();
+        this.clearEffectTool();
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -116,7 +118,7 @@ export class BrushService extends Tool {
                 }
                 break;
             case SubToolselected.tool4:
-                window.alert('un problèment au niveau du fonctionnement du pinceau 4 sais produit');
+                window.alert("un problème au niveau du fonctionnement du pinceau 4 s'est produit");
                 // son fonctionnement est dans la fonction drawBrushTool4
                 break;
             case SubToolselected.tool5:
@@ -129,7 +131,7 @@ export class BrushService extends Tool {
     private drawLineBrush(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const sizePx = ctx.lineWidth;
-        ctx.lineWidth = sizePx / motionDifference; // on divise par catre
+        ctx.lineWidth = sizePx / motionDifference; // on divise par quatre
         ctx.lineCap = 'round';
         for (let index = 1; index <= sizePx; index += 1) {
             ctx.beginPath();
@@ -142,7 +144,7 @@ export class BrushService extends Tool {
         ctx.lineWidth = sizePx;
     }
 
-    private witchBrush(select: number): void {
+    private whichBrush(select: number): void {
         this.clearEffectTool();
         switch (select) {
             case SubToolselected.tool1:
@@ -166,7 +168,6 @@ export class BrushService extends Tool {
                 this.drawingService.baseCtx.lineJoin = 'miter';
                 this.drawingService.previewCtx.lineCap = 'butt';
                 this.drawingService.previewCtx.lineJoin = 'miter';
-
                 break;
             case SubToolselected.tool5:
                 this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';

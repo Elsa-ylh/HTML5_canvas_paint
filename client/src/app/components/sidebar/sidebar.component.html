@@ -97,10 +97,24 @@
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="3"> Ce slider permet de modifier l'épaisseur des lignes des rectangles</mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-slider min="1" max="20" step="1" value="10" [(ngModel)]="ellipseService.lineWidth"></mat-slider>
+                    <mat-slider min="1" max="20" step="1" value="10" [(ngModel)]="rectangleService.lineWidth"></mat-slider>
                 </mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="6">
+                <mat-grid-tile colspan="6" rowspan="6">Pesez sur SHIFT en même temps pour avoir un disque/cercle.</mat-grid-tile>
+                <mat-grid-tile colspan="2">
+                    <button mat-button color="primary" (click)="pickEllipse(1)">Plein</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="3">
+                    <button mat-button color="primary" (click)="pickEllipse(2)">Contour</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="5">
+                    <button mat-button color="primary" (click)="pickEllipse(3)">Plein avec contour</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="3"> Epaisseur des lignes des ellipse</mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider min="1" max="20" step="1" value="10" [(ngModel)]="ellipseService.lineWidth"></mat-slider>
+                </mat-grid-tile>
                 <mat-grid-tile colspan="6"></mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="7">

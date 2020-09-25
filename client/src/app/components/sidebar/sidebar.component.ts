@@ -8,10 +8,10 @@ import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-n
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
+import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 
-const pxMinBrush = 6; // Le crayon fait deja pour plus petit
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
@@ -33,6 +33,7 @@ export class SidebarComponent {
         public toolService: ToolService,
         public rectangleService: RectangleService,
         public ellipseService: EllipseService,
+        public brushService: BrushService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.NONE);
@@ -69,8 +70,8 @@ export class SidebarComponent {
 
     pickBrush(subTool: number): void {
         this.toolService.switchTool(ToolUsed.Brush);
-        if (this.drawingService.baseCtx.lineWidth < pxMinBrush) {
-            this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.pxSize = pxMinBrush;
+        if (this.drawingService.baseCtx.lineWidth < this.brushService.pixelMinBrush) {
+            this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.pxSize = this.brushService.pixelMinBrush;
         } else this.pxSize = this.drawingService.previewCtx.lineWidth = this.drawingService.baseCtx.lineWidth;
         this.toolService.currentTool.subToolSelect = subTool;
     }

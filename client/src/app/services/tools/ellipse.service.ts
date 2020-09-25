@@ -44,6 +44,7 @@ export class EllipseService extends Tool {
         }
         this.mouseDown = false;
         this.leftMouseDown = false;
+        // clear effect
     }
 
     onMouseMove(event: MouseEvent): void {
