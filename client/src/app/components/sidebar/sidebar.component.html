@@ -3,25 +3,25 @@
         <div class="small-buttons">
             <mat-list class="tools-buttons">
                 <mat-button-toggle-group vertical="true">
-                    <mat-button-toggle (click)="pickPencil()">
+                    <mat-button-toggle (click)="pickPencil()" [checked]="pencilChecked">
                         <mat-icon>edit</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickEraser()">
+                    <mat-button-toggle (click)="pickEraser()" [checked]="eraserChecked">
                         <mat-icon svgIcon="eraser"></mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickBrush(1)">
+                    <mat-button-toggle (click)="pickBrush(1)" [checked]="brushChecked">
                         <mat-icon>brush</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickLine()">
+                    <mat-button-toggle (click)="pickLine()" [checked]="lineChecked">
                         <mat-icon>horizontal_rule</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickRectangle(1)">
+                    <mat-button-toggle (click)="pickRectangle(1)" [checked]="rectangleChecked">
                         <mat-icon>crop_16_9</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickEllipse(1)">
+                    <mat-button-toggle (click)="pickEllipse(1)" [checked]="ellipseChecked">
                         <mat-icon>panorama_fish_eye</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickColor()">
+                    <mat-button-toggle (click)="pickColor()" [checked]="colorChecked">
                         <mat-icon>color_lens</mat-icon>
                     </mat-button-toggle>
                 </mat-button-toggle-group>

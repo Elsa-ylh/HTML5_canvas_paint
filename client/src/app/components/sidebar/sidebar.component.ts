@@ -18,6 +18,14 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
+    isPencilChecked: boolean;
+    isEraserChecked: boolean;
+    isBrushChecked: boolean;
+    isLineChecked: boolean;
+    isRectangleChecked: boolean;
+    isEllipseChecked: boolean;
+    isColorChecked: boolean;
+
     showAttributes: boolean;
     isDialogOpen: boolean = false;
     lineWidth: number;
@@ -64,8 +72,18 @@ export class SidebarComponent {
         this.toolService.switchTool(ToolUsed.Pencil);
     }
 
+    // the following get are used to make sure the display of sidebar tools are
+    // are properly pressed on
+    get pencilChecked(): boolean {
+        return this.isPencilChecked;
+    }
+
     pickEraser(): void {
         this.toolService.switchTool(ToolUsed.Eraser);
+    }
+
+    get eraserChecked(): boolean {
+        return this.isEraserChecked;
     }
 
     pickBrush(subTool: number): void {
@@ -76,8 +94,16 @@ export class SidebarComponent {
         this.toolService.currentTool.subToolSelect = subTool;
     }
 
+    get brushChecked(): boolean {
+        return this.isBrushChecked;
+    }
+
     pickLine(): void {
         this.toolService.switchTool(ToolUsed.Line);
+    }
+
+    get lineChecked(): boolean {
+        return this.isLineChecked;
     }
 
     pickRectangle(subTool: number): void {
@@ -85,13 +111,25 @@ export class SidebarComponent {
         this.toolService.currentTool.subToolSelect = subTool;
     }
 
+    get rectangleChecked(): boolean {
+        return this.isRectangleChecked;
+    }
+
     pickEllipse(subTool2: number): void {
         this.toolService.switchTool(ToolUsed.Ellipse);
         this.toolService.currentTool.subToolSelect = subTool2;
     }
 
+    get ellipseChecked(): boolean {
+        return this.isEllipseChecked;
+    }
+
     pickColor(): void {
         this.toolService.switchTool(ToolUsed.Color);
+    }
+
+    get colorChecked(): boolean {
+        return this.isColorChecked;
     }
 
     sliderSliding(args: MatSliderChange): void {
@@ -100,6 +138,11 @@ export class SidebarComponent {
             this.drawingService.baseCtx.lineWidth = args.value;
             this.drawingService.previewCtx.lineWidth = args.value;
         }
+    }
+
+    resetCheckedButton(): void {
+        // this.pencilChecked = false;
+        // this.eraserChecked = false;
     }
 
     // keybind control o for new drawing
@@ -112,6 +155,7 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.1', ['$event']) onKeyDown1(event: KeyboardEvent): void {
+        this.isRectangleChecked = true;
         this.pickRectangle(1);
     }
 
@@ -132,16 +176,4 @@ export class SidebarComponent {
     changeBrushMode(event: KeyboardEvent): void {
         this.pickBrush(1);
     }
-
-    // @HostListener('window:keydown.shift', ['$event'])
-    // onShiftKeyDown(event: KeyboardEvent): void {
-    //     this.drawingService.shiftPressed = true;
-    //     console.log("test");
-    // }
-
-    // @HostListener('window:keyup.shift', ['$event'])
-    // onShiftKeyUp(event: KeyboardEvent): void {
-    //   this.drawingService.shiftPressed = false;
-    //   console.log("shiftup");
-    // }
 }
