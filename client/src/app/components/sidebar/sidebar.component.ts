@@ -133,7 +133,6 @@ export class SidebarComponent {
     }
 
     sliderSliding(args: MatSliderChange): void {
-        console.log(args.value);
         if (args.value) {
             this.drawingService.baseCtx.lineWidth = args.value;
             this.drawingService.previewCtx.lineWidth = args.value;
