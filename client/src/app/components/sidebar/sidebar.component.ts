@@ -190,4 +190,10 @@ export class SidebarComponent {
         this.isBrushChecked = true;
         this.pickBrush(1);
     }
+    @HostListener('window:keydown.l', ['$event'])
+    changeLineMode(event: KeyboardEvent): void {
+        this.resetCheckedButton();
+        this.isLineChecked = true;
+        this.pickLine();
+    }
 }

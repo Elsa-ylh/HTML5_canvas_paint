@@ -36,4 +36,10 @@ export abstract class Tool {
     OnShiftKeyDown(event: KeyboardEvent): void {}
 
     OnShiftKeyUp(event: KeyboardEvent): void {}
+
+    onDoubleClick(event: MouseEvent): void {}
+
+    onKeyEscape(event: KeyboardEvent): void {}
+
+    onKeyBackSpace(event: KeyboardEvent): void {}
 }

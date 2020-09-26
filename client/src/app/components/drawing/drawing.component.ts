@@ -34,6 +34,7 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
+        console.log('mousedown is good');
         this.toolService.currentTool.onMouseDown(event);
     }
 
@@ -50,6 +51,24 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('window:keyup.shift', ['$event'])
     onKeyShiftUp(event: KeyboardEvent): void {
         this.toolService.currentTool.OnShiftKeyUp(event);
+    }
+
+    @HostListener('window:dblclick', ['$event'])
+    onDoubleClick(event: MouseEvent): void {
+        console.log('dblclick is good');
+        this.toolService.currentTool.onDoubleClick(event);
+    }
+
+    @HostListener('window:keydown.escape', ['$event'])
+    onKeyEscape(event: KeyboardEvent): void {
+        console.log('escape is good');
+        this.toolService.currentTool.onKeyEscape(event);
+    }
+
+    @HostListener('window:keydown.backspace', ['$event'])
+    onKeyBackSpace(event: KeyboardEvent): void {
+        console.log('backspace is good');
+        this.toolService.currentTool.onKeyBackSpace(event);
     }
 
     get width(): number {
