@@ -3,10 +3,10 @@
         <div class="small-buttons">
             <mat-list class="tools-buttons">
                 <mat-button-toggle-group vertical="true">
-                    <mat-button-toggle (click)="pickEraser(); eraserClicked()" [checked]="pencilChecked">
+                    <mat-button-toggle (click)="pickPencil()" [checked]="pencilChecked">
                         <mat-icon>edit</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickEraser()" [checked]="eraserChecked">
+                    <mat-button-toggle (click)="pickEraser(); eraserClicked()" [checked]="eraserChecked">
                         <mat-icon svgIcon="eraser"></mat-icon>
                     </mat-button-toggle>
                     <mat-button-toggle (click)="pickBrush(1)" [checked]="brushChecked">
