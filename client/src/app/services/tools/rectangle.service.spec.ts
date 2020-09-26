@@ -7,19 +7,15 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 
+// tslint:disable:no-any
 describe('Service: Rectangle', () => {
     let service: RectangleService;
     let mouseEvent: MouseEvent;
     let shiftEvent: KeyboardEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-    let subToolselected: SubToolselected;
-    //let drawRectangle: jasmine.SpyObj<RectangleService>;
     let drawFillRectangleSpy: jasmine.Spy<any>;
     let drawRectangleOutlineSpy: jasmine.Spy<any>;
     let drawFillRectangleOutlineSpy: jasmine.Spy<any>;
-    // let selectRectangleSpy: jasmine.Spy<any>;
-
-    // let drawLineBrush: jasmine.Spy<any>;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -28,7 +24,6 @@ describe('Service: Rectangle', () => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-        // drawRectangle = jasmine.createSpyObj('RectangleService', ['drawFillRectangle', 'drawRectangleOutline', 'drawFillRectangleOutline']);
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
@@ -37,7 +32,6 @@ describe('Service: Rectangle', () => {
         drawFillRectangleSpy = spyOn<any>(service, 'drawFillRectangle').and.callThrough();
         drawRectangleOutlineSpy = spyOn<any>(service, 'drawRectangleOutline').and.callThrough();
         drawFillRectangleOutlineSpy = spyOn<any>(service, 'drawFillRectangleOutline').and.callThrough();
-        // selectRectangleSpy = spyOn<any>(service, 'drawFillRectangleOutline').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -74,7 +68,7 @@ describe('Service: Rectangle', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: 1,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -87,14 +81,22 @@ describe('Service: Rectangle', () => {
     });
     it('switch  rectangle tool 2', () => {
         service.subToolSelect = SubToolselected.tool2;
-        service.subToolSelect = subToolselected;
         service.onMouseDown(mouseEvent);
-        expect(service.subToolSelect).toEqual(subToolselected);
+        expect(service.subToolSelect).toEqual(SubToolselected.tool2);
     });
     it('switch  rectangle tool 3', () => {
         service.subToolSelect = SubToolselected.tool3;
         service.onMouseDown(mouseEvent);
         expect(service.subToolSelect).toEqual(SubToolselected.tool3);
+    });
+
+    it(' onMouseUp should not call drawFillRectangle if mouse is already up ', () => {
+        service.subToolSelect = SubToolselected.tool1;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+
+        service.onMouseUp(mouseEvent);
+        expect(drawFillRectangleSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseUp should call drawFillRectangle if mouse was already down and tool1 selected', () => {
@@ -103,7 +105,6 @@ describe('Service: Rectangle', () => {
         service.mouseDown = true;
 
         service.onMouseUp(mouseEvent);
-        //expect(drawRectangle.drawFillRectangle).toHaveBeenCalled();
         expect(drawFillRectangleSpy).toHaveBeenCalled();
     });
 
@@ -113,7 +114,6 @@ describe('Service: Rectangle', () => {
         service.mouseDown = true;
 
         service.onMouseUp(mouseEvent);
-        //expect(drawRectangle.drawRectangleOutline).toHaveBeenCalled();
         expect(drawRectangleOutlineSpy).toHaveBeenCalled();
     });
 
@@ -123,7 +123,6 @@ describe('Service: Rectangle', () => {
         service.mouseDown = true;
 
         service.onMouseUp(mouseEvent);
-        // expect(drawRectangle.drawFillRectangleOutline).toHaveBeenCalled();
         expect(drawFillRectangleOutlineSpy).toHaveBeenCalled();
     });
 
@@ -140,7 +139,6 @@ describe('Service: Rectangle', () => {
 
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        // expect(drawRectangle.drawFillRectangle).toHaveBeenCalled();
         expect(drawFillRectangleSpy).toHaveBeenCalled();
     });
 
@@ -150,31 +148,120 @@ describe('Service: Rectangle', () => {
 
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
-        // expect(drawRectangle.drawFillRectangle).not.toHaveBeenCalled();
         expect(drawFillRectangleSpy).not.toHaveBeenCalled();
     });
 
-    // it(' onShiftKeyUp should call drawFillRectangle if mouse was already down', () => {
-    //     service.mouseDownCoord = { x: 0, y: 0 };
-    //     service.leftMouseDown = true;
-    //     service.mouseDown = true;
-    //     service.subToolSelect = SubToolselected.tool1;
-
-    //     service.onMouseMove(mouseEvent);
-    //     service.OnShiftKeyUp(shiftEvent);
-    //     expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-    //     // expect(drawRectangle.drawFillRectangle).toHaveBeenCalled();
-    //     expect(drawFillRectangleSpy).not.toHaveBeenCalled();
-    // });
-
-    it(' onShiftKeyUp should not call drawFillRectangle if mouse was not already down', () => {
+    it(' onShiftKeyUp should call drawFillRectangle if mouse was already down and tool1 selected', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
-        service.leftMouseDown = false;
+        service.mouseDown = true;
+        service.subToolSelect = SubToolselected.tool1;
+        service.mousePosition = service.getPositionFromMouse(mouseEvent);
+        service.OnShiftKeyUp(shiftEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawFillRectangleSpy).toHaveBeenCalled();
+    });
 
+    it(' onShiftKeyUp should not call drawFillRectangle if mouse was not already down and tool1 selected', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
         service.onMouseMove(mouseEvent);
         service.OnShiftKeyUp(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
-        //expect(drawRectangle.drawFillRectangle).not.toHaveBeenCalled();
         expect(drawFillRectangleSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onShiftKeyDown should call drawFillRectangle if mouse was already down and tool1 selected', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.subToolSelect = SubToolselected.tool1;
+        service.mousePosition = service.getPositionFromMouse(mouseEvent);
+        service.OnShiftKeyDown(shiftEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawFillRectangleSpy).toHaveBeenCalled();
+    });
+
+    it(' OnShiftKeyDown should not call drawFillRectangle if mouse was not already down and tool1 selected', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+        service.onMouseMove(mouseEvent);
+        service.OnShiftKeyDown(shiftEvent);
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+        expect(drawFillRectangleSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onShiftKeyUp should call drawFillRectangle if mouse was already down and tool2 selected', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.subToolSelect = SubToolselected.tool2;
+        service.mousePosition = service.getPositionFromMouse(mouseEvent);
+        service.OnShiftKeyUp(shiftEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawRectangleOutlineSpy).toHaveBeenCalled();
+    });
+
+    it(' onShiftKeyUp should not call drawFillRectangle if mouse was not already down and tool2 selected', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+        service.onMouseMove(mouseEvent);
+        service.OnShiftKeyUp(shiftEvent);
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+        expect(drawRectangleOutlineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onShiftKeyDown should call drawFillRectangle if mouse was already down and tool2 selected', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.subToolSelect = SubToolselected.tool2;
+        service.mousePosition = service.getPositionFromMouse(mouseEvent);
+        service.OnShiftKeyDown(shiftEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawRectangleOutlineSpy).toHaveBeenCalled();
+    });
+
+    it(' OnShiftKeyDown should not call drawFillRectangle if mouse was not already down and tool2 selected', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+        service.onMouseMove(mouseEvent);
+        service.OnShiftKeyDown(shiftEvent);
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+        expect(drawRectangleOutlineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onShiftKeyUp should call drawFillRectangle if mouse was already down and tool3 selected', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.subToolSelect = SubToolselected.tool3;
+        service.mousePosition = service.getPositionFromMouse(mouseEvent);
+        service.OnShiftKeyUp(shiftEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawFillRectangleOutlineSpy).toHaveBeenCalled();
+    });
+
+    it(' onShiftKeyUp should not call drawFillRectangle if mouse was not already down and tool3 selected', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+        service.onMouseMove(mouseEvent);
+        service.OnShiftKeyUp(shiftEvent);
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+        expect(drawFillRectangleOutlineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onShiftKeyDown should call drawFillRectangle if mouse was already down and tool1 selected', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.subToolSelect = SubToolselected.tool3;
+        service.mousePosition = service.getPositionFromMouse(mouseEvent);
+        service.OnShiftKeyDown(shiftEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawFillRectangleOutlineSpy).toHaveBeenCalled();
+    });
+
+    it(' OnShiftKeyDown should not call drawFillRectangle if mouse was not already down and tool1 selected', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+        service.onMouseMove(mouseEvent);
+        service.OnShiftKeyDown(shiftEvent);
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+        expect(drawFillRectangleOutlineSpy).not.toHaveBeenCalled();
     });
 });

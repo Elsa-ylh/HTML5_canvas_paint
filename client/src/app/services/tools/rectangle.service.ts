@@ -20,7 +20,6 @@ export class RectangleService extends Tool {
     height: number;
     width: number;
     mousePosition: Vec2;
-    leftMouseDown: boolean = false;
     distanceX: number;
     distanceY: number;
 
@@ -30,7 +29,6 @@ export class RectangleService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-        this.leftMouseDown = true;
         this.drawingService.baseCtx.setLineDash([0, 0]); // reset
         this.drawingService.previewCtx.setLineDash([0, 0]); // reset
         if (this.mouseDown) {
@@ -45,7 +43,6 @@ export class RectangleService extends Tool {
             this.selectRectangle(mousePosition, true);
         }
         this.mouseDown = false;
-        this.leftMouseDown = false;
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -61,7 +58,7 @@ export class RectangleService extends Tool {
 
     OnShiftKeyDown(event: KeyboardEvent): void {
         this.square = true;
-        if (this.leftMouseDown) {
+        if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.selectRectangle(this.mousePosition, false);
         }
@@ -69,7 +66,7 @@ export class RectangleService extends Tool {
 
     OnShiftKeyUp(event: KeyboardEvent): void {
         this.square = false;
-        if (this.leftMouseDown) {
+        if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.selectRectangle(this.mousePosition, false);
         }
