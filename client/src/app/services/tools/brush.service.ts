@@ -32,7 +32,7 @@ export class BrushService extends Tool {
                 this.brush4Data.push(point);
             } else {
                 this.pathData.push(this.mouseDownCoord);
-                this.lastPoint = this.getPositionFromMouse(event);
+                this.lastPoint = this.mouseDownCoord;
             }
         }
     }
@@ -131,7 +131,6 @@ export class BrushService extends Tool {
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
-            this.lastPoint = point;
         }
         ctx.stroke();
 
@@ -152,7 +151,6 @@ export class BrushService extends Tool {
             this.lastPoint = point;
         }
         ctx.stroke();
-        ctx.beginPath();
         ctx.strokeStyle = stringStrokeStyle;
         ctx.lineWidth = sizePx;
     }
