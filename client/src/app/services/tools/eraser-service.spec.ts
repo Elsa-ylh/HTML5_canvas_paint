@@ -45,7 +45,6 @@ describe('EraserService', () => {
             offsetY: 35,
             button: MouseButton.Left,
         } as MouseEvent;
-
     });
 
     it('should be created', inject([EraserService], (serviceEr: EraserService) => {
@@ -96,7 +95,6 @@ describe('EraserService', () => {
         service.onMouseUp(mouseEvent);
         expect(fillRectSpy).toHaveBeenCalled();
     });
-
 
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
         service.mouseDown = false;
