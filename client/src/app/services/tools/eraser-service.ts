@@ -3,15 +3,12 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { Observable, Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
-    private eraserState: Subject<boolean> = new Subject<boolean>();
-    eraserStateObservable: Observable<boolean> = this.eraserState.asObservable();
     private minimalPx: number = 5;
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -77,8 +74,6 @@ export class EraserService extends Tool {
 
     // for eraser cursor change, eraserState becomes an observable
     buttonClicked(): void {
-        this.eraserState.next(true);
-
         this.drawingService.baseCtx.lineWidth = this.minimalPx;
         this.drawingService.previewCtx.lineWidth = this.minimalPx;
     }

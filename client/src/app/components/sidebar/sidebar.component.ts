@@ -140,7 +140,6 @@ export class SidebarComponent {
     }
 
     sliderSliding(args: MatSliderChange): void {
-        console.log(args.value);
         if (args.value) {
             this.drawingService.baseCtx.lineWidth = args.value;
             this.drawingService.previewCtx.lineWidth = args.value;
@@ -199,18 +198,6 @@ export class SidebarComponent {
         this.isBrushChecked = true;
         this.pickBrush(1);
     }
-
-    // @HostListener('window:keydown.shift', ['$event'])
-    // onShiftKeyDown(event: KeyboardEvent): void {
-    //     this.drawingService.shiftPressed = true;
-    //     console.log("test");
-    // }
-
-    // @HostListener('window:keyup.shift', ['$event'])
-    // onShiftKeyUp(event: KeyboardEvent): void {
-    //   this.drawingService.shiftPressed = false;
-    //   console.log("shiftup");
-    // }
 
     // function will be called when eraser button is clicked
     eraserClicked(): void {
