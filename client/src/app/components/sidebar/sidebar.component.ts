@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatSliderChange } from '@angular/material/slider';
 import { DomSanitizer } from '@angular/platform-browser';
+import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
@@ -103,6 +104,7 @@ export class SidebarComponent {
 
     pickLine(): void {
         this.toolService.switchTool(ToolUsed.Line);
+        this.toolService.currentTool.subToolSelect = SubToolselected.tool1;
     }
 
     get lineChecked(): boolean {
@@ -153,7 +155,7 @@ export class SidebarComponent {
     }
     CheckboxChangeToggle(args: MatCheckboxChange): void {
         console.log(args.checked);
-
+        this.toolService.currentTool.subToolSelect = args.checked ? SubToolselected.tool2 : SubToolselected.tool1;
         //document.getElementById('sliderPoint')?.style.visibility = args.checked ? 'hidder' : 'visible';
     }
 
@@ -176,13 +178,13 @@ export class SidebarComponent {
     @HostListener('window:keydown.1', ['$event']) onKeyDown1(event: KeyboardEvent): void {
         this.resetCheckedButton();
         this.isRectangleChecked = true;
-        this.pickRectangle(1);
+        this.pickRectangle(SubToolselected.tool1);
     }
 
     @HostListener('window:keydown.2', ['$event']) onKeyDown2(event: KeyboardEvent): void {
         this.resetCheckedButton();
         this.isEllipseChecked = true;
-        this.pickEllipse(1);
+        this.pickEllipse(SubToolselected.tool1);
     }
 
     @HostListener('window:keydown.e', ['$event'])
@@ -202,7 +204,7 @@ export class SidebarComponent {
     changeBrushMode(event: KeyboardEvent): void {
         this.resetCheckedButton();
         this.isBrushChecked = true;
-        this.pickBrush(1);
+        this.pickBrush(SubToolselected.tool1);
     }
     @HostListener('window:keydown.l', ['$event'])
     changeLineMode(event: KeyboardEvent): void {
