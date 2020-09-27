@@ -77,11 +77,21 @@
                     <button mat-raised-button (click)="pickBrush(5)">pinceau 5</button>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-slider max="50" min="6" [(ngModel)]="pxSize" (input)="sliderSliding($event)"> </mat-slider><samp>{{ pxSize }}px</samp>
+                    <mat-slider max="50" min="1" [(ngModel)]="pxSize" (input)="sliderSliding($event)"> </mat-slider><samp>{{ pxSize }}px</samp>
                 </mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="4">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider max="50" min="1" [(ngModel)]="pxSize" (input)="sliderSliding($event)"> </mat-slider><samp>{{ pxSize }}px</samp>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-checkbox [(ngModel)]="checked" (change)="CheckboxChangeToggle($event)">Avec Point</mat-checkbox>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider max="50" min="1" [(ngModel)]="pxSizePoint" (input)="sliderSlidingPoint($event)"> </mat-slider>
+                    <samp>{{ pxSizePoint }}px</samp>
+                </mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="5">
                 <mat-grid-tile colspan="6"></mat-grid-tile>

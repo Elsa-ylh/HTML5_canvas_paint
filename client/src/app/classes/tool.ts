@@ -20,7 +20,7 @@ export abstract class Tool {
     mouseDown: boolean = false;
     mouseMove: boolean = false; // pr le point
     subToolSelect: SubToolselected;
-
+    secondeSizePixel: Number;
     constructor(protected drawingService: DrawingService) {}
 
     onMouseDown(event: MouseEvent): void {}

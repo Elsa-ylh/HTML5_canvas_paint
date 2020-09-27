@@ -13,7 +13,7 @@ export class LineService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
     }
-    onMouseUp(event: MouseEvent): void {
+    onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.mouseMove = true;
@@ -40,6 +40,7 @@ export class LineService extends Tool {
 
     onDoubleClick(event: MouseEvent): void {
         this.mouseDown = this.mouseMove = false;
+        this.finalDrawLine(this.drawingService.baseCtx, this.pathData);
         this.clearPath();
         this.clearEffectTool();
     }
@@ -61,7 +62,14 @@ export class LineService extends Tool {
             }
         }
     }
-
+    private finalDrawLine(ctx: CanvasRenderingContext2D, path: Vec2[]) {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        ctx.beginPath();
+        for (const point of path) {
+            ctx.lineTo(point.x, point.y);
+        }
+        ctx.stroke();
+    }
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], lastPoint: Vec2): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         ctx.beginPath();

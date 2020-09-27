@@ -1,4 +1,5 @@
 import { Component, HostListener } from '@angular/core';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatSliderChange } from '@angular/material/slider';
@@ -22,6 +23,7 @@ export class SidebarComponent {
     isDialogOpen: boolean = false;
     lineWidth: number;
     pxSize: number;
+    pxSizePoint: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
 
@@ -32,7 +34,8 @@ export class SidebarComponent {
     isRectangleChecked: boolean = false;
     isEllipseChecked: boolean = false;
     isColorChecked: boolean = false;
-
+    checked: boolean = false;
+    visible: string = 'hidden'; // 'hidden' : 'visible'
     constructor(
         public drawingService: DrawingService,
         private dialogCreator: MatDialog,
@@ -133,7 +136,6 @@ export class SidebarComponent {
     }
 
     sliderSliding(args: MatSliderChange): void {
-        console.log(args.value);
         if (args.value) {
             this.drawingService.baseCtx.lineWidth = args.value;
             this.drawingService.previewCtx.lineWidth = args.value;
@@ -148,6 +150,18 @@ export class SidebarComponent {
         this.isRectangleChecked = false;
         this.isEllipseChecked = false;
         this.isColorChecked = false;
+    }
+    CheckboxChangeToggle(args: MatCheckboxChange): void {
+        console.log(args.checked);
+
+        //document.getElementById('sliderPoint')?.style.visibility = args.checked ? 'hidder' : 'visible';
+    }
+
+    sliderSlidingPoint(args: MatSliderChange): void {
+        console.log(args.value);
+        if (args.value) {
+            this.toolService.currentTool.secondeSizePixel = args.value;
+        }
     }
 
     // keybind control o for new drawing
