@@ -5,8 +5,8 @@ import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-const motionDifference = 4; // Cette constante fait fonctionner thickBrush
-const circle = Math.PI * 2;
+const motionDifference = 4; // le numbre va faire marcher le ThichBrush
+const citcle = Math.PI * 2;
 @Injectable({
     providedIn: 'root',
 })
@@ -22,7 +22,7 @@ export class BrushService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.whichBrush(this.subToolSelect);
+        this.witchBrush(this.subToolSelect);
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
@@ -32,7 +32,7 @@ export class BrushService extends Tool {
                 this.brush4Data.push(point);
             } else {
                 this.pathData.push(this.mouseDownCoord);
-                this.lastPoint = this.getPositionFromMouse(event);
+                this.lastPoint = this.mouseDownCoord;
             }
         }
     }
@@ -51,7 +51,7 @@ export class BrushService extends Tool {
         }
         this.mouseDown = false;
         this.clearPath();
-        this.clearEffectTool();
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -76,7 +76,7 @@ export class BrushService extends Tool {
         for (const point of path) {
             ctx.beginPath();
             ctx.globalAlpha = point.opacity;
-            ctx.arc(point.vec2.x, point.vec2.y, point.radius, 0, circle);
+            ctx.arc(point.vec2.x, point.vec2.y, point.radius, 0, citcle);
             ctx.fill();
         }
     }
@@ -84,11 +84,7 @@ export class BrushService extends Tool {
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         switch (this.subToolSelect) {
             case SubToolselected.tool1:
-                ctx.beginPath();
-                for (const point of path) {
-                    ctx.lineTo(point.x, point.y);
-                }
-                ctx.stroke();
+                this.drawLinePattern(ctx, path);
                 break;
             case SubToolselected.tool2:
                 ctx.beginPath();
@@ -109,7 +105,7 @@ export class BrushService extends Tool {
                     }
                     ctx.lineTo(point.x, point.y);
                     ctx.stroke();
-
+                    ctx.beginPath();
                     ctx.moveTo(this.lastPoint.x - motionDifference, this.lastPoint.y - motionDifference);
                     ctx.lineTo(point.x - motionDifference, point.y - motionDifference);
                     ctx.stroke();
@@ -117,22 +113,52 @@ export class BrushService extends Tool {
                     this.lastPoint = point;
                 }
                 break;
-            case SubToolselected.tool4:
-                window.alert("un problème au niveau du fonctionnement du pinceau 4 s'est produit");
-                // son fonctionnement est dans la fonction drawBrushTool4
-                break;
             case SubToolselected.tool5:
-                this.drawLineBrush(ctx, path);
+                this.drawLineBrush5(ctx, path);
                 break;
             default:
+                window.alert('un problèment au niveau du fonctionnement du pinceau 4 produit ou ne pas un outil de pinceau');
                 break;
         }
     }
-    private drawLineBrush(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawLinePattern(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        const px2 = 2;
+        const dividerRadius = 3;
+        const sizePx = ctx.lineWidth;
+        const stringStrokeStyle = ctx.strokeStyle;
+        const moveModify = sizePx / dividerRadius;
+
+        ctx.beginPath();
+        for (const point of path) {
+            ctx.lineTo(point.x, point.y);
+        }
+        ctx.stroke();
+
+        // le motif en forme de flaiche comment ici
+        ctx.beginPath();
+        ctx.lineWidth = px2;
+        ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+        this.lastPoint = path[0];
+        for (const point of path) {
+            ctx.moveTo(this.lastPoint.x, this.lastPoint.y + moveModify);
+            ctx.lineTo(this.lastPoint.x, this.lastPoint.y - moveModify);
+            ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
+            ctx.lineTo(point.x, point.y);
+            ctx.moveTo(this.lastPoint.x, this.lastPoint.y + moveModify);
+            ctx.lineTo(point.x, point.y);
+            ctx.moveTo(this.lastPoint.x, this.lastPoint.y - moveModify);
+            ctx.lineTo(point.x, point.y);
+            this.lastPoint = point;
+        }
+        ctx.stroke();
+        ctx.strokeStyle = stringStrokeStyle;
+        ctx.lineWidth = sizePx;
+    }
+
+    private drawLineBrush5(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const sizePx = ctx.lineWidth;
         ctx.lineWidth = sizePx / motionDifference; // on divise par quatre
-        ctx.lineCap = 'round';
         for (let index = 1; index <= sizePx; index += 1) {
             ctx.beginPath();
             ctx.globalAlpha = index / sizePx;
@@ -144,7 +170,7 @@ export class BrushService extends Tool {
         ctx.lineWidth = sizePx;
     }
 
-    private whichBrush(select: number): void {
+    private witchBrush(select: number): void {
         this.clearEffectTool();
         switch (select) {
             case SubToolselected.tool1:
@@ -168,6 +194,7 @@ export class BrushService extends Tool {
                 this.drawingService.baseCtx.lineJoin = 'miter';
                 this.drawingService.previewCtx.lineCap = 'butt';
                 this.drawingService.previewCtx.lineJoin = 'miter';
+
                 break;
             case SubToolselected.tool5:
                 this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
