@@ -20,6 +20,11 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
+    // We need this alias for the enum so ngSwitchCase look way better than just numbers.
+    // I can't stand reading numbers anymore.
+    // tslint:disable-next-line: typedef
+    toolUsed = ToolUsed;
+
     showAttributes: boolean;
     isDialogOpen: boolean = false;
     lineWidth: number;
@@ -47,7 +52,7 @@ export class SidebarComponent {
         public eraserService: EraserService,
     ) {
         this.showAttributes = true;
-        this.toolService.switchTool(ToolUsed.NONE);
+        this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
     }
 

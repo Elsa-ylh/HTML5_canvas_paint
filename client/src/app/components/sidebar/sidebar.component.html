@@ -40,9 +40,11 @@
     </div>
     <div class="toolbar" *ngIf="showAttributes">
         <div class="attributes" [ngSwitch]="this.toolService.currentToolName">
-            <mat-grid-list cols="6" *ngSwitchCase="0"> </mat-grid-list>
-
-            <mat-grid-list cols="6" *ngSwitchCase="1">
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.NONE"> </mat-grid-list>
+            <mat-grid-tile colspan="6">
+                Bienvenue à Poly-Dessin. Commencez à travailler en cliquant sur l'un des outils sur la barre latérale. Bon succès!
+            </mat-grid-tile>
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Eraser">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="2">
@@ -54,7 +56,7 @@
                 <mat-grid-tile colspan="6" aria-rowspan="8"> Valeur minimale : 5px </mat-grid-tile>
                 <mat-grid-tile colspan="6" aria-rowspan="8"> Taille de l'efface : {{ eraserService.eraserWidth }} px </mat-grid-tile>
             </mat-grid-list>
-            <mat-grid-list cols="6" *ngSwitchCase="3">
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Brush">
                 <mat-grid-tile colspan="6">
                     <button mat-raised-button (click)="pickBrush(1)">pinceau 1</button>
                 </mat-grid-tile>
@@ -74,10 +76,10 @@
                     <mat-slider max="50" min="6" [(ngModel)]="pxSize" (input)="sliderSliding($event)"> </mat-slider><samp>{{ pxSize }}px</samp>
                 </mat-grid-tile>
             </mat-grid-list>
-            <mat-grid-list cols="6" *ngSwitchCase="4">
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Line">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
             </mat-grid-list>
-            <mat-grid-list cols="6" *ngSwitchCase="5">
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Rectangle">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
                 <mat-grid-tile colspan="6"> choisissez un type de rectangle</mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="4">
@@ -94,7 +96,7 @@
                     <mat-slider min="1" max="20" step="1" value="10" [(ngModel)]="rectangleService.lineWidth"></mat-slider>
                 </mat-grid-tile>
             </mat-grid-list>
-            <mat-grid-list cols="6" *ngSwitchCase="6">
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Ellipse">
                 <mat-grid-tile colspan="2">
                     <button mat-button color="primary" (click)="pickEllipse(1)">Plein</button>
                 </mat-grid-tile>
@@ -110,7 +112,7 @@
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6"></mat-grid-tile>
             </mat-grid-list>
-            <mat-grid-list cols="6" *ngSwitchCase="1000">
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Color">
                 <app-color></app-color>
             </mat-grid-list>
         </div>

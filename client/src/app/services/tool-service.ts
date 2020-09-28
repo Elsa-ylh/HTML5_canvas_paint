@@ -30,7 +30,7 @@ export class ToolService {
         this.tableTool[ToolUsed.Rectangle] = this.rectangleService;
         this.tableTool[ToolUsed.Ellipse] = this.ellipseService;
 
-        this.switchTool(ToolUsed.Pencil); // default tools
+        this.switchTool(ToolUsed.NONE); // default tools if all else fail in the sidebar usually
     }
 
     switchTool(toolUsed: ToolUsed): void {

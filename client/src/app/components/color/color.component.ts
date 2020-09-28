@@ -1,5 +1,8 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { ColorService } from '@app/services/tools/color-service';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Vec2 } from '@app/classes/vec2';
+import { ColorService } from '@app/services/color/color.service';
 
 // certaines parties du code a ete inspiree de l'auteur
 @Component({
@@ -9,45 +12,41 @@ import { ColorService } from '@app/services/tools/color-service';
 })
 
 // The following code has been highly inspired but not copied from this website
+// The website mainly teach how to do the drawing with canvas2d the gradient
 // https://malcoded.com/posts/angular-color-picker/
 export class ColorComponent implements AfterViewInit {
-    @ViewChild('roundPalette', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
-    @ViewChild('horizontalPalette', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('previewSquare') previewSquare: ElementRef<HTMLCanvasElement>; // used to do a hover position
+    @ViewChild('squarePalette') squareCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('previewSquare') previewHorizontal: ElementRef<HTMLCanvasElement>; // used to do a hover position
+    @ViewChild('horizontalPalette') horizontalCanvas: ElementRef<HTMLCanvasElement>;
 
-    private ctx: CanvasRenderingContext2D;
+    squareDimension: Vec2 = { x: 220, y: 220 };
+    horizontalDimension: Vec2 = { x: 220, y: 50 };
 
-    constructor(private colorService: ColorService) {
-        this.colorService.fillHorizontalPalette(); // test method
+    previewSquareCtx: CanvasRenderingContext2D;
+    squareCtx: CanvasRenderingContext2D;
+
+    previewHorizontalCtx: CanvasRenderingContext2D;
+    horizontalCtx: CanvasRenderingContext2D;
+
+    constructor(private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer, private colorService: ColorService) {
+        this.colorService.testMethod();
+        this.iconRegistry.addSvgIcon('red', this.sanitizer.bypassSecurityTrustResourceUrl('assets/apple.svg'));
+        this.iconRegistry.addSvgIcon('green', this.sanitizer.bypassSecurityTrustResourceUrl('assets/leaf.svg'));
+        this.iconRegistry.addSvgIcon('blue', this.sanitizer.bypassSecurityTrustResourceUrl('assets/wave.svg'));
     }
 
     ngAfterViewInit(): void {
-        this.fillHorizontalPalette();
-        this.fillRoundPalette();
+        this.previewSquareCtx = this.previewSquare.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.squareCtx = this.squareCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+
+        this.previewHorizontalCtx = this.previewHorizontal.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.horizontalCtx = this.horizontalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+
+        this.drawSquarePalette(this.squareCtx, this.squareDimension);
     }
 
-    fillRoundPalette(): void {}
-
-    // slider
-    fillHorizontalPalette(): void {
-        this.ctx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-
-        this.ctx.clearRect(0, 0, this.baseCanvas.nativeElement.width, this.baseCanvas.nativeElement.height);
-
-        // creating the gradient
-        const createGradient = this.ctx.createLinearGradient(0, 0, 0, this.baseCanvas.nativeElement.width);
-        createGradient.addColorStop(0, 'rgba(255, 0, 0, 1)');
-        createGradient.addColorStop(0.17, 'rgba(255, 255, 0, 1)');
-        createGradient.addColorStop(0.34, 'rgba(0, 255, 0, 1)');
-        createGradient.addColorStop(0.51, 'rgba(0, 255, 255, 1)');
-        createGradient.addColorStop(0.68, 'rgba(0, 0, 255, 1)');
-        createGradient.addColorStop(0.85, 'rgba(255, 0, 255, 1)');
-        createGradient.addColorStop(1, 'rgba(255, 0, 0, 1)');
-
-        // draw the gradiant
-        this.ctx.beginPath();
-        this.ctx.clearRect(0, 0, this.baseCanvas.nativeElement.width, this.baseCanvas.nativeElement.height);
-        this.ctx.fillStyle = createGradient;
-        this.ctx.fill();
-        this.ctx.closePath();
+    drawSquarePalette(ctx: CanvasRenderingContext2D, dimension: Vec2): void {
+        this.colorService.drawSquarePalette(ctx, dimension);
     }
 }

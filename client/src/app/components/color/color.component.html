@@ -1,6 +1,22 @@
 <div class="color-container">
-    <canvas id="roundPalette" roundPalette></canvas>
+    <canvas id="previewSquare" #previewSquare></canvas>
+    <canvas id="squarePalette" #squarePalette></canvas>
     hi
-    <canvas id="horizontalPalette" horizontalPalette></canvas>
+    <canvas id="horizontalPalette" #horizontalPalette></canvas>
     this is another section
+    <mat-form-field appearance="outline">
+        <mat-label>Rouge</mat-label>
+        <input matInput placeholder="0-255" />
+        <mat-icon matSuffix svgIcon="red"></mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Vert</mat-label>
+        <input matInput placeholder="0-255" />
+        <mat-icon matSuffix svgIcon="green"></mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Bleu</mat-label>
+        <input matInput placeholder="0-255" />
+        <mat-icon matSuffix svgIcon="blue"></mat-icon>
+    </mat-form-field>
 </div>
