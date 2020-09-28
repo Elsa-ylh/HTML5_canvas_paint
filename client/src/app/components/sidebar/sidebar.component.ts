@@ -10,6 +10,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
+import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 
 @Component({
@@ -22,6 +23,7 @@ export class SidebarComponent {
     isDialogOpen: boolean = false;
     lineWidth: number;
     pxSize: number;
+    pencilSize: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
 
@@ -42,6 +44,7 @@ export class SidebarComponent {
         public rectangleService: RectangleService,
         public ellipseService: EllipseService,
         public brushService: BrushService,
+        public pencilService: PencilService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.NONE);
@@ -70,8 +73,22 @@ export class SidebarComponent {
 
     pickPencil(): void {
         this.toolService.switchTool(ToolUsed.Pencil);
+        if (this.drawingService.baseCtx.lineWidth < this.pencilSize) {
+            this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.pencilSize;
+        } else {
+            this.pencilSize = this.drawingService.baseCtx.lineWidth;
+        }
     }
 
+    PencilClicked(size: MatSliderChange): void {
+        if (this.toolService.currentToolName === ToolUsed.Pencil) {
+            this.pencilService.buttonClicked();
+            if (size.value) {
+                this.drawingService.baseCtx.lineWidth = size.value;
+                this.drawingService.previewCtx.lineWidth = size.value;
+            }
+        }
+    }
     // the following get are used to make sure the display of sidebar tools are
     // are properly pressed on
     get pencilChecked(): boolean {
@@ -133,7 +150,6 @@ export class SidebarComponent {
     }
 
     sliderSliding(args: MatSliderChange): void {
-        console.log(args.value);
         if (args.value) {
             this.drawingService.baseCtx.lineWidth = args.value;
             this.drawingService.previewCtx.lineWidth = args.value;

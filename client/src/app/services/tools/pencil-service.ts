@@ -26,8 +26,6 @@ export class PencilService extends Tool {
             this.mouseMove = false;
             this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
             this.drawingService.previewCtx.strokeStyle = '#000000';
-            this.drawingService.baseCtx.lineWidth = 2; // conserve same size a before
-            this.drawingService.previewCtx.lineWidth = 2;
             this.drawingService.baseCtx.setLineDash([0, 0]); // reset
             this.drawingService.previewCtx.setLineDash([0, 0]); // reset
 
@@ -45,6 +43,7 @@ export class PencilService extends Tool {
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.drawLine(this.drawingService.previewCtx, this.pathData);
+                console.log('move pencil');
             } else {
                 // draw circle
                 this.drawingService.baseCtx.fillStyle = '#000000';
@@ -58,6 +57,7 @@ export class PencilService extends Tool {
                 this.drawingService.previewCtx.arc(mousePosition.x, mousePosition.y, diametreCir, angleCir, Math.PI * 2);
                 this.drawingService.previewCtx.closePath();
                 this.drawingService.previewCtx.fill();
+                console.log('click pencil');
             }
         }
         this.mouseDown = false;
