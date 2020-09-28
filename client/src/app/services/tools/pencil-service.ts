@@ -13,7 +13,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
-
+    pencilSize: number = 2;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
@@ -26,6 +26,8 @@ export class PencilService extends Tool {
             this.mouseMove = false;
             this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
             this.drawingService.previewCtx.strokeStyle = '#000000';
+            this.drawingService.baseCtx.lineWidth = this.pencilSize;
+            this.drawingService.previewCtx.lineWidth = this.pencilSize;
             this.drawingService.baseCtx.setLineDash([0, 0]); // reset
             this.drawingService.previewCtx.setLineDash([0, 0]); // reset
 
@@ -83,10 +85,5 @@ export class PencilService extends Tool {
 
     private clearPath(): void {
         this.pathData = [];
-    }
-
-    buttonClicked(): void {
-        this.drawingService.baseCtx.lineWidth = this.minimalPx;
-        this.drawingService.previewCtx.lineWidth = this.minimalPx;
     }
 }

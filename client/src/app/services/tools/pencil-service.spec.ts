@@ -13,7 +13,6 @@ describe('PencilService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
-    let buttonClickedSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -25,7 +24,7 @@ describe('PencilService', () => {
         });
         service = TestBed.inject(PencilService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
-        buttonClickedSpy = spyOn<any>(service, 'buttonClicked').and.callThrough();
+
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
@@ -112,10 +111,5 @@ describe('PencilService', () => {
         expect(imageData.data[2]).toEqual(0); // B
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
-    });
-
-    it('should change the minimal value of the pencil to 2', () => {
-        service.buttonClicked();
-        expect(buttonClickedSpy).toHaveBeenCalled();
     });
 });

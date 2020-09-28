@@ -23,7 +23,6 @@ export class SidebarComponent {
     isDialogOpen: boolean = false;
     lineWidth: number;
     pxSize: number;
-    pencilSize: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
 
@@ -73,22 +72,9 @@ export class SidebarComponent {
 
     pickPencil(): void {
         this.toolService.switchTool(ToolUsed.Pencil);
-        if (this.drawingService.baseCtx.lineWidth < this.pencilSize) {
-            this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.pencilSize;
-        } else {
-            this.pencilSize = this.drawingService.baseCtx.lineWidth;
-        }
     }
 
-    PencilClicked(size: MatSliderChange): void {
-        if (this.toolService.currentToolName === ToolUsed.Pencil) {
-            this.pencilService.buttonClicked();
-            if (size.value) {
-                this.drawingService.baseCtx.lineWidth = size.value;
-                this.drawingService.previewCtx.lineWidth = size.value;
-            }
-        }
-    }
+ 
     // the following get are used to make sure the display of sidebar tools are
     // are properly pressed on
     get pencilChecked(): boolean {
