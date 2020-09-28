@@ -71,10 +71,4 @@ export class EraserService extends Tool {
     private clearPath(): void {
         this.pathData = [];
     }
-
-    // for eraser cursor change, eraserState becomes an observable
-    buttonClicked(): void {
-        this.drawingService.baseCtx.lineWidth = this.minimalPx;
-        this.drawingService.previewCtx.lineWidth = this.minimalPx;
-    }
 }

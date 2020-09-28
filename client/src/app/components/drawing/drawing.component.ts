@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { cursorName } from '@app/classes/cursor-name';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
@@ -10,8 +9,6 @@ import { ToolService } from '@app/services/tool-service';
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit {
-    cursorUsed: string = cursorName.eraser;
-
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final, aussi utilisé pour sauvegarder
     // une version du dessin avant de l'appliquer au final.
@@ -69,5 +66,9 @@ export class DrawingComponent implements AfterViewInit {
 
     get workHeight(): number {
         return this.height + this.canvasResizerService.WORK_AREA_PADDING_SIZE;
+    }
+
+    get cursorUsed(): string {
+        return this.drawingService.cursorUsed;
     }
 }

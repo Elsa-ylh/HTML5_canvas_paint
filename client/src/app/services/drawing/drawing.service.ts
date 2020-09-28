@@ -12,7 +12,7 @@ export class DrawingService {
 
     whichTools: ToolUsed = ToolUsed.NONE;
     currentTool: Tool;
-    cursorUsed: string = cursorName.eraser;
+    cursorUsed: string = cursorName.default;
 
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);

@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatSliderChange } from '@angular/material/slider';
 import { DomSanitizer } from '@angular/platform-browser';
+import { cursorName } from '@app/classes/cursor-name';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
@@ -27,13 +28,13 @@ export class SidebarComponent {
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
 
-    isPencilChecked: boolean = false;
-    isEraserChecked: boolean = false;
-    isBrushChecked: boolean = false;
-    isLineChecked: boolean = false;
-    isRectangleChecked: boolean = false;
-    isEllipseChecked: boolean = false;
-    isColorChecked: boolean = false;
+    private isPencilChecked: boolean = false;
+    private isEraserChecked: boolean = false;
+    private isBrushChecked: boolean = false;
+    private isLineChecked: boolean = false;
+    private isRectangleChecked: boolean = false;
+    private isEllipseChecked: boolean = false;
+    private isColorChecked: boolean = false;
 
     showEraserWindow: boolean = false;
     @ViewChild('slideBarText', { static: false }) eraserText: ElementRef<HTMLCanvasElement>;
@@ -76,6 +77,7 @@ export class SidebarComponent {
     }
 
     pickPencil(): void {
+        this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Pencil);
     }
 
@@ -86,6 +88,7 @@ export class SidebarComponent {
     }
 
     pickEraser(): void {
+        this.drawingService.cursorUsed = cursorName.eraser;
         this.toolService.switchTool(ToolUsed.Eraser);
     }
 
@@ -94,6 +97,7 @@ export class SidebarComponent {
     }
 
     pickBrush(subTool: number): void {
+        this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Brush);
         if (this.drawingService.baseCtx.lineWidth < this.brushService.pixelMinBrush) {
             this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.pxSize = this.brushService.pixelMinBrush;
@@ -106,6 +110,7 @@ export class SidebarComponent {
     }
 
     pickLine(): void {
+        this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Line);
     }
 
@@ -114,6 +119,7 @@ export class SidebarComponent {
     }
 
     pickRectangle(subTool: number): void {
+        this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Rectangle);
         this.toolService.currentTool.subToolSelect = subTool;
     }
@@ -123,6 +129,7 @@ export class SidebarComponent {
     }
 
     pickEllipse(subTool2: number): void {
+        this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Ellipse);
         this.toolService.currentTool.subToolSelect = subTool2;
     }
@@ -132,6 +139,7 @@ export class SidebarComponent {
     }
 
     pickColor(): void {
+        this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Color);
     }
 
@@ -181,15 +189,14 @@ export class SidebarComponent {
     changeEraserMode(event: KeyboardEvent): void {
         this.resetCheckedButton();
         this.isEraserChecked = true;
-        this.toolService.switchTool(ToolUsed.Eraser);
-        this.eraserService.buttonClicked();
+        this.pickEraser();
     }
 
     @HostListener('window:keydown.c', ['$event'])
     changePencilMode(event: KeyboardEvent): void {
         this.resetCheckedButton();
         this.isPencilChecked = true;
-        this.toolService.switchTool(ToolUsed.Pencil);
+        this.pickPencil();
     }
 
     @HostListener('window:keydown.w', ['$event'])
@@ -197,13 +204,5 @@ export class SidebarComponent {
         this.resetCheckedButton();
         this.isBrushChecked = true;
         this.pickBrush(1);
-    }
-
-    // function will be called when eraser button is clicked
-    eraserClicked(): void {
-        if (this.toolService.currentToolName === ToolUsed.Eraser) {
-            //   this.showEraserSetting();
-            this.eraserService.buttonClicked();
-        }
     }
 }
