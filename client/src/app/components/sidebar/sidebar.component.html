@@ -55,8 +55,13 @@
             </mat-grid-list>
 
             <mat-grid-list cols="6" *ngSwitchCase="1">
-                <mat-grid-tile colspan="6"></mat-grid-tile>
+                <mat-grid-tile colspan="6" aria-rowspan="8"> Changer la taille du crayon </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider min="5" max="30" value="5" step="0.5" [(ngModel)]="this.drawingService.baseCtx.lineWidth"> </mat-slider>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" aria-rowspan="8"> Taille du crayon : {{ this.drawingService.baseCtx.lineWidth }} px </mat-grid-tile>
             </mat-grid-list>
+
             <mat-grid-list cols="6" *ngSwitchCase="2">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
             </mat-grid-list>

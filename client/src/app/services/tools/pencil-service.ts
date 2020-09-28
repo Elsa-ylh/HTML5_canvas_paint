@@ -18,7 +18,7 @@ export class PencilService extends Tool {
         super(drawingService);
         this.clearPath();
     }
-
+    minimalPx: number = 2;
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -39,8 +39,8 @@ export class PencilService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
-            const diametreCir: number = 1.5;
-            const angleCir: number = 0;
+            const diametreCir = 1.5;
+            const angleCir = 0;
             if (this.mouseMove) {
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
@@ -85,5 +85,10 @@ export class PencilService extends Tool {
 
     private clearPath(): void {
         this.pathData = [];
+    }
+
+    buttonClicked(): void {
+        this.drawingService.baseCtx.lineWidth = this.minimalPx;
+        this.drawingService.previewCtx.lineWidth = this.minimalPx;
     }
 }
