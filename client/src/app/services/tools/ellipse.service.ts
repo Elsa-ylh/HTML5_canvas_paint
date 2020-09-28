@@ -18,7 +18,6 @@ export class EllipseService extends Tool {
     height: number;
     width: number;
     mousePosition: Vec2;
-    leftMouseDown: boolean = false;
     dottedLineWidth: number = 2;
     dottedSpace: number = 10;
 
@@ -28,7 +27,6 @@ export class EllipseService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-        this.leftMouseDown = true;
         this.drawingService.baseCtx.lineWidth = this.dottedLineWidth;
         this.drawingService.previewCtx.lineWidth = this.dottedLineWidth;
         if (this.mouseDown) {
@@ -44,7 +42,6 @@ export class EllipseService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         this.mouseDown = false;
-        this.leftMouseDown = false;
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -60,7 +57,7 @@ export class EllipseService extends Tool {
 
     OnShiftKeyDown(event: KeyboardEvent): void {
         this.circle = true;
-        if (this.leftMouseDown) {
+        if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.selectEllipse(this.mousePosition, false);
         }
@@ -68,7 +65,7 @@ export class EllipseService extends Tool {
 
     OnShiftKeyUp(event: KeyboardEvent): void {
         this.circle = false;
-        if (this.leftMouseDown) {
+        if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.selectEllipse(this.mousePosition, false);
         }
@@ -211,17 +208,3 @@ export class EllipseService extends Tool {
         }
     }
 }
-
-// if (this.square) {
-//   if (Math.abs(widht) > Math.abs(height)) {
-//     height = widht * Math.sign(height) * Math.sign(widht);
-//   } else {
-//     widht = height * Math.sign(height) * Math.sign(widht);
-//   }
-// }
-
-//   if (this.square) {
-//     ctx.fillRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
-// } else {
-//     ctx.fillRect(mouseDownPos.x, mouseDownPos.y, mouseUpPos.x - mouseDownPos.x, mouseUpPos.y - mouseDownPos.y);
-// }
