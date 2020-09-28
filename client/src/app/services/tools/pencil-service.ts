@@ -43,7 +43,6 @@ export class PencilService extends Tool {
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.drawLine(this.drawingService.previewCtx, this.pathData);
-                console.log('move pencil');
             } else {
                 // draw circle
                 this.drawingService.baseCtx.fillStyle = '#000000';
@@ -57,7 +56,6 @@ export class PencilService extends Tool {
                 this.drawingService.previewCtx.arc(mousePosition.x, mousePosition.y, diametreCir, angleCir, Math.PI * 2);
                 this.drawingService.previewCtx.closePath();
                 this.drawingService.previewCtx.fill();
-                console.log('click pencil');
             }
         }
         this.mouseDown = false;
