@@ -73,15 +73,13 @@
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="5">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
-                <mat-grid-tile colspan="6"> This is the settings to decrease or increase the size of a button</mat-grid-tile>
-                <mat-grid-tile colspan="2">
-                    <button mat-button color="primary" (click)="pickRectangle(1)">Plein</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="3">
-                    <button mat-button color="primary" (click)="pickRectangle(2)">Contour</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="5">
-                    <button mat-button color="primary" (click)="pickRectangle(3)">Plein avec contour</button>
+                <mat-grid-tile colspan="6"> choisissez un type de rectangle</mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">
+                    <mat-button-toggle-group vertical="true">
+                        <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickRectangle(1)">Plein</mat-button-toggle>
+                        <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickRectangle(2)">Contour</mat-button-toggle>
+                        <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickRectangle(3)">Plein avec contour</mat-button-toggle>
+                    </mat-button-toggle-group>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="3"> Ce slider permet de modifier l'épaisseur des lignes des rectangles</mat-grid-tile>
                 <mat-grid-tile colspan="6">
