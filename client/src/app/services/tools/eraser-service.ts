@@ -8,10 +8,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class EraserService extends Tool {
-    minimalPx: number = 5;
-
     private pathData: Vec2[];
-
+    eraserWidth: number = 5;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
@@ -23,11 +21,10 @@ export class EraserService extends Tool {
             this.mouseMove = false;
             this.drawingService.baseCtx.strokeStyle = '#FFF'; // draw in white
             this.drawingService.previewCtx.strokeStyle = '#FFF'; // when changecolor is implemented call pencil weith white.
-            this.drawingService.baseCtx.lineWidth = this.minimalPx; // minimal size is 5 px.
-            this.drawingService.previewCtx.lineWidth = this.minimalPx;
             this.drawingService.baseCtx.setLineDash([0, 0]); // reset
             this.drawingService.previewCtx.setLineDash([0, 0]); // reset
-
+            this.drawingService.baseCtx.lineWidth = this.eraserWidth;
+            this.drawingService.previewCtx.lineWidth = this.eraserWidth;
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -35,12 +32,16 @@ export class EraserService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
             if (this.mouseMove) {
-                const mousePosition = this.getPositionFromMouse(event);
                 this.pathData.push(mousePosition);
                 this.RemoveLine(this.drawingService.baseCtx, this.pathData);
             } else {
-                // code to draw line
+                // code to draw dot
+                this.drawingService.baseCtx.fillStyle = '#FFF';
+                this.drawingService.baseCtx.fillRect(mousePosition.x, mousePosition.y, this.eraserWidth, this.eraserWidth);
+                this.drawingService.previewCtx.fillStyle = '#FFF';
+                this.drawingService.previewCtx.fillRect(mousePosition.x, mousePosition.y, this.eraserWidth, this.eraserWidth);
             }
         }
 

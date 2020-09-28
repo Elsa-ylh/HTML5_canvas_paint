@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { cursorName } from '@app/classes/cursor-name';
 import { Tool, ToolUsed } from '@app/classes/tool';
 
 @Injectable({
@@ -11,6 +12,7 @@ export class DrawingService {
 
     whichTools: ToolUsed = ToolUsed.NONE;
     currentTool: Tool;
+    cursorUsed: string = cursorName.default;
 
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
