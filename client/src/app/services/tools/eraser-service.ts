@@ -9,7 +9,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
-    private minimalPx: number = 5;
+    eraserWidth: number = 5;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
@@ -23,6 +23,8 @@ export class EraserService extends Tool {
             this.drawingService.previewCtx.strokeStyle = '#FFF'; // when changecolor is implemented call pencil weith white.
             this.drawingService.baseCtx.setLineDash([0, 0]); // reset
             this.drawingService.previewCtx.setLineDash([0, 0]); // reset
+            this.drawingService.baseCtx.lineWidth = this.eraserWidth;
+            this.drawingService.previewCtx.lineWidth = this.eraserWidth;
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -38,9 +40,9 @@ export class EraserService extends Tool {
             } else {
                 // code to draw dot
                 this.drawingService.baseCtx.fillStyle = '#FFF';
-                this.drawingService.baseCtx.fillRect(mousePosition.x, mousePosition.y, this.minimalPx, this.minimalPx);
+                this.drawingService.baseCtx.fillRect(mousePosition.x, mousePosition.y, this.eraserWidth, this.eraserWidth);
                 this.drawingService.previewCtx.fillStyle = '#FFF';
-                this.drawingService.previewCtx.fillRect(mousePosition.x, mousePosition.y, this.minimalPx, this.minimalPx);
+                this.drawingService.previewCtx.fillRect(mousePosition.x, mousePosition.y, this.eraserWidth, this.eraserWidth);
             }
         }
         this.mouseDown = false;
