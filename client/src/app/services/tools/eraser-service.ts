@@ -36,7 +36,6 @@ export class EraserService extends Tool {
             if (this.mouseMove) {
                 this.pathData.push(mousePosition);
                 this.RemoveLine(this.drawingService.baseCtx, this.pathData);
-                this.RemoveLine(this.drawingService.previewCtx, this.pathData);
             } else {
                 // code to draw dot
                 this.drawingService.baseCtx.fillStyle = '#FFF';
@@ -45,6 +44,7 @@ export class EraserService extends Tool {
                 this.drawingService.previewCtx.fillRect(mousePosition.x, mousePosition.y, this.eraserWidth, this.eraserWidth);
             }
         }
+
         this.mouseDown = false;
         this.clearPath();
     }
@@ -58,7 +58,6 @@ export class EraserService extends Tool {
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.RemoveLine(this.drawingService.previewCtx, this.pathData);
-            this.RemoveLine(this.drawingService.baseCtx, this.pathData); // to see in real time the  changes.
         }
     }
 

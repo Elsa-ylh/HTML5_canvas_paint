@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatSliderChange } from '@angular/material/slider';
@@ -7,7 +7,6 @@ import { cursorName } from '@app/classes/cursor-name';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
-import { DrawingInformationsService } from '@app/services/drawing-info/drawing-informations.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -36,20 +35,16 @@ export class SidebarComponent {
     private isEllipseChecked: boolean = false;
     private isColorChecked: boolean = false;
 
-    showEraserWindow: boolean = false;
-    @ViewChild('slideBarText', { static: false }) eraserText: ElementRef<HTMLCanvasElement>;
-
     constructor(
         public drawingService: DrawingService,
         private dialogCreator: MatDialog,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
         public toolService: ToolService,
-        public drawingInfos: DrawingInformationsService,
-        public eraserService: EraserService,
         public rectangleService: RectangleService,
         public ellipseService: EllipseService,
         public brushService: BrushService,
+        public eraserService: EraserService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.NONE);
@@ -198,7 +193,6 @@ export class SidebarComponent {
         this.isPencilChecked = true;
         this.pickPencil();
     }
-
     @HostListener('window:keydown.w', ['$event'])
     changeBrushMode(event: KeyboardEvent): void {
         this.resetCheckedButton();
