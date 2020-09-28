@@ -11,7 +11,6 @@ describe('EraserService', () => {
     let mouseEvent: MouseEvent;
     let mouseEvent1: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-    let buttonClickedSpy: jasmine.Spy<any>;
     let fillRectSpy: jasmine.Spy<any>;
 
     let baseCtxStub: CanvasRenderingContext2D;
@@ -28,7 +27,6 @@ describe('EraserService', () => {
         });
         service = TestBed.inject(EraserService);
         removeLineSpy = spyOn<any>(service, 'RemoveLine').and.callThrough();
-        buttonClickedSpy = spyOn<any>(service, 'buttonClicked').and.callThrough();
         fillRectSpy = spyOn<any>(baseCtxStub, 'fillRect').and.callThrough();
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -120,10 +118,5 @@ describe('EraserService', () => {
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(removeLineSpy).not.toHaveBeenCalled();
-    });
-
-    it('should set minimum value to 5', () => {
-        service.buttonClicked();
-        expect(buttonClickedSpy).toHaveBeenCalled();
     });
 });
