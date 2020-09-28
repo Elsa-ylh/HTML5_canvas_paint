@@ -30,7 +30,10 @@ export class PencilService extends Tool {
             this.drawingService.previewCtx.lineWidth = this.pencilSize;
             this.drawingService.baseCtx.setLineDash([0, 0]); // reset
             this.drawingService.previewCtx.setLineDash([0, 0]); // reset
-
+            this.drawingService.baseCtx.lineCap = 'round';
+            this.drawingService.baseCtx.lineJoin = 'round';
+            this.drawingService.previewCtx.lineCap = 'round';
+            this.drawingService.previewCtx.lineJoin = 'round';
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -39,7 +42,7 @@ export class PencilService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
-            const diametreCir = 1.5;
+            const diametreCir = this.pencilSize / 2;
             const angleCir = 0;
             if (this.mouseMove) {
                 this.pathData.push(mousePosition);
