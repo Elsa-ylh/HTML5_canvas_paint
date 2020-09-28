@@ -11,7 +11,6 @@ describe('EraserService', () => {
     let mouseEvent: MouseEvent;
     let mouseEvent1: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-    let fillRectSpy: jasmine.Spy<any>;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -27,7 +26,6 @@ describe('EraserService', () => {
         });
         service = TestBed.inject(EraserService);
         removeLineSpy = spyOn<any>(service, 'RemoveLine').and.callThrough();
-        fillRectSpy = spyOn<any>(baseCtxStub, 'fillRect').and.callThrough();
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
@@ -91,7 +89,7 @@ describe('EraserService', () => {
         service.mouseDown = true;
         service.mouseMove = true;
         service.onMouseUp(mouseEvent);
-        expect(fillRectSpy).toHaveBeenCalled();
+        expect(removeLineSpy).toHaveBeenCalled();
     });
 
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
