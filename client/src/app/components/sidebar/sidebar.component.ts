@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatSliderChange } from '@angular/material/slider';
 import { DomSanitizer } from '@angular/platform-browser';
+import { cursorName } from '@app/classes/cursor-name';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
@@ -10,6 +11,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
+import { EraserService } from '@app/services/tools/eraser-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 
 @Component({
@@ -25,13 +27,13 @@ export class SidebarComponent {
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
 
-    isPencilChecked: boolean = false;
-    isEraserChecked: boolean = false;
-    isBrushChecked: boolean = false;
-    isLineChecked: boolean = false;
-    isRectangleChecked: boolean = false;
-    isEllipseChecked: boolean = false;
-    isColorChecked: boolean = false;
+    private isPencilChecked: boolean = false;
+    private isEraserChecked: boolean = false;
+    private isBrushChecked: boolean = false;
+    private isLineChecked: boolean = false;
+    private isRectangleChecked: boolean = false;
+    private isEllipseChecked: boolean = false;
+    private isColorChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -42,6 +44,7 @@ export class SidebarComponent {
         public rectangleService: RectangleService,
         public ellipseService: EllipseService,
         public brushService: BrushService,
+        public eraserService: EraserService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.NONE);
@@ -69,6 +72,7 @@ export class SidebarComponent {
     }
 
     pickPencil(): void {
+        this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Pencil);
     }
 
@@ -79,6 +83,7 @@ export class SidebarComponent {
     }
 
     pickEraser(): void {
+        this.drawingService.cursorUsed = cursorName.eraser;
         this.toolService.switchTool(ToolUsed.Eraser);
     }
 
@@ -87,6 +92,7 @@ export class SidebarComponent {
     }
 
     pickBrush(subTool: number): void {
+        this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Brush);
         if (this.drawingService.baseCtx.lineWidth < this.brushService.pixelMinBrush) {
             this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.pxSize = this.brushService.pixelMinBrush;
@@ -99,6 +105,7 @@ export class SidebarComponent {
     }
 
     pickLine(): void {
+        this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Line);
     }
 
@@ -107,6 +114,7 @@ export class SidebarComponent {
     }
 
     pickRectangle(subTool: number): void {
+        this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Rectangle);
         this.toolService.currentTool.subToolSelect = subTool;
     }
@@ -116,6 +124,7 @@ export class SidebarComponent {
     }
 
     pickEllipse(subTool2: number): void {
+        this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Ellipse);
         this.toolService.currentTool.subToolSelect = subTool2;
     }
@@ -125,6 +134,7 @@ export class SidebarComponent {
     }
 
     pickColor(): void {
+        this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Color);
     }
 
@@ -174,14 +184,14 @@ export class SidebarComponent {
     changeEraserMode(event: KeyboardEvent): void {
         this.resetCheckedButton();
         this.isEraserChecked = true;
-        this.toolService.switchTool(ToolUsed.Eraser);
+        this.pickEraser();
     }
 
     @HostListener('window:keydown.c', ['$event'])
     changePencilMode(event: KeyboardEvent): void {
         this.resetCheckedButton();
         this.isPencilChecked = true;
-        this.toolService.switchTool(ToolUsed.Pencil);
+        this.pickPencil();
     }
     @HostListener('window:keydown.w', ['$event'])
     changeBrushMode(event: KeyboardEvent): void {
