@@ -12,6 +12,8 @@ export class LineService extends Tool {
     pathData: Vec2[] = [];
     private pointMouse: Vec2 = { x: 0, y: 0 };
     private shiftKeyDown: boolean = false;
+    private pointShiftMemori: Vec2 = { x: 0, y: 0 };
+
     constructor(drawingService: DrawingService) {
         super(drawingService);
     }
@@ -28,9 +30,11 @@ export class LineService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseMove) {
-            this.pointMouse = this.getPositionFromMouse(event);
+        if (this.mouseMove && !this.shiftKeyDown) {
+            this.pointShiftMemori = this.pointMouse = this.getPositionFromMouse(event);
             this.drawLine(this.drawingService.previewCtx, this.pathData, this.pointMouse);
+        } else if (this.shiftKeyDown) {
+            this.pointShiftMemori = this.getPositionFromMouse(event);
         }
     }
 
@@ -38,14 +42,16 @@ export class LineService extends Tool {
         if (this.mouseDown && this.mouseMove) {
             this.shiftKeyDown = true;
             this.mouseMove = false;
+
             this.shiftDrawAngleLine(this.drawingService.previewCtx, this.pathData, this.pointMouse);
         }
     }
 
     OnShiftKeyUp(event: KeyboardEvent): void {
-        if (this.mouseDown) {
+        if (this.mouseDown && this.shiftKeyDown) {
             this.mouseMove = true;
             this.shiftKeyDown = false;
+            this.drawLine(this.drawingService.previewCtx, this.pathData, this.pointShiftMemori);
         }
     }
 
@@ -55,10 +61,7 @@ export class LineService extends Tool {
         const firstPoint = path[path.length - 1];
         const dx = lastPoint.x - firstPoint.x;
         const dy = lastPoint.y - firstPoint.y;
-        const angle = Math.atan2(dy, dx);
-        const angleabs = Math.abs(angle);
-        console.log(angle);
-        console.log(Math.PI / 8 + ' ' + (Math.PI * 3) / 8 + '||' + (Math.PI * 7) / 8 + ' ' + (Math.PI * 5) / 8);
+        const angleabs = Math.abs(Math.atan2(dy, dx));
         if (angleabs < Math.PI / 8 || angleabs > (Math.PI * 7) / 8) {
             newPoint = { x: lastPoint.x, y: firstPoint.y };
         } else if (angleabs >= Math.PI / 8 && angleabs <= (Math.PI * 3) / 8) {
@@ -73,15 +76,11 @@ export class LineService extends Tool {
         } else {
             newPoint = { x: firstPoint.x, y: lastPoint.y };
         }
-        console.log(lastPoint);
-        console.log(firstPoint);
-        console.log(newPoint);
         this.pointMouse = newPoint;
         this.drawLine(ctx, path, newPoint);
     }
 
     onDoubleClick(event: MouseEvent): void {
-        this.mouseDown = this.mouseMove = false;
         if (this.mergeFirstPoint(this.pathData)) {
             this.pathData[this.pathData.length - 1] = this.pathData[0];
         }
@@ -92,10 +91,8 @@ export class LineService extends Tool {
 
     onKeyEscape(event: KeyboardEvent): void {
         if (this.mouseDown) {
-            for (let index = this.pathData.length; 1 < index; index--) {
-                this.pathData.pop();
-            }
-            this.drawLine(this.drawingService.previewCtx, this.pathData, this.pointMouse);
+            this.clearPath();
+            this.clearEffectTool();
         }
     }
 
@@ -168,5 +165,10 @@ export class LineService extends Tool {
 
     private clearPath(): void {
         this.pathData = [];
+        this.shiftKeyDown = false;
+        this.mouseDown = this.mouseMove = false;
+        this.pointMouse = { x: 0, y: 0 };
+        this.shiftKeyDown = false;
+        this.pointShiftMemori = { x: 0, y: 0 };
     }
 }
