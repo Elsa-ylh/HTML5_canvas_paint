@@ -1,0 +1,25 @@
+<div class="color-container">
+    <div class=color-wrapper>
+
+        <canvas #canvasSliderBar></canvas>
+
+        <canvas #canvasPalette></canvas>
+        <!--
+        <app-coloration [hue]="hue" (color)="color = $event"></app-coloration>
+        <app-color-bar (color)="hue=$event" style="margin-left:16px"></app-color-bar>
+        -->
+    </div>
+
+    <div class="input-wrapper">
+        <span class="text">{{color}}</span>
+        <div class="color-div" [ngStyle]="{'background-color': color || 'white'}"></div>
+    </div>
+    <div class="buttonSection">
+        <button mat-raised-button [mat-dialog-close]="selectColor()"> select </button>
+        &nbsp;
+        <button mat-raised-button mat-dialog-close> cancel </button>
+    </div>
+    <div>
+
+    </div>
+</div>
