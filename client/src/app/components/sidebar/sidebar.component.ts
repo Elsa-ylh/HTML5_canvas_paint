@@ -125,6 +125,8 @@ export class SidebarComponent {
     }
 
     pickColor(): void {
+        // We don't actually change tool, we are simply making the sidebar show the color palette.
+        // so pay attention to the next section of code
         this.toolService.switchTool(ToolUsed.Color);
     }
 
