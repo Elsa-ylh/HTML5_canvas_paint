@@ -23,6 +23,7 @@ export class PencilService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
+            this.mouseMove = false;
             this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
             this.drawingService.previewCtx.strokeStyle = '#000000';
             this.drawingService.baseCtx.lineWidth = 2; // conserve same size a before
@@ -38,8 +39,26 @@ export class PencilService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
+            const diametreCir: number = 1.5;
+            const angleCir: number = 0;
+            if (this.mouseMove) {
+                this.pathData.push(mousePosition);
+                this.drawLine(this.drawingService.baseCtx, this.pathData);
+                this.drawLine(this.drawingService.previewCtx, this.pathData);
+            } else {
+                // draw circle
+                this.drawingService.baseCtx.fillStyle = '#000000';
+                this.drawingService.previewCtx.fillStyle = '#000000';
+                this.drawingService.baseCtx.beginPath();
+                this.drawingService.baseCtx.arc(mousePosition.x, mousePosition.y, diametreCir, angleCir, Math.PI * 2);
+                this.drawingService.baseCtx.closePath();
+                this.drawingService.baseCtx.fill();
+
+                this.drawingService.previewCtx.beginPath();
+                this.drawingService.previewCtx.arc(mousePosition.x, mousePosition.y, diametreCir, angleCir, Math.PI * 2);
+                this.drawingService.previewCtx.closePath();
+                this.drawingService.previewCtx.fill();
+            }
         }
         this.mouseDown = false;
         this.clearPath();
@@ -49,7 +68,7 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-
+            this.mouseMove = true;
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.previewCtx, this.pathData);
