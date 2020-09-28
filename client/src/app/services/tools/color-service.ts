@@ -5,4 +5,5 @@ import { Injectable } from '@angular/core';
 })
 export class ColorService {
     fillRoundPalette(): void {}
+    fillHorizontalPalette(): void {}
 }
