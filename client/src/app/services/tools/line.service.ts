@@ -11,13 +11,14 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class LineService extends Tool {
     pathData: Vec2[] = [];
     private pointMouse: Vec2;
+    private shiftKeyDown: boolean = false;
     constructor(drawingService: DrawingService) {
         super(drawingService);
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown) {
+        if (this.mouseDown && !this.shiftKeyDown) {
             this.mouseMove = true;
             this.pathData.push(this.getPositionFromMouse(event));
         }
@@ -32,14 +33,27 @@ export class LineService extends Tool {
 
     OnShiftKeyDown(event: KeyboardEvent): void {
         if (this.mouseDown && this.mouseMove) {
+            this.shiftKeyDown = true;
             this.mouseMove = false;
+            this.shiftDrawLine(this.drawingService.previewCtx, this.pathData, this.pointMouse);
         }
     }
 
     OnShiftKeyUp(event: KeyboardEvent): void {
         if (this.mouseDown) {
             this.mouseMove = true;
+            this.shiftKeyDown = false;
         }
+    }
+
+    private shiftDrawLine(ctx: CanvasRenderingContext2D, path: Vec2[], lastPoint: Vec2): void {
+        // Attention le calcul est en rad
+        const firstPoint = path[path.length - 1];
+        const dx = lastPoint.x - firstPoint.x;
+        const dy = lastPoint.y - firstPoint.y;
+        const angle = Math.atan2(dx, dy);
+        console.log(angle);
+        this.drawLine(ctx, path, lastPoint);
     }
 
     onDoubleClick(event: MouseEvent): void {
@@ -50,14 +64,6 @@ export class LineService extends Tool {
         this.finalDrawLine(this.drawingService.baseCtx, this.pathData);
         this.clearPath();
         this.clearEffectTool();
-    }
-    private mergeFirstPoint(path: Vec2[]): boolean {
-        const maximumDistance = 20;
-        const firstPoint = path[0];
-        const lastPoint = path[path.length - 1];
-        const dx = Math.abs(lastPoint.x - firstPoint.x);
-        const dy = Math.abs(lastPoint.y - firstPoint.y);
-        return dx <= maximumDistance && dy <= maximumDistance;
     }
 
     onKeyEscape(event: KeyboardEvent): void {
@@ -109,6 +115,15 @@ export class LineService extends Tool {
             ctx.stroke();
         }
         ctx.lineWidth = sizePx;
+    }
+
+    private mergeFirstPoint(path: Vec2[]): boolean {
+        const maximumDistance = 20;
+        const firstPoint = path[0];
+        const lastPoint = path[path.length - 1];
+        const dx = Math.abs(lastPoint.x - firstPoint.x);
+        const dy = Math.abs(lastPoint.y - firstPoint.y);
+        return dx <= maximumDistance && dy <= maximumDistance;
     }
 
     private clearEffectTool(): void {
