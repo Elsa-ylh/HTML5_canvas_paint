@@ -20,6 +20,8 @@ describe('Service: Line', () => {
     let drawLineSpy: jasmine.Spy<any>;
     let mergeFirstPointSpy: jasmine.Spy<any>;
     let finalDrawLineSpy: jasmine.Spy<any>;
+    let shiftDrawAngleLineSpy: jasmine.Spy<any>;
+
     let mouseEvent: MouseEvent;
     let mouseEvent1: MouseEvent;
     /* let mouseEvent2: MouseEvent; */
@@ -43,11 +45,14 @@ describe('Service: Line', () => {
         mergeFirstPointSpy = spyOn<any>(service, 'mergeFirstPoint').and.callThrough();
         drawPoinSpy = spyOn<any>(service, 'drawPoin').and.callThrough();
         finalDrawLineSpy = spyOn<any>(service, 'finalDrawLine').and.callThrough();
+        shiftDrawAngleLineSpy = spyOn<any>(service, 'shiftDrawAngleLine').and.callThrough();
+
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         pathData = [];
+
         mouseEvent = {
             offsetX: 25,
             offsetY: 10,
@@ -75,8 +80,7 @@ describe('Service: Line', () => {
     }));
 
     it('one point function mergeFirstPoint si true', () => {
-        const expectedResult: Vec2 = { x: 25, y: 10 };
-        pathData.push(expectedResult);
+        pathData.push({ x: 25, y: 10 });
         const boolFonction = mergeFirstPointSpy(pathData);
         expect(boolFonction).toEqual(true);
     });
@@ -171,5 +175,16 @@ describe('Service: Line', () => {
         service.onMouseDown(mouseEvent);
         service.onDoubleClick(mouseEvent1);
         expect(finalDrawLineSpy).toHaveBeenCalled();
+    });
+    it('ShiftDrawAngleLine of 0 ', () => {
+        pathData.push({ x: 0, y: 0 });
+        const vec2 = shiftDrawAngleLineSpy(pathData, { x: 0, y: 0 });
+        expect(vec2).toEqual({ x: 0, y: 0 });
+    });
+    it('ShiftDrawAngleLine of 0 ', () => {
+        pathData.push({ x: 50, y: 40 });
+        pathData.push({ x: 0, y: 0 });
+        const vec2 = shiftDrawAngleLineSpy(pathData, { x: 0, y: 0 });
+        expect(vec2).toEqual({ x: 0, y: 0 });
     });
 });

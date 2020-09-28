@@ -9,7 +9,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class LineService extends Tool {
-    pathData: Vec2[] = [];
+    private pathData: Vec2[] = [];
     private pointMouse: Vec2 = { x: 0, y: 0 };
     private shiftKeyDown: boolean = false;
     private pointShiftMemori: Vec2 = { x: 0, y: 0 };
@@ -24,7 +24,6 @@ export class LineService extends Tool {
             this.mouseMove = true;
             this.pathData.push(this.getPositionFromMouse(event));
         } else if (this.mouseDown && this.shiftKeyDown) {
-            this.pointMouse;
             this.pathData.push(this.pointMouse);
         }
     }
@@ -42,8 +41,8 @@ export class LineService extends Tool {
         if (this.mouseDown && this.mouseMove) {
             this.shiftKeyDown = true;
             this.mouseMove = false;
-
-            this.shiftDrawAngleLine(this.drawingService.previewCtx, this.pathData, this.pointMouse);
+            this.pointMouse = this.shiftDrawAngleLine(this.pathData, this.pointMouse);
+            this.drawLine(this.drawingService.previewCtx, this.pathData, this.pointMouse);
         }
     }
 
@@ -55,29 +54,33 @@ export class LineService extends Tool {
         }
     }
 
-    private shiftDrawAngleLine(ctx: CanvasRenderingContext2D, path: Vec2[], lastPoint: Vec2): void {
-        // Attention le calcul est en rad  le 0 rad  point ver le vas de la page et +-Pi rad point ver le haut de la page.
+    private shiftDrawAngleLine(path: Vec2[], lastPoint: Vec2): Vec2 {
+        // Attention le calcul est en rad  le 0 rad  point vers la droit de la page et +-Pi rad point vers le gauche de la page.
         let newPoint: Vec2;
-        const firstPoint = path[path.length - 1];
+        const leastone = -1;
+        const denominator8 = 8;
+        const denominator4 = 4;
+        const numerator7 = 7;
+        const numerator5 = 5;
+        const numerator3 = 3;
+        const firstPoint = path[path.length + leastone];
         const dx = lastPoint.x - firstPoint.x;
         const dy = lastPoint.y - firstPoint.y;
         const angleabs = Math.abs(Math.atan2(dy, dx));
-        if (angleabs < Math.PI / 8 || angleabs > (Math.PI * 7) / 8) {
+        if (angleabs < Math.PI / denominator8 || angleabs > (Math.PI * numerator7) / denominator8) {
             newPoint = { x: lastPoint.x, y: firstPoint.y };
-        } else if (angleabs >= Math.PI / 8 && angleabs <= (Math.PI * 3) / 8) {
-            const axey = dy > 0 ? -1 : 1;
-            const newY = Math.tan((Math.PI * 3) / 4) * dx * axey;
-
+        } else if (angleabs >= Math.PI / denominator8 && angleabs <= (Math.PI * numerator3) / denominator8) {
+            const axey: number = dy > 0 ? leastone : 1;
+            const newY: number = Math.tan((Math.PI * numerator3) / denominator4) * dx * axey;
             newPoint = { x: lastPoint.x, y: firstPoint.y + newY };
-        } else if (angleabs <= (Math.PI * 7) / 8 && angleabs >= (Math.PI * 5) / 8) {
-            const axey = dy > 0 ? -1 : 1;
-            const newY = Math.tan(Math.PI / 4) * dx * axey;
+        } else if (angleabs <= (Math.PI * numerator7) / denominator8 && angleabs >= (Math.PI * numerator5) / denominator8) {
+            const axey: number = dy > 0 ? leastone : 1;
+            const newY: number = Math.tan(Math.PI / denominator4) * dx * axey;
             newPoint = { x: lastPoint.x, y: firstPoint.y + newY };
         } else {
             newPoint = { x: firstPoint.x, y: lastPoint.y };
         }
-        this.pointMouse = newPoint;
-        this.drawLine(ctx, path, newPoint);
+        return newPoint;
     }
 
     onDoubleClick(event: MouseEvent): void {
@@ -103,7 +106,7 @@ export class LineService extends Tool {
         }
     }
     private finalDrawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.clearPreviewCtx();
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
@@ -114,7 +117,7 @@ export class LineService extends Tool {
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], lastPoint: Vec2): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.clearPreviewCtx();
         ctx.lineCap = 'butt';
         ctx.lineJoin = 'bevel';
         ctx.beginPath();
@@ -160,6 +163,10 @@ export class LineService extends Tool {
         this.drawingService.previewCtx.setLineDash([0, 0]);
         this.drawingService.baseCtx.globalAlpha = 1;
         this.drawingService.previewCtx.globalAlpha = 1;
+        this.clearPreviewCtx();
+    }
+
+    private clearPreviewCtx(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
