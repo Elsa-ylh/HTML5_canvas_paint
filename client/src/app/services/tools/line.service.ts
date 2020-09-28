@@ -52,15 +52,12 @@ export class LineService extends Tool {
         this.clearEffectTool();
     }
     private mergeFirstPoint(path: Vec2[]): boolean {
+        const maximumDistance = 20;
         const firstPoint = path[0];
         const lastPoint = path[path.length - 1];
-        if (firstPoint !== lastPoint) {
-            const dx = Math.abs(lastPoint.x - firstPoint.x);
-            const dy = Math.abs(lastPoint.y - firstPoint.y);
-            const d = Math.sqrt(dx * dx + dy * dy);
-            return d < 10;
-        }
-        return true;
+        const dx = Math.abs(lastPoint.x - firstPoint.x);
+        const dy = Math.abs(lastPoint.y - firstPoint.y);
+        return dx <= maximumDistance && dy <= maximumDistance;
     }
 
     onKeyEscape(event: KeyboardEvent): void {
@@ -78,7 +75,7 @@ export class LineService extends Tool {
             this.drawLine(this.drawingService.previewCtx, this.pathData, this.pointMouse);
         }
     }
-    private finalDrawLine(ctx: CanvasRenderingContext2D, path: Vec2[]) {
+    private finalDrawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         ctx.beginPath();
         for (const point of path) {
@@ -86,7 +83,7 @@ export class LineService extends Tool {
         }
         ctx.stroke();
 
-        this.drawPoin(ctx, path);
+        if (this.subToolSelect === SubToolselected.tool2) this.drawPoin(ctx, path);
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], lastPoint: Vec2): void {
@@ -99,22 +96,19 @@ export class LineService extends Tool {
         }
         ctx.lineTo(lastPoint.x, lastPoint.y);
         ctx.stroke();
-        this.drawPoin(ctx, path);
+        if (this.subToolSelect === SubToolselected.tool2) this.drawPoin(ctx, path);
     }
 
-    private drawPoin(ctx: CanvasRenderingContext2D, path: Vec2[]) {
-        if (this.subToolSelect == SubToolselected.tool2) {
-            ctx.lineJoin = ctx.lineCap = 'round';
-            const sizePx = ctx.lineWidth;
-            ctx.lineWidth = this.secondeSizePixel;
-            for (const point of path) {
-                ctx.beginPath();
-                ctx.lineTo(point.x, point.y);
-                ctx.stroke();
-            }
-            ctx.lineWidth = sizePx;
+    private drawPoin(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.lineJoin = ctx.lineCap = 'round';
+        const sizePx = ctx.lineWidth;
+        ctx.lineWidth = this.secondeSizePixel;
+        for (const point of path) {
+            ctx.beginPath();
+            ctx.lineTo(point.x, point.y);
+            ctx.stroke();
         }
-        //this.clearEffectTool();
+        ctx.lineWidth = sizePx;
     }
 
     private clearEffectTool(): void {

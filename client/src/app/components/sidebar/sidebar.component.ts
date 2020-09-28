@@ -156,7 +156,7 @@ export class SidebarComponent {
     CheckboxChangeToggle(args: MatCheckboxChange): void {
         console.log(args.checked);
         this.toolService.currentTool.subToolSelect = args.checked ? SubToolselected.tool2 : SubToolselected.tool1;
-        //document.getElementById('sliderPoint')?.style.visibility = args.checked ? 'hidder' : 'visible';
+        // document.getElementById('sliderPoint')?.style.visibility = args.checked ? 'hidder' : 'visible';
     }
 
     sliderSlidingPoint(args: MatSliderChange): void {
