@@ -2,20 +2,22 @@
     width: 220px;
     display: flex;
     flex-direction: column;
+    margin-top: 3px;
+    margin-left: 3px;
 }
 
 #previewSquare {
     position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    width: 220px;
+    margin-top: 3px;
+    margin-left: 3px;
+    z-index: 1;
+    width: auto;
     height: 220px;
 }
 
 #squarePalette {
-    z-index: 1;
-    width: 220px;
+    z-index: 0;
+    width: auto;
     height: 220px;
 }
 

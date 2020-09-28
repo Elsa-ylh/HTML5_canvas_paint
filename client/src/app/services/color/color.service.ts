@@ -15,9 +15,7 @@ export class ColorService {
     // is some form of paraphrasing and recoding to make it adapted to our use cases.
     // https://malcoded.com/posts/angular-color-picker/
     // Drawing a rainbow-gradient
-    drawSquarePalette(ctx: CanvasRenderingContext2D, dimension: Vec2): void {
-        dimension.x = 220;
-
+    drawPalette(ctx: CanvasRenderingContext2D, dimension: Vec2): void {
         ctx.clearRect(0, 0, dimension.x, dimension.y);
         const gradient = ctx.createLinearGradient(0, 0, 0, dimension.y);
 

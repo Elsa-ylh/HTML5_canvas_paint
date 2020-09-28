@@ -15,13 +15,16 @@ import { ColorService } from '@app/services/color/color.service';
 // The website mainly teach how to do the drawing with canvas2d the gradient
 // https://malcoded.com/posts/angular-color-picker/
 export class ColorComponent implements AfterViewInit {
+    // This will force the usage of the entire CSS width. It is a poor man's fix.
+    fullUseOfWidth: number = 1000;
+
     @ViewChild('previewSquare') previewSquare: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('squarePalette') squareCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewSquare') previewHorizontal: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('horizontalPalette') horizontalCanvas: ElementRef<HTMLCanvasElement>;
 
-    squareDimension: Vec2 = { x: 220, y: 220 };
-    horizontalDimension: Vec2 = { x: 220, y: 50 };
+    squareDimension: Vec2 = { x: this.fullUseOfWidth, y: 220 };
+    horizontalDimension: Vec2 = { x: this.fullUseOfWidth, y: 50 };
 
     previewSquareCtx: CanvasRenderingContext2D;
     squareCtx: CanvasRenderingContext2D;
@@ -42,11 +45,10 @@ export class ColorComponent implements AfterViewInit {
 
         this.previewHorizontalCtx = this.previewHorizontal.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.horizontalCtx = this.horizontalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-
-        this.drawSquarePalette(this.squareCtx, this.squareDimension);
+        this.drawSquarePalette();
     }
 
-    drawSquarePalette(ctx: CanvasRenderingContext2D, dimension: Vec2): void {
-        this.colorService.drawSquarePalette(ctx, dimension);
+    drawSquarePalette(): void {
+        this.colorService.drawPalette(this.squareCtx, this.squareDimension);
     }
 }
