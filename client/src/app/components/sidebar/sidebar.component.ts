@@ -74,7 +74,6 @@ export class SidebarComponent {
         this.toolService.switchTool(ToolUsed.Pencil);
     }
 
- 
     // the following get are used to make sure the display of sidebar tools are
     // are properly pressed on
     get pencilChecked(): boolean {
