@@ -10,6 +10,7 @@ import { BrushService } from './brush.service';
 describe('BrushService', () => {
     let service: BrushService;
     let mouseEvent: MouseEvent;
+    let mouseEvent1: MouseEvent;
     let mouseEventRight: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let subToolselected: SubToolselected;
@@ -17,7 +18,7 @@ describe('BrushService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
     let drawBrushToolSpy: jasmine.Spy<any>;
-
+    let drawLineBrushSpy: jasmine.Spy<any>;
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -30,6 +31,7 @@ describe('BrushService', () => {
         service = TestBed.inject(BrushService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         drawBrushToolSpy = spyOn<any>(service, 'drawBrushTool4').and.callThrough();
+        drawLineBrushSpy = spyOn<any>(service, 'drawLineBrush5').and.callThrough();
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
@@ -40,7 +42,11 @@ describe('BrushService', () => {
             offsetY: 10,
             button: MouseButton.Left,
         } as MouseEvent;
-
+        mouseEvent1 = {
+            offsetX: 25,
+            offsetY: 12,
+            button: MouseButton.Left,
+        } as MouseEvent;
         mouseEventRight = {
             offsetX: 10,
             offsetY: 25,
@@ -92,6 +98,7 @@ describe('BrushService', () => {
         expect(service.subToolSelect).toEqual(SubToolselected.tool5);
     });
     it(' onMouseUp should call drawLine if mouse was already down', () => {
+        service.subToolSelect = SubToolselected.tool1;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
 
@@ -100,6 +107,7 @@ describe('BrushService', () => {
     });
 
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
+        service.subToolSelect = SubToolselected.tool1;
         service.mouseDown = false;
         service.mouseDownCoord = { x: 0, y: 0 };
 
@@ -108,6 +116,7 @@ describe('BrushService', () => {
     });
 
     it(' onMouseMove should call drawLine if mouse was already down', () => {
+        service.subToolSelect = SubToolselected.tool1;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
 
@@ -124,7 +133,8 @@ describe('BrushService', () => {
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
-    it(' onMouseUp should call drawLine if mouse was already down tool4', () => {
+
+    it(' onMouseUp should call drawBrushToolSpy if mouse was already down tool4', () => {
         service.subToolSelect = SubToolselected.tool4;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -132,12 +142,56 @@ describe('BrushService', () => {
         service.onMouseUp(mouseEvent);
         expect(drawBrushToolSpy).toHaveBeenCalled();
     });
-    it(' onMouseUp should call drawLine if mouse was already down tool4', () => {
+
+    it(' onMouseMove and onMouseUp should call drawBrushToolSpy if mouse was already down tool4', () => {
         service.subToolSelect = SubToolselected.tool4;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         service.onMouseMove(mouseEvent);
         service.onMouseUp(mouseEvent);
         expect(drawBrushToolSpy).toHaveBeenCalled();
+    });
+
+    it('onMouseMove and onMouseUp should call drawLineBrushSpy if mouse was already down tool5 ', () => {
+        service.subToolSelect = SubToolselected.tool5;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.onMouseMove(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        expect(drawLineBrushSpy).toHaveBeenCalled();
+    });
+
+    it('onMouseMove and onMouseUp should call drawLineSpy if mouse was already down 6 si def', () => {
+        const tool6 = 6; // tools exite pas
+        service.subToolSelect = tool6;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.onMouseMove(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        expect(drawLineSpy).toHaveBeenCalled();
+    });
+    it('onMouseMove and onMouseUp should call drawLineSpy if mouse was already down 3', () => {
+        service.subToolSelect = SubToolselected.tool3;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.onMouseMove(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        expect(drawLineSpy).toHaveBeenCalled();
+    });
+    it('onMouseMove and onMouseUp should call drawLineSpy if mouse was already down 2', () => {
+        service.subToolSelect = SubToolselected.tool2;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.onMouseMove(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        expect(drawLineSpy).toHaveBeenCalled();
+    });
+    it('onMouseDown and onMouseUp should call drawLineSpy if mouse was already down 3', () => {
+        service.subToolSelect = SubToolselected.tool3;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.onMouseMove(mouseEvent1);
+        service.onMouseUp(mouseEvent);
+        expect(drawLineSpy).toHaveBeenCalled();
     });
 });
