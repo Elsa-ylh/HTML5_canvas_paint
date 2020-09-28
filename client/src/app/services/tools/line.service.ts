@@ -10,7 +10,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class LineService extends Tool {
     pathData: Vec2[] = [];
-    private pointMouse: Vec2;
+    private pointMouse: Vec2 = { x: 0, y: 0 };
     private shiftKeyDown: boolean = false;
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -21,6 +21,9 @@ export class LineService extends Tool {
         if (this.mouseDown && !this.shiftKeyDown) {
             this.mouseMove = true;
             this.pathData.push(this.getPositionFromMouse(event));
+        } else if (this.mouseDown && this.shiftKeyDown) {
+            this.pointMouse;
+            this.pathData.push(this.pointMouse);
         }
     }
 
@@ -35,7 +38,7 @@ export class LineService extends Tool {
         if (this.mouseDown && this.mouseMove) {
             this.shiftKeyDown = true;
             this.mouseMove = false;
-            this.shiftDrawLine(this.drawingService.previewCtx, this.pathData, this.pointMouse);
+            this.shiftDrawAngleLine(this.drawingService.previewCtx, this.pathData, this.pointMouse);
         }
     }
 
@@ -46,14 +49,35 @@ export class LineService extends Tool {
         }
     }
 
-    private shiftDrawLine(ctx: CanvasRenderingContext2D, path: Vec2[], lastPoint: Vec2): void {
-        // Attention le calcul est en rad
+    private shiftDrawAngleLine(ctx: CanvasRenderingContext2D, path: Vec2[], lastPoint: Vec2): void {
+        // Attention le calcul est en rad  le 0 rad  point ver le vas de la page et +-Pi rad point ver le haut de la page.
+        let newPoint: Vec2;
         const firstPoint = path[path.length - 1];
         const dx = lastPoint.x - firstPoint.x;
         const dy = lastPoint.y - firstPoint.y;
-        const angle = Math.atan2(dx, dy);
+        const angle = Math.atan2(dy, dx);
+        const angleabs = Math.abs(angle);
         console.log(angle);
-        this.drawLine(ctx, path, lastPoint);
+        console.log(Math.PI / 8 + ' ' + (Math.PI * 3) / 8 + '||' + (Math.PI * 7) / 8 + ' ' + (Math.PI * 5) / 8);
+        if (angleabs < Math.PI / 8 || angleabs > (Math.PI * 7) / 8) {
+            newPoint = { x: lastPoint.x, y: firstPoint.y };
+        } else if (angleabs >= Math.PI / 8 && angleabs <= (Math.PI * 3) / 8) {
+            const axey = dy > 0 ? -1 : 1;
+            const newY = Math.tan((Math.PI * 3) / 4) * dx * axey;
+
+            newPoint = { x: lastPoint.x, y: firstPoint.y + newY };
+        } else if (angleabs <= (Math.PI * 7) / 8 && angleabs >= (Math.PI * 5) / 8) {
+            const axey = dy > 0 ? -1 : 1;
+            const newY = Math.tan(Math.PI / 4) * dx * axey;
+            newPoint = { x: lastPoint.x, y: firstPoint.y + newY };
+        } else {
+            newPoint = { x: firstPoint.x, y: lastPoint.y };
+        }
+        console.log(lastPoint);
+        console.log(firstPoint);
+        console.log(newPoint);
+        this.pointMouse = newPoint;
+        this.drawLine(ctx, path, newPoint);
     }
 
     onDoubleClick(event: MouseEvent): void {
