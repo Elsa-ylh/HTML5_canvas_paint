@@ -13,7 +13,7 @@ export class EllipseService extends Tool {
     fillColor: string = '#ffb366';
     strokeColor: string = '#00ccff';
     strokeRectColor: string = '#000000';
-    lineRectWidht: number = 1;
+    lineRectwidth: number = 1;
     circle: boolean = false;
     height: number;
     width: number;
@@ -145,14 +145,14 @@ export class EllipseService extends Tool {
         this.drawingService.previewCtx.beginPath();
         this.drawingService.baseCtx.beginPath();
         const height = mouseUpPos.y - mouseDownPos.y;
-        const widht = mouseUpPos.x - mouseDownPos.x;
+        const width = mouseUpPos.x - mouseDownPos.x;
         ctx.fillStyle = fillColor;
         ctx.strokeStyle = this.strokeRectColor;
         ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
-        this.drawEllipse(ctx, widht / 2, height / 2);
+        this.drawEllipse(ctx, width / 2, height / 2);
         ctx.fill();
         if (this.drawingService.previewCtx === ctx) {
-            ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, widht, height);
+            ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, width, height);
         }
     }
 
@@ -160,21 +160,25 @@ export class EllipseService extends Tool {
         this.drawingService.baseCtx.beginPath();
         this.drawingService.previewCtx.beginPath();
         const height = mouseUpPos.y - mouseDownPos.y;
-        const widht = mouseUpPos.x - mouseDownPos.x;
+        const width = mouseUpPos.x - mouseDownPos.x;
         ctx.lineWidth = lineWidth;
         ctx.strokeStyle = strokeColor;
         ctx.setLineDash([0, 0]);
-        this.drawEllipse(ctx, widht / 2, height / 2);
+        this.drawEllipse(ctx, width / 2, height / 2);
         ctx.stroke();
 
         ctx.beginPath(); // Define new path for outlined rectangle
 
         ctx.strokeStyle = this.strokeRectColor;
-        ctx.lineWidth = this.lineRectWidht;
+        ctx.lineWidth = this.lineRectwidth;
         ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
         if (this.drawingService.previewCtx === ctx) {
-            ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, widht, height);
-        }
+          if (this.mousePosition.x > mouseDownPos.x && this.mousePosition.y > mouseDownPos.y) {
+              ctx.strokeRect(mouseDownPos.x - lineWidth / 2, mouseDownPos.y - lineWidth / 2, width + lineWidth, height + lineWidth);
+          } else {
+              ctx.strokeRect(mouseDownPos.x + lineWidth / 2, mouseDownPos.y + lineWidth / 2, width - lineWidth, height - lineWidth);
+          }
+      }
     }
 
     drawFillEllipseOutline(
@@ -191,20 +195,25 @@ export class EllipseService extends Tool {
         this.drawingService.previewCtx.beginPath();
         this.drawingService.baseCtx.beginPath();
         const height = mouseUpPos.y - mouseDownPos.y;
-        const widht = mouseUpPos.x - mouseDownPos.x;
+        const width = mouseUpPos.x - mouseDownPos.x;
         ctx.setLineDash([0, 0]);
 
-        this.drawEllipse(ctx, widht / 2, height / 2);
+        this.drawEllipse(ctx, width / 2, height / 2);
         ctx.stroke();
         ctx.fill();
 
         ctx.beginPath(); // Define new path for outlined rectangle
 
         ctx.strokeStyle = this.strokeRectColor;
-        ctx.lineWidth = this.lineRectWidht;
+        ctx.lineWidth = this.lineRectwidth;
         ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
+
         if (this.drawingService.previewCtx === ctx) {
-            ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, widht, height);
+            if (this.mousePosition.x > mouseDownPos.x && this.mousePosition.y > mouseDownPos.y) {
+                ctx.strokeRect(mouseDownPos.x - lineWidth / 2, mouseDownPos.y - lineWidth / 2, width + lineWidth, height + lineWidth);
+            } else {
+                ctx.strokeRect(mouseDownPos.x + lineWidth / 2, mouseDownPos.y + lineWidth / 2, width - lineWidth, height - lineWidth);
+            }
         }
     }
 }
