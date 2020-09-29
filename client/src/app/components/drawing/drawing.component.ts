@@ -81,6 +81,13 @@ export class DrawingComponent implements AfterViewInit {
         this.toolService.currentTool.onMouseUp(event);
     }
 
+    onMouseOut(event: MouseEvent): void {
+        this.toolService.currentTool.onMouseOut(event);
+    }
+    onMouseEnter(event: MouseEvent): void {
+        this.toolService.currentTool.onMouseEnter(event);
+    }
+
     onVerticalDown(event: MouseEvent): void {
         this.canvasResizerService.onVerticalDown(event);
     }
@@ -105,5 +112,20 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('window:keyup.shift', ['$event'])
     onKeyShiftUp(event: KeyboardEvent): void {
         this.toolService.currentTool.OnShiftKeyUp(event);
+    }
+
+    @HostListener('dblclick', ['$event'])
+    onDoubleClick(event: MouseEvent): void {
+        this.toolService.currentTool.onDoubleClick(event);
+    }
+
+    @HostListener('window:keydown.escape', ['$event'])
+    onKeyEscape(event: KeyboardEvent): void {
+        this.toolService.currentTool.onKeyEscape(event);
+    }
+
+    @HostListener('window:keydown.backspace', ['$event'])
+    onKeyBackSpace(event: KeyboardEvent): void {
+        this.toolService.currentTool.onKeyBackSpace(event);
     }
 }
