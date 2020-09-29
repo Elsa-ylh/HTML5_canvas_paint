@@ -19,21 +19,30 @@ mat-divider {
     width: 40px;
     height: 40px;
 }
+#colors {
+    position: relative;
+    bottom: 20px;
+}
 #primaryColor {
+    width: 40px;
+    height: 40px;
+}
+
+#secondaryColor {
     width: 40px;
     height: 40px;
 }
 
 #previewSquare {
     position: absolute;
-    margin-top: 13px;
-    margin-left: 13px;
+    margin-top: 10px;
+    margin-left: 10px;
     z-index: 1;
 }
 
 #squarePalette {
-    margin-top: 13px;
-    margin-left: 13px;
+    margin-top: 10px;
+    margin-left: 10px;
     z-index: 0;
 }
 

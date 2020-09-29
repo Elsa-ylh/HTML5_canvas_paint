@@ -20,36 +20,50 @@
     <canvas id="horizontalPalette" #horizontalPalette [attr.width]="width" [attr.height]="horizontalHeight"></canvas>
     <mat-divider></mat-divider>
     <br /><br /><br />
-    <h2>Preview:</h2>
-    <mat-grid-list cols="2" rowHeight="2:1">
-        <mat-grid-tile>{{ colorService.previewColor }}</mat-grid-tile>
-        <mat-grid-tile><div id="previewColor" [ngStyle]="{ 'background-color': previewColor }"></div></mat-grid-tile>
-    </mat-grid-list>
-    <mat-divider></mat-divider>
-    <h2>Primary color:</h2>
-    <mat-grid-list cols="2" rowHeight="2:1">
-        <mat-grid-tile>{{ colorService.primaryColor }}</mat-grid-tile>
-        <mat-grid-tile><div id="primaryColor" [ngStyle]="{ 'background-color': colorService.primaryColor }"></div></mat-grid-tile>
-    </mat-grid-list>
-    <mat-divider></mat-divider>
-    <mat-form-field appearance="outline">
-        <mat-label>Rouge</mat-label>
-        <input matInput placeholder="0-255" />
-        <mat-icon matSuffix svgIcon="red"></mat-icon>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-        <mat-label>Vert</mat-label>
-        <input matInput placeholder="0-255" />
-        <mat-icon matSuffix svgIcon="green"></mat-icon>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-        <mat-label>Bleu</mat-label>
-        <input matInput placeholder="0-255" />
-        <mat-icon matSuffix svgIcon="blue"></mat-icon>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-        <mat-label>Alpha</mat-label>
-        <input matInput placeholder="0-1" />
-        <mat-icon matSuffix svgIcon="alpha"></mat-icon>
-    </mat-form-field>
+    <div>
+        <h6 id="previewColortxt">Preview:</h6>
+        <mat-grid-list cols="2" rowHeight="2:1">
+            <mat-grid-tile id="previewColorval">{{ colorService.previewColor }}</mat-grid-tile>
+            <mat-grid-tile><div id="previewColor" [ngStyle]="{ 'background-color': previewColor }"></div></mat-grid-tile>
+        </mat-grid-list>
+        <mat-divider></mat-divider>
+    </div>
+    <div id="colors">
+        <h6>Primary :</h6>
+        <mat-grid-list cols="2" rowHeight="2:1">
+            <mat-grid-tile>{{ primaryColor }}</mat-grid-tile>
+            <mat-grid-tile><div id="primaryColor" [ngStyle]="{ 'background-color': colorService.primaryColor }"></div></mat-grid-tile>
+        </mat-grid-list>
+        <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
+
+        <h6>Secondary :</h6>
+        <mat-grid-list cols="2" rowHeight="2:1">
+            <mat-grid-tile id="Secondvalue">{{ secondaryColor }}</mat-grid-tile>
+            <mat-grid-tile><div id="secondaryColor" [ngStyle]="{ 'background-color': colorService.secondaryColor }"></div></mat-grid-tile>
+        </mat-grid-list>
+        <mat-divider></mat-divider>
+    </div>
+    <div>
+        <mat-form-field appearance="outline">
+            <mat-label>Rouge</mat-label>
+            <input matInput placeholder="0-255" />
+            <mat-icon matSuffix svgIcon="red"></mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Vert</mat-label>
+            <input matInput placeholder="0-255" />
+            <mat-icon matSuffix svgIcon="green"></mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Bleu</mat-label>
+            <input matInput placeholder="0-255" />
+            <mat-icon matSuffix svgIcon="blue"></mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Alpha</mat-label>
+            <input matInput placeholder="0-1" />
+            <mat-icon matSuffix svgIcon="alpha"></mat-icon>
+        </mat-form-field>
+    </div>
 </div>
