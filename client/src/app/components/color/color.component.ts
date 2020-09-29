@@ -81,8 +81,7 @@ export class ColorComponent implements AfterViewInit {
 
     onMouseOverSquareClick(event: MouseEvent): void {
         // palette
-        // const position = { x: event.offsetX, y: event.offsetY };
-        // this.colorService.setprimaryColor(this.colorService.getpreviewColor());
+        // const position = { x: e     vent.offsetX, y: event.offsetY };
         if (this.colorService.clickprimaryColor && this.colorService.clicksecondaryColor === false) {
             this.colorService.setprimaryColor(this.colorService.getpreviewColor());
         } else if (this.colorService.clicksecondaryColor && this.colorService.clickprimaryColor === false) {
@@ -93,8 +92,6 @@ export class ColorComponent implements AfterViewInit {
     onMouseOverHorizontalClick(event: MouseEvent): void {
         //slider
         // const position = { x: event.offsetX, y: event.offsetY };
-        // this.colorService.setprimaryColor(this.colorService.getpreviewColor());
-
         if (this.colorService.clickprimaryColor && this.colorService.clicksecondaryColor === false) {
             this.colorService.setprimaryColor(this.colorService.getpreviewColor());
         } else if (this.colorService.clicksecondaryColor && this.colorService.clickprimaryColor === false) {

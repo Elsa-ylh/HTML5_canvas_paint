@@ -28,25 +28,24 @@
         </mat-grid-list>
         <mat-divider></mat-divider>
     </div>
-    <div id="colors">
-        <div (click)="primaryClick()">
-            <h6>Primary :</h6>
-            <mat-grid-list cols="2" rowHeight="2:1">
-                <mat-grid-tile>{{ colorService.getprimaryColor() }}</mat-grid-tile>
-                <mat-grid-tile><div id="primaryColor" [ngStyle]="{ 'background-color': colorService.getprimaryColor() }"></div></mat-grid-tile>
-            </mat-grid-list>
-            <mat-divider></mat-divider>
-            <mat-divider></mat-divider>
-        </div>
-
-        <div (click)="secondaryClick()">
-            <h6>Secondary :</h6>
-            <mat-grid-list cols="2" rowHeight="2:1">
-                <mat-grid-tile id="Secondvalue">{{ colorService.getsecondaryColor() }}</mat-grid-tile>
-                <mat-grid-tile><div id="secondaryColor" [ngStyle]="{ 'background-color': colorService.getsecondaryColor() }"></div></mat-grid-tile>
-            </mat-grid-list>
-            <mat-divider></mat-divider>
-        </div>
+    <div>
+        <h6>Primary :</h6>
+        <mat-grid-list cols="2" rowHeight="2:1">
+            <mat-grid-tile>{{ colorService.getprimaryColor() }}</mat-grid-tile>
+            <mat-grid-tile (click)="primaryClick()"
+                ><div id="primaryColor" [ngStyle]="{ 'background-color': colorService.getprimaryColor() }"></div
+            ></mat-grid-tile>
+        </mat-grid-list>
+        <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
+        <h6>Secondary :</h6>
+        <mat-grid-list cols="2" rowHeight="2:1">
+            <mat-grid-tile id="Secondvalue">{{ colorService.getsecondaryColor() }}</mat-grid-tile>
+            <mat-grid-tile (click)="secondaryClick()"
+                ><div id="secondaryColor" [ngStyle]="{ 'background-color': colorService.getsecondaryColor() }"></div
+            ></mat-grid-tile>
+        </mat-grid-list>
+        <mat-divider></mat-divider>
 
         <mat-form-field appearance="outline">
             <mat-label>Rouge</mat-label>
