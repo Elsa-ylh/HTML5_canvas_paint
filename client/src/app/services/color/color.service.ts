@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 
+export type RGB = {
+    red: number;
+    green: number;
+    blue: number;
+};
+
 export enum GradientStyle {
     rainbow,
     squarePalette,
@@ -10,8 +16,10 @@ export enum GradientStyle {
     providedIn: 'root',
 })
 export class ColorService {
-    primaryColor: string;
-    secondaryColor: string;
+    primaryColor: string = '#000000';
+    secondaryColor: string = 'FFFFFF';
+
+    previewColor: string = '#ffffff';
 
     testMethod(): void {
         console.log("it's working");
@@ -58,25 +66,35 @@ export class ColorService {
         ctx.closePath();
     }
 
-    drawDot(ctx: CanvasRenderingContext2D, dimension: Vec2, event: MouseEvent): void {
+    drawMovingDot(ctx: CanvasRenderingContext2D, dimension: Vec2, event: MouseEvent): void {
         ctx.clearRect(0, 0, dimension.x, dimension.y);
+        ctx.lineCap = 'round';
         ctx.strokeStyle = '#000';
         ctx.fillStyle = '#FFF';
-        debugger;
-        ctx.fillRect(event.offsetX, event.offsetY, 10, 10);
+        ctx.fillRect(event.offsetX, event.offsetY, 5, 5);
     }
 
     // Ce code est complètement inspiré sans gêne de
     // https://malcoded.com/posts/angular-color-picker/#detecting-mouse-events-on-the-color-slider
-    getColor(position: Vec2, ctx: CanvasRenderingContext2D): void {
-        // const rgb = ctx.getImageData(position.x, position.y, 1, 1).data as Uint8ClampedArray;
-        // rgb[0];
-        // return { red: rgb};
+    getColor(position: Vec2, ctx: CanvasRenderingContext2D): RGB {
+        const imageData = ctx.getImageData(position.x, position.y, 1, 1).data;
+        return { red: imageData[0], green: imageData[1], blue: imageData[2] };
     }
 
     swapColor(): void {
         const temp = this.primaryColor;
         this.primaryColor = this.secondaryColor;
         this.secondaryColor = temp;
+    }
+
+    // We suppose that each number of the rgb space is between 0 to 255
+    // Shameless copy paste of this link
+    // https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+    numeralToHex(rgb: RGB): string {
+        const converter = (zeroTo256: number) => {
+            const hex = zeroTo256.toString(16);
+            return hex.length === 1 ? '0' + hex : hex;
+        };
+        return '#' + converter(rgb.red) + converter(rgb.green) + converter(rgb.blue);
     }
 }

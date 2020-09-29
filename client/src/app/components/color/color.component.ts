@@ -36,11 +36,12 @@ export class ColorComponent implements AfterViewInit {
     previewHorizontalCtx: CanvasRenderingContext2D;
     horizontalCtx: CanvasRenderingContext2D;
 
-    constructor(private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer, private colorService: ColorService) {
+    constructor(private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer, public colorService: ColorService) {
         this.colorService.testMethod();
         this.iconRegistry.addSvgIcon('red', this.sanitizer.bypassSecurityTrustResourceUrl('assets/apple.svg'));
         this.iconRegistry.addSvgIcon('green', this.sanitizer.bypassSecurityTrustResourceUrl('assets/leaf.svg'));
         this.iconRegistry.addSvgIcon('blue', this.sanitizer.bypassSecurityTrustResourceUrl('assets/wave.svg'));
+        this.iconRegistry.addSvgIcon('alpha', this.sanitizer.bypassSecurityTrustResourceUrl('assets/transparency.svg'));
     }
 
     ngAfterViewInit(): void {
@@ -49,8 +50,12 @@ export class ColorComponent implements AfterViewInit {
 
         this.previewHorizontalCtx = this.previewHorizontal.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.horizontalCtx = this.horizontalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.drawSquarePalette();
+        // this.drawSquarePalette();
         this.drawHorizontalPalette();
+    }
+
+    get previewColor(): string {
+        return this.colorService.previewColor;
     }
 
     drawSquarePalette(): void {
@@ -61,8 +66,8 @@ export class ColorComponent implements AfterViewInit {
         this.colorService.drawPalette(this.horizontalCtx, this.horizontalDimension, GradientStyle.rainbow);
     }
 
-    onClick(event: MouseEvent): void {
-        debugger;
-        this.colorService.drawDot(this.previewSquareCtx, this.squareDimension, event);
+    onMouseOver(event: MouseEvent): void {
+        const position = { x: event.offsetX, y: event.offsetY };
+        this.colorService.previewColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.horizontalCtx));
     }
 }
