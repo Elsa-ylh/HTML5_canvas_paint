@@ -13,12 +13,11 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
-    pencilSize: number = 2;
+    public pencilSize: number = 1;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
     }
-    minimalPx: number = 2;
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -37,6 +36,7 @@ export class PencilService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
+        this.clearPath();
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -52,15 +52,11 @@ export class PencilService extends Tool {
                 // draw circle
                 this.drawingService.baseCtx.fillStyle = '#000000';
                 this.drawingService.previewCtx.fillStyle = '#000000';
-                this.drawingService.baseCtx.beginPath();
+                this.clearPath();
                 this.drawingService.baseCtx.arc(mousePosition.x, mousePosition.y, diametreCir, angleCir, Math.PI * 2);
-                this.drawingService.baseCtx.closePath();
-                this.drawingService.baseCtx.fill();
-
-                this.drawingService.previewCtx.beginPath();
-                this.drawingService.previewCtx.arc(mousePosition.x, mousePosition.y, diametreCir, angleCir, Math.PI * 2);
-                this.drawingService.previewCtx.closePath();
-                this.drawingService.previewCtx.fill();
+                this.pathData.push(mousePosition);
+                this.drawLine(this.drawingService.baseCtx, this.pathData);
+                this.drawLine(this.drawingService.previewCtx, this.pathData);
             }
         }
         this.mouseDown = false;
