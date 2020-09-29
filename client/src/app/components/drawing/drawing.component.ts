@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizerService, ResizeDirection } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 
@@ -9,45 +9,7 @@ import { ToolService } from '@app/services/tool-service';
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit {
-    @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
-    // On utilise ce canvas pour dessiner sans affecter le dessin final, aussi utilisé pour sauvegarder
-    // une version du dessin avant de l'appliquer au final.
-    @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
-
-    private baseCtx: CanvasRenderingContext2D;
-    private previewCtx: CanvasRenderingContext2D;
-
     constructor(private drawingService: DrawingService, private toolService: ToolService, private canvasResizerService: CanvasResizerService) {}
-
-    ngAfterViewInit(): void {
-        this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.drawingService.baseCtx = this.baseCtx;
-        this.drawingService.previewCtx = this.previewCtx;
-        this.drawingService.canvas = this.baseCanvas.nativeElement;
-    }
-
-    onMouseMove(event: MouseEvent): void {
-        this.toolService.currentTool.onMouseMove(event);
-    }
-
-    onMouseDown(event: MouseEvent): void {
-        this.toolService.currentTool.onMouseDown(event);
-    }
-
-    onMouseUp(event: MouseEvent): void {
-        this.toolService.currentTool.onMouseUp(event);
-    }
-
-    @HostListener('window:keydown.shift', ['$event'])
-    onKeyShiftDown(event: KeyboardEvent): void {
-        this.toolService.currentTool.OnShiftKeyDown(event);
-    }
-
-    @HostListener('window:keyup.shift', ['$event'])
-    onKeyShiftUp(event: KeyboardEvent): void {
-        this.toolService.currentTool.OnShiftKeyUp(event);
-    }
 
     get width(): number {
         return this.canvasResizerService.canvasSize.x;
@@ -90,5 +52,58 @@ export class DrawingComponent implements AfterViewInit {
 
     get eastMiddleHookY(): number {
         return this.canvasResizerService.canvasSize.y / 2.0 - this.canvasResizerService.HOOK_HEIGHT;
+    }
+    @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
+    // On utilise ce canvas pour dessiner sans affecter le dessin final, aussi utilisé pour sauvegarder
+    // une version du dessin avant de l'appliquer au final.
+    @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+
+    private baseCtx: CanvasRenderingContext2D;
+    private previewCtx: CanvasRenderingContext2D;
+
+    ngAfterViewInit(): void {
+        this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.drawingService.baseCtx = this.baseCtx;
+        this.drawingService.previewCtx = this.previewCtx;
+        this.drawingService.canvas = this.baseCanvas.nativeElement;
+    }
+
+    onMouseDown(event: MouseEvent): void {
+        this.toolService.currentTool.onMouseDown(event);
+    }
+
+    onMouseMove(event: MouseEvent): void {
+        this.toolService.currentTool.onMouseMove(event);
+    }
+
+    onMouseUp(event: MouseEvent): void {
+        this.toolService.currentTool.onMouseUp(event);
+    }
+
+    onVerticalDown(event: MouseEvent): void {
+        this.canvasResizerService.onVerticalDown(event);
+    }
+
+    onVerticalResize(event: MouseEvent): void {
+        this.canvasResizerService.onResize(event, this.baseCanvas.nativeElement, ResizeDirection.vertical);
+    }
+
+    onVerticalUp(event: MouseEvent): void {
+        this.canvasResizerService.onVerticalUp(event);
+    }
+
+    onVerticalOut(event: MouseEvent): void {
+        this.canvasResizerService.onVerticalOut(event);
+    }
+
+    @HostListener('window:keydown.shift', ['$event'])
+    onKeyShiftDown(event: KeyboardEvent): void {
+        this.toolService.currentTool.OnShiftKeyDown(event);
+    }
+
+    @HostListener('window:keyup.shift', ['$event'])
+    onKeyShiftUp(event: KeyboardEvent): void {
+        this.toolService.currentTool.OnShiftKeyUp(event);
     }
 }

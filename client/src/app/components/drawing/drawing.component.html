@@ -14,6 +14,14 @@
     <div class="southRightHook" canvasResizerEvent [ngStyle]="{ 'left.px': width, 'top.px': height }"></div>
     <div class="southRightHook" canvasResizerEvent [ngStyle]="{ 'left.px': southRightHookShiftX, 'top.px': height }"></div>
     <div class="southRightHook" canvasResizerEvent [ngStyle]="{ 'left.px': width, 'top.px': southRightHookShiftY }"></div>
-    <div class="southMiddleHook" canvasResizerEvent [ngStyle]="{ 'left.px': southMiddleHookX, 'top.px': height }"></div>
+    <div
+        class="southMiddleHook"
+        canvasResizerEvent
+        [ngStyle]="{ 'left.px': southMiddleHookX, 'top.px': height }"
+        (mousedown)="onVerticalDown($event)"
+        (mousemove)="onVerticalResize($event)"
+        (mouseup)="onVerticalUp($event)"
+        (mouseout)="onVerticalOut($event)"
+    ></div>
     <div class="eastMiddleHook" canvasResizerEvent [ngStyle]="{ 'left.px': width, 'top.px': eastMiddleHookY }"></div>
 </div>

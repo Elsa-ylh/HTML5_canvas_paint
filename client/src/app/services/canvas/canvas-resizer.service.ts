@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core';
+import { MouseButton } from '@app/classes/mouse-button';
 import { Vec2 } from '@app/classes/vec2';
+
+export enum ResizeDirection {
+    vertical,
+    horizontal,
+    verticalAndHorizontal,
+}
 
 @Injectable({
     providedIn: 'root',
@@ -24,4 +31,45 @@ export class CanvasResizerService {
     // La variable ci-dessous est la taille du canvas.
     // Elle est modifiable et accesible en tout temps, à faire très attention.
     canvasSize: Vec2 = { x: this.DEFAULT_WIDTH, y: this.DEFAULT_HEIGHT };
+
+    isVerticalDown: boolean = false;
+
+    onVerticalDown(event: MouseEvent): void {
+        this.isVerticalDown = event.button === MouseButton.Left;
+    }
+
+    // https://stackoverflow.com/questions/8977369/drawing-png-to-a-canvas-element-not-showing-transparency
+    onResize(event: MouseEvent, baseCanvas: HTMLCanvasElement, resizeDirection: ResizeDirection): void {
+        if (this.isVerticalDown) {
+            const originalImage = new Image();
+            originalImage.src = baseCanvas.toDataURL('image/png', 1);
+
+            // Has to be greater than 250 pixels
+            if (this.canvasSize.y + event.movementY >= this.MIN_CANVAS_SIZE) {
+                // We don't have to assign the canvas any new width or height value, as there is already
+                // an auto updated attributes linked to canvasSize variable
+                switch (resizeDirection) {
+                    case ResizeDirection.vertical:
+                        this.canvasSize.y += event.movementY;
+                        break;
+                    case ResizeDirection.horizontal:
+                        this.canvasSize.x += event.movementX;
+                        break;
+                }
+
+                // async because images are not always loaded instantaneously after execution of the following line
+                originalImage.onload = () => {
+                    baseCanvas.getContext('2d')?.drawImage(originalImage, 0, 0);
+                };
+            }
+        }
+    }
+
+    onVerticalUp(event: MouseEvent): void {
+        this.isVerticalDown = false;
+    }
+
+    onVerticalOut(event: MouseEvent): void {
+        this.isVerticalDown = false;
+    }
 }
