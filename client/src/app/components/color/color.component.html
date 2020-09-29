@@ -1,5 +1,5 @@
 <div class="color-container">
-    <canvas id="previewSquare" #previewSquare (click)="onClick($event)"></canvas>
+    <canvas id="previewSquare" #previewSquare (click)="onClick($event)" (mousemove)="onClick($event)"></canvas>
     <canvas id="squarePalette" #squarePalette></canvas>
     <mat-divider></mat-divider>
     <canvas id="previewHorizontal" #previewHorizontal></canvas>
