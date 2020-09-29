@@ -24,12 +24,13 @@ describe('DrawingService', () => {
     });
 
     it('isCanvasBlank should return true if canvas is empty', () => {
-      service.clearCanvas(service.baseCtx);
-      expect(service.isCanvasBlank()).toEqual(true);
+        service.clearCanvas(service.baseCtx);
+        expect(service.isCanvasBlank()).toEqual(true);
     });
 
     it('isCanvasBlank should return false if canvas is not empty', () => {
-      service.baseCtx.fillRect(20, 20, 100, 100)
-      expect(service.isCanvasBlank()).toEqual(false);
+        // tslint:disable: no-magic-numbers
+        service.baseCtx.fillRect(20, 20, 100, 100);
+        expect(service.isCanvasBlank()).toEqual(false);
     });
 });
