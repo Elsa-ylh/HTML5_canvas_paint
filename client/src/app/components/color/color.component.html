@@ -52,9 +52,10 @@
                 <mat-divider></mat-divider>
                 <mat-divider></mat-divider>
             </div>
-            <button (click)="colorService.swapColor()">Swap</button>
         </div>
+        <button mat-button (click)="colorService.swapColor()">Swap</button>
     </div>
+    <br />
     <mat-form-field appearance="outline">
         <mat-label>Rouge</mat-label>
         <input matInput placeholder="0-255" />
