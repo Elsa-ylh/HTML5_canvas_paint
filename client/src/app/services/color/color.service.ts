@@ -17,7 +17,7 @@ export enum GradientStyle {
 })
 export class ColorService {
     primaryColor: string = '#000000';
-    secondaryColor: string = 'ff6666';
+    secondaryColor: string = '#ff6666';
 
     previewColor: string = '#ff6666';
 
