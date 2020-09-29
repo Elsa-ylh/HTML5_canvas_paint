@@ -27,17 +27,14 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
     }
 
-    @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         this.toolService.currentTool.onMouseMove(event);
     }
 
-    @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
         this.toolService.currentTool.onMouseDown(event);
     }
 
-    @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         this.toolService.currentTool.onMouseUp(event);
     }
@@ -70,5 +67,28 @@ export class DrawingComponent implements AfterViewInit {
 
     get cursorUsed(): string {
         return this.drawingService.cursorUsed;
+    }
+
+    get canvasPreviewWidth(): number {
+        return window.innerWidth - this.canvasResizerService.SIDEBAR_WIDTH - this.canvasResizerService.ICON_WIDTH;
+    }
+
+    get canvasPreviewHeight(): number {
+        return window.innerHeight;
+    }
+    get southRightHookShiftX(): number {
+        return this.canvasResizerService.canvasSize.x - this.canvasResizerService.HOOK_HEIGHT;
+    }
+
+    get southRightHookShiftY(): number {
+        return this.canvasResizerService.canvasSize.y - this.canvasResizerService.HOOK_HEIGHT;
+    }
+
+    get southMiddleHookX(): number {
+        return this.canvasResizerService.canvasSize.x / 2.0 - this.canvasResizerService.HOOK_HEIGHT;
+    }
+
+    get eastMiddleHookY(): number {
+        return this.canvasResizerService.canvasSize.y / 2.0 - this.canvasResizerService.HOOK_HEIGHT;
     }
 }

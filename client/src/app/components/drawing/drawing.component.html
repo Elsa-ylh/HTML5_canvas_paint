@@ -1,4 +1,19 @@
 <div id="canvas-container" [ngStyle]="{ 'min-width.px': workWidth, 'min-height.px': workHeight }">
-    <canvas id="previewLayer" #previewCanvas [attr.width]="width" [attr.height]="height" [ngStyle]="{ cursor: cursorUsed }"></canvas>
+    <canvas
+        id="previewLayer"
+        #previewCanvas
+        [attr.width]="width"
+        [attr.height]="height"
+        [ngStyle]="{ cursor: cursorUsed }"
+        (mousedown)="onMouseDown($event)"
+        (mousemove)="onMouseMove($event)"
+        (mouseup)="onMouseUp($event)"
+    ></canvas>
     <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height" [ngStyle]="{ cursor: cursorUsed }"></canvas>
+    <canvas id="canvasResizerPreview" canvasResizingPreview [ngStyle]="{ 'width.px': canvasPreviewWidth, 'height.px': canvasPreviewHeight }"></canvas>
+    <div class="southRightHook" canvasResizerEvent [ngStyle]="{ 'left.px': width, 'top.px': height }"></div>
+    <div class="southRightHook" canvasResizerEvent [ngStyle]="{ 'left.px': southRightHookShiftX, 'top.px': height }"></div>
+    <div class="southRightHook" canvasResizerEvent [ngStyle]="{ 'left.px': width, 'top.px': southRightHookShiftY }"></div>
+    <div class="southMiddleHook" canvasResizerEvent [ngStyle]="{ 'left.px': southMiddleHookX, 'top.px': height }"></div>
+    <div class="eastMiddleHook" canvasResizerEvent [ngStyle]="{ 'left.px': width, 'top.px': eastMiddleHookY }"></div>
 </div>

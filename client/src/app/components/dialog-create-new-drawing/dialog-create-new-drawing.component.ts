@@ -11,6 +11,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     styleUrls: ['./dialog-create-new-drawing.component.scss'],
 })
 export class DialogCreateNewDrawingComponent {
+    private warningCounter: number = 0;
+
     message: string = 'Êtes-vous sûr de vouloir effacer votre dessin actuel ?';
 
     formBuilder: FormBuilder;
@@ -48,15 +50,24 @@ export class DialogCreateNewDrawingComponent {
             this.widthControl.value <= this.canvasResizerService.MAX_WIDTH_SIZE &&
             this.heightControl.value >= this.canvasResizerService.MIN_CANVAS_SIZE &&
             this.heightControl.value <= this.canvasResizerService.MAX_HEIGHT_SIZE
-        ) {
-            this.canvasResizerService.canvasSize.x = this.widthControl.value;
-            this.canvasResizerService.canvasSize.y = this.heightControl.value;
-            this.dialogRef.close(true);
-            if (!this.data) {
-                this.drawingService.clearCanvas(this.drawingService.baseCtx);
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        )
+            if (
+                this.message === 'Êtes-vous sûr de vouloir effacer votre dessin actuel ?' &&
+                !this.drawingService.isCanvasBlank() &&
+                this.warningCounter === 0
+            ) {
+                alert('⚠️⚠️⚠️EFFACER EST UNE OPÉRATION IRRÉVERSIBLE⚠️⚠️⚠️');
+                ++this.warningCounter;
+            } else {
+                this.warningCounter = 0;
+                this.canvasResizerService.canvasSize.x = this.widthControl.value;
+                this.canvasResizerService.canvasSize.y = this.heightControl.value;
+                this.dialogRef.close(true);
+                if (!this.data) {
+                    this.drawingService.clearCanvas(this.drawingService.baseCtx);
+                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                }
+                this.router.navigate(['/editor']);
             }
-            this.router.navigate(['/editor']);
-        }
     }
 }
