@@ -18,16 +18,51 @@ mat-divider {
 #previewColor {
     width: 40px;
     height: 40px;
+    margin-left: 85px;
+    padding-left: 4px;
 }
+
+#previewColorHexa {
+    margin-left: 50px;
+    //margin-bottom:-20px;
+}
+
+
+.colors div {
+    float: left;
+    clear: none; 
+    margin-right: 40px;
+    width: 68px;
+}
+
+#primaryColorTitle {
+   padding-left: 15px;
+}
+
 #primaryColor {
     width: 40px;
     height: 40px;
+    margin-left: 30px;
+}
+
+#primaryColorHexa {
+    padding-left:60px;
+}
+
+#secondaryColorTitle {
+    padding-left: 20px;
 }
 
 #secondaryColor {
     width: 40px;
     height: 40px;
+    margin-left: 30px;
 }
+
+#secondaryColorHexa {
+    padding-left:65px;
+}
+
 
 #previewSquare {
     position: absolute;

@@ -20,52 +20,58 @@
     <canvas id="horizontalPalette" #horizontalPalette [attr.width]="width" [attr.height]="horizontalHeight"></canvas>
     <mat-divider></mat-divider>
     <br /><br /><br />
-    <div>
-        <h6 id="previewColortxt">Preview:</h6>
-        <mat-grid-list cols="2" rowHeight="2:1">
-            <mat-grid-tile id="previewColorval">{{ colorService.getpreviewColor() }}</mat-grid-tile>
-            <mat-grid-tile><div id="previewColor" [ngStyle]="{ 'background-color': colorService.getpreviewColor() }"></div></mat-grid-tile>
-        </mat-grid-list>
-        <mat-divider></mat-divider>
-    </div>
-    <div>
-        <h6>Primary :</h6>
-        <mat-grid-list cols="2" rowHeight="2:1">
-            <mat-grid-tile>{{ colorService.getprimaryColor() }}</mat-grid-tile>
-            <mat-grid-tile (click)="primaryClick()"
-                ><div id="primaryColor" [ngStyle]="{ 'background-color': colorService.getprimaryColor() }"></div
-            ></mat-grid-tile>
-        </mat-grid-list>
-        <mat-divider></mat-divider>
-        <mat-divider></mat-divider>
-        <h6>Secondary :</h6>
-        <mat-grid-list cols="2" rowHeight="2:1">
-            <mat-grid-tile id="Secondvalue">{{ colorService.getsecondaryColor() }}</mat-grid-tile>
-            <mat-grid-tile (click)="secondaryClick()"
-                ><div id="secondaryColor" [ngStyle]="{ 'background-color': colorService.getsecondaryColor() }"></div
-            ></mat-grid-tile>
-        </mat-grid-list>
-        <mat-divider></mat-divider>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Rouge</mat-label>
-            <input matInput placeholder="0-255" />
-            <mat-icon matSuffix svgIcon="red"></mat-icon>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Vert</mat-label>
-            <input matInput placeholder="0-255" />
-            <mat-icon matSuffix svgIcon="green"></mat-icon>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Bleu</mat-label>
-            <input matInput placeholder="0-255" />
-            <mat-icon matSuffix svgIcon="blue"></mat-icon>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Alpha</mat-label>
-            <input matInput placeholder="0-1" />
-            <mat-icon matSuffix svgIcon="alpha"></mat-icon>
-        </mat-form-field>
+    <div>
+        <div>
+            <mat-grid-list cols="2" rowHeight="2:1">
+                <div>Preview:</div>
+                <div id="previewColor" [ngStyle]="{ 'background-color': colorService.getpreviewColor() }"></div>
+                <mat-grid-tile id="previewColorHexa">{{ colorService.getpreviewColor() }}</mat-grid-tile>
+            </mat-grid-list>
+        </div>
+        <div class="colors">
+            <div id="box1">
+                <div id="primaryColorTitle">Primary:</div>
+                <mat-grid-list cols="2" rowHeight="2:1" (click)="primaryClick()">
+                    <div id="primaryColor" [ngStyle]="{ 'background-color': colorService.getprimaryColor() }"></div>
+                    <br /><br /><br />
+                    <span></span>
+                    <mat-grid-tile id="primaryColorHexa">{{ colorService.getprimaryColor() }}</mat-grid-tile>
+                </mat-grid-list>
+                <mat-divider></mat-divider>
+                <mat-divider></mat-divider>
+            </div>
+
+            <div id="box2">
+                <div id="secondaryColorTitle">Secondary:</div>
+                <mat-grid-list cols="2" rowHeight="2:1" (click)="secondaryClick()">
+                    <div id="secondaryColor" [ngStyle]="{ 'background-color': colorService.getsecondaryColor() }"></div>
+                    <br /><br /><br />
+                    <mat-grid-tile id="secondaryColorHexa">{{ colorService.getsecondaryColor() }}</mat-grid-tile>
+                </mat-grid-list>
+                <mat-divider></mat-divider>
+                <mat-divider></mat-divider>
+            </div>
+        </div>
     </div>
+    <mat-form-field appearance="outline">
+        <mat-label>Rouge</mat-label>
+        <input matInput placeholder="0-255" />
+        <mat-icon matSuffix svgIcon="red"></mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Vert</mat-label>
+        <input matInput placeholder="0-255" />
+        <mat-icon matSuffix svgIcon="green"></mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Bleu</mat-label>
+        <input matInput placeholder="0-255" />
+        <mat-icon matSuffix svgIcon="blue"></mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Alpha</mat-label>
+        <input matInput placeholder="0-1" />
+        <mat-icon matSuffix svgIcon="alpha"></mat-icon>
+    </mat-form-field>
 </div>
