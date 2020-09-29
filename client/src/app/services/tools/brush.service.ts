@@ -12,6 +12,7 @@ const citcle = Math.PI * 2;
 })
 export class BrushService extends Tool {
     pixelMinBrush: number = 6;
+    lineWidth: number = this.pixelMinBrush;
     pixelThickness: number = 4;
     private lastPoint: Vec2;
     private pathData: Vec2[];
@@ -171,6 +172,7 @@ export class BrushService extends Tool {
     }
 
     private witchBrush(select: number): void {
+        this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.lineWidth;
         this.clearEffectTool();
         switch (select) {
             case SubToolselected.tool1:
