@@ -20,7 +20,8 @@ export class ColorService {
     private secondaryColor: string = '#ff6666';
     primaryColorTransparency: number;
     secondaryColorTransparency: number;
-
+    clickprimaryColor: boolean = true;
+    clicksecondaryColor: boolean = false;
     private previewColor: string = '#ff6666';
 
     // private lastChoiceColor: RGB[];

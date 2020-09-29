@@ -53,6 +53,17 @@ export class ColorComponent implements AfterViewInit {
         this.drawHorizontalPalette();
     }
 
+    // change between primary and sec
+    primaryClick(): void {
+        this.colorService.clickprimaryColor = true;
+        this.colorService.clicksecondaryColor = false;
+    }
+
+    secondaryClick(): void {
+        this.colorService.clickprimaryColor = false;
+        this.colorService.clicksecondaryColor = true;
+    }
+
     drawSquarePalette(): void {
         this.colorService.drawPalette(this.squareCtx, this.squareDimension, GradientStyle.lightToDark);
         // cursor
@@ -71,13 +82,25 @@ export class ColorComponent implements AfterViewInit {
     onMouseOverSquareClick(event: MouseEvent): void {
         // palette
         // const position = { x: event.offsetX, y: event.offsetY };
-        this.colorService.setprimaryColor(this.colorService.getpreviewColor());
+        // this.colorService.setprimaryColor(this.colorService.getpreviewColor());
+        if (this.colorService.clickprimaryColor && this.colorService.clicksecondaryColor === false) {
+            this.colorService.setprimaryColor(this.colorService.getpreviewColor());
+        } else if (this.colorService.clicksecondaryColor && this.colorService.clickprimaryColor === false) {
+            this.colorService.setsecondaryColor(this.colorService.getpreviewColor());
+        }
     }
 
     onMouseOverHorizontalClick(event: MouseEvent): void {
         //slider
         // const position = { x: event.offsetX, y: event.offsetY };
-        this.colorService.setprimaryColor(this.colorService.getpreviewColor());
+        // this.colorService.setprimaryColor(this.colorService.getpreviewColor());
+
+        if (this.colorService.clickprimaryColor && this.colorService.clicksecondaryColor === false) {
+            this.colorService.setprimaryColor(this.colorService.getpreviewColor());
+        } else if (this.colorService.clicksecondaryColor && this.colorService.clickprimaryColor === false) {
+            this.colorService.setsecondaryColor(this.colorService.getpreviewColor());
+        }
+
         this.drawSquarePalette(); // updates the color palette
     }
 
