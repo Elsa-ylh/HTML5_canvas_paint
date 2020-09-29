@@ -9,6 +9,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class LineService extends Tool {
+    secondeSizePixel: number = 2;
+    lineWidth: number = 2;
     private pathData: Vec2[] = [];
     private pointMouse: Vec2 = { x: 0, y: 0 };
     private shiftKeyDown: boolean = false;
@@ -108,6 +110,7 @@ export class LineService extends Tool {
         }
     }
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.lineWidth = this.lineWidth;
         this.clearPreviewCtx();
         ctx.beginPath();
         for (const point of path) {
@@ -161,6 +164,7 @@ export class LineService extends Tool {
         this.drawingService.baseCtx.lineCap = 'butt';
         this.drawingService.previewCtx.lineJoin = 'bevel';
         this.drawingService.previewCtx.lineCap = 'butt';
+        this.drawingService.previewCtx.lineWidth = this.drawingService.baseCtx.lineWidth = this.lineWidth;
         this.drawingService.baseCtx.setLineDash([0, 0]); // reset
         this.drawingService.previewCtx.setLineDash([0, 0]);
         this.drawingService.baseCtx.globalAlpha = 1;

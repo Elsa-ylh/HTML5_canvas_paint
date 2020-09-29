@@ -25,6 +25,7 @@ describe('Service: Line', () => {
     let mouseEvent: MouseEvent;
     let mouseEvent1: MouseEvent;
     let mouseEvent2: MouseEvent;
+    let mouseEvent3: MouseEvent;
     let mouseEventR: MouseEvent;
     let drawPoinSpy: jasmine.Spy<any>;
     let backspceEvant: KeyboardEvent;
@@ -37,7 +38,8 @@ describe('Service: Line', () => {
         drawingComponentSpy = jasmine.createSpyObj('DrawingComponent', ['clearCanvas']);
         baseCtxStub.lineWidth = 2;
         previewCtxStub.lineWidth = 2;
-
+        baseCtxStub.strokeStyle = '#000000';
+        previewCtxStub.strokeStyle = '#000000';
         ctx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, sizeCanvas, sizeCanvas);
@@ -77,6 +79,11 @@ describe('Service: Line', () => {
         mouseEvent2 = {
             offsetX: 50,
             offsetY: 50,
+            button: MouseButton.Left,
+        } as MouseEvent;
+        mouseEvent3 = {
+            offsetX: 0,
+            offsetY: 10,
             button: MouseButton.Left,
         } as MouseEvent;
         mouseEventR = {
@@ -226,6 +233,13 @@ describe('Service: Line', () => {
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 100, y: 50 });
         expect(vec2).toEqual({ x: 100, y: 50 });
     });
+    it('ShiftDrawAngleLine of angle 270 ', () => {
+        // tslint:disable-next-line:no-magic-numbers
+        pathData.push({ x: 50, y: 50 });
+        const vec2 = shiftDrawAngleLineSpy(pathData, { x: 50, y: 100 });
+        expect(vec2).toEqual({ x: 50, y: 100 });
+    });
+
     it('backspceEvant fonction', () => {
         service.subToolSelect = SubToolselected.tool2;
         service.onMouseDown(mouseEvent1);
@@ -233,13 +247,13 @@ describe('Service: Line', () => {
         service.onKeyBackSpace(backspceEvant);
         service.onDoubleClick(mouseEvent);
 
-        const imageData: ImageData = baseCtxStub.getImageData(Math.floor(mouseEvent1.offsetX), Math.floor(mouseEvent1.offsetY), 1, 1);
+        const imageData: ImageData = baseCtxStub.getImageData(Math.floor(mouseEvent2.offsetX), Math.floor(mouseEvent2.offsetY), 1, 1);
         // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[0]).toEqual(255); // R white check
+        expect(imageData.data[0]).not.toEqual(0); // R white check
         // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[1]).toEqual(255); // G white check
+        expect(imageData.data[1]).not.toEqual(0); // G white check
         // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[2]).toEqual(255); // B white check
+        expect(imageData.data[2]).not.toEqual(0); // B white check
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
     });
@@ -268,5 +282,32 @@ describe('Service: Line', () => {
         service.onMouseDown(mouseEvent);
         service.onKeyEscape(backspceEvant);
         expect(clearPathSpy).toHaveBeenCalled();
+    });
+    it('onMouseDown,onMouseMove, OnShiftKeyDown and  onMouseMove and brush ligne in de canvas ', () => {
+        service.onMouseDown(mouseEvent1);
+        service.onMouseMove(mouseEvent2);
+        service.OnShiftKeyDown(backspceEvant);
+        service.onMouseMove(mouseEvent3);
+        //expect(drawLineLastPointSpy).toHaveBeenCalled();
+        const imageData: ImageData = previewCtxStub.getImageData(Math.floor(mouseEvent2.offsetX / 2), Math.floor(mouseEvent2.offsetY / 2), 1, 1);
+        expect(imageData.data[0]).toEqual(0); // R
+        expect(imageData.data[1]).toEqual(0); // G
+        expect(imageData.data[2]).toEqual(0); // B
+        // tslint:disable-next-line:no-magic-numbers
+        expect(imageData.data[3]).not.toEqual(0); // A
+    });
+    it('onMouseDown,onMouseMove, OnShiftKeyDown and onMouseMove OnShiftKeyUp and not brush ligne in de canvas in position of OnShiftKeyDown', () => {
+        service.onMouseDown(mouseEvent1);
+        service.onMouseMove(mouseEvent2);
+        service.OnShiftKeyDown(backspceEvant);
+        service.onMouseMove(mouseEvent3);
+        service.OnShiftKeyUp(backspceEvant);
+
+        const imageData2: ImageData = baseCtxStub.getImageData(Math.floor(mouseEvent2.offsetX / 2), Math.floor(mouseEvent2.offsetY / 2), 1, 1);
+        expect(imageData2.data[0]).not.toEqual(0); // R
+        expect(imageData2.data[1]).not.toEqual(0); // G
+        expect(imageData2.data[2]).not.toEqual(0); // B
+        // tslint:disable-next-line:no-magic-numbers
+        expect(imageData2.data[3]).not.toEqual(0); // A
     });
 });

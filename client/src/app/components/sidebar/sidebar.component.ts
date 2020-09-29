@@ -14,6 +14,7 @@ import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { LineService } from '@app/services/tools/line.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 
 @Component({
@@ -48,6 +49,7 @@ export class SidebarComponent {
         public ellipseService: EllipseService,
         public brushService: BrushService,
         public eraserService: EraserService,
+        public lineService: LineService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.NONE);
@@ -169,9 +171,8 @@ export class SidebarComponent {
     }
 
     sliderSlidingPoint(args: MatSliderChange): void {
-        console.log(args.value);
         if (args.value) {
-            this.toolService.currentTool.secondeSizePixel = args.value;
+            // = args.value;
         }
     }
 
