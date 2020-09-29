@@ -60,7 +60,7 @@ export class ColorService {
         switch (style) {
             case GradientStyle.lightToDark:
                 gradient = ctx.createLinearGradient(0, 0, dimension.x, 0);
-                this.lightToDark(gradient, this.previewColor);
+                this.lightToDark(gradient, this.primaryColor);
                 break;
             case GradientStyle.rainbow:
             default:

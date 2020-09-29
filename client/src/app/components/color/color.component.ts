@@ -59,6 +59,7 @@ export class ColorComponent implements AfterViewInit {
 
     drawSquarePalette(): void {
         this.colorService.drawPalette(this.squareCtx, this.squareDimension, GradientStyle.lightToDark);
+        // cursor
     }
 
     drawHorizontalPalette(): void {
@@ -68,6 +69,17 @@ export class ColorComponent implements AfterViewInit {
     onMouseOverSquare(event: MouseEvent): void {
         const position = { x: event.offsetX, y: event.offsetY };
         this.colorService.previewColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.squareCtx));
+    }
+
+    onMouseOverSquareClick(event: MouseEvent): void {
+        // const position = { x: event.offsetX, y: event.offsetY };
+        this.colorService.primaryColor = this.colorService.previewColor;
+    }
+
+    onMouseOverHorizontalClick(event: MouseEvent): void {
+        // const position = { x: event.offsetX, y: event.offsetY };
+        this.colorService.primaryColor = this.colorService.previewColor;
+        this.drawSquarePalette();
     }
 
     onMouseOverHorizontal(event: MouseEvent): void {
