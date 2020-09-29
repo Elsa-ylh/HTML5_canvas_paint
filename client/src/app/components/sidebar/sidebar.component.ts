@@ -7,6 +7,7 @@ import { cursorName } from '@app/classes/cursor-name';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -50,6 +51,7 @@ export class SidebarComponent {
         public ellipseService: EllipseService,
         public brushService: BrushService,
         public eraserService: EraserService,
+        public colorService: ColorService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
@@ -174,34 +176,44 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.1', ['$event']) onKeyDown1(event: KeyboardEvent): void {
-        this.resetCheckedButton();
-        this.isRectangleChecked = true;
-        this.pickRectangle(1);
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isRectangleChecked = true;
+            this.pickRectangle(1);
+        }
     }
 
     @HostListener('window:keydown.2', ['$event']) onKeyDown2(event: KeyboardEvent): void {
-        this.resetCheckedButton();
-        this.isEllipseChecked = true;
-        this.pickEllipse(1);
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isEllipseChecked = true;
+            this.pickEllipse(1);
+        }
     }
 
     @HostListener('window:keydown.e', ['$event'])
     changeEraserMode(event: KeyboardEvent): void {
-        this.resetCheckedButton();
-        this.isEraserChecked = true;
-        this.pickEraser();
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isEraserChecked = true;
+            this.pickEraser();
+        }
     }
 
     @HostListener('window:keydown.c', ['$event'])
     changePencilMode(event: KeyboardEvent): void {
-        this.resetCheckedButton();
-        this.isPencilChecked = true;
-        this.pickPencil();
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isPencilChecked = true;
+            this.pickPencil();
+        }
     }
     @HostListener('window:keydown.w', ['$event'])
     changeBrushMode(event: KeyboardEvent): void {
-        this.resetCheckedButton();
-        this.isBrushChecked = true;
-        this.pickBrush(1);
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isBrushChecked = true;
+            this.pickBrush(1);
+        }
     }
 }

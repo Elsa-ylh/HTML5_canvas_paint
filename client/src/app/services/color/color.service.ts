@@ -9,7 +9,7 @@ export type RGB = {
 
 export enum GradientStyle {
     rainbow,
-    squarePalette,
+    lightToDark,
 }
 
 @Injectable({
@@ -17,13 +17,9 @@ export enum GradientStyle {
 })
 export class ColorService {
     primaryColor: string = '#000000';
-    secondaryColor: string = 'FFFFFF';
+    secondaryColor: string = 'ff6666';
 
-    previewColor: string = '#ffffff';
-
-    testMethod(): void {
-        console.log("it's working");
-    }
+    previewColor: string = '#ff6666';
 
     // https://malcoded.com/posts/angular-color-picker/
     // I copied the gradient made at that position
@@ -43,6 +39,16 @@ export class ColorService {
         gradient.addColorStop(1, 'rgba(255, 0, 0, 1)');
     }
 
+    // This one is completely my creation
+    private lightToDark(gradient: CanvasGradient, hexColor: string): void {
+        // fractions make more sense to do seperation between colors
+        gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+        // tslint:disable-next-line: no-magic-numbers
+        gradient.addColorStop(1 / 2, hexColor);
+        // tslint:disable-next-line: no-magic-numbers
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
+    }
+
     // Copyright all reserved to the respective author. Our work has been highly inspired by him and there is
     // is some form of paraphrasing and recoding to make it adapted to our use cases.
     // https://malcoded.com/posts/angular-color-picker/
@@ -52,6 +58,10 @@ export class ColorService {
         let gradient;
 
         switch (style) {
+            case GradientStyle.lightToDark:
+                gradient = ctx.createLinearGradient(0, 0, dimension.x, 0);
+                this.lightToDark(gradient, this.previewColor);
+                break;
             case GradientStyle.rainbow:
             default:
                 gradient = ctx.createLinearGradient(0, 0, dimension.x, 0);
