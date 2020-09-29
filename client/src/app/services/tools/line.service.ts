@@ -13,8 +13,9 @@ export class LineService extends Tool {
     lineWidth: number = 2;
     private pathData: Vec2[] = [];
     private pointMouse: Vec2 = { x: 0, y: 0 };
-    private shiftKeyDown: boolean = false;
     private pointShiftMemori: Vec2 = { x: 0, y: 0 };
+    private shiftKeyDown: boolean = false;
+    private mouseOut: boolean = false;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -22,7 +23,7 @@ export class LineService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown && !this.shiftKeyDown) {
+        if (this.mouseDown && !this.shiftKeyDown && !this.mouseOut) {
             this.mouseMove = true;
             this.pathData.push(this.getPositionFromMouse(event));
             this.drawLine(this.drawingService.previewCtx, this.pathData);
@@ -40,7 +41,12 @@ export class LineService extends Tool {
             this.pointShiftMemori = this.getPositionFromMouse(event);
         }
     }
-
+    onMouseOut(event: MouseEvent): void {
+        this.mouseOut = true;
+    }
+    onMouseEnter(event: MouseEvent): void {
+        this.mouseOut = false;
+    }
     OnShiftKeyDown(event: KeyboardEvent): void {
         if (this.mouseDown && this.mouseMove) {
             this.shiftKeyDown = true;

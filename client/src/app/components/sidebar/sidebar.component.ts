@@ -113,6 +113,8 @@ export class SidebarComponent {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Line);
         this.toolService.currentTool.subToolSelect = SubToolselected.tool1;
+        this.pxSize = this.lineService.secondeSizePixel;
+        this.pxSizePoint = this.lineService.lineWidth;
     }
 
     get lineChecked(): boolean {
@@ -150,7 +152,6 @@ export class SidebarComponent {
 
     sliderSliding(args: MatSliderChange): void {
         if (args.value) {
-            this.pxSize = args.value;
             this.pxSize = args.value;
         }
     }

@@ -70,6 +70,9 @@ export class DrawingComponent implements AfterViewInit {
     onMouseOut(event: MouseEvent): void {
         this.toolService.currentTool.onMouseOut(event);
     }
+    onMouseEnter(event: MouseEvent): void {
+        this.toolService.currentTool.onMouseEnter(event);
+    }
     get width(): number {
         return this.canvasResizerService.canvasSize.x;
     }
