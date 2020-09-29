@@ -4,6 +4,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { MatSliderChange } from '@angular/material/slider';
 import { DomSanitizer } from '@angular/platform-browser';
 import { cursorName } from '@app/classes/cursor-name';
+import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
@@ -113,7 +114,7 @@ export class SidebarComponent {
         return this.isLineChecked;
     }
 
-    pickRectangle(subTool: number): void {
+    pickRectangle(subTool: SubToolselected): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Rectangle);
         this.toolService.currentTool.subToolSelect = subTool;
