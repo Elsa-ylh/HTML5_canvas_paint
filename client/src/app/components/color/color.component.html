@@ -1,9 +1,16 @@
 <div class="color-container">
-    <canvas id="previewSquare" #previewSquare (click)="onClick($event)" (mousemove)="onClick($event)"></canvas>
-    <canvas id="squarePalette" #squarePalette></canvas>
+    <canvas
+        id="previewSquare"
+        [attr.width]="width"
+        [attr.height]="squareHeight"
+        #previewSquare
+        (click)="onClick($event)"
+        (mousemove)="onClick($event)"
+    ></canvas>
+    <canvas id="squarePalette" [attr.width]="width" [attr.height]="squareHeight" #squarePalette></canvas>
     <mat-divider></mat-divider>
-    <canvas id="previewHorizontal" #previewHorizontal></canvas>
-    <canvas id="horizontalPalette" #horizontalPalette></canvas>
+    <canvas id="previewHorizontal" #previewHorizontal [attr.width]="width" [attr.height]="horizontalHeight"></canvas>
+    <canvas id="horizontalPalette" #horizontalPalette [attr.width]="width" [attr.height]="horizontalHeight"></canvas>
     <mat-divider></mat-divider>
     <mat-form-field appearance="outline">
         <mat-label>Rouge</mat-label>

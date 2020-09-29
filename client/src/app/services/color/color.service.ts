@@ -63,7 +63,7 @@ export class ColorService {
         ctx.strokeStyle = '#000';
         ctx.fillStyle = '#FFF';
         debugger;
-        ctx.fillRect(event.offsetX / 1.5, event.offsetY / 1.333, 10, 10);
+        ctx.fillRect(event.offsetX, event.offsetY, 10, 10);
     }
 
     // Ce code est complètement inspiré sans gêne de
