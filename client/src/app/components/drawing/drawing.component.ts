@@ -55,19 +55,16 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('window:dblclick', ['$event'])
     onDoubleClick(event: MouseEvent): void {
-        console.log('dblclick is good');
         this.toolService.currentTool.onDoubleClick(event);
     }
 
     @HostListener('window:keydown.escape', ['$event'])
     onKeyEscape(event: KeyboardEvent): void {
-        console.log('escape is good');
         this.toolService.currentTool.onKeyEscape(event);
     }
 
     @HostListener('window:keydown.backspace', ['$event'])
     onKeyBackSpace(event: KeyboardEvent): void {
-        console.log('backspace is good');
         this.toolService.currentTool.onKeyBackSpace(event);
     }
 

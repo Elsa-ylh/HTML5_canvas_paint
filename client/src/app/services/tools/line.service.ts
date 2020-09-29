@@ -23,15 +23,17 @@ export class LineService extends Tool {
         if (this.mouseDown && !this.shiftKeyDown) {
             this.mouseMove = true;
             this.pathData.push(this.getPositionFromMouse(event));
+            this.drawLine(this.drawingService.previewCtx, this.pathData);
         } else if (this.mouseDown && this.shiftKeyDown) {
             this.pathData.push(this.pointMouse);
+            this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseMove && !this.shiftKeyDown) {
             this.pointShiftMemori = this.pointMouse = this.getPositionFromMouse(event);
-            this.drawLine(this.drawingService.previewCtx, this.pathData, this.pointMouse);
+            this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointMouse);
         } else if (this.shiftKeyDown) {
             this.pointShiftMemori = this.getPositionFromMouse(event);
         }
@@ -42,7 +44,7 @@ export class LineService extends Tool {
             this.shiftKeyDown = true;
             this.mouseMove = false;
             this.pointMouse = this.shiftDrawAngleLine(this.pathData, this.pointMouse);
-            this.drawLine(this.drawingService.previewCtx, this.pathData, this.pointMouse);
+            this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointMouse);
         }
     }
 
@@ -50,7 +52,7 @@ export class LineService extends Tool {
         if (this.mouseDown && this.shiftKeyDown) {
             this.mouseMove = true;
             this.shiftKeyDown = false;
-            this.drawLine(this.drawingService.previewCtx, this.pathData, this.pointShiftMemori);
+            this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointShiftMemori);
         }
     }
 
@@ -87,7 +89,7 @@ export class LineService extends Tool {
         if (this.mergeFirstPoint(this.pathData)) {
             this.pathData[this.pathData.length - 1] = this.pathData[0];
         }
-        this.finalDrawLine(this.drawingService.baseCtx, this.pathData);
+        this.drawLine(this.drawingService.baseCtx, this.pathData);
         this.clearPath();
         this.clearEffectTool();
     }
@@ -102,10 +104,10 @@ export class LineService extends Tool {
     onKeyBackSpace(event: KeyboardEvent): void {
         if (this.mouseDown && this.pathData.length > 1) {
             this.pathData.pop();
-            this.drawLine(this.drawingService.previewCtx, this.pathData, this.pointMouse);
+            this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointMouse);
         }
     }
-    private finalDrawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         this.clearPreviewCtx();
         ctx.beginPath();
         for (const point of path) {
@@ -116,7 +118,7 @@ export class LineService extends Tool {
         if (this.subToolSelect === SubToolselected.tool2) this.drawPoin(ctx, path);
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], lastPoint: Vec2): void {
+    private drawLineLastPoint(ctx: CanvasRenderingContext2D, path: Vec2[], lastPoint: Vec2): void {
         this.clearPreviewCtx();
         ctx.lineCap = 'butt';
         ctx.lineJoin = 'bevel';
