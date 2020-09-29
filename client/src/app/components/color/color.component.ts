@@ -15,16 +15,23 @@ import { ColorService } from '@app/services/color/color.service';
 // The website mainly teach how to do the drawing with canvas2d the gradient
 // https://malcoded.com/posts/angular-color-picker/
 export class ColorComponent implements AfterViewInit {
-    // This will force the usage of the entire CSS width. It is a poor man's fix.
-    fullUseOfWidth: number = 1000;
+    // This will force the usage of the entire CSS width. It is a poor man's fix as I found nothing else.
+    // Please tolerate such heresy
+    width: number = 200;
+    horizontalHeight: number = 100;
+    scalingToFix: number = 1.5;
+    fullUseOfWidth: number = this.width * this.scalingToFix;
+    fullUseofHeight: number = this.horizontalHeight * this.scalingToFix;
+
+    squareHeight: number = 220;
 
     @ViewChild('previewSquare') previewSquare: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('squarePalette') squareCanvas: ElementRef<HTMLCanvasElement>;
-    @ViewChild('previewSquare') previewHorizontal: ElementRef<HTMLCanvasElement>; // used to do a hover position
+    @ViewChild('previewHorizontal') previewHorizontal: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('horizontalPalette') horizontalCanvas: ElementRef<HTMLCanvasElement>;
 
-    squareDimension: Vec2 = { x: this.fullUseOfWidth, y: 220 };
-    horizontalDimension: Vec2 = { x: this.fullUseOfWidth, y: 50 };
+    squareDimension: Vec2 = { x: this.fullUseOfWidth, y: this.squareHeight };
+    horizontalDimension: Vec2 = { x: this.fullUseOfWidth, y: this.fullUseofHeight };
 
     previewSquareCtx: CanvasRenderingContext2D;
     squareCtx: CanvasRenderingContext2D;
@@ -46,9 +53,14 @@ export class ColorComponent implements AfterViewInit {
         this.previewHorizontalCtx = this.previewHorizontal.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.horizontalCtx = this.horizontalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawSquarePalette();
+        this.drawHorizontalPalette();
     }
 
     drawSquarePalette(): void {
         this.colorService.drawPalette(this.squareCtx, this.squareDimension);
+    }
+
+    drawHorizontalPalette(): void {
+        this.colorService.drawPalette(this.horizontalCtx, this.horizontalDimension);
     }
 }

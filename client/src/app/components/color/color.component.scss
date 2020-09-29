@@ -1,28 +1,38 @@
 .color-container {
-    width: 220px;
+    max-width: 220px;
     display: flex;
     flex-direction: column;
-    margin-top: 3px;
-    margin-left: 3px;
 }
 
 #previewSquare {
     position: absolute;
-    margin-top: 3px;
-    margin-left: 3px;
+    margin-top: 13px;
+    margin-left: 13px;
     z-index: 1;
-    width: auto;
+    width: 220px;
     height: 220px;
 }
 
 #squarePalette {
+    margin-top: 13px;
+    margin-left: 13px;
     z-index: 0;
-    width: auto;
-    height: 220px;
+    width: 200px;
+    height: 200px;
+}
+
+#previewHorizontal {
+    margin-left: 13px;
+    top: 233px;
+    position: absolute;
+    z-index: 0;
+    width: 200px;
+    height: 50px;
 }
 
 #horizontalPalette {
+    margin-left: 13px;
     z-index: 1;
-    width: 220px;
+    width: 200px;
     height: 50px;
 }
