@@ -28,16 +28,17 @@ describe('Service: Line', () => {
     let mouseEventR: MouseEvent;
     let drawPoinSpy: jasmine.Spy<any>;
     let backspceEvant: KeyboardEvent;
-    const sizeCanvas: number = 100;
+    const sizeCanvas = 100;
+    let ctx: CanvasRenderingContext2D;
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         drawingComponentSpy = jasmine.createSpyObj('DrawingComponent', ['clearCanvas']);
-        baseCtxStub.lineWidth = 2; //pour les tes
+        baseCtxStub.lineWidth = 2;
         previewCtxStub.lineWidth = 2;
 
-        let ctx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        ctx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, sizeCanvas, sizeCanvas);
         baseCtxStub.putImageData(ctx.getImageData(0, 0, sizeCanvas, sizeCanvas), 0, 0);
@@ -193,33 +194,34 @@ describe('Service: Line', () => {
         expect(vec2).toEqual({ x: 0, y: 0 });
     });
     it('ShiftDrawAngleLine of 0 ', () => {
+        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 40 });
         pathData.push({ x: 0, y: 0 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 0, y: 0 });
         expect(vec2).toEqual({ x: 0, y: 0 });
     });
-    it('ShiftDrawAngleLine of 135 ', () => {
-        pathData.push({ x: 50, y: 40 });
+    it('ShiftDrawAngleLine of angle 135 ', () => {
+        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 0, y: 0 });
 
         expect(vec2).toEqual({ x: 0, y: 7.105427357601002e-15 });
     });
 
-    it('ShiftDrawAngleLine of 45 ', () => {
-        pathData.push({ x: 50, y: 40 });
+    it('ShiftDrawAngleLine of angle 45 ', () => {
+        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 75, y: 75 });
         expect(vec2).toEqual({ x: 75, y: 75 });
     });
-    it('ShiftDrawAngleLine of 180 ', () => {
-        pathData.push({ x: 50, y: 40 });
+    it('ShiftDrawAngleLine of angle 180 ', () => {
+        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 0, y: 50 });
         expect(vec2).toEqual({ x: 0, y: 50 });
     });
-    it('ShiftDrawAngleLine of 0 ', () => {
-        pathData.push({ x: 50, y: 40 });
+    it('ShiftDrawAngleLine of angle 0 ', () => {
+        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 100, y: 50 });
         expect(vec2).toEqual({ x: 100, y: 50 });
@@ -231,10 +233,13 @@ describe('Service: Line', () => {
         service.onKeyBackSpace(backspceEvant);
         service.onDoubleClick(mouseEvent);
 
-        const imageData: ImageData = baseCtxStub.getImageData(49, 49, 1, 1);
-        expect(imageData.data[0]).toEqual(255); // R
-        expect(imageData.data[1]).toEqual(255); // G
-        expect(imageData.data[2]).toEqual(255); // B
+        const imageData: ImageData = baseCtxStub.getImageData(mouseEvent1.x, mouseEvent1.x, 1, 1);
+        // tslint:disable-next-line:no-magic-numbers
+        expect(imageData.data[0]).toEqual(255); // R white check
+        // tslint:disable-next-line:no-magic-numbers
+        expect(imageData.data[1]).toEqual(255); // G white check
+        // tslint:disable-next-line:no-magic-numbers
+        expect(imageData.data[2]).toEqual(255); // B white check
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
     });
@@ -242,25 +247,15 @@ describe('Service: Line', () => {
         service.onMouseDown(mouseEvent1);
         service.onMouseDown(mouseEvent2);
         service.onDoubleClick(mouseEvent);
-        const imageData: ImageData = baseCtxStub.getImageData(49, 49, 1, 1);
 
+        const imageData: ImageData = baseCtxStub.getImageData(mouseEvent1.x, mouseEvent1.y, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
         expect(imageData.data[2]).toEqual(0); // B
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
     });
-    it('white fonction', () => {
-        service.onMouseDown(mouseEvent1);
-        service.onMouseDown(mouseEvent2);
 
-        const imageData: ImageData = previewCtxStub.getImageData(88, 88, 1, 1);
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[0]).toEqual(255); // R
-        expect(imageData.data[1]).toEqual(255); // G
-        expect(imageData.data[2]).toEqual(255); // B
-        expect(imageData.data[3]).not.toEqual(0); // A
-    });
     it('onMouseUp should not call drawLineLastPointSpy fonction ', () => {
         service.onMouseUp(mouseEvent2);
         expect(drawLineSpy).not.toHaveBeenCalled();
