@@ -8,6 +8,8 @@
         (mousedown)="onMouseDown($event)"
         (mousemove)="onMouseMove($event)"
         (mouseup)="onMouseUp($event)"
+        (mouseout)="onMouseOut($event)"
+        (mouseenter)="onMouseEnter($event)"
     ></canvas>
     <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height" [ngStyle]="{ cursor: cursorUsed }"></canvas>
     <canvas id="canvasResizerPreview" canvasResizingPreview [ngStyle]="{ 'width.px': canvasPreviewWidth, 'height.px': canvasPreviewHeight }"></canvas>
