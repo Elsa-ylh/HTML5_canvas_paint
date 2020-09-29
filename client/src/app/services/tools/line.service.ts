@@ -75,11 +75,11 @@ export class LineService extends Tool {
             newPoint = { x: lastPoint.x, y: firstPoint.y };
         } else if (angleabs >= Math.PI / denominator8 && angleabs <= (Math.PI * numerator3) / denominator8) {
             const axey: number = dy > 0 ? leastone : 1;
-            const newY: number = Math.floor(Math.tan((Math.PI * numerator3) / denominator4) * dx * axey);
+            const newY: number = Math.round(Math.tan((Math.PI * numerator3) / denominator4) * dx * axey);
             newPoint = { x: lastPoint.x, y: firstPoint.y + newY };
         } else if (angleabs <= (Math.PI * numerator7) / denominator8 && angleabs >= (Math.PI * numerator5) / denominator8) {
             const axey: number = dy > 0 ? leastone : 1;
-            const newY: number = Math.floor(Math.tan(Math.PI / denominator4) * dx * axey);
+            const newY: number = Math.round(Math.tan(Math.PI / denominator4) * dx * axey);
             newPoint = { x: lastPoint.x, y: firstPoint.y + newY };
         } else {
             newPoint = { x: firstPoint.x, y: lastPoint.y };
@@ -94,12 +94,14 @@ export class LineService extends Tool {
         this.drawLine(this.drawingService.baseCtx, this.pathData);
         this.clearPath();
         this.clearEffectTool();
+        this.mouseDown = false;
     }
 
     onKeyEscape(event: KeyboardEvent): void {
         if (this.mouseDown) {
             this.clearPath();
             this.clearEffectTool();
+            this.mouseDown = false;
         }
     }
 

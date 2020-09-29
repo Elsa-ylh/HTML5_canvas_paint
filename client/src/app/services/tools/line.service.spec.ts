@@ -218,8 +218,8 @@ describe('Service: Line', () => {
     it('ShiftDrawAngleLine of angle 45 ', () => {
         // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
-        const vec2 = shiftDrawAngleLineSpy(pathData, { x: 75, y: 75 });
-        expect(vec2).toEqual({ x: 75, y: 75 });
+        const vec2 = shiftDrawAngleLineSpy(pathData, { x: 100, y: 0 });
+        expect(vec2).toEqual({ x: 100, y: 0 });
     });
     it('ShiftDrawAngleLine of angle 180 ', () => {
         // tslint:disable-next-line:no-magic-numbers
@@ -239,8 +239,43 @@ describe('Service: Line', () => {
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 50, y: 100 });
         expect(vec2).toEqual({ x: 50, y: 100 });
     });
+    it('ShiftDrawAngleLine of angle 225 ', () => {
+        // tslint:disable-next-line:no-magic-numbers
+        pathData.push({ x: 50, y: 50 });
+        const vec2 = shiftDrawAngleLineSpy(pathData, { x: 100, y: 0 });
+        expect(vec2).toEqual({ x: 100, y: 0 });
+    });
+    it('ShiftDrawAngleLine of angle 315 ', () => {
+        // tslint:disable-next-line:no-magic-numbers
+        pathData.push({ x: 50, y: 50 });
+        const vec2 = shiftDrawAngleLineSpy(pathData, { x: 100, y: 100 });
+        expect(vec2).toEqual({ x: 100, y: 100 });
+    });
+    it('ShiftDrawAngleLine of angle 90 ', () => {
+        // tslint:disable-next-line:no-magic-numbers
+        pathData.push({ x: 50, y: 50 });
+        const vec2 = shiftDrawAngleLineSpy(pathData, { x: 50, y: 0 });
+        expect(vec2).toEqual({ x: 50, y: 0 });
+    });
 
-    it('backspceEvant fonction', () => {
+    it('backspceEvant fonction if drush in one point', () => {
+        service.subToolSelect = SubToolselected.tool2;
+        service.onMouseDown(mouseEvent2);
+        service.onKeyBackSpace(backspceEvant);
+        service.onDoubleClick(mouseEvent);
+
+        const imageData: ImageData = baseCtxStub.getImageData(Math.floor(mouseEvent2.offsetX), Math.floor(mouseEvent2.offsetY), 1, 1);
+        // tslint:disable-next-line:no-magic-numbers
+        expect(imageData.data[0]).toEqual(63); // R white check
+        // tslint:disable-next-line:no-magic-numbers
+        expect(imageData.data[1]).toEqual(63); // G white check
+        // tslint:disable-next-line:no-magic-numbers
+        expect(imageData.data[2]).toEqual(63); // B white check
+        // tslint:disable-next-line:no-magic-numbers
+        expect(imageData.data[3]).not.toEqual(0); // A
+    });
+
+    it('backspceEvant fonction if not drush in second point', () => {
         service.subToolSelect = SubToolselected.tool2;
         service.onMouseDown(mouseEvent1);
         service.onMouseDown(mouseEvent2);
@@ -302,12 +337,31 @@ describe('Service: Line', () => {
         service.OnShiftKeyDown(backspceEvant);
         service.onMouseMove(mouseEvent3);
         service.OnShiftKeyUp(backspceEvant);
-
+        service.onDoubleClick(mouseEvent3);
         const imageData2: ImageData = baseCtxStub.getImageData(Math.floor(mouseEvent2.offsetX / 2), Math.floor(mouseEvent2.offsetY / 2), 1, 1);
         expect(imageData2.data[0]).not.toEqual(0); // R
         expect(imageData2.data[1]).not.toEqual(0); // G
         expect(imageData2.data[2]).not.toEqual(0); // B
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData2.data[3]).not.toEqual(0); // A
+    });
+    it('onMouseDown,onMouseMove, OnShiftKeyDown, onMouseDown and OnShiftKeyUp and brush ligne in de canvas in position ', () => {
+        service.onMouseDown(mouseEvent1);
+        service.onMouseMove(mouseEvent2);
+        service.OnShiftKeyDown(backspceEvant);
+        service.onMouseDown(mouseEvent1);
+        service.OnShiftKeyUp(backspceEvant);
+        service.onDoubleClick(mouseEvent1);
+        const imageData2: ImageData = baseCtxStub.getImageData(Math.floor(mouseEvent2.offsetX / 2), Math.floor(mouseEvent2.offsetY / 2), 1, 1);
+        expect(imageData2.data[0]).toEqual(0); // R
+        expect(imageData2.data[1]).toEqual(0); // G
+        expect(imageData2.data[2]).toEqual(0); // B
+        // tslint:disable-next-line:no-magic-numbers
+        expect(imageData2.data[3]).not.toEqual(0); // A
+    });
+    it('OnShiftKeyDown and OnShiftKeyUp not call drawLineLastPoint', () => {
+        service.OnShiftKeyDown(backspceEvant);
+        service.OnShiftKeyUp(backspceEvant);
+        expect(drawLineLastPointSpy).not.toHaveBeenCalled();
     });
 });
