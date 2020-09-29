@@ -1,21 +1,17 @@
 /* tslint:disable:no-unused-variable */
-
 import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Vec2 } from '@app/classes/vec2';
-import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from '@app/services/tools/line.service';
-
 // tslint:disable:no-any
 describe('Service: Line', () => {
     let service: LineService;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-    let drawingComponentSpy: jasmine.SpyObj<DrawingComponent>;
     let pathData: Vec2[];
     let drawLineLastPointSpy: jasmine.Spy<any>;
     let mergeFirstPointSpy: jasmine.Spy<any>;
@@ -31,11 +27,11 @@ describe('Service: Line', () => {
     let backspceEvant: KeyboardEvent;
     const sizeCanvas = 100;
     let ctx: CanvasRenderingContext2D;
+
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-        drawingComponentSpy = jasmine.createSpyObj('DrawingComponent', ['clearCanvas']);
         baseCtxStub.lineWidth = 2;
         previewCtxStub.lineWidth = 2;
         baseCtxStub.strokeStyle = '#000000';
@@ -46,12 +42,8 @@ describe('Service: Line', () => {
         baseCtxStub.putImageData(ctx.getImageData(0, 0, sizeCanvas, sizeCanvas), 0, 0);
         previewCtxStub.putImageData(ctx.getImageData(0, 0, sizeCanvas, sizeCanvas), 0, 0);
         TestBed.configureTestingModule({
-            providers: [
-                { provide: DrawingService, useValue: drawServiceSpy },
-                { provide: DrawingComponent, useValue: drawingComponentSpy },
-            ],
+            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
-
         service = TestBed.inject(LineService);
         drawLineLastPointSpy = spyOn<any>(service, 'drawLineLastPoint').and.callThrough();
         mergeFirstPointSpy = spyOn<any>(service, 'mergeFirstPoint').and.callThrough();
@@ -59,13 +51,11 @@ describe('Service: Line', () => {
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         shiftDrawAngleLineSpy = spyOn<any>(service, 'shiftDrawAngleLine').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
-        // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service.subToolSelect = SubToolselected.tool1;
         pathData = [];
-
         mouseEvent = {
             offsetX: 25,
             offsetY: 10,
@@ -122,7 +112,6 @@ describe('Service: Line', () => {
         const boolFonction = mergeFirstPointSpy(pathData);
         expect(boolFonction).toEqual(true);
     });
-
     it('trois point function mergeFirstPoint si false', () => {
         pathData.push({ x: 25, y: 10 });
         pathData.push({ x: 250, y: 100 });
@@ -214,7 +203,6 @@ describe('Service: Line', () => {
 
         expect(vec2).toEqual({ x: 0, y: 0 });
     });
-
     it('ShiftDrawAngleLine of angle 45 ', () => {
         // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
@@ -257,13 +245,11 @@ describe('Service: Line', () => {
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 50, y: 0 });
         expect(vec2).toEqual({ x: 50, y: 0 });
     });
-
     it('backspceEvant fonction if drush in one point', () => {
         service.subToolSelect = SubToolselected.tool2;
         service.onMouseDown(mouseEvent2);
         service.onKeyBackSpace(backspceEvant);
         service.onDoubleClick(mouseEvent);
-
         const imageData: ImageData = baseCtxStub.getImageData(Math.floor(mouseEvent2.offsetX), Math.floor(mouseEvent2.offsetY), 1, 1);
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[0]).toEqual(63); // R white check
@@ -274,7 +260,6 @@ describe('Service: Line', () => {
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
     });
-
     it('backspceEvant fonction if not drush in second point', () => {
         service.subToolSelect = SubToolselected.tool2;
         service.onMouseDown(mouseEvent1);
@@ -283,11 +268,8 @@ describe('Service: Line', () => {
         service.onDoubleClick(mouseEvent);
 
         const imageData: ImageData = baseCtxStub.getImageData(Math.floor(mouseEvent2.offsetX), Math.floor(mouseEvent2.offsetY), 1, 1);
-        // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[0]).not.toEqual(0); // R white check
-        // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[1]).not.toEqual(0); // G white check
-        // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[2]).not.toEqual(0); // B white check
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
@@ -296,7 +278,6 @@ describe('Service: Line', () => {
         service.onMouseDown(mouseEvent1);
         service.onMouseDown(mouseEvent2);
         service.onDoubleClick(mouseEvent);
-
         const imageData: ImageData = baseCtxStub.getImageData(Math.floor(mouseEvent1.offsetX), Math.floor(mouseEvent1.offsetY), 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
@@ -323,7 +304,6 @@ describe('Service: Line', () => {
         service.onMouseMove(mouseEvent2);
         service.OnShiftKeyDown(backspceEvant);
         service.onMouseMove(mouseEvent3);
-        //expect(drawLineLastPointSpy).toHaveBeenCalled();
         const imageData: ImageData = previewCtxStub.getImageData(Math.floor(mouseEvent2.offsetX / 2), Math.floor(mouseEvent2.offsetY / 2), 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G

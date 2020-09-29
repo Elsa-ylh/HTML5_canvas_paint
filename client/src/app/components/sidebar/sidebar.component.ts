@@ -150,8 +150,8 @@ export class SidebarComponent {
 
     sliderSliding(args: MatSliderChange): void {
         if (args.value) {
-            this.drawingService.baseCtx.lineWidth = args.value;
-            this.drawingService.previewCtx.lineWidth = args.value;
+            this.pxSize = args.value;
+            this.pxSize = args.value;
         }
     }
 
@@ -165,14 +165,12 @@ export class SidebarComponent {
         this.isColorChecked = false;
     }
     CheckboxChangeToggle(args: MatCheckboxChange): void {
-        console.log(args.checked);
         this.toolService.currentTool.subToolSelect = args.checked ? SubToolselected.tool2 : SubToolselected.tool1;
-        // document.getElementById('sliderPoint')?.style.visibility = args.checked ? 'hidder' : 'visible';
     }
 
     sliderSlidingPoint(args: MatSliderChange): void {
         if (args.value) {
-            // = args.value;
+            this.pxSizePoint = args.value;
         }
     }
 
