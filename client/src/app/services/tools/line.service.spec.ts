@@ -84,7 +84,7 @@ describe('Service: Line', () => {
         backspceEvant = new KeyboardEvent('backspace');
     });
 
-    it('should ...', inject([LineService], (serviceRec: LineService) => {
+    it('should create', inject([LineService], (serviceRec: LineService) => {
         expect(serviceRec).toBeTruthy();
     }));
 

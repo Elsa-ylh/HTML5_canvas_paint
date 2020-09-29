@@ -53,7 +53,7 @@ export class DrawingComponent implements AfterViewInit {
         this.toolService.currentTool.OnShiftKeyUp(event);
     }
 
-    @HostListener('window:dblclick', ['$event'])
+    @HostListener('dblclick', ['$event'])
     onDoubleClick(event: MouseEvent): void {
         this.toolService.currentTool.onDoubleClick(event);
     }
@@ -67,7 +67,9 @@ export class DrawingComponent implements AfterViewInit {
     onKeyBackSpace(event: KeyboardEvent): void {
         this.toolService.currentTool.onKeyBackSpace(event);
     }
-
+    onMouseOut(event: MouseEvent): void {
+        this.toolService.currentTool.onMouseOut(event);
+    }
     get width(): number {
         return this.canvasResizerService.canvasSize.x;
     }
