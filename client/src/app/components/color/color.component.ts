@@ -53,16 +53,6 @@ export class ColorComponent implements AfterViewInit {
         this.drawHorizontalPalette();
     }
 
-    get previewColor(): string {
-        return this.colorService.previewColor;
-    }
-    get primaryColor(): string {
-        return this.colorService.primaryColor;
-    }
-    get secondaryColor(): string {
-        return this.colorService.secondaryColor;
-    }
-
     drawSquarePalette(): void {
         this.colorService.drawPalette(this.squareCtx, this.squareDimension, GradientStyle.lightToDark);
         // cursor
@@ -75,24 +65,24 @@ export class ColorComponent implements AfterViewInit {
 
     onMouseOverSquare(event: MouseEvent): void {
         const position = { x: event.offsetX, y: event.offsetY };
-        this.colorService.previewColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.squareCtx));
+        this.colorService.setpreviewColor(this.colorService.numeralToHex(this.colorService.getColor(position, this.squareCtx)));
     }
 
     onMouseOverSquareClick(event: MouseEvent): void {
         // palette
         // const position = { x: event.offsetX, y: event.offsetY };
-        this.colorService.primaryColor = this.colorService.previewColor;
+        this.colorService.setprimaryColor(this.colorService.getpreviewColor());
     }
 
     onMouseOverHorizontalClick(event: MouseEvent): void {
         //slider
         // const position = { x: event.offsetX, y: event.offsetY };
-        this.colorService.primaryColor = this.colorService.previewColor;
-        this.drawSquarePalette(); // update the color palette
+        this.colorService.setprimaryColor(this.colorService.getpreviewColor());
+        this.drawSquarePalette(); // updates the color palette
     }
 
     onMouseOverHorizontal(event: MouseEvent): void {
         const position = { x: event.offsetX, y: event.offsetY };
-        this.colorService.previewColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.horizontalCtx));
+        this.colorService.setpreviewColor(this.colorService.numeralToHex(this.colorService.getColor(position, this.horizontalCtx)));
     }
 }

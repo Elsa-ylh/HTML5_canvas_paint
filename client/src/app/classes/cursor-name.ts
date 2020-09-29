@@ -1,4 +1,4 @@
 export const cursorName = {
-    default: 'auto',
+    default: 'crosshair',
     eraser: "url('assets/square.cur') 15 15, progress",
 };

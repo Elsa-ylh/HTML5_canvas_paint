@@ -16,14 +16,37 @@ export enum GradientStyle {
     providedIn: 'root',
 })
 export class ColorService {
-    primaryColor: string = '#000000';
-    secondaryColor: string = '#ff6666';
+    private primaryColor: string = '#000000';
+    private secondaryColor: string = '#ff6666';
     primaryColorTransparency: number;
     secondaryColorTransparency: number;
 
-    previewColor: string = '#ff6666';
+    private previewColor: string = '#ff6666';
 
     // private lastChoiceColor: RGB[];
+
+    getpreviewColor(): string {
+        return this.previewColor;
+    }
+
+    getprimaryColor(): string {
+        return this.primaryColor;
+    }
+
+    getsecondaryColor(): string {
+        return this.secondaryColor;
+    }
+
+    setpreviewColor(colorPreview: string): void {
+        this.previewColor = colorPreview;
+    }
+
+    setprimaryColor(colorPrimary: string): void {
+        this.primaryColor = colorPrimary;
+    }
+    setsecondaryColor(colorSecondary: string): void {
+        this.secondaryColor = colorSecondary;
+    }
 
     // https://malcoded.com/posts/angular-color-picker/
     // I copied the gradient made at that position

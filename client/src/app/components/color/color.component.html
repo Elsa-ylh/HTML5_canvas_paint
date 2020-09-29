@@ -23,24 +23,24 @@
     <div>
         <h6 id="previewColortxt">Preview:</h6>
         <mat-grid-list cols="2" rowHeight="2:1">
-            <mat-grid-tile id="previewColorval">{{ colorService.previewColor }}</mat-grid-tile>
-            <mat-grid-tile><div id="previewColor" [ngStyle]="{ 'background-color': previewColor }"></div></mat-grid-tile>
+            <mat-grid-tile id="previewColorval">{{ colorService.getpreviewColor() }}</mat-grid-tile>
+            <mat-grid-tile><div id="previewColor" [ngStyle]="{ 'background-color': colorService.getpreviewColor() }"></div></mat-grid-tile>
         </mat-grid-list>
         <mat-divider></mat-divider>
     </div>
     <div id="colors">
         <h6>Primary :</h6>
         <mat-grid-list cols="2" rowHeight="2:1">
-            <mat-grid-tile>{{ primaryColor }}</mat-grid-tile>
-            <mat-grid-tile><div id="primaryColor" [ngStyle]="{ 'background-color': colorService.primaryColor }"></div></mat-grid-tile>
+            <mat-grid-tile>{{ colorService.getprimaryColor() }}</mat-grid-tile>
+            <mat-grid-tile><div id="primaryColor" [ngStyle]="{ 'background-color': colorService.getprimaryColor() }"></div></mat-grid-tile>
         </mat-grid-list>
         <mat-divider></mat-divider>
         <mat-divider></mat-divider>
 
         <h6>Secondary :</h6>
         <mat-grid-list cols="2" rowHeight="2:1">
-            <mat-grid-tile id="Secondvalue">{{ secondaryColor }}</mat-grid-tile>
-            <mat-grid-tile><div id="secondaryColor" [ngStyle]="{ 'background-color': colorService.secondaryColor }"></div></mat-grid-tile>
+            <mat-grid-tile id="Secondvalue">{{ colorService.getsecondaryColor() }}</mat-grid-tile>
+            <mat-grid-tile><div id="secondaryColor" [ngStyle]="{ 'background-color': colorService.getsecondaryColor() }"></div></mat-grid-tile>
         </mat-grid-list>
         <mat-divider></mat-divider>
     </div>
