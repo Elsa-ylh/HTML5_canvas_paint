@@ -1,10 +1,10 @@
 <div class="color-container">
-    <canvas id="previewSquare" #previewSquare></canvas>
+    <canvas id="previewSquare" #previewSquare (click)="onClick($event)"></canvas>
     <canvas id="squarePalette" #squarePalette></canvas>
-    hi
+    <mat-divider></mat-divider>
     <canvas id="previewHorizontal" #previewHorizontal></canvas>
     <canvas id="horizontalPalette" #horizontalPalette></canvas>
-    this is another section
+    <mat-divider></mat-divider>
     <mat-form-field appearance="outline">
         <mat-label>Rouge</mat-label>
         <input matInput placeholder="0-255" />
@@ -19,5 +19,10 @@
         <mat-label>Bleu</mat-label>
         <input matInput placeholder="0-255" />
         <mat-icon matSuffix svgIcon="blue"></mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Alpha</mat-label>
+        <input matInput placeholder="0-1" />
+        <mat-icon matSuffix svgIcon="alpha"></mat-icon>
     </mat-form-field>
 </div>

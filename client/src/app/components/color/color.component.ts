@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Vec2 } from '@app/classes/vec2';
-import { ColorService } from '@app/services/color/color.service';
+import { ColorService, GradientStyle } from '@app/services/color/color.service';
 
 // certaines parties du code a ete inspiree de l'auteur
 @Component({
@@ -17,21 +17,18 @@ import { ColorService } from '@app/services/color/color.service';
 export class ColorComponent implements AfterViewInit {
     // This will force the usage of the entire CSS width. It is a poor man's fix as I found nothing else.
     // Please tolerate such heresy
-    width: number = 200;
-    horizontalHeight: number = 100;
-    scalingToFix: number = 1.5;
-    fullUseOfWidth: number = this.width * this.scalingToFix;
-    fullUseofHeight: number = this.horizontalHeight * this.scalingToFix;
+    width: number = 300;
 
-    squareHeight: number = 220;
+    horizontalHeight: number = 150;
+    squareHeight: number = 150;
 
     @ViewChild('previewSquare') previewSquare: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('squarePalette') squareCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewHorizontal') previewHorizontal: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('horizontalPalette') horizontalCanvas: ElementRef<HTMLCanvasElement>;
 
-    squareDimension: Vec2 = { x: this.fullUseOfWidth, y: this.squareHeight };
-    horizontalDimension: Vec2 = { x: this.fullUseOfWidth, y: this.fullUseofHeight };
+    squareDimension: Vec2 = { x: this.width, y: this.squareHeight };
+    horizontalDimension: Vec2 = { x: this.width, y: this.horizontalHeight };
 
     previewSquareCtx: CanvasRenderingContext2D;
     squareCtx: CanvasRenderingContext2D;
@@ -57,10 +54,15 @@ export class ColorComponent implements AfterViewInit {
     }
 
     drawSquarePalette(): void {
-        this.colorService.drawPalette(this.squareCtx, this.squareDimension);
+        this.colorService.drawPalette(this.squareCtx, this.squareDimension, GradientStyle.rainbow);
     }
 
     drawHorizontalPalette(): void {
-        this.colorService.drawPalette(this.horizontalCtx, this.horizontalDimension);
+        this.colorService.drawPalette(this.horizontalCtx, this.horizontalDimension, GradientStyle.rainbow);
+    }
+
+    onClick(event: MouseEvent): void {
+        debugger;
+        this.colorService.drawDot(this.previewSquareCtx, this.squareDimension, event);
     }
 }
