@@ -121,7 +121,7 @@ export class SidebarComponent {
         return this.isLineChecked;
     }
 
-    pickRectangle(subTool: number): void {
+    pickRectangle(subTool: SubToolselected): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Rectangle);
         this.toolService.currentTool.subToolSelect = subTool;

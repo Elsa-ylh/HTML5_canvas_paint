@@ -44,4 +44,8 @@ describe('DialogCreateNewDrawingComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    // it('should resize canvas if values entered by user are correct', () => {
+
+    // });
 });
