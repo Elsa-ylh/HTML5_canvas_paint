@@ -175,8 +175,12 @@ export class EllipseService extends Tool {
         if (this.drawingService.previewCtx === ctx) {
             if (this.mousePosition.x > mouseDownPos.x && this.mousePosition.y > mouseDownPos.y) {
                 ctx.strokeRect(mouseDownPos.x - lineWidth / 2, mouseDownPos.y - lineWidth / 2, width + lineWidth, height + lineWidth);
-            } else {
+            } else if (this.mousePosition.x < mouseDownPos.x && this.mousePosition.y < mouseDownPos.y) {
                 ctx.strokeRect(mouseDownPos.x + lineWidth / 2, mouseDownPos.y + lineWidth / 2, width - lineWidth, height - lineWidth);
+            } else if (this.mousePosition.x > mouseDownPos.x && this.mousePosition.y < mouseDownPos.y) {
+                ctx.strokeRect(mouseDownPos.x - lineWidth / 2, mouseDownPos.y + lineWidth / 2, width + lineWidth, height - lineWidth);
+            } else if (this.mousePosition.x < mouseDownPos.x && this.mousePosition.y > mouseDownPos.y) {
+                ctx.strokeRect(mouseDownPos.x + lineWidth / 2, mouseDownPos.y - lineWidth / 2, width - lineWidth, height + lineWidth);
             }
         }
     }
