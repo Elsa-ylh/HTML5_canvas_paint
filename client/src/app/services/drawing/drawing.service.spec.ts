@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { DrawingService } from './drawing.service';
-
+import { DrawingService } from '@app/services/drawing/drawing.service';
 describe('DrawingService', () => {
     let service: DrawingService;
 

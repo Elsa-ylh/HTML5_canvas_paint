@@ -67,4 +67,8 @@ export class DrawingComponent implements AfterViewInit {
     get workHeight(): number {
         return this.height + this.canvasResizerService.WORK_AREA_PADDING_SIZE;
     }
+
+    get cursorUsed(): string {
+        return this.drawingService.cursorUsed;
+    }
 }
