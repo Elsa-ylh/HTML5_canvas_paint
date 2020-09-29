@@ -205,7 +205,7 @@ describe('Service: Line', () => {
         pathData.push({ x: 50, y: 50 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 0, y: 0 });
 
-        expect(vec2).toEqual({ x: 0, y: 7.105427357601002e-15 });
+        expect(vec2).toEqual({ x: 0, y: 0 });
     });
 
     it('ShiftDrawAngleLine of angle 45 ', () => {
@@ -233,7 +233,7 @@ describe('Service: Line', () => {
         service.onKeyBackSpace(backspceEvant);
         service.onDoubleClick(mouseEvent);
 
-        const imageData: ImageData = baseCtxStub.getImageData(mouseEvent1.x, mouseEvent1.x, 1, 1);
+        const imageData: ImageData = baseCtxStub.getImageData(Math.floor(mouseEvent1.offsetX), Math.floor(mouseEvent1.offsetY), 1, 1);
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[0]).toEqual(255); // R white check
         // tslint:disable-next-line:no-magic-numbers
@@ -248,7 +248,7 @@ describe('Service: Line', () => {
         service.onMouseDown(mouseEvent2);
         service.onDoubleClick(mouseEvent);
 
-        const imageData: ImageData = baseCtxStub.getImageData(mouseEvent1.x, mouseEvent1.y, 1, 1);
+        const imageData: ImageData = baseCtxStub.getImageData(Math.floor(mouseEvent1.offsetX), Math.floor(mouseEvent1.offsetY), 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
         expect(imageData.data[2]).toEqual(0); // B
