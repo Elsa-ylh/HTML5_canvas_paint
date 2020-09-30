@@ -1,13 +1,8 @@
 import { Injectable } from '@angular/core';
 import { cursorName } from '@app/classes/cursor-name';
 import { MouseButton } from '@app/classes/mouse-button';
+import { ResizeDirection } from '@app/classes/resize-direction';
 import { Vec2 } from '@app/classes/vec2';
-
-export enum ResizeDirection {
-    vertical,
-    horizontal,
-    verticalAndHorizontal,
-}
 
 @Injectable({
     providedIn: 'root',
@@ -56,11 +51,10 @@ export class CanvasResizerService {
         }
     }
 
-    // https://stackoverflow.com/questions/8977369/drawing-png-to-a-canvas-element-not-showing-transparency
     onResize(event: MouseEvent, resizeCtx: CanvasRenderingContext2D): void {
         if (this.isResizeDown) {
             this.clearCanvas(resizeCtx, { x: 1920 + 40, y: this.DEFAULT_HEIGHT });
-            resizeCtx.setLineDash([5, 5]);
+            resizeCtx.setLineDash([2, 2]);
             resizeCtx.strokeStyle = '#000000';
             resizeCtx.lineWidth = 2;
             switch (this.resizeDirection) {
@@ -113,6 +107,7 @@ export class CanvasResizerService {
         }
     }
 
+    // https://stackoverflow.com/questions/8977369/drawing-png-to-a-canvas-element-not-showing-transparency
     onResizeUp(event: MouseEvent, resizeCtx: CanvasRenderingContext2D, baseCanvas: HTMLCanvasElement): void {
         if (this.isResizeDown) {
             const originalImage = new Image();

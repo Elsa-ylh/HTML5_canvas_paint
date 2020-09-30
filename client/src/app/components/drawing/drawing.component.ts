@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { cursorName } from '@app/classes/cursor-name';
-import { CanvasResizerService, ResizeDirection } from '@app/services/canvas/canvas-resizer.service';
+import { ResizeDirection } from '@app/classes/resize-direction';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 
@@ -95,11 +96,11 @@ export class DrawingComponent implements AfterViewInit {
 
     // resize
     onResizeDown(event: MouseEvent): void {
-        const isVertical = this.canvasResizerService.canvasSize.y < event.clientY && event.clientY < this.canvasResizerService.canvasSize.y + 50;
+        const isVertical = this.canvasResizerService.canvasSize.y < event.clientY && event.clientY < this.canvasResizerService.canvasSize.y + 30;
         const isHorizontal =
             this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH < event.clientX &&
             event.clientX <
-                this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH + 50;
+                this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH + 30;
 
         if (isVertical && isHorizontal) {
             this.canvasResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
@@ -117,12 +118,12 @@ export class DrawingComponent implements AfterViewInit {
         if (this.canvasResizerService.isResizeDown) {
             this.canvasResizerService.onResize(event, this.resizeCtx);
         } else {
-            const isVertical = this.canvasResizerService.canvasSize.y < event.clientY && event.clientY < this.canvasResizerService.canvasSize.y + 50;
+            const isVertical = this.canvasResizerService.canvasSize.y < event.clientY && event.clientY < this.canvasResizerService.canvasSize.y + 30;
             const isHorizontal =
                 this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH <
                     event.clientX &&
                 event.clientX <
-                    this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH + 50;
+                    this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH + 30;
             if (isVertical) {
                 this.canvasResizerService.resizeCursor = cursorName.resizeVertical;
             }
@@ -132,6 +133,8 @@ export class DrawingComponent implements AfterViewInit {
                 this.canvasResizerService.resizeCursor = cursorName.resizeVertical;
             } else if (isHorizontal) {
                 this.canvasResizerService.resizeCursor = cursorName.resizeHorizontal;
+            } else {
+                this.canvasResizerService.resizeCursor = cursorName.default;
             }
         }
     }
