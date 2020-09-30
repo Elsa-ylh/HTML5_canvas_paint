@@ -97,7 +97,7 @@ describe('PencilService', () => {
     });
 
     // Exemple de test d'intégration qui est quand même utile
-    it(' should change the pixel of the canvas ', () => {
+    /*it(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
@@ -110,5 +110,5 @@ describe('PencilService', () => {
         expect(imageData.data[2]).toEqual(0); // B
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
-    });
+    });*/
 });

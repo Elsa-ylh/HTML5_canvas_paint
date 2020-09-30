@@ -1,9 +1,11 @@
 import { Component, HostListener } from '@angular/core';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatSliderChange } from '@angular/material/slider';
 import { DomSanitizer } from '@angular/platform-browser';
 import { cursorName } from '@app/classes/cursor-name';
+import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
@@ -12,6 +14,7 @@ import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { LineService } from '@app/services/tools/line.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 
 @Component({
@@ -24,9 +27,10 @@ export class SidebarComponent {
     isDialogOpen: boolean = false;
     lineWidth: number;
     pxSize: number;
+    pxSizePoint: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
-
+    checked: boolean = false;
     private isPencilChecked: boolean = false;
     private isEraserChecked: boolean = false;
     private isBrushChecked: boolean = false;
@@ -45,6 +49,7 @@ export class SidebarComponent {
         public ellipseService: EllipseService,
         public brushService: BrushService,
         public eraserService: EraserService,
+        public lineService: LineService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.NONE);
@@ -107,13 +112,16 @@ export class SidebarComponent {
     pickLine(): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Line);
+        this.toolService.currentTool.subToolSelect = SubToolselected.tool1;
+        this.pxSize = this.lineService.secondeSizePixel;
+        this.pxSizePoint = this.lineService.lineWidth;
     }
 
     get lineChecked(): boolean {
         return this.isLineChecked;
     }
 
-    pickRectangle(subTool: number): void {
+    pickRectangle(subTool: SubToolselected): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Rectangle);
         this.toolService.currentTool.subToolSelect = subTool;
@@ -144,8 +152,7 @@ export class SidebarComponent {
 
     sliderSliding(args: MatSliderChange): void {
         if (args.value) {
-            this.drawingService.baseCtx.lineWidth = args.value;
-            this.drawingService.previewCtx.lineWidth = args.value;
+            this.pxSize = args.value;
         }
     }
 
@@ -157,6 +164,15 @@ export class SidebarComponent {
         this.isRectangleChecked = false;
         this.isEllipseChecked = false;
         this.isColorChecked = false;
+    }
+    CheckboxChangeToggle(args: MatCheckboxChange): void {
+        this.toolService.currentTool.subToolSelect = args.checked ? SubToolselected.tool2 : SubToolselected.tool1;
+    }
+
+    sliderSlidingPoint(args: MatSliderChange): void {
+        if (args.value) {
+            this.pxSizePoint = args.value;
+        }
     }
 
     // keybind control o for new drawing
@@ -171,13 +187,13 @@ export class SidebarComponent {
     @HostListener('window:keydown.1', ['$event']) onKeyDown1(event: KeyboardEvent): void {
         this.resetCheckedButton();
         this.isRectangleChecked = true;
-        this.pickRectangle(1);
+        this.pickRectangle(SubToolselected.tool1);
     }
 
     @HostListener('window:keydown.2', ['$event']) onKeyDown2(event: KeyboardEvent): void {
         this.resetCheckedButton();
         this.isEllipseChecked = true;
-        this.pickEllipse(1);
+        this.pickEllipse(SubToolselected.tool1);
     }
 
     @HostListener('window:keydown.e', ['$event'])
@@ -197,6 +213,12 @@ export class SidebarComponent {
     changeBrushMode(event: KeyboardEvent): void {
         this.resetCheckedButton();
         this.isBrushChecked = true;
-        this.pickBrush(1);
+        this.pickBrush(SubToolselected.tool1);
+    }
+    @HostListener('window:keydown.l', ['$event'])
+    changeLineMode(event: KeyboardEvent): void {
+        this.resetCheckedButton();
+        this.isLineChecked = true;
+        this.pickLine();
     }
 }
