@@ -86,6 +86,12 @@ export class ColorComponent implements AfterViewInit {
         this.colorService.drawPalette(this.opacitySliderCtx, this.horizontalDimension, GradientStyle.lightToDark);
         // cursor
     }
+
+    updatecolorUi(): void {
+        this.drawHorizontalPalette();
+        this.drawSquarePalette();
+        // this.drawOpacitySlider();
+    }
     onMouseOverSquare(event: MouseEvent): void {
         const position = { x: event.offsetX, y: event.offsetY };
         this.colorService.setpreviewColor(this.colorService.numeralToHex(this.colorService.getColor(position, this.squareCtx)));
@@ -108,6 +114,7 @@ export class ColorComponent implements AfterViewInit {
             this.colorService.setprimaryColor(this.colorService.getpreviewColor());
         } else if (this.colorService.clicksecondaryColor && this.colorService.clickprimaryColor === false) {
             this.colorService.setsecondaryColor(this.colorService.getpreviewColor());
+            this.updatecolorUi();
         }
         this.drawSquarePalette(); // updates the color palette
     }

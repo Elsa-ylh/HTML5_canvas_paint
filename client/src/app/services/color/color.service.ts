@@ -18,8 +18,8 @@ export enum GradientStyle {
 export class ColorService {
     private primaryColor: string = '#000000';
     private secondaryColor: string = '#ff6666';
-    primaryColorTransparency: number;
-    secondaryColorTransparency: number;
+    private primaryColorTransparency: number;
+    private secondaryColorTransparency: number;
     clickprimaryColor: boolean = true;
     clicksecondaryColor: boolean = false;
     private previewColor: string = '#ff6666';
@@ -38,7 +38,13 @@ export class ColorService {
     getsecondaryColor(): string {
         return this.secondaryColor;
     }
-
+    getprimaryColorTransparency(): number {
+        return this.primaryColorTransparency;
+    }
+    // transparency
+    getsecondaryColorTransparency(): number {
+        return this.secondaryColorTransparency;
+    }
     // setters
     setpreviewColor(colorPreview: string): void {
         this.previewColor = colorPreview;
@@ -49,6 +55,13 @@ export class ColorService {
     }
     setsecondaryColor(colorSecondary: string): void {
         this.secondaryColor = colorSecondary;
+    }
+    // transparency
+    setprimaryColorTransparency(primaryTransparency: number): void {
+        this.primaryColorTransparency = primaryTransparency;
+    }
+    setsecondaryColorTransparency(secondaryTransparency: number): void {
+        this.secondaryColorTransparency = secondaryTransparency;
     }
 
     // https://malcoded.com/posts/angular-color-picker/
