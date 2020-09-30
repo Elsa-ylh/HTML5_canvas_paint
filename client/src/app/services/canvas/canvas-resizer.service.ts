@@ -54,7 +54,7 @@ export class CanvasResizerService {
     onResize(event: MouseEvent, resizeCtx: CanvasRenderingContext2D): void {
         if (this.isResizeDown) {
             this.clearCanvas(resizeCtx, { x: 1920 + 40, y: this.DEFAULT_HEIGHT });
-            resizeCtx.setLineDash([2, 2]);
+            resizeCtx.setLineDash([10, 10]);
             resizeCtx.strokeStyle = '#000000';
             resizeCtx.lineWidth = 2;
             switch (this.resizeDirection) {
