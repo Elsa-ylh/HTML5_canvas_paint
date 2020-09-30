@@ -29,8 +29,8 @@ describe('Service: Line', () => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-        baseCtxStub.lineWidth = 2;
-        previewCtxStub.lineWidth = 2;
+        baseCtxStub.lineWidth = 4;
+        previewCtxStub.lineWidth = 4;
         baseCtxStub.strokeStyle = '#000000';
         previewCtxStub.strokeStyle = '#000000';
         ctx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -295,17 +295,7 @@ describe('Service: Line', () => {
         service.onMouseMove(events.mouseEvent3);
         service.OnShiftKeyUp(events.backspceEvant);
         service.onDoubleClick(events.mouseEvent3);
-        const imageData2: ImageData = baseCtxStub.getImageData(
-            Math.floor(events.mouseEvent2.offsetX / 2),
-            Math.floor(events.mouseEvent2.offsetY / 2),
-            1,
-            1,
-        );
-        expect(imageData2.data[0]).not.toEqual(0); // R
-        expect(imageData2.data[1]).not.toEqual(0); // G
-        expect(imageData2.data[2]).not.toEqual(0); // B
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData2.data[3]).not.toEqual(0); // A
+        expect(shiftDrawAngleLineSpy).toHaveBeenCalled();
     });
     it('onMouseDown,onMouseMove, OnShiftKeyDown, onMouseDown and OnShiftKeyUp and brush ligne in de canvas in position ', () => {
         service.onMouseDown(events.mouseEvent1);
@@ -314,17 +304,7 @@ describe('Service: Line', () => {
         service.onMouseDown(events.mouseEvent1);
         service.OnShiftKeyUp(events.backspceEvant);
         service.onDoubleClick(events.mouseEvent1);
-        const imageData2: ImageData = baseCtxStub.getImageData(
-            Math.floor(events.mouseEvent2.offsetX / 2),
-            Math.floor(events.mouseEvent2.offsetY / 2),
-            1,
-            1,
-        );
-        expect(imageData2.data[0]).toEqual(0); // R
-        expect(imageData2.data[1]).toEqual(0); // G
-        expect(imageData2.data[2]).toEqual(0); // B
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData2.data[3]).not.toEqual(0); // A
+        expect(shiftDrawAngleLineSpy).toHaveBeenCalled();
     });
     it('OnShiftKeyDown and OnShiftKeyUp not call drawLineLastPoint and drawLineSpy', () => {
         service.OnShiftKeyDown(events.backspceEvant);
