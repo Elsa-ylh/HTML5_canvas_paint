@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { cursorName } from '@app/classes/cursor-name';
 import { CanvasResizerService, ResizeDirection } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
@@ -53,17 +54,21 @@ export class DrawingComponent implements AfterViewInit {
     get eastMiddleHookY(): number {
         return this.canvasResizerService.canvasSize.y / 2.0 - this.canvasResizerService.HOOK_HEIGHT;
     }
-    @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
+
     // On utilise ce canvas pour dessiner sans affecter le dessin final, aussi utilisé pour sauvegarder
     // une version du dessin avant de l'appliquer au final.
+    @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('canvasResizingPreview', { static: false }) canvasResizingPreview: ElementRef<HTMLCanvasElement>;
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
+    private resizeCtx: CanvasRenderingContext2D;
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.resizeCtx = this.canvasResizingPreview.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
@@ -89,21 +94,54 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     // resize
-
     onResizeDown(event: MouseEvent): void {
-        this.canvasResizerService.onResizeDown(event);
+        const isVertical = this.canvasResizerService.canvasSize.y < event.clientY && event.clientY < this.canvasResizerService.canvasSize.y + 50;
+        const isHorizontal =
+            this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH < event.clientX &&
+            event.clientX <
+                this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH + 50;
+
+        if (isVertical && isHorizontal) {
+            this.canvasResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
+            this.canvasResizerService.onResizeDown(event, ResizeDirection.verticalAndHorizontal);
+        } else if (isVertical) {
+            this.canvasResizerService.resizeCursor = cursorName.resizeVertical;
+            this.canvasResizerService.onResizeDown(event, ResizeDirection.vertical);
+        } else if (isHorizontal) {
+            this.canvasResizerService.resizeCursor = cursorName.resizeHorizontal;
+            this.canvasResizerService.onResizeDown(event, ResizeDirection.horizontal);
+        }
     }
 
     onResizeMove(event: MouseEvent): void {
-        this.canvasResizerService.onResize(event, this.baseCanvas.nativeElement, ResizeDirection.vertical);
+        if (this.canvasResizerService.isResizeDown) {
+            this.canvasResizerService.onResize(event, this.resizeCtx);
+        } else {
+            const isVertical = this.canvasResizerService.canvasSize.y < event.clientY && event.clientY < this.canvasResizerService.canvasSize.y + 50;
+            const isHorizontal =
+                this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH <
+                    event.clientX &&
+                event.clientX <
+                    this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH + 50;
+            if (isVertical) {
+                this.canvasResizerService.resizeCursor = cursorName.resizeVertical;
+            }
+            if (isVertical && isHorizontal) {
+                this.canvasResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
+            } else if (isVertical) {
+                this.canvasResizerService.resizeCursor = cursorName.resizeVertical;
+            } else if (isHorizontal) {
+                this.canvasResizerService.resizeCursor = cursorName.resizeHorizontal;
+            }
+        }
     }
 
     onResizeUp(event: MouseEvent): void {
-        this.canvasResizerService.onVerticalUp(event);
+        this.canvasResizerService.onResizeUp(event, this.resizeCtx, this.baseCanvas.nativeElement);
     }
 
     onResizeOut(event: MouseEvent): void {
-        this.canvasResizerService.onVerticalOut(event);
+        this.canvasResizerService.onResizeOut(event, this.resizeCtx, this.baseCanvas.nativeElement);
     }
 
     @HostListener('window:keydown.shift', ['$event'])
