@@ -26,6 +26,7 @@ export class ColorService {
 
     // private lastChoiceColor: RGB[];
 
+    // getters
     getpreviewColor(): string {
         return this.previewColor;
     }
@@ -38,6 +39,7 @@ export class ColorService {
         return this.secondaryColor;
     }
 
+    // setters
     setpreviewColor(colorPreview: string): void {
         this.previewColor = colorPreview;
     }
@@ -57,13 +59,13 @@ export class ColorService {
         // tslint:disable-next-line: no-magic-numbers
         gradient.addColorStop(1 / 6, 'rgba(255, 255, 0, 1)');
         // tslint:disable-next-line: no-magic-numbers
-        gradient.addColorStop(2 / 6, 'rgba(0, 255, 0, 1)');
+        gradient.addColorStop(2.1 / 6, 'rgba(0, 255, 0, 1)');
         // tslint:disable-next-line: no-magic-numbers
-        gradient.addColorStop(3 / 6, 'rgba(0, 255, 255, 1)');
+        gradient.addColorStop(3.1 / 6, 'rgba(0, 255, 255, 1)');
         // tslint:disable-next-line: no-magic-numbers
-        gradient.addColorStop(4 / 6, 'rgba(0, 0, 255, 1)');
+        gradient.addColorStop(4.1 / 6, 'rgba(0, 0, 255, 1)');
         // tslint:disable-next-line: no-magic-numbers
-        gradient.addColorStop(5 / 6, 'rgba(255, 0, 255, 1)');
+        gradient.addColorStop(5.1 / 6, 'rgba(255, 0, 255, 1)');
         gradient.addColorStop(1, 'rgba(255, 0, 0, 1)');
     }
 

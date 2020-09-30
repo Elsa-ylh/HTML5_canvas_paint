@@ -26,6 +26,8 @@ export class ColorComponent implements AfterViewInit {
     @ViewChild('squarePalette') squareCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewHorizontal') previewHorizontal: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('horizontalPalette') horizontalCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('opacitySlider') opacitySliderCanvas: ElementRef<HTMLCanvasElement>; // to have an opacity slider
+    @ViewChild('opacitySlider') opacitySliderPreview: ElementRef<HTMLCanvasElement>; // to have an opacity slider
 
     squareDimension: Vec2 = { x: this.width, y: this.squareHeight };
     horizontalDimension: Vec2 = { x: this.width, y: this.horizontalHeight };
@@ -35,6 +37,9 @@ export class ColorComponent implements AfterViewInit {
 
     previewHorizontalCtx: CanvasRenderingContext2D;
     horizontalCtx: CanvasRenderingContext2D;
+
+    opacitySliderCtx: CanvasRenderingContext2D;
+    previewopacitySliderCtx: CanvasRenderingContext2D;
 
     constructor(private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer, public colorService: ColorService) {
         this.iconRegistry.addSvgIcon('red', this.sanitizer.bypassSecurityTrustResourceUrl('assets/apple.svg'));
@@ -49,10 +54,13 @@ export class ColorComponent implements AfterViewInit {
 
         this.previewHorizontalCtx = this.previewHorizontal.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.horizontalCtx = this.horizontalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+
+        this.previewopacitySliderCtx = this.opacitySliderPreview.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.opacitySliderCtx = this.opacitySliderCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawSquarePalette();
         this.drawHorizontalPalette();
+        // this.drawOpacitySlider();
     }
-
     // change between primary and sec
     primaryClick(): void {
         this.colorService.clickprimaryColor = true;
@@ -74,6 +82,10 @@ export class ColorComponent implements AfterViewInit {
         // cursor
     }
 
+    drawOpacitySlider(): void {
+        this.colorService.drawPalette(this.horizontalCtx, this.horizontalDimension, GradientStyle.lightToDark);
+        // cursor
+    }
     onMouseOverSquare(event: MouseEvent): void {
         const position = { x: event.offsetX, y: event.offsetY };
         this.colorService.setpreviewColor(this.colorService.numeralToHex(this.colorService.getColor(position, this.squareCtx)));
@@ -97,7 +109,6 @@ export class ColorComponent implements AfterViewInit {
         } else if (this.colorService.clicksecondaryColor && this.colorService.clickprimaryColor === false) {
             this.colorService.setsecondaryColor(this.colorService.getpreviewColor());
         }
-
         this.drawSquarePalette(); // updates the color palette
     }
 
