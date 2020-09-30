@@ -5,6 +5,7 @@ export type RGB = {
     red: number;
     green: number;
     blue: number;
+    alpha: number;
 };
 
 export enum GradientStyle {
@@ -18,14 +19,17 @@ export enum GradientStyle {
 export class ColorService {
     private primaryColor: string = '#000000';
     private secondaryColor: string = '#ff6666';
+    private selectedColor = this.primaryColor;
+    private previewColor: string = '#ff6666';
     private primaryColorTransparency: number;
     private secondaryColorTransparency: number;
     clickprimaryColor: boolean = true;
     clicksecondaryColor: boolean = false;
-    private previewColor: string = '#ff6666';
-
     // private lastChoiceColor: RGB[];
 
+    getselectedColor(): string {
+        return this.selectedColor;
+    }
     // getters
     getpreviewColor(): string {
         return this.previewColor;
@@ -55,6 +59,9 @@ export class ColorService {
     }
     setsecondaryColor(colorSecondary: string): void {
         this.secondaryColor = colorSecondary;
+    }
+    setselectedColor(color: string): void {
+        this.selectedColor = color;
     }
     // transparency
     setprimaryColorTransparency(primaryTransparency: number): void {
@@ -103,7 +110,7 @@ export class ColorService {
         switch (style) {
             case GradientStyle.lightToDark:
                 gradient = ctx.createLinearGradient(0, 0, dimension.x, 0);
-                this.lightToDark(gradient, this.primaryColor);
+                this.lightToDark(gradient, this.selectedColor);
                 break;
             case GradientStyle.rainbow:
             default:
@@ -131,7 +138,7 @@ export class ColorService {
     // https://malcoded.com/posts/angular-color-picker/#detecting-mouse-events-on-the-color-slider
     getColor(position: Vec2, ctx: CanvasRenderingContext2D): RGB {
         const imageData = ctx.getImageData(position.x, position.y, 1, 1).data;
-        return { red: imageData[0], green: imageData[1], blue: imageData[2] };
+        return { red: imageData[0], green: imageData[1], blue: imageData[2], alpha: imageData[3] };
     }
 
     swapColor(): void {
