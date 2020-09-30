@@ -44,6 +44,7 @@ export class ColorComponent implements AfterViewInit {
 
     opacitySliderCtx: CanvasRenderingContext2D;
     previewopacitySliderCtx: CanvasRenderingContext2D;
+    cursorSliderOpacity: any;
 
     constructor(private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer, public colorService: ColorService) {
         this.iconRegistry.addSvgIcon('red', this.sanitizer.bypassSecurityTrustResourceUrl('assets/apple.svg'));
@@ -67,6 +68,12 @@ export class ColorComponent implements AfterViewInit {
         };
 
         //cursor for opacity slider
+        this.cursorSliderOpacity = new Image(1, 1);
+        this.cursorSliderOpacity.src = '/assets/cursorSlider_Palette.svg';
+        this.cursorSliderOpacity.position = { x: 0, y: 0 };
+        this.cursorSliderOpacity.onload = function () {
+            this.data1.drawImage(this.data2, this.position.x, 0, 20, 20);
+        };
     }
 
     ngAfterViewInit(): void {
@@ -79,8 +86,8 @@ export class ColorComponent implements AfterViewInit {
         this.previewopacitySliderCtx = this.opacitySliderPreview.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.opacitySliderCtx = this.opacitySliderCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawSquarePalette({ x: 103, y: 103 }); // x,y for palette cursor. initial pos.
-        this.drawHorizontalPalette({ x: 20, y: 0 }); // x,y for color slider cursor. initial position.
-        this.drawOpacitySlider();
+        this.drawHorizontalPalette({ x: 10, y: 0 }); // x,y for color slider cursor. initial position.
+        this.drawOpacitySlider({ x: 10, y: 0 });
     }
     // change between primary and sec
     primaryClick(): void {
@@ -112,9 +119,14 @@ export class ColorComponent implements AfterViewInit {
         this.cursorSliderColor.src = '/assets/cursorSlider_Palette.svg' + '#' + new Date().getTime();
     }
 
-    drawOpacitySlider(): void {
+    drawOpacitySlider(positionSliderOpacity: any): void {
         this.colorService.drawPalette(this.opacitySliderCtx, this.horizontalDimension, GradientStyle.lightToDark);
-        // cursor
+        // we generate the cursor with the slider
+        this.cursorSliderOpacity.data1 = this.opacitySliderCtx;
+        this.cursorSliderOpacity.data2 = this.cursorSliderColor;
+        this.cursorSliderOpacity.position = positionSliderOpacity;
+        // Reset image
+        this.cursorSliderOpacity.src = '/assets/cursorSlider_Palette.svg' + '#' + new Date().getTime();
     }
 
     onMouseOverSquare(event: MouseEvent): void {
