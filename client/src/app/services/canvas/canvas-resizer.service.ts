@@ -32,10 +32,18 @@ export class CanvasResizerService {
     // Elle est modifiable et accesible en tout temps, à faire très attention.
     canvasSize: Vec2 = { x: this.DEFAULT_WIDTH, y: this.DEFAULT_HEIGHT };
 
-    isVerticalDown: boolean = false;
+    isResizeDown: boolean = false;
 
-    onVerticalDown(event: MouseEvent): void {
-        this.isVerticalDown = event.button === MouseButton.Left;
+    // Resizer canvas index
+    PRIORITY_INDEX: number = 10;
+    NORMAL_INDEX: number = 1;
+    resizerIndex: number = 1;
+
+    onResizeDown(event: MouseEvent): void {
+        this.isResizeDown = event.button === MouseButton.Left;
+        if (this.isResizeDown) {
+            this.resizerIndex = this.PRIORITY_INDEX;
+        }
     }
 
     // https://stackoverflow.com/questions/8977369/drawing-png-to-a-canvas-element-not-showing-transparency
@@ -65,11 +73,11 @@ export class CanvasResizerService {
         }
     }
 
-    onVerticalUp(event: MouseEvent): void {
-        this.isVerticalDown = false;
+    onResizeUp(event: MouseEvent): void {
+        this.isResizeDown = false;
     }
 
-    onVerticalOut(event: MouseEvent): void {
-        this.isVerticalDown = false;
+    onResizeOut(event: MouseEvent): void {
+        this.isResizeDown = false;
     }
 }

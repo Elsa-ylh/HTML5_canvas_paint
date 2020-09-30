@@ -9,7 +9,7 @@ import { ToolService } from '@app/services/tool-service';
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit {
-    constructor(private drawingService: DrawingService, private toolService: ToolService, private canvasResizerService: CanvasResizerService) {}
+    constructor(private drawingService: DrawingService, private toolService: ToolService, public canvasResizerService: CanvasResizerService) {}
 
     get width(): number {
         return this.canvasResizerService.canvasSize.x;
@@ -88,19 +88,21 @@ export class DrawingComponent implements AfterViewInit {
         this.toolService.currentTool.onMouseEnter(event);
     }
 
-    onVerticalDown(event: MouseEvent): void {
-        this.canvasResizerService.onVerticalDown(event);
+    // resize
+
+    onResizeDown(event: MouseEvent): void {
+        this.canvasResizerService.onResizeDown(event);
     }
 
-    onVerticalResize(event: MouseEvent): void {
+    onResizeMove(event: MouseEvent): void {
         this.canvasResizerService.onResize(event, this.baseCanvas.nativeElement, ResizeDirection.vertical);
     }
 
-    onVerticalUp(event: MouseEvent): void {
+    onResizeUp(event: MouseEvent): void {
         this.canvasResizerService.onVerticalUp(event);
     }
 
-    onVerticalOut(event: MouseEvent): void {
+    onResizeOut(event: MouseEvent): void {
         this.canvasResizerService.onVerticalOut(event);
     }
 
