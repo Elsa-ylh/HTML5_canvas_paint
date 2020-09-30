@@ -40,12 +40,21 @@ export class ColorComponent implements AfterViewInit {
 
     opacitySliderCtx: CanvasRenderingContext2D;
     previewopacitySliderCtx: CanvasRenderingContext2D;
+    cursorSquarePalette: any;
 
     constructor(private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer, public colorService: ColorService) {
         this.iconRegistry.addSvgIcon('red', this.sanitizer.bypassSecurityTrustResourceUrl('assets/apple.svg'));
         this.iconRegistry.addSvgIcon('green', this.sanitizer.bypassSecurityTrustResourceUrl('assets/leaf.svg'));
         this.iconRegistry.addSvgIcon('blue', this.sanitizer.bypassSecurityTrustResourceUrl('assets/wave.svg'));
         this.iconRegistry.addSvgIcon('alpha', this.sanitizer.bypassSecurityTrustResourceUrl('assets/transparency.svg'));
+        // for palette cursor
+        this.cursorSquarePalette = new Image(1, 1);
+        this.cursorSquarePalette.src = '/assets/cursorSquarePalette.svg';
+        this.cursorSquarePalette.position = { x: 103, y: 103 };
+        this.cursorSquarePalette.onload = function () {
+            this.data1.drawImage(this.data2, this.position.x, this.position.y, 10, 10);
+        };
+        //this.cursorSquarePalette.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
     }
 
     ngAfterViewInit(): void {
@@ -57,7 +66,7 @@ export class ColorComponent implements AfterViewInit {
 
         this.previewopacitySliderCtx = this.opacitySliderPreview.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.opacitySliderCtx = this.opacitySliderCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.drawSquarePalette();
+        this.drawSquarePalette({ x: 103, y: 103 }); // x,y for palette cursor.
         this.drawHorizontalPalette();
         this.drawOpacitySlider();
     }
@@ -71,11 +80,16 @@ export class ColorComponent implements AfterViewInit {
         this.colorService.clickprimaryColor = false;
         this.colorService.clicksecondaryColor = true;
     }
-
-    drawSquarePalette(): void {
+    drawSquarePalette(position: any): void {
         this.colorService.drawPalette(this.squareCtx, this.squareDimension, GradientStyle.lightToDark);
-
         // cursor
+        this.cursorSquarePalette.data1 = this.squareCtx;
+        this.cursorSquarePalette.data2 = this.cursorSquarePalette;
+        this.cursorSquarePalette.position = position;
+        //Reset image
+        this.cursorSquarePalette.src = '/assets/cursorSquarePalette.svg' + '#' + new Date().getTime();
+
+        //this.squareCtx.drawImage(this.cursorSquarePalette, position.x, position.y, 10, 10);
     }
 
     drawHorizontalPalette(): void {
@@ -95,24 +109,26 @@ export class ColorComponent implements AfterViewInit {
 
     onMouseOverSquareClick(event: MouseEvent): void {
         // palette
-        // const position = { x: e     vent.offsetX, y: event.offsetY };
+        const position = { x: event.offsetX, y: event.offsetY };
         if (this.colorService.clickprimaryColor && this.colorService.clicksecondaryColor === false) {
             this.colorService.setprimaryColor(this.colorService.getpreviewColor());
         } else if (this.colorService.clicksecondaryColor && this.colorService.clickprimaryColor === false) {
             this.colorService.setsecondaryColor(this.colorService.getpreviewColor());
         }
+
+        this.drawSquarePalette(position);
     }
 
     onMouseOverHorizontalClick(event: MouseEvent): void {
         //slider
-        // const position = { x: event.offsetX, y: event.offsetY };
+        //const position = { x: event.offsetX, y: event.offsetY };
         if (this.colorService.clickprimaryColor && this.colorService.clicksecondaryColor === false) {
             this.colorService.setprimaryColor(this.colorService.getpreviewColor());
         } else if (this.colorService.clicksecondaryColor && this.colorService.clickprimaryColor === false) {
             this.colorService.setsecondaryColor(this.colorService.getpreviewColor());
         }
-        this.colorService.setselectedColor(this.colorService.getpreviewColor()); 
-        this.drawSquarePalette(); // updates the color palette
+        this.colorService.setselectedColor(this.colorService.getpreviewColor());
+        this.drawSquarePalette({ x: 103, y: 103 }); // updates the color palette
     }
 
     onMouseOverHorizontal(event: MouseEvent): void {
