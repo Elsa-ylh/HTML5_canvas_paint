@@ -17,6 +17,7 @@ export class BrushService extends Tool {
     private lastPoint: Vec2;
     private pathData: Vec2[];
     private brush4Data: PointArc[];
+    private mouseOut: boolean = false;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
@@ -56,9 +57,8 @@ export class BrushService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-
+        const mousePosition = this.getPositionFromMouse(event);
+        if (this.mouseDown && !this.mouseOut) {
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.subToolSelect === SubToolselected.tool4) {
@@ -69,7 +69,38 @@ export class BrushService extends Tool {
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.previewCtx, this.pathData);
             }
+        } else if (this.mouseOut) {
+            this.lastPoint = mousePosition;
         }
+    }
+    onMouseOut(event: MouseEvent): void {
+        this.mouseOut = true;
+        if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            if (this.subToolSelect === SubToolselected.tool4) {
+                const point = new PointArc(mousePosition, this.remdomInt(), Math.random());
+                this.brush4Data.push(point);
+                this.drawBrushTool4(this.drawingService.baseCtx, this.brush4Data);
+            } else {
+                this.pathData.push(mousePosition);
+                this.drawLine(this.drawingService.baseCtx, this.pathData);
+            }
+        }
+    }
+
+    onMouseEnter(event: MouseEvent): void {
+        if (this.mouseDown && this.mouseOut) {
+            this.clearPath();
+            this.mouseDownCoord = this.lastPoint;
+            if (this.subToolSelect === SubToolselected.tool4) {
+                const point = new PointArc(this.mouseDownCoord, this.remdomInt(), Math.random());
+                this.brush4Data.push(point);
+            } else {
+                this.pathData.push(this.mouseDownCoord);
+                this.lastPoint = this.mouseDownCoord;
+            }
+        }
+        this.mouseOut = false;
     }
 
     private drawBrushTool4(ctx: CanvasRenderingContext2D, path: PointArc[]): void {
