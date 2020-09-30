@@ -19,18 +19,19 @@
     ></canvas>
     <canvas id="horizontalPalette" #horizontalPalette [attr.width]="width" [attr.height]="horizontalHeight"></canvas>
     <mat-divider></mat-divider>
-    <mat-divider></mat-divider>
 
     <canvas id="opacitySliderPreview" #opacitySliderPreview [attr.width]="width" [attr.height]="horizontalHeight"></canvas>
     <canvas id="opacitySlider" #opacitySlider [attr.width]="width" [attr.height]="horizontalHeight"> </canvas>
+    <mat-divider></mat-divider>
 
-    <table id="tablePrev">
+    <table>
         <mat-grid-list cols="2" rowHeight="2:1">
             <div>Preview:</div>
             <div id="previewColor" [ngStyle]="{ 'background-color': colorService.getpreviewColor() }"></div>
             <mat-grid-tile id="previewColorHexa">{{ colorService.getpreviewColor() }}</mat-grid-tile>
         </mat-grid-list>
     </table>
+    <mat-divider></mat-divider>
     <table id="table">
         <th>
             <div id="primaryColorTitle">Primary:</div>

@@ -27,7 +27,7 @@ export class ColorComponent implements AfterViewInit {
     @ViewChild('previewHorizontal') previewHorizontal: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('horizontalPalette') horizontalCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('opacitySlider') opacitySliderCanvas: ElementRef<HTMLCanvasElement>; // to have an opacity slider
-    @ViewChild('opacitySlider') opacitySliderPreview: ElementRef<HTMLCanvasElement>; // to have an opacity slider
+    @ViewChild('opacitySliderPreview') opacitySliderPreview: ElementRef<HTMLCanvasElement>; // to have an opacity slider
 
     squareDimension: Vec2 = { x: this.width, y: this.squareHeight };
     horizontalDimension: Vec2 = { x: this.width, y: this.horizontalHeight };
@@ -59,7 +59,7 @@ export class ColorComponent implements AfterViewInit {
         this.opacitySliderCtx = this.opacitySliderCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawSquarePalette();
         this.drawHorizontalPalette();
-        // this.drawOpacitySlider();
+        this.drawOpacitySlider();
     }
     // change between primary and sec
     primaryClick(): void {
@@ -83,7 +83,7 @@ export class ColorComponent implements AfterViewInit {
     }
 
     drawOpacitySlider(): void {
-        this.colorService.drawPalette(this.horizontalCtx, this.horizontalDimension, GradientStyle.lightToDark);
+        this.colorService.drawPalette(this.opacitySliderCtx, this.horizontalDimension, GradientStyle.lightToDark);
         // cursor
     }
     onMouseOverSquare(event: MouseEvent): void {
