@@ -27,16 +27,15 @@ mat-divider {
     //margin-bottom:-20px;
 }
 
-
 .colors div {
     float: left;
-    clear: none; 
+    clear: none;
     margin-right: 40px;
     width: 68px;
 }
 
 #primaryColorTitle {
-   padding-left: 15px;
+    padding-left: 15px;
 }
 
 #primaryColor {
@@ -46,7 +45,7 @@ mat-divider {
 }
 
 #primaryColorHexa {
-    padding-left:60px;
+    padding-left: 60px;
 }
 
 #secondaryColorTitle {
@@ -60,9 +59,8 @@ mat-divider {
 }
 
 #secondaryColorHexa {
-    padding-left:65px;
+    padding-left: 65px;
 }
-
 
 #previewSquare {
     position: absolute;
@@ -79,14 +77,14 @@ mat-divider {
 
 #previewHorizontal {
     margin-left: 13px;
-    top: 225px;
+    top: 220px;
     position: absolute;
     z-index: 1;
 }
 
 #horizontalPalette {
     margin-left: 13px;
-    top: 225px;
+    top: 220px;
     position: absolute;
     z-index: 0;
 }

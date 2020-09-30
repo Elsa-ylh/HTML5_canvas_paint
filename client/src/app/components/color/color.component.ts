@@ -16,11 +16,11 @@ import { ColorService, GradientStyle } from '@app/services/color/color.service';
 // https://malcoded.com/posts/angular-color-picker/
 export class ColorComponent implements AfterViewInit {
     // This will force the usage of the entire CSS width. It is a poor man's fix as I found nothing else.
-    // Please tolerate such heresy
-    width: number = 200;
+    // Please tolerate such heresy :)
+    width: number = 206;
 
     squareHeight: number = 200;
-    horizontalHeight: number = 50;
+    horizontalHeight: number = 20;
 
     @ViewChild('previewSquare') previewSquare: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('squarePalette') squareCanvas: ElementRef<HTMLCanvasElement>;
