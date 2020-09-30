@@ -17,6 +17,8 @@ import { ColorService, GradientStyle } from '@app/services/color/color.service';
 export class ColorComponent implements AfterViewInit {
     // This will force the usage of the entire CSS width. It is a poor man's fix as I found nothing else.
     // Please tolerate such heresy :)
+
+    // tslint:disable-next-line:no-magic-numbers
     width: number = 207;
 
     squareHeight: number = 200;
@@ -34,27 +36,37 @@ export class ColorComponent implements AfterViewInit {
 
     previewSquareCtx: CanvasRenderingContext2D;
     squareCtx: CanvasRenderingContext2D;
+    cursorSquarePalette: any;
 
     previewHorizontalCtx: CanvasRenderingContext2D;
     horizontalCtx: CanvasRenderingContext2D;
+    cursorSliderColor: any;
 
     opacitySliderCtx: CanvasRenderingContext2D;
     previewopacitySliderCtx: CanvasRenderingContext2D;
-    cursorSquarePalette: any;
 
     constructor(private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer, public colorService: ColorService) {
         this.iconRegistry.addSvgIcon('red', this.sanitizer.bypassSecurityTrustResourceUrl('assets/apple.svg'));
         this.iconRegistry.addSvgIcon('green', this.sanitizer.bypassSecurityTrustResourceUrl('assets/leaf.svg'));
         this.iconRegistry.addSvgIcon('blue', this.sanitizer.bypassSecurityTrustResourceUrl('assets/wave.svg'));
         this.iconRegistry.addSvgIcon('alpha', this.sanitizer.bypassSecurityTrustResourceUrl('assets/transparency.svg'));
-        // for palette cursor
+        // cursor for palette cursor
         this.cursorSquarePalette = new Image(1, 1);
-        this.cursorSquarePalette.src = '/assets/cursorSquarePalette.svg';
+        this.cursorSquarePalette.src = '/assets/cursorSlider_Palette.svg';
         this.cursorSquarePalette.position = { x: 103, y: 103 };
         this.cursorSquarePalette.onload = function () {
             this.data1.drawImage(this.data2, this.position.x, this.position.y, 10, 10);
         };
-        //this.cursorSquarePalette.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
+
+        // cursor for color slider
+        this.cursorSliderColor = new Image(1, 1);
+        this.cursorSliderColor.src = '/assets/cursorSlider_Palette.svg';
+        this.cursorSliderColor.position = { x: 0, y: 0 };
+        this.cursorSliderColor.onload = function () {
+            this.data1.drawImage(this.data2, this.position.x, 0, 20, 20);
+        };
+
+        //cursor for opacity slider
     }
 
     ngAfterViewInit(): void {
@@ -66,8 +78,8 @@ export class ColorComponent implements AfterViewInit {
 
         this.previewopacitySliderCtx = this.opacitySliderPreview.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.opacitySliderCtx = this.opacitySliderCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.drawSquarePalette({ x: 103, y: 103 }); // x,y for palette cursor.
-        this.drawHorizontalPalette();
+        this.drawSquarePalette({ x: 103, y: 103 }); // x,y for palette cursor. initial pos.
+        this.drawHorizontalPalette({ x: 20, y: 0 }); // x,y for color slider cursor. initial position.
         this.drawOpacitySlider();
     }
     // change between primary and sec
@@ -80,21 +92,24 @@ export class ColorComponent implements AfterViewInit {
         this.colorService.clickprimaryColor = false;
         this.colorService.clicksecondaryColor = true;
     }
-    drawSquarePalette(position: any): void {
+    drawSquarePalette(positionPalette: any): void {
         this.colorService.drawPalette(this.squareCtx, this.squareDimension, GradientStyle.lightToDark);
-        // cursor
+        // we generate the cursor with the slider
         this.cursorSquarePalette.data1 = this.squareCtx;
         this.cursorSquarePalette.data2 = this.cursorSquarePalette;
-        this.cursorSquarePalette.position = position;
-        //Reset image
-        this.cursorSquarePalette.src = '/assets/cursorSquarePalette.svg' + '#' + new Date().getTime();
-
-        //this.squareCtx.drawImage(this.cursorSquarePalette, position.x, position.y, 10, 10);
+        this.cursorSquarePalette.position = positionPalette;
+        // Reset image
+        this.cursorSquarePalette.src = '/assets/cursorSlider_Palette.svg' + '#' + new Date().getTime();
     }
 
-    drawHorizontalPalette(): void {
+    drawHorizontalPalette(positionSliderColor: any): void {
         this.colorService.drawPalette(this.horizontalCtx, this.horizontalDimension, GradientStyle.rainbow);
-        // cursor
+        // we generate the cursor with the slider
+        this.cursorSliderColor.data1 = this.horizontalCtx;
+        this.cursorSliderColor.data2 = this.cursorSliderColor;
+        this.cursorSliderColor.position = positionSliderColor;
+        // Reset image
+        this.cursorSliderColor.src = '/assets/cursorSlider_Palette.svg' + '#' + new Date().getTime();
     }
 
     drawOpacitySlider(): void {
@@ -120,15 +135,16 @@ export class ColorComponent implements AfterViewInit {
     }
 
     onMouseOverHorizontalClick(event: MouseEvent): void {
-        //slider
-        //const position = { x: event.offsetX, y: event.offsetY };
+        // color slider
+        const positionSliderColorSlider = { x: event.offsetX, y: event.offsetY };
         if (this.colorService.clickprimaryColor && this.colorService.clicksecondaryColor === false) {
             this.colorService.setprimaryColor(this.colorService.getpreviewColor());
         } else if (this.colorService.clicksecondaryColor && this.colorService.clickprimaryColor === false) {
             this.colorService.setsecondaryColor(this.colorService.getpreviewColor());
         }
-        this.colorService.setselectedColor(this.colorService.getpreviewColor());
+        this.colorService.setselectedColor(this.colorService.getpreviewColor()); // to update palette UI.
         this.drawSquarePalette({ x: 103, y: 103 }); // updates the color palette
+        this.drawHorizontalPalette(positionSliderColorSlider); // updates the color slider cursors' position
     }
 
     onMouseOverHorizontal(event: MouseEvent): void {
