@@ -20,7 +20,6 @@ export class EventOfTest {
         offsetY: 10,
         button: MouseButton.Left,
     } as MouseEvent;
-<<<<<<< HEAD
     mouseEventX499Y500: MouseEvent = {
         offsetX: 499,
         offsetY: 500,
@@ -31,8 +30,6 @@ export class EventOfTest {
         offsetY: 9000,
         button: MouseButton.Left,
     } as MouseEvent;
-=======
->>>>>>> dev
     mouseEventR: MouseEvent = {
         offsetX: 0,
         offsetY: 0,
