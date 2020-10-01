@@ -54,12 +54,30 @@ export class ColorComponent implements AfterViewInit {
         this.iconRegistry.addSvgIcon('green', this.sanitizer.bypassSecurityTrustResourceUrl('assets/leaf.svg'));
         this.iconRegistry.addSvgIcon('blue', this.sanitizer.bypassSecurityTrustResourceUrl('assets/wave.svg'));
         this.iconRegistry.addSvgIcon('alpha', this.sanitizer.bypassSecurityTrustResourceUrl('assets/transparency.svg'));
+        this.loadCursor();
+    }
+
+    ngAfterViewInit(): void {
+        this.previewSquareCtx = this.previewSquare.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.squareCtx = this.squareCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+
+        this.previewHorizontalCtx = this.previewHorizontal.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.horizontalCtx = this.horizontalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+
+        this.previewopacitySliderCtx = this.opacitySliderPreview.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.opacitySliderCtx = this.opacitySliderCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.drawSquarePalette({ x: 103, y: 103 }); // x,y for palette cursor. initial pos.
+        this.drawHorizontalPalette({ x: 10, y: 0 }); // x,y for color slider cursor. initial position.
+        this.drawOpacitySlider({ x: 10, y: 0 });
+    }
+
+    loadCursor(): void {
         // cursor for palette cursor
         this.cursorSquarePalette = new Image(1, 1);
         this.cursorSquarePalette.src = '/assets/cursorSlider_Palette.svg';
         this.cursorSquarePalette.position = { x: 103, y: 103 };
         this.cursorSquarePalette.onload = function () {
-            this.data1.drawImage(this.data2, this.position.x, this.position.y, 15, 15);
+            this.data1.drawImage(this.data2, this.position.x, this.position.y, 15, 15); // pos, taille,taille
         };
 
         // cursor for color slider
@@ -77,20 +95,6 @@ export class ColorComponent implements AfterViewInit {
         this.cursorSliderOpacity.onload = function () {
             this.data1.drawImage(this.data2, this.position.x, 0, 20, 20);
         };
-    }
-
-    ngAfterViewInit(): void {
-        this.previewSquareCtx = this.previewSquare.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.squareCtx = this.squareCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-
-        this.previewHorizontalCtx = this.previewHorizontal.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.horizontalCtx = this.horizontalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-
-        this.previewopacitySliderCtx = this.opacitySliderPreview.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.opacitySliderCtx = this.opacitySliderCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.drawSquarePalette({ x: 103, y: 103 }); // x,y for palette cursor. initial pos.
-        this.drawHorizontalPalette({ x: 10, y: 0 }); // x,y for color slider cursor. initial position.
-        this.drawOpacitySlider({ x: 10, y: 0 });
     }
     // change between primary and sec
     primaryClick(): void {
@@ -147,7 +151,8 @@ export class ColorComponent implements AfterViewInit {
             this.colorService.setsecondaryColor(this.colorService.getpreviewColor());
         }
 
-        this.drawSquarePalette(position);
+        this.drawSquarePalette(position); // cursor
+        // this.drawOpacitySlider({ x: 0, y: 0 });
     }
 
     onMouseOverHorizontalClick(event: MouseEvent): void {
@@ -158,9 +163,10 @@ export class ColorComponent implements AfterViewInit {
         } else if (this.colorService.clicksecondaryColor && this.colorService.clickprimaryColor === false) {
             this.colorService.setsecondaryColor(this.colorService.getpreviewColor());
         }
-        this.colorService.setselectedColor(this.colorService.getpreviewColor()); // to update palette UI.
+        this.colorService.setselectedColor(this.colorService.getpreviewColor()); // to update palette UI (primary + secondary).
         this.drawSquarePalette({ x: 103, y: 103 }); // updates the color palette
         this.drawHorizontalPalette(positionSliderColorSlider); // updates the color slider cursors' position
+        this.drawOpacitySlider({ x: 0, y: 0 });
     }
 
     onMouseOverHorizontal(event: MouseEvent): void {
