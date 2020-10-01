@@ -16,6 +16,7 @@ describe('Service: Ellipse', () => {
     let drawFillEllipseSpy: jasmine.Spy<any>;
     let drawEllipseOutlineSpy: jasmine.Spy<any>;
     let drawFillEllipseOutlineSpy: jasmine.Spy<any>;
+    let onMouseUpSpy: jasmine.Spy<any>;
     // let drawPreviewRectSpy: jasmine.Spy<any>;
 
     let baseCtxStub: CanvasRenderingContext2D;
@@ -24,7 +25,7 @@ describe('Service: Ellipse', () => {
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'clearEffectTool']);
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
@@ -32,6 +33,7 @@ describe('Service: Ellipse', () => {
         drawFillEllipseSpy = spyOn<any>(service, 'drawFillEllipse').and.callThrough();
         drawEllipseOutlineSpy = spyOn<any>(service, 'drawEllipseOutline').and.callThrough();
         drawFillEllipseOutlineSpy = spyOn<any>(service, 'drawFillEllipseOutline').and.callThrough();
+        onMouseUpSpy = spyOn<any>(service, 'onMouseUp').and.callThrough();
         // drawPreviewRectSpy = spyOn<any>(service, 'drawPreviewRect').and.callThrough();
 
         // Configuration du spy du service
@@ -264,6 +266,37 @@ describe('Service: Ellipse', () => {
         service.OnShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawFillEllipseOutlineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onMouseDown should call onMouseUp if the mouse enter the canvas', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseEnter = true;
+        service.onMouseDown(mouseEvent);
+        expect(onMouseUpSpy).toHaveBeenCalled();
+    });
+
+    it(' should change mouseOut value to true when the mouse is living the canvas while left click is pressed', () => {
+        service.mouseDown = true;
+        service.onMouseOut(mouseEvent);
+        expect(service.mouseOut).toEqual(true);
+    });
+
+    it(' should not change mouseOut value to true when the mouse is living the canvas while left click is not pressed', () => {
+        service.mouseDown = false;
+        service.onMouseOut(mouseEvent);
+        expect(service.mouseOut).toEqual(false);
+    });
+
+    it(' should change mouseEnter value to true when the mouse is entering the canvas after leaving it while drawing', () => {
+        service.mouseOut = true;
+        service.onMouseEnter(mouseEvent);
+        expect(service.mouseEnter).toEqual(true);
+    });
+
+    it(' should not change mouseEnter value to true when the mouse is entering the canvas after leaving it while not drawing', () => {
+        service.mouseOut = false;
+        service.onMouseEnter(mouseEvent);
+        expect(service.mouseEnter).toEqual(false);
     });
 
     // it(' onMouseUp should call drawFillEllipseOutline if mouse was already down and tool3 selected ans mouse position in -x and -y', () => {
