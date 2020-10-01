@@ -168,9 +168,4 @@ export class DrawingComponent implements AfterViewInit {
     onKeyBackSpace(event: KeyboardEvent): void {
         this.toolService.currentTool.onKeyBackSpace(event);
     }
-
-    @HostListener('window:resize')
-    onWindowResize(): void {
-        this.canvasResizerService.onWindowResize();
-    }
 }
