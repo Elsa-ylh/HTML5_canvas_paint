@@ -185,22 +185,16 @@ export class ColorComponent implements AfterViewInit {
 
     onMouseOverOpacitySliderClick(event: MouseEvent): void {
         const mousePos = { x: event.offsetX, y: event.offsetY };
-        // this.drawingService.baseCtx.globalAlpha =
-        // this.drawingService.previewCtx.globalAlpha =
         this.drawOpacitySlider(mousePos);
-        console.log(this.findPositionSlider(event));
+        this.colorService.changeColorOpacity(this.findPositionSlider(event)); // change opacity via the slider.
     }
 
     // return the value between 0 to 1 of the opacity slider
     findPositionSlider(event: MouseEvent): number {
         const position = { x: event.offsetX, y: event.offsetY };
-        console.log(position);
-        for (this.PositionSlider = 0.0; this.PositionSlider < 1.0; this.PositionSlider++) {
-            this.PositionSlider = position.x / 207;
-        }
+        this.PositionSlider = 1 - position.x / 207;
         return this.PositionSlider;
     }
-
     sendInput(rgb: RGBA): void {
         if (!rgb.red && !rgb.green && !rgb.blue && rgb.alpha >= 0 && rgb.alpha <= 1) {
             console.log(rgb.alpha);

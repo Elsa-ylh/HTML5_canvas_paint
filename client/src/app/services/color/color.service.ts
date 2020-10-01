@@ -157,9 +157,7 @@ export class ColorService {
         if (this.clickprimaryColor && !this.clicksecondaryColor) {
             this.setprimaryColorTransparency(value);
             this.drawingService.baseCtx.globalAlpha = this.getprimaryColorTransparency();
-            console.log(this.drawingService.baseCtx);
             this.drawingService.previewCtx.globalAlpha = this.getprimaryColorTransparency();
-            console.log('primary color opacity changed');
         } else if (!this.clickprimaryColor && this.clicksecondaryColor) {
             this.setsecondaryColorTransparency(value);
             this.drawingService.baseCtx.globalAlpha = this.getsecondaryColorTransparency();
