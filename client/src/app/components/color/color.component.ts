@@ -107,12 +107,10 @@ export class ColorComponent implements AfterViewInit {
     }
     // change between primary and sec
     primaryClick(): void {
-        this.colorService.clickprimaryColor = true;
-        this.colorService.clicksecondaryColor = false;
+        this.colorService.isclicked = true;
     }
     secondaryClick(): void {
-        this.colorService.clickprimaryColor = false;
-        this.colorService.clicksecondaryColor = true;
+        this.colorService.isclicked = false;
     }
 
     drawSquarePalette(positionPalette: any): void {
@@ -154,23 +152,25 @@ export class ColorComponent implements AfterViewInit {
     onMouseOverSquareClick(event: MouseEvent): void {
         // palette
         const position = { x: event.offsetX, y: event.offsetY };
-        if (this.colorService.clickprimaryColor && this.colorService.clicksecondaryColor === false) {
+        if (this.colorService.isclicked) {
             this.colorService.setprimaryColor(this.colorService.getpreviewColor());
-        } else if (this.colorService.clicksecondaryColor && this.colorService.clickprimaryColor === false) {
+            this.colorService.addLastColor(this.colorService.getprimaryColor());
+        } else {
             this.colorService.setsecondaryColor(this.colorService.getpreviewColor());
+            this.colorService.addLastColor(this.colorService.getsecondaryColor());
         }
-
         this.drawSquarePalette(position); // cursor
-        // this.drawOpacitySlider({ x: 0, y: 0 });
     }
 
     onMouseOverHorizontalClick(event: MouseEvent): void {
         // color slider
         const positionSliderColorSlider = { x: event.offsetX, y: event.offsetY };
-        if (this.colorService.clickprimaryColor && this.colorService.clicksecondaryColor === false) {
+        if (this.colorService.isclicked) {
             this.colorService.setprimaryColor(this.colorService.getpreviewColor());
-        } else if (this.colorService.clicksecondaryColor && this.colorService.clickprimaryColor === false) {
+            this.colorService.addLastColor(this.colorService.getprimaryColor());
+        } else {
             this.colorService.setsecondaryColor(this.colorService.getpreviewColor());
+            this.colorService.addLastColor(this.colorService.getsecondaryColor());
         }
         this.colorService.setselectedColor(this.colorService.getpreviewColor()); // to update palette UI (primary + secondary).
         this.drawSquarePalette({ x: 103, y: 103 }); // updates the color palette
@@ -199,8 +199,7 @@ export class ColorComponent implements AfterViewInit {
         if (!rgb.red && !rgb.green && !rgb.blue && rgb.alpha >= 0 && rgb.alpha <= 1) {
             console.log(rgb.alpha);
             this.colorService.changeColorOpacity(rgb.alpha);
-        }
-        if (rgb.red <= 255 && rgb.green <= 255 && rgb.blue <= 255 && rgb.alpha <= 1 && rgb.alpha >= 0) {
+        } else if (rgb.red <= 255 && rgb.green <= 255 && rgb.blue <= 255 && rgb.alpha <= 1 && rgb.alpha >= 0) {
             this.color = this.colorService.numeralToHex(rgb);
             this.colorService.setprimaryColor(this.color);
             this.colorService.changeColorOpacity(rgb.alpha);
