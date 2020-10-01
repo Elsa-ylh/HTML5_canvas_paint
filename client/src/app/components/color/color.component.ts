@@ -192,7 +192,7 @@ export class ColorComponent implements AfterViewInit {
     }
     openWarningMessage(templateRef: any): void {
         this.matDialog.open(templateRef, {
-            width: '300px',
+            width: '200px',
         });
     }
 }
