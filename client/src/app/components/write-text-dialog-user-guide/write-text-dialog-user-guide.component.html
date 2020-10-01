@@ -9,10 +9,11 @@
 <div *ngFor="let tool of dataGuides">
     <div *ngIf="testDataGuide(tool.isTool)">
         <h1>{{ tool.title }}</h1>
-        <p>
+        <p class="descriptionTool">
             {{ tool.description }}
         </p>
-        <img class="pictureSize" src="{{ tool.path }}" />
+        <img *ngIf="testSelection()" class="pictureSize" src="{{ tool. gifPath }}" />
+        <img class="pictureSize" src="{{ tool.screenshotPath }}" />
     </div>
 </div>
 <button mat-raised-button mat-dialog-close>Close</button>
