@@ -28,9 +28,13 @@ export class CanvasResizerService {
 
     isResizeDown: boolean = false;
     resizeDirection: ResizeDirection;
-    resizeWidth: number = 3000;
-    resizeHeight: number = 3000;
     resizeCursor: string = cursorName.default;
+
+    resizeWidth: number = 1920;
+    resizeHeight: number = 1080;
+
+    RESIZE_DASH_SPACING: number = 10;
+    RESIZE_DASH_THICKNESS: number = 1;
 
     // Resizer canvas index
     PRIORITY_INDEX: number = 10;
@@ -52,11 +56,10 @@ export class CanvasResizerService {
 
     onResize(event: MouseEvent, resizeCtx: CanvasRenderingContext2D): void {
         if (this.isResizeDown) {
-            this.clearCanvas(resizeCtx, { x: 3000, y: 3000 });
-            resizeCtx.setLineDash([10]);
-            resizeCtx.lineDashOffset = 4;
+            this.clearCanvas(resizeCtx, { x: this.resizeWidth, y: this.resizeHeight });
+            resizeCtx.setLineDash([this.RESIZE_DASH_SPACING]);
             resizeCtx.strokeStyle = '#000000';
-            resizeCtx.lineWidth = 1;
+            resizeCtx.lineWidth = this.RESIZE_DASH_THICKNESS;
             switch (this.resizeDirection) {
                 case ResizeDirection.vertical:
                     if (event.offsetY < this.MIN_CANVAS_SIZE) {
@@ -107,6 +110,7 @@ export class CanvasResizerService {
         }
     }
 
+    // The following reference has been used to preserver canvas image. The whitening is automatic.
     // https://stackoverflow.com/questions/8977369/drawing-png-to-a-canvas-element-not-showing-transparency
     onResizeUp(event: MouseEvent, resizeCtx: CanvasRenderingContext2D, baseCanvas: HTMLCanvasElement): void {
         console.log(event.offsetX + ' ' + event.offsetY);
@@ -126,12 +130,14 @@ export class CanvasResizerService {
                     break;
             }
             const ctx = baseCanvas.getContext('2d') as CanvasRenderingContext2D;
-            // async because images are not always loaded instantaneously after execution of the following line
+
+            // onload because drawing an image depends on the condition that the originalImage is loaded.
+            // Being asynchronous is keypart of web developement
             originalImage.onload = () => {
                 ctx.drawImage(originalImage, 0, 0);
             };
         }
-        this.clearCanvas(resizeCtx, { x: 3000, y: 3000 });
+        this.clearCanvas(resizeCtx, { x: this.resizeWidth, y: this.resizeHeight });
         this.resizerIndex = this.NORMAL_INDEX;
         this.isResizeDown = false;
         this.resizeCursor = cursorName.default;
