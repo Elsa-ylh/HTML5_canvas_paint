@@ -108,7 +108,8 @@ describe('PencilService', () => {
     // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
         //  service.pencilSize = 5;
-        baseCtxStub.fillStyle = '#ffffff';
+        baseCtxStub.strokeStyle = 'black';
+        baseCtxStub.fillStyle = 'black';
         service.onMouseDown(mouseEvent1);
         service.mouseMove = false;
         service.onMouseUp(mouseEvent1);
