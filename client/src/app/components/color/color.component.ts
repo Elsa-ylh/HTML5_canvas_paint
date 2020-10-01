@@ -56,7 +56,7 @@ export class ColorComponent implements AfterViewInit {
         this.cursorSquarePalette.src = '/assets/cursorSlider_Palette.svg';
         this.cursorSquarePalette.position = { x: 103, y: 103 };
         this.cursorSquarePalette.onload = function () {
-            this.data1.drawImage(this.data2, this.position.x, this.position.y, 10, 10);
+            this.data1.drawImage(this.data2, this.position.x, this.position.y, 15, 15);
         };
 
         // cursor for color slider
@@ -94,11 +94,11 @@ export class ColorComponent implements AfterViewInit {
         this.colorService.clickprimaryColor = true;
         this.colorService.clicksecondaryColor = false;
     }
-
     secondaryClick(): void {
         this.colorService.clickprimaryColor = false;
         this.colorService.clicksecondaryColor = true;
     }
+
     drawSquarePalette(positionPalette: any): void {
         this.colorService.drawPalette(this.squareCtx, this.squareDimension, GradientStyle.lightToDark);
         // we generate the cursor with the slider
@@ -120,6 +120,7 @@ export class ColorComponent implements AfterViewInit {
     }
 
     drawOpacitySlider(positionSliderOpacity: any): void {
+        // on cree la palette
         this.colorService.drawPalette(this.opacitySliderCtx, this.horizontalDimension, GradientStyle.lightToDark);
         // we generate the cursor with the slider
         this.cursorSliderOpacity.data1 = this.opacitySliderCtx;
