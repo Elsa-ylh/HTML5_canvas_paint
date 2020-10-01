@@ -149,6 +149,6 @@ export class ColorService {
             const hex = zeroTo256.toString(16);
             return hex.length === 1 ? '0' + hex : hex;
         };
-        return '#' + converter(rgb.red) + converter(rgb.green) + converter(rgb.blue) + converter(rgb.alpha);
+        return '#' + converter(rgb.red) + converter(rgb.green) + converter(rgb.blue);
     }
 }

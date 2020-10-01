@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RGB } from '@app/classes/rgb';
@@ -31,6 +32,7 @@ export class ColorComponent implements AfterViewInit {
     @ViewChild('horizontalPalette') horizontalCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('opacitySlider') opacitySliderCanvas: ElementRef<HTMLCanvasElement>; // to have an opacity slider
     @ViewChild('opacitySliderPreview') opacitySliderPreview: ElementRef<HTMLCanvasElement>; // to have an opacity slider
+    @ViewChild('message', { static: false }) message: MatDialogRef<HTMLElement>;
 
     squareDimension: Vec2 = { x: this.width, y: this.squareHeight };
     horizontalDimension: Vec2 = { x: this.width, y: this.horizontalHeight };
@@ -49,7 +51,12 @@ export class ColorComponent implements AfterViewInit {
 
     color: string;
 
-    constructor(private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer, public colorService: ColorService) {
+    constructor(
+        private iconRegistry: MatIconRegistry,
+        private sanitizer: DomSanitizer,
+        public colorService: ColorService,
+        public matDialog: MatDialog,
+    ) {
         this.iconRegistry.addSvgIcon('red', this.sanitizer.bypassSecurityTrustResourceUrl('assets/apple.svg'));
         this.iconRegistry.addSvgIcon('green', this.sanitizer.bypassSecurityTrustResourceUrl('assets/leaf.svg'));
         this.iconRegistry.addSvgIcon('blue', this.sanitizer.bypassSecurityTrustResourceUrl('assets/wave.svg'));
@@ -175,7 +182,17 @@ export class ColorComponent implements AfterViewInit {
     }
 
     sendInput(rgb: RGB): void {
-        this.color = this.colorService.numeralToHex(rgb);
-        this.colorService.setprimaryColor(this.color);
+        if (rgb.red <= 255 && rgb.green <= 255 && rgb.blue <= 255) {
+            this.color = this.colorService.numeralToHex(rgb);
+            this.colorService.setprimaryColor(this.color);
+            this.colorService.setprimaryColorTransparency(rgb.alpha);
+        } else {
+            this.openWarningMessage(this.message);
+        }
+    }
+    openWarningMessage(templateRef: any): void {
+        this.matDialog.open(templateRef, {
+            width: '300px',
+        });
     }
 }
