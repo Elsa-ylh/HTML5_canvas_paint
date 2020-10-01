@@ -233,8 +233,6 @@ export class BrushService extends Tool {
                 this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
                 this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
                 break;
-            default:
-                break;
         }
     }
     clearPreviewCtx(): void {

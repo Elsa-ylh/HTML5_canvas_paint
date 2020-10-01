@@ -117,9 +117,6 @@ export class RectangleService extends Tool {
             ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, this.distanceX, this.distanceY);
         }
     }
-    clearPreviewCtx(): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-    }
     selectRectangle(mousePosition: Vec2, base: boolean): void {
         if (base) {
             switch (this.subToolSelect) {
