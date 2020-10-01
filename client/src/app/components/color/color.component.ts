@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { RGB } from '@app/classes/rgb';
+import { RGBA } from '@app/classes/rgba';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService, GradientStyle } from '@app/services/color/color.service';
 
@@ -174,7 +174,7 @@ export class ColorComponent implements AfterViewInit {
         this.colorService.setpreviewColor(this.colorService.numeralToHex(this.colorService.getColor(position, this.horizontalCtx)));
     }
 
-    sendInput(rgb: RGB): void {
+    sendInput(rgb: RGBA): void {
         this.color = this.colorService.numeralToHex(rgb);
         this.colorService.setprimaryColor(this.color);
     }

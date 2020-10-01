@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RGB } from '@app/classes/rgb';
+import { RGBA } from '@app/classes/rgba';
 import { Vec2 } from '@app/classes/vec2';
 
 export enum GradientStyle {
@@ -19,6 +19,7 @@ export class ColorService {
     private secondaryColorTransparency: number;
     clickprimaryColor: boolean = true;
     clicksecondaryColor: boolean = false;
+    changeOpacity: boolean;
     // private lastChoiceColor: RGB[];
 
     getselectedColor(): string {
@@ -130,7 +131,7 @@ export class ColorService {
 
     // Ce code est complètement inspiré sans gêne de
     // https://malcoded.com/posts/angular-color-picker/#detecting-mouse-events-on-the-color-slider
-    getColor(position: Vec2, ctx: CanvasRenderingContext2D): RGB {
+    getColor(position: Vec2, ctx: CanvasRenderingContext2D): RGBA {
         const imageData = ctx.getImageData(position.x, position.y, 1, 1).data;
         return { red: imageData[0], green: imageData[1], blue: imageData[2], alpha: imageData[3] };
     }
@@ -144,7 +145,7 @@ export class ColorService {
     // We suppose that each number of the rgb space is between 0 to 255
     // Shameless copy paste of this link
     // https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-    numeralToHex(rgb: RGB): string {
+    numeralToHex(rgb: RGBA): string {
         const converter = (zeroTo256: number) => {
             const hex = zeroTo256.toString(16);
             return hex.length === 1 ? '0' + hex : hex;
