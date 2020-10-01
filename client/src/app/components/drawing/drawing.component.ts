@@ -25,29 +25,6 @@ export class DrawingComponent implements AfterViewInit {
         return this.drawingService.cursorUsed;
     }
 
-    get canvasPreviewWidth(): number {
-        return window.innerWidth - this.canvasResizerService.SIDEBAR_WIDTH - this.canvasResizerService.ICON_WIDTH;
-    }
-
-    get canvasPreviewHeight(): number {
-        return window.innerHeight;
-    }
-    get southRightHookShiftX(): number {
-        return this.canvasResizerService.canvasSize.x - this.canvasResizerService.HOOK_HEIGHT;
-    }
-
-    get southRightHookShiftY(): number {
-        return this.canvasResizerService.canvasSize.y - this.canvasResizerService.HOOK_HEIGHT;
-    }
-
-    get southMiddleHookX(): number {
-        return this.canvasResizerService.canvasSize.x / 2.0 - this.canvasResizerService.HOOK_HEIGHT;
-    }
-
-    get eastMiddleHookY(): number {
-        return this.canvasResizerService.canvasSize.y / 2.0 - this.canvasResizerService.HOOK_HEIGHT;
-    }
-
     // On utilise ce canvas pour dessiner sans affecter le dessin final, aussi utilisé pour sauvegarder
     // une version du dessin avant de l'appliquer au final.
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
@@ -86,10 +63,13 @@ export class DrawingComponent implements AfterViewInit {
         this.toolService.currentTool.onMouseEnter(event);
     }
 
-    // resize
     onResizeDown(event: MouseEvent): void {
-        const isVertical = this.canvasResizerService.canvasSize.y < event.offsetY && event.offsetY < this.canvasResizerService.canvasSize.y + 30;
-        const isHorizontal = this.canvasResizerService.canvasSize.x < event.offsetX && event.offsetX < this.canvasResizerService.canvasSize.x + 30;
+        const isVertical =
+            this.canvasResizerService.canvasSize.y < event.offsetY &&
+            event.offsetY < this.canvasResizerService.canvasSize.y + this.canvasResizerService.HOOK_THICKNESS;
+        const isHorizontal =
+            this.canvasResizerService.canvasSize.x < event.offsetX &&
+            event.offsetX < this.canvasResizerService.canvasSize.x + this.canvasResizerService.HOOK_THICKNESS;
 
         if (isVertical && isHorizontal) {
             this.canvasResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
@@ -107,9 +87,12 @@ export class DrawingComponent implements AfterViewInit {
         if (this.canvasResizerService.isResizeDown) {
             this.canvasResizerService.onResize(event, this.resizeCtx);
         } else {
-            const isVertical = this.canvasResizerService.canvasSize.y < event.offsetY && event.offsetY < this.canvasResizerService.canvasSize.y + 30;
+            const isVertical =
+                this.canvasResizerService.canvasSize.y < event.offsetY &&
+                event.offsetY < this.canvasResizerService.canvasSize.y + this.canvasResizerService.HOOK_THICKNESS;
             const isHorizontal =
-                this.canvasResizerService.canvasSize.x < event.offsetX && event.offsetX < this.canvasResizerService.canvasSize.x + 30;
+                this.canvasResizerService.canvasSize.x < event.offsetX &&
+                event.offsetX < this.canvasResizerService.canvasSize.x + this.canvasResizerService.HOOK_THICKNESS;
 
             if (isVertical) {
                 this.canvasResizerService.resizeCursor = cursorName.resizeVertical;
@@ -157,5 +140,10 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('window:keydown.backspace', ['$event'])
     onKeyBackSpace(event: KeyboardEvent): void {
         this.toolService.currentTool.onKeyBackSpace(event);
+    }
+
+    @HostListener('window:resize')
+    onWindowResize(): void {
+        this.canvasResizerService.onWindowResize();
     }
 }

@@ -9,29 +9,20 @@ import { Vec2 } from '@app/classes/vec2';
 })
 export class CanvasResizerService {
     MIN_CANVAS_SIZE: number = 250;
-
-    // This constant is for usage to keep a small area to resize bigger
     WORK_AREA_PADDING_SIZE: number = 200;
-
     SIDEBAR_WIDTH: number = 226;
     ICON_WIDTH: number = 50;
-
-    HOOK_HEIGHT: number = 50;
-    HOOK_WIDTH: number = 150;
-
     DEFAULT_WIDTH: number = (window.innerWidth - this.SIDEBAR_WIDTH - this.ICON_WIDTH) / 2;
     DEFAULT_HEIGHT: number = window.innerHeight / 2;
-    // Cette variable est très importante.
-    // La variable ci-dessous est la taille du canvas.
-    // Elle est modifiable et accesible en tout temps, à faire très attention.
+
     canvasSize: Vec2 = { x: this.DEFAULT_WIDTH, y: this.DEFAULT_HEIGHT };
 
     isResizeDown: boolean = false;
     resizeDirection: ResizeDirection;
     resizeCursor: string = cursorName.default;
 
-    resizeWidth: number = 1920;
-    resizeHeight: number = 1080;
+    resizeWidth: number = window.innerWidth - this.SIDEBAR_WIDTH - this.ICON_WIDTH;
+    resizeHeight: number = window.innerHeight;
 
     RESIZE_DASH_SPACING: number = 10;
     RESIZE_DASH_THICKNESS: number = 1;
@@ -40,6 +31,13 @@ export class CanvasResizerService {
     PRIORITY_INDEX: number = 10;
     NORMAL_INDEX: number = 1;
     resizerIndex: number = 1;
+
+    // Resizer hook thickness
+    HOOK_THICKNESS: number = 30;
+
+    onWindowResize(): void {
+        console.log('to be removed');
+    }
 
     private clearCanvas(context: CanvasRenderingContext2D, dimension: Vec2): void {
         context.clearRect(0, 0, dimension.x, dimension.y);
