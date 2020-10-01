@@ -4,6 +4,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Vec2 } from '@app/classes/vec2';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 
@@ -13,6 +14,7 @@ describe('Service: Rectangle', () => {
     let mouseEvent: MouseEvent;
     let shiftEvent: KeyboardEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let colorServiceSpy: jasmine.SpyObj<ColorService>;
     let drawFillRectangleSpy: jasmine.Spy<any>;
     let drawRectangleOutlineSpy: jasmine.Spy<any>;
     let drawFillRectangleOutlineSpy: jasmine.Spy<any>;
@@ -25,9 +27,13 @@ describe('Service: Rectangle', () => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'clearEffectTool']);
+        colorServiceSpy = jasmine.createSpyObj('ColorService', ['getprimaryColor', 'getsecondaryColor']);
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+            providers: [
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: ColorService, useValue: colorServiceSpy },
+            ],
         });
         service = TestBed.inject(RectangleService);
         drawFillRectangleSpy = spyOn<any>(service, 'drawFillRectangle').and.callThrough();
