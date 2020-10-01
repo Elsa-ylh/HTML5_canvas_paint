@@ -7,10 +7,9 @@ import { ResizeDirection } from '@app/classes/resize-direction';
 import { CanvasResizerService } from './canvas-resizer.service';
 
 describe('Service: CanvasResizer', () => {
-    /*let clearCanvasSpy: jasmine.Spy<any>;
-    let changeCanvasXSpy: jasmine.Spy<any>;
-    let changeCanvasYSpy: jasmine.Spy<any>;*/
+    // tslint:disable-next-line: no-any
     let changeResizeYSpy: jasmine.Spy<any>;
+    // tslint:disable-next-line: no-any
     let changeResizeXSpy: jasmine.Spy<any>;
     let canvasResizerService: CanvasResizerService;
     let baseCtxStub: CanvasRenderingContext2D;
@@ -34,7 +33,9 @@ describe('Service: CanvasResizer', () => {
         changeCanvasYSpy = spyOn<any>(canvasResizerService, 'changeCanvasY').and.callThrough();
         changeCanvasXSpy = spyOn<any>(canvasResizerService, 'changeCanvasX').and.callThrough();
         */
+        // tslint:disable-next-line: no-any
         changeResizeXSpy = spyOn<any>(canvasResizerService, 'changeResizeX').and.callThrough();
+        // tslint:disable-next-line: no-any
         changeResizeYSpy = spyOn<any>(canvasResizerService, 'changeResizeY').and.callThrough();
         events = new EventOfTest();
         canvasResizerService.resizeDirection = ResizeDirection.vertical;
@@ -45,22 +46,22 @@ describe('Service: CanvasResizer', () => {
     }));
     it('should onResizeDown horizontal', () => {
         canvasResizerService.onResizeDown(events.mouseEvent, ResizeDirection.horizontal);
-        expect(canvasResizerService.resizerIndex).toEqual(10);
+        expect(canvasResizerService.resizerIndex).toEqual(canvasResizerService.PRIORITY_INDEX);
         expect(canvasResizerService.resizeDirection).toEqual(ResizeDirection.horizontal);
     });
     it('should onResizeDown Right click horizontal', () => {
         canvasResizerService.onResizeDown(events.mouseEventR, ResizeDirection.horizontal);
-        expect(canvasResizerService.resizerIndex).toEqual(1);
+        expect(canvasResizerService.resizerIndex).toEqual(canvasResizerService.NORMAL_INDEX);
         expect(canvasResizerService.resizeDirection).not.toEqual(ResizeDirection.horizontal);
     });
     it('should onResizeDown vertical', () => {
         canvasResizerService.onResizeDown(events.mouseEvent, ResizeDirection.vertical);
-        expect(canvasResizerService.resizerIndex).toEqual(10);
+        expect(canvasResizerService.resizerIndex).toEqual(canvasResizerService.PRIORITY_INDEX);
         expect(canvasResizerService.resizeDirection).toEqual(ResizeDirection.vertical);
     });
     it('should onResizeDown verticalAndHorizontal', () => {
         canvasResizerService.onResizeDown(events.mouseEvent, ResizeDirection.verticalAndHorizontal);
-        expect(canvasResizerService.resizerIndex).toEqual(10);
+        expect(canvasResizerService.resizerIndex).toEqual(canvasResizerService.PRIORITY_INDEX);
         expect(canvasResizerService.resizeDirection).toEqual(ResizeDirection.verticalAndHorizontal);
     });
     it('changeResizeY is MIN_CANVAS_SIZE', () => {
@@ -90,16 +91,16 @@ describe('Service: CanvasResizer', () => {
     it('onResize is good vertical', () => {
         canvasResizerService.resizeDirection = ResizeDirection.vertical;
         canvasResizerService.onResize(events.mouseEventX499Y500, baseCtxStub);
-        //expect(baseCtxStub).not.toEqual(conparativectxStub);
+        // expect(baseCtxStub).not.toEqual(conparativectxStub);
     });
     it('onResize is good horizontal', () => {
         canvasResizerService.resizeDirection = ResizeDirection.horizontal;
         canvasResizerService.onResize(events.mouseEventX499Y500, baseCtxStub);
-        //expect(baseCtxStub).not.toEqual(conparativectxStub);
+        // expect(baseCtxStub).not.toEqual(conparativectxStub);
     });
     it('onResize is good verticalAndHorizontal', () => {
         canvasResizerService.resizeDirection = ResizeDirection.verticalAndHorizontal;
         canvasResizerService.onResize(events.mouseEventX499Y500, baseCtxStub);
-        //expect(baseCtxStub).not.toEqual(conparativectxStub);
+        // expect(baseCtxStub).not.toEqual(conparativectxStub);
     });
 });

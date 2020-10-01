@@ -25,7 +25,7 @@ export class EventOfTest {
         offsetY: 500,
         button: MouseButton.Left,
     } as MouseEvent;
-    mouseEventOutSate = {
+    mouseEventOutSate: MouseEvent = {
         offsetX: 9000,
         offsetY: 9000,
         button: MouseButton.Left,
