@@ -119,7 +119,6 @@ export class RectangleService extends Tool {
             ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, this.distanceX, this.distanceY);
         }
     }
-
     selectRectangle(mousePosition: Vec2, base: boolean): void {
         this.distanceX = mousePosition.x - this.mouseDownCoord.x;
         this.distanceY = mousePosition.y - this.mouseDownCoord.y;

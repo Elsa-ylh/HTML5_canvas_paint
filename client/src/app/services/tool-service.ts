@@ -35,6 +35,7 @@ export class ToolService {
 
     switchTool(toolUsed: ToolUsed): void {
         this.currentTool = this.tableTool[toolUsed];
+        this.currentTool.cleanPaintGrout();
         this.currentToolName = toolUsed;
     }
 }

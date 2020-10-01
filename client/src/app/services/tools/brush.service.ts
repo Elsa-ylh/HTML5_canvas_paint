@@ -60,7 +60,7 @@ export class BrushService extends Tool {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.mouseDown && !this.mouseOut) {
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.clearPreviewCtx();
             if (this.subToolSelect === SubToolselected.tool4) {
                 const point = new PointArc(mousePosition, this.remdomInt(), Math.random());
                 this.brush4Data.push(point);
@@ -233,14 +233,15 @@ export class BrushService extends Tool {
                 this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
                 this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
                 break;
-            default:
-                break;
         }
     }
-
-    private clearPath(): void {
+    clearPreviewCtx(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    }
+    clearPath(): void {
         this.pathData = [];
         this.brush4Data = [];
+        this.mouseOut = false;
     }
     private clearEffectTool(): void {
         this.drawingService.baseCtx.shadowColor = 'rgba(0,0,0,0)';

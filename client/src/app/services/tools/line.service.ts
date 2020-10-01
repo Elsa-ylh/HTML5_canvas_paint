@@ -173,18 +173,18 @@ export class LineService extends Tool {
         this.drawingService.previewCtx.lineJoin = 'bevel';
         this.drawingService.previewCtx.lineCap = 'butt';
         this.drawingService.previewCtx.lineWidth = this.drawingService.baseCtx.lineWidth = this.lineWidth;
-        this.drawingService.baseCtx.setLineDash([0, 0]); // reset
-        this.drawingService.previewCtx.setLineDash([0, 0]);
+        this.drawingService.baseCtx.setLineDash([]); // reset
+        this.drawingService.previewCtx.setLineDash([]);
         this.drawingService.baseCtx.globalAlpha = 1;
         this.drawingService.previewCtx.globalAlpha = 1;
         this.clearPreviewCtx();
     }
 
-    private clearPreviewCtx(): void {
+    clearPreviewCtx(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
-    private clearPath(): void {
+    clearPath(): void {
         this.pathData = [];
         this.shiftKeyDown = false;
         this.mouseDown = this.mouseMove = false;
