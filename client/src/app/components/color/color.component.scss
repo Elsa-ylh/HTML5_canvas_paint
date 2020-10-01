@@ -42,6 +42,9 @@ mat-divider {
     width: 40px;
     height: 40px;
     margin-left: 23px;
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 #primaryColorHexa {
@@ -52,6 +55,9 @@ mat-divider {
     width: 40px;
     height: 40px;
     margin-left: 5px;
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 #secondaryColorHexa {
@@ -64,6 +70,9 @@ mat-divider {
     margin-top: 10px;
     margin-left: 10px;
     z-index: 1;
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 #squarePalette {
@@ -77,6 +86,9 @@ mat-divider {
     top: 220px;
     position: absolute;
     z-index: 1;
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 #horizontalPalette {
@@ -91,6 +103,9 @@ mat-divider {
     top: 250px;
     position: absolute;
     z-index: 1;
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 #opacitySlider {
@@ -106,4 +121,22 @@ mat-divider {
 #table {
     padding-bottom: 20px;
     margin-top: -45px;
+}
+
+.lastColorsContainer {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    margin-right: 8px;
+}
+
+.lastColor {
+    &:hover {
+        cursor: pointer;
+    }
+    height: 10px;
+    border-radius: 15px;
+    width: 10px;
+    border: black;
+    margin: 5px;
 }

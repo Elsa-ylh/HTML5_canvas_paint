@@ -70,7 +70,15 @@
         </th>
     </table>
 
-    <div></div>
+    <div class="lastColorsContainer">
+        <div
+            class="lastColor"
+            *ngFor="let color of lastColors; let i = index"
+            [ngStyle]="{ 'background-color': color.active ? color.color : 'grey' }"
+            (click)="onMouseLastColorClick($event, color)"
+            (contextmenu)="onMouseLastColorClick($event, color)"
+        ></div>
+    </div>
 
     <ng-template #message>
         <h3>enter some valid input</h3>

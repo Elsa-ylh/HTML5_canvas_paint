@@ -2,9 +2,10 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
 import { Vec2 } from '@app/classes/vec2';
-import { ColorService, GradientStyle } from '@app/services/color/color.service';
+import { ColorService, GradientStyle, LastColor } from '@app/services/color/color.service';
 
 // certaines parties du code a ete inspiree de l'auteur
 @Component({
@@ -50,6 +51,7 @@ export class ColorComponent implements AfterViewInit {
     opacitySliderCtx: CanvasRenderingContext2D;
     previewopacitySliderCtx: CanvasRenderingContext2D;
     cursorSliderOpacity: any;
+    lastColors: LastColor[];
 
     color: string;
 
@@ -59,6 +61,7 @@ export class ColorComponent implements AfterViewInit {
         public colorService: ColorService,
         public matDialog: MatDialog,
     ) {
+        this.lastColors = this.colorService.getlastColors();
         this.iconRegistry.addSvgIcon('red', this.sanitizer.bypassSecurityTrustResourceUrl('assets/apple.svg'));
         this.iconRegistry.addSvgIcon('green', this.sanitizer.bypassSecurityTrustResourceUrl('assets/leaf.svg'));
         this.iconRegistry.addSvgIcon('blue', this.sanitizer.bypassSecurityTrustResourceUrl('assets/wave.svg'));
@@ -188,7 +191,17 @@ export class ColorComponent implements AfterViewInit {
         this.drawOpacitySlider(mousePos);
         this.colorService.changeColorOpacity(this.findPositionSlider(event)); // change opacity via the slider.
     }
-
+    onMouseLastColorClick(event: MouseEvent, clickedColor: LastColor): boolean {
+        if (clickedColor.active) {
+            if (MouseButton.Left === event.button) {
+                this.colorService.setprimaryColor(clickedColor.color as string);
+            } else if (MouseButton.Right === event.button) {
+                this.colorService.setsecondaryColor(clickedColor.color as string);
+                return false;
+            }
+        }
+        return true;
+    }
     // return the value between 0 to 1 of the opacity slider
     findPositionSlider(event: MouseEvent): number {
         const position = { x: event.offsetX, y: event.offsetY };
@@ -197,14 +210,13 @@ export class ColorComponent implements AfterViewInit {
     }
     sendInput(rgb: RGBA): void {
         if (!rgb.red && !rgb.green && !rgb.blue && rgb.alpha >= 0 && rgb.alpha <= 1) {
-            console.log(rgb.alpha);
             this.colorService.changeColorOpacity(rgb.alpha);
         } else if (rgb.red <= 255 && rgb.green <= 255 && rgb.blue <= 255 && rgb.alpha <= 1 && rgb.alpha >= 0) {
             this.color = this.colorService.numeralToHex(rgb);
             this.colorService.setprimaryColor(this.color);
             this.colorService.changeColorOpacity(rgb.alpha);
         } else {
-            this.openWarningMessage(this.messageRGB); // change message
+            this.openWarningMessage(this.messageRGB);
         }
     }
     openWarningMessage(templateRef: any): void {

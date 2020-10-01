@@ -8,7 +8,7 @@ export enum GradientStyle {
     lightToDark,
     colortoColor,
 }
-class LastColor {
+export interface LastColor {
     color?: string;
     active: boolean;
 }
@@ -24,18 +24,18 @@ export class ColorService {
     private primaryColorTransparency: number;
     private secondaryColorTransparency: number;
     isclicked: boolean = true;
-    private lastColor: LastColor[];
+    private lastColors: LastColor[];
     PositionSlider: number;
 
     constructor(private drawingService: DrawingService) {
         // Last 10 colors
 
-        this.lastColor = new Array(10);
-        this.lastColor.fill({ active: false });
+        this.lastColors = new Array(10);
+        this.lastColors.fill({ active: false });
     }
     // getters
     getlastColors(): LastColor[] {
-        return this.lastColor;
+        return this.lastColors;
     }
 
     getselectedColor(): string {
@@ -85,7 +85,6 @@ export class ColorService {
     addLastColor(color: string): void {
         this.getlastColors().shift();
         this.getlastColors().push({ color, active: true }); // color : color => color
-        console.log(this.getlastColors());
     }
 
     // https://malcoded.com/posts/angular-color-picker/
