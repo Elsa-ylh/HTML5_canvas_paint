@@ -9,7 +9,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class LineService extends Tool {
-    secondeSizePixel: number = 2;
+    secondarySizePixel: number = 2;
     lineWidth: number = 2;
     private pathData: Vec2[] = [];
     private pointMouse: Vec2 = { x: 0, y: 0 };
@@ -145,7 +145,7 @@ export class LineService extends Tool {
     private drawPoin(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineJoin = ctx.lineCap = 'round';
         const sizePx = ctx.lineWidth;
-        ctx.lineWidth = this.secondeSizePixel;
+        ctx.lineWidth = this.secondarySizePixel;
         for (const point of path) {
             ctx.beginPath();
             ctx.lineTo(point.x, point.y);
