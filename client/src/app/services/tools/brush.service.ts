@@ -12,10 +12,12 @@ const citcle = Math.PI * 2;
 })
 export class BrushService extends Tool {
     pixelMinBrush: number = 6;
+    lineWidth: number = this.pixelMinBrush;
     pixelThickness: number = 4;
     private lastPoint: Vec2;
     private pathData: Vec2[];
     private brush4Data: PointArc[];
+    private mouseOut: boolean = false;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
@@ -55,11 +57,10 @@ export class BrushService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-
+        const mousePosition = this.getPositionFromMouse(event);
+        if (this.mouseDown && !this.mouseOut) {
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.clearPreviewCtx();
             if (this.subToolSelect === SubToolselected.tool4) {
                 const point = new PointArc(mousePosition, this.remdomInt(), Math.random());
                 this.brush4Data.push(point);
@@ -68,7 +69,38 @@ export class BrushService extends Tool {
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.previewCtx, this.pathData);
             }
+        } else if (this.mouseOut) {
+            this.lastPoint = mousePosition;
         }
+    }
+    onMouseOut(event: MouseEvent): void {
+        this.mouseOut = true;
+        if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            if (this.subToolSelect === SubToolselected.tool4) {
+                const point = new PointArc(mousePosition, this.remdomInt(), Math.random());
+                this.brush4Data.push(point);
+                this.drawBrushTool4(this.drawingService.baseCtx, this.brush4Data);
+            } else {
+                this.pathData.push(mousePosition);
+                this.drawLine(this.drawingService.baseCtx, this.pathData);
+            }
+        }
+    }
+
+    onMouseEnter(event: MouseEvent): void {
+        if (this.mouseDown && this.mouseOut) {
+            this.clearPath();
+            this.mouseDownCoord = this.lastPoint;
+            if (this.subToolSelect === SubToolselected.tool4) {
+                const point = new PointArc(this.mouseDownCoord, this.remdomInt(), Math.random());
+                this.brush4Data.push(point);
+            } else {
+                this.pathData.push(this.mouseDownCoord);
+                this.lastPoint = this.mouseDownCoord;
+            }
+        }
+        this.mouseOut = false;
     }
 
     private drawBrushTool4(ctx: CanvasRenderingContext2D, path: PointArc[]): void {
@@ -171,6 +203,7 @@ export class BrushService extends Tool {
     }
 
     private witchBrush(select: number): void {
+        this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.lineWidth;
         this.clearEffectTool();
         switch (select) {
             case SubToolselected.tool1:
@@ -200,14 +233,15 @@ export class BrushService extends Tool {
                 this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
                 this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
                 break;
-            default:
-                break;
         }
     }
-
-    private clearPath(): void {
+    clearPreviewCtx(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    }
+    clearPath(): void {
         this.pathData = [];
         this.brush4Data = [];
+        this.mouseOut = false;
     }
     private clearEffectTool(): void {
         this.drawingService.baseCtx.shadowColor = 'rgba(0,0,0,0)';

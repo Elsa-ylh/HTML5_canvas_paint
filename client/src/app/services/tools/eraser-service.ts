@@ -25,6 +25,10 @@ export class EraserService extends Tool {
             this.drawingService.previewCtx.setLineDash([0, 0]); // reset
             this.drawingService.baseCtx.lineWidth = this.eraserWidth;
             this.drawingService.previewCtx.lineWidth = this.eraserWidth;
+            this.drawingService.baseCtx.lineCap = 'butt';
+            this.drawingService.baseCtx.lineJoin = 'bevel';
+            this.drawingService.previewCtx.lineCap = 'butt';
+            this.drawingService.previewCtx.lineJoin = 'bevel';
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -68,8 +72,7 @@ export class EraserService extends Tool {
         }
         ctx.stroke();
     }
-
-    private clearPath(): void {
+    clearPath(): void {
         this.pathData = [];
     }
 }

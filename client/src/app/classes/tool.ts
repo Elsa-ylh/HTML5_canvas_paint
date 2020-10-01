@@ -29,6 +29,10 @@ export abstract class Tool {
 
     onMouseMove(event: MouseEvent): void {}
 
+    onMouseOut(event: MouseEvent): void {}
+
+    onMouseEnter(event: MouseEvent): void {}
+
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }
@@ -36,4 +40,18 @@ export abstract class Tool {
     OnShiftKeyDown(event: KeyboardEvent): void {}
 
     OnShiftKeyUp(event: KeyboardEvent): void {}
+
+    onDoubleClick(event: MouseEvent): void {}
+
+    onKeyEscape(event: KeyboardEvent): void {}
+
+    onKeyBackSpace(event: KeyboardEvent): void {}
+
+    cleanPaintGrout(): void {
+        this.clearPath();
+        this.clearPreviewCtx();
+    }
+
+    protected clearPath(): void {}
+    protected clearPreviewCtx(): void {}
 }

@@ -17,7 +17,7 @@ export class MainPageComponent {
 
     createNewDrawing(): void {
         this.newDrawingRef = this.dialogCreator.open(DialogCreateNewDrawingComponent, {
-            data: { message: 'Créer un nouveau dessin avec les dimensions suivantes' },
+            data: { message: 'Créer un nouveau dessin' },
         });
     }
 
