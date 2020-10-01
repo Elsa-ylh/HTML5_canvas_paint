@@ -40,8 +40,8 @@
     </div>
     <div class="toolbar" *ngIf="showAttributes">
         <div class="attributes" [ngSwitch]="this.toolService.currentToolName">
-            <mat-grid-list cols="6" *ngSwitchCase="0"> </mat-grid-list>
-            <mat-grid-list cols="6" *ngSwitchCase="1">
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.NONE"> </mat-grid-list>
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Pencil">
                 <mat-grid-tile> </mat-grid-tile>
                 <mat-grid-tile colspan="6" aria-rowspan="8"> Changer la taille du crayon </mat-grid-tile>
                 <mat-grid-tile colspan="6">
@@ -60,7 +60,7 @@
                 <mat-grid-tile colspan="6" aria-rowspan="8"> Taille de l'efface : {{ eraserService.eraserWidth }} px </mat-grid-tile>
             </mat-grid-list>
 
-            <mat-grid-list cols="6" *ngSwitchCase="3">
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Brush">
                 <mat-grid-tile colspan="6" rowspan="2">
                     <button mat-raised-button (click)="pickBrush(1)">Pinceau 1</button>
                 </mat-grid-tile>
@@ -82,8 +82,7 @@
                     ><samp>{{ pxSize }}px</samp>
                 </mat-grid-tile>
             </mat-grid-list>
-
-            <mat-grid-list cols="6" *ngSwitchCase="4">
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Line">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="2"> Pour quiter l'outil Ligne effectuez un double clique gauche avec votre souris</mat-grid-tile>
                 <mat-grid-tile colspan="6">
@@ -99,8 +98,7 @@
                     <samp>{{ pxSizePoint }}px</samp>
                 </mat-grid-tile>
             </mat-grid-list>
-
-            <mat-grid-list cols="6" *ngSwitchCase="5">
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Rectangle">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
                 <mat-grid-tile colspan="6"> Choisissez un type de rectangle</mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="4">
@@ -120,7 +118,8 @@
                     ><samp>épaisseur du contour: {{ rectangleService.lineWidth }}px</samp></mat-grid-tile
                 >
             </mat-grid-list>
-            <mat-grid-list cols="6" *ngSwitchCase="6">
+
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Ellipse">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
                 <mat-grid-tile colspan="6"> Choisissez un type d'ellipse</mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="4">
@@ -140,8 +139,8 @@
                     ><samp>épaisseur du contour: {{ ellipseService.lineWidth }}px</samp></mat-grid-tile
                 >
             </mat-grid-list>
-            <mat-grid-list cols="6" *ngSwitchCase="7">
-                <mat-grid-tile colspan="6"></mat-grid-tile>
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Color">
+                <app-color></app-color>
             </mat-grid-list>
         </div>
     </div>

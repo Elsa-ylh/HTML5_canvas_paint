@@ -30,11 +30,15 @@ export class ToolService {
         this.tableTool[ToolUsed.Rectangle] = this.rectangleService;
         this.tableTool[ToolUsed.Ellipse] = this.ellipseService;
 
-        this.switchTool(ToolUsed.Pencil); // default tools
+        this.switchTool(ToolUsed.NONE); // default tools if all else fail in the sidebar usually
     }
 
     switchTool(toolUsed: ToolUsed): void {
-        this.currentTool = this.tableTool[toolUsed];
+        // color is special as we don't change tool per say, we are simply making an extension of making other tools
+        // change color
+        if (toolUsed !== ToolUsed.Color) {
+            this.currentTool = this.tableTool[toolUsed];
+        }
         this.currentTool.cleanPaintGrout();
         this.currentToolName = toolUsed;
     }

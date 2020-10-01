@@ -9,6 +9,7 @@ import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -24,6 +25,11 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
+    // We need this alias for the enum so ngSwitchCase look way better than just numbers.
+    // I can't stand reading numbers anymore.
+    // tslint:disable-next-line: typedef
+    toolUsed = ToolUsed;
+
     showAttributes: boolean;
     isDialogOpen: boolean = false;
     lineWidth: number;
@@ -51,10 +57,11 @@ export class SidebarComponent {
         public brushService: BrushService,
         public pencilService: PencilService,
         public eraserService: EraserService,
+        public colorService: ColorService,
         public lineService: LineService,
     ) {
         this.showAttributes = true;
-        this.toolService.switchTool(ToolUsed.NONE);
+        this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
     }
 
@@ -187,40 +194,52 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.1', ['$event']) onKeyDown1(event: KeyboardEvent): void {
-        this.resetCheckedButton();
-        this.isRectangleChecked = true;
-        this.pickRectangle(SubToolselected.tool1);
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isRectangleChecked = true;
+            this.pickRectangle(1);
+        }
     }
 
     @HostListener('window:keydown.2', ['$event']) onKeyDown2(event: KeyboardEvent): void {
-        this.resetCheckedButton();
-        this.isEllipseChecked = true;
-        this.pickEllipse(SubToolselected.tool1);
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isEllipseChecked = true;
+            this.pickEllipse(SubToolselected.tool1);
+        }
     }
 
     @HostListener('window:keydown.e', ['$event'])
     changeEraserMode(event: KeyboardEvent): void {
-        this.resetCheckedButton();
-        this.isEraserChecked = true;
-        this.pickEraser();
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isEraserChecked = true;
+            this.pickEraser();
+        }
     }
 
     @HostListener('window:keydown.c', ['$event'])
     changePencilMode(event: KeyboardEvent): void {
-        this.resetCheckedButton();
-        this.isPencilChecked = true;
-        this.pickPencil();
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isPencilChecked = true;
+            this.pickPencil();
+        }
     }
     @HostListener('window:keydown.w', ['$event'])
     changeBrushMode(event: KeyboardEvent): void {
-        this.resetCheckedButton();
-        this.isBrushChecked = true;
-        this.pickBrush(SubToolselected.tool1);
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isBrushChecked = true;
+            this.pickBrush(SubToolselected.tool1);
+        }
     }
     @HostListener('window:keydown.l', ['$event'])
     changeLineMode(event: KeyboardEvent): void {
-        this.resetCheckedButton();
-        this.isLineChecked = true;
-        this.pickLine();
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isLineChecked = true;
+            this.pickLine();
+        }
     }
 }
