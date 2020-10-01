@@ -15,8 +15,6 @@ export class EllipseService extends Tool {
     strokeRectColor: string = '#000000';
     lineRectwidth: number = 1;
     circle: boolean = false;
-    height: number;
-    width: number;
     mousePosition: Vec2;
     dottedLineWidth: number = 2;
     dottedSpace: number = 10;
