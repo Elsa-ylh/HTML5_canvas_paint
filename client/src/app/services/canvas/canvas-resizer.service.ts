@@ -51,6 +51,26 @@ export class CanvasResizerService {
         }
     }
 
+    private changeResizeY(event: MouseEvent): number {
+        if (event.offsetY < this.MIN_CANVAS_SIZE) {
+            return this.MIN_CANVAS_SIZE;
+        } else if (event.offsetY > this.resizeHeight - this.WORK_AREA_PADDING_SIZE) {
+            return this.resizeHeight - this.WORK_AREA_PADDING_SIZE;
+        } else {
+            return event.offsetY;
+        }
+    }
+
+    private changeResizeX(event: MouseEvent): number {
+        if (event.offsetX < this.MIN_CANVAS_SIZE) {
+            return this.MIN_CANVAS_SIZE;
+        } else if (event.offsetX > this.resizeWidth - this.WORK_AREA_PADDING_SIZE) {
+            return this.resizeWidth - this.WORK_AREA_PADDING_SIZE;
+        } else {
+            return event.offsetX;
+        }
+    }
+
     onResize(event: MouseEvent, resizeCtx: CanvasRenderingContext2D): void {
         if (this.isResizeDown) {
             this.clearCanvas(resizeCtx, { x: this.resizeWidth, y: this.resizeHeight });
@@ -59,41 +79,13 @@ export class CanvasResizerService {
             resizeCtx.lineWidth = this.RESIZE_DASH_THICKNESS;
             switch (this.resizeDirection) {
                 case ResizeDirection.vertical:
-                    if (event.offsetY < this.MIN_CANVAS_SIZE) {
-                        resizeCtx.strokeRect(0, 0, this.canvasSize.x, this.MIN_CANVAS_SIZE);
-                    } else if (event.offsetY > this.resizeHeight - this.WORK_AREA_PADDING_SIZE) {
-                        resizeCtx.strokeRect(0, 0, this.canvasSize.x, this.resizeHeight - this.WORK_AREA_PADDING_SIZE);
-                    } else {
-                        resizeCtx.strokeRect(0, 0, this.canvasSize.x, event.offsetY);
-                    }
+                    resizeCtx.strokeRect(0, 0, this.canvasSize.x, this.changeResizeY(event));
                     break;
                 case ResizeDirection.horizontal:
-                    if (event.offsetX < this.MIN_CANVAS_SIZE) {
-                        resizeCtx.strokeRect(0, 0, this.MIN_CANVAS_SIZE, this.canvasSize.y);
-                    } else if (event.offsetX > this.resizeWidth - this.WORK_AREA_PADDING_SIZE) {
-                        resizeCtx.strokeRect(0, 0, this.resizeWidth - this.WORK_AREA_PADDING_SIZE, this.canvasSize.y);
-                    } else {
-                        resizeCtx.strokeRect(0, 0, event.offsetX, this.canvasSize.y);
-                    }
+                    resizeCtx.strokeRect(0, 0, this.changeResizeX(event), this.canvasSize.y);
                     break;
                 case ResizeDirection.verticalAndHorizontal:
-                    let rectWidth = 0;
-                    let rectHeight = 0;
-                    if (event.offsetY < this.MIN_CANVAS_SIZE) {
-                        rectHeight = this.MIN_CANVAS_SIZE;
-                    } else if (event.offsetY > this.resizeHeight - this.WORK_AREA_PADDING_SIZE) {
-                        rectHeight = this.resizeHeight - this.WORK_AREA_PADDING_SIZE;
-                    } else {
-                        rectHeight = event.offsetY;
-                    }
-                    if (event.offsetX < this.MIN_CANVAS_SIZE) {
-                        rectWidth = this.MIN_CANVAS_SIZE;
-                    } else if (event.offsetX > this.resizeWidth - this.WORK_AREA_PADDING_SIZE) {
-                        rectWidth = this.resizeWidth - this.WORK_AREA_PADDING_SIZE;
-                    } else {
-                        rectWidth = event.offsetX;
-                    }
-                    resizeCtx.strokeRect(0, 0, rectWidth, rectHeight);
+                    resizeCtx.strokeRect(0, 0, this.changeResizeX(event), this.changeResizeY(event));
                     break;
             }
         }
