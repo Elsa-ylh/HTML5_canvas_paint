@@ -205,11 +205,8 @@ export class SidebarComponent {
         if (this.toolService.currentToolName !== ToolUsed.Color) {
             this.resetCheckedButton();
             this.isEllipseChecked = true;
-            this.pickEllipse(1);
+            this.pickEllipse(SubToolselected.tool1);
         }
-        this.resetCheckedButton();
-        this.isRectangleChecked = true;
-        this.pickRectangle(SubToolselected.tool1);
     }
 
     @HostListener('window:keydown.e', ['$event'])
@@ -234,16 +231,15 @@ export class SidebarComponent {
         if (this.toolService.currentToolName !== ToolUsed.Color) {
             this.resetCheckedButton();
             this.isBrushChecked = true;
-            this.pickBrush(1);
+            this.pickBrush(SubToolselected.tool1);
         }
-        this.resetCheckedButton();
-        this.isBrushChecked = true;
-        this.pickBrush(SubToolselected.tool1);
     }
     @HostListener('window:keydown.l', ['$event'])
     changeLineMode(event: KeyboardEvent): void {
-        this.resetCheckedButton();
-        this.isLineChecked = true;
-        this.pickLine();
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isLineChecked = true;
+            this.pickLine();
+        }
     }
 }
