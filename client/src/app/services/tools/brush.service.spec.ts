@@ -32,6 +32,7 @@ describe('BrushService', () => {
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         drawBrushToolSpy = spyOn<any>(service, 'drawBrushTool4').and.callThrough();
         drawLineBrushSpy = spyOn<any>(service, 'drawLineBrush5').and.callThrough();
+        service.subToolSelect = SubToolselected.tool1;
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
@@ -151,7 +152,24 @@ describe('BrushService', () => {
         service.onMouseUp(mouseEvent);
         expect(drawBrushToolSpy).toHaveBeenCalled();
     });
+    it(' onMouseMove and onMouseUp should call drawBrushToolSpy if mouse exit canvas was already down tool4', () => {
+        service.subToolSelect = SubToolselected.tool4;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.onMouseMove(mouseEvent);
+        service.onMouseOut(mouseEvent1);
+        service.onMouseMove(mouseEvent);
+        expect(drawBrushToolSpy).toHaveBeenCalled();
+    });
 
+    it(' onMouseMove and onMouseUp should call drawBrushToolSpy if mouse exit canvas was already down tool3', () => {
+        service.subToolSelect = SubToolselected.tool3;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.onMouseMove(mouseEvent);
+        service.onMouseOut(mouseEvent1);
+        expect(drawLineSpy).toHaveBeenCalled();
+    });
     it('onMouseMove and onMouseUp should call drawLineBrushSpy if mouse was already down tool5 ', () => {
         service.subToolSelect = SubToolselected.tool5;
         service.mouseDownCoord = { x: 0, y: 0 };
@@ -193,5 +211,25 @@ describe('BrushService', () => {
         service.onMouseMove(mouseEvent1);
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
+    });
+    it('exit et over de canvas not downMasse it false', () => {
+        service.onMouseOut(mouseEvent);
+        service.onMouseEnter(mouseEvent);
+        expect(drawLineSpy).not.toHaveBeenCalled();
+        expect(drawBrushToolSpy).not.toHaveBeenCalled();
+    });
+    it('Mouse exit et over de canvas not downMasse ', () => {
+        service.onMouseDown(mouseEvent1);
+        service.onMouseOut(mouseEvent);
+        service.onMouseEnter(mouseEvent);
+        service.onMouseUp(mouseEvent1);
+        expect(drawLineSpy).toHaveBeenCalled();
+    });
+    it('Mouse exit et over de canvas not downMasse ', () => {
+        service.subToolSelect = SubToolselected.tool4;
+        service.onMouseDown(mouseEvent1);
+        service.onMouseOut(mouseEvent);
+        service.onMouseEnter(mouseEvent);
+        expect(drawBrushToolSpy).toHaveBeenCalled();
     });
 });

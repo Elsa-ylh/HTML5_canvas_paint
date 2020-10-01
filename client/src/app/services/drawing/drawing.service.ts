@@ -10,7 +10,7 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
 
-    whichTools: ToolUsed = ToolUsed.NONE;
+    whichTools: ToolUsed = ToolUsed.Pencil;
     currentTool: Tool;
     cursorUsed: string = cursorName.default;
 
@@ -22,5 +22,20 @@ export class DrawingService {
     isCanvasBlank(): boolean {
         const pixelBuffer = new Uint32Array(this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height).data.buffer);
         return !pixelBuffer.some((color) => color !== 0);
+    }
+
+    clearEffectTool(): void {
+        this.baseCtx.shadowColor = 'rgba(0,0,0,0)';
+        this.previewCtx.shadowColor = 'rgba(0,0,0,0)';
+        this.baseCtx.strokeStyle = '#000000'; // to draw after erasing
+        this.previewCtx.strokeStyle = '#000000';
+        this.baseCtx.lineJoin = 'miter';
+        this.baseCtx.lineCap = 'square';
+        this.previewCtx.lineJoin = 'miter';
+        this.previewCtx.lineCap = 'square';
+        this.baseCtx.setLineDash([0, 0]); // reset
+        this.previewCtx.setLineDash([0, 0]);
+        this.baseCtx.globalAlpha = 1;
+        this.previewCtx.globalAlpha = 1;
     }
 }

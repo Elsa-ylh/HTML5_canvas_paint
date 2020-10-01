@@ -39,6 +39,7 @@ export class ToolService {
         if (toolUsed !== ToolUsed.Color) {
             this.currentTool = this.tableTool[toolUsed];
         }
+        this.currentTool.cleanPaintGrout();
         this.currentToolName = toolUsed;
     }
 }
