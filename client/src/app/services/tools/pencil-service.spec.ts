@@ -9,7 +9,7 @@ import { PencilService } from './pencil-service';
 describe('PencilService', () => {
     let service: PencilService;
     let mouseEvent: MouseEvent;
-    let mouseEvent1: MouseEvent;
+    // let mouseEvent1: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
@@ -38,11 +38,11 @@ describe('PencilService', () => {
             button: MouseButton.Left,
         } as MouseEvent;
 
-        mouseEvent1 = {
-            offsetX: 0,
-            offsetY: 0,
-            button: MouseButton.Left,
-        } as MouseEvent;
+        // mouseEvent1 = {
+        //    offsetX: 0,
+        //    offsetY: 0,
+        //    button: MouseButton.Left,
+        // } as MouseEvent;
     });
 
     it('should be created', () => {
