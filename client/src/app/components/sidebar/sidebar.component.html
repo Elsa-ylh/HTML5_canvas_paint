@@ -73,27 +73,33 @@
                 <mat-grid-tile colspan="6" aria-rowspan="8"> Taille de l'efface : {{ eraserService.eraserWidth }} px </mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="3">
+                <mat-button-toggle-group vertical="true">
+                    <mat-button-toggle (click)="pickBrush(1)">pinceau 1</mat-button-toggle>
+                    <mat-button-toggle (click)="pickBrush(2)">pinceau 2</mat-button-toggle>
+                    <mat-button-toggle (click)="pickBrush(3)">pinceau 3</mat-button-toggle>
+                    <mat-button-toggle (click)="pickBrush(4)">pinceau 4</mat-button-toggle>
+                    <mat-button-toggle (click)="pickBrush(5)">pinceau 5</mat-button-toggle>
+                </mat-button-toggle-group>
                 <mat-grid-tile colspan="6">
-                    <button mat-raised-button (click)="pickBrush(1)">pinceau 1</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6">
-                    <button mat-raised-button (click)="pickBrush(2)">pinceau 2</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6">
-                    <button mat-raised-button (click)="pickBrush(3)">pinceau 3</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6">
-                    <button mat-raised-button (click)="pickBrush(4)">pinceau 4</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6">
-                    <button mat-raised-button (click)="pickBrush(5)">pinceau 5</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6">
-                    <mat-slider max="50" min="6" [(ngModel)]="pxSize" (input)="sliderSliding($event)"> </mat-slider><samp>{{ pxSize }}px</samp>
+                    <mat-slider max="50" min="1" [(ngModel)]="pxSize" (input)="sliderSliding($event)" [(ngModel)]="brushService.lineWidth">
+                    </mat-slider
+                    ><samp>{{ pxSize }}px</samp>
                 </mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="4">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider max="50" min="1" [(ngModel)]="lineService.lineWidth" (input)="sliderSliding($event)"> </mat-slider
+                    ><samp>{{ pxSize }}px</samp>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-checkbox [(ngModel)]="checked" (change)="CheckboxChangeToggle($event)">Avec Point</mat-checkbox>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider max="50" min="1" step="1" [(ngModel)]="lineService.secondarySizePixel" (input)="sliderSlidingPoint($event)">
+                    </mat-slider>
+                    <samp>{{ pxSizePoint }}px</samp>
+                </mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="5">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
@@ -107,9 +113,10 @@
                         >
                     </mat-button-toggle-group>
                 </mat-grid-tile>
-                <mat-grid-tile colspan="6" rowspan="3"> Ce slider permet de modifier l'épaisseur des lignes des rectangles</mat-grid-tile>
-                <mat-grid-tile colspan="6">
-                    <mat-slider min="1" max="20" step="1" value="10" [(ngModel)]="rectangleService.lineWidth"></mat-slider>
+                <mat-grid-tile colspan="6" rowspan="2"> Ce slider permet de modifier l'épaisseur du trait de contour des rectangles</mat-grid-tile>
+                <mat-grid-tile colspan="5">
+                    <mat-slider min="1" max="50" step="1" [(ngModel)]="rectangleService.lineWidth"></mat-slider
+                    ><samp>{{ rectangleService.lineWidth }}px</samp>
                 </mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="6">
