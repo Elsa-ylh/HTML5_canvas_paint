@@ -3,6 +3,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { EventOfTest } from '@app/classes/event-of-test';
+import { MIN_CANVAS_SIZE, WORK_AREA_PADDING_SIZE } from '@app/classes/resize-canvas';
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { CanvasResizerService } from './canvas-resizer.service';
 
@@ -25,14 +26,10 @@ describe('Service: CanvasResizer', () => {
 
         canvasResizerService = TestBed.inject(CanvasResizerService);
         baseCtxStub.fillStyle = 'white';
-        baseCtxStub.fillRect(0, 0, canvasResizerService.MIN_CANVAS_SIZE, canvasResizerService.MIN_CANVAS_SIZE);
+        baseCtxStub.fillRect(0, 0, MIN_CANVAS_SIZE, MIN_CANVAS_SIZE);
         conparativectxStub.fillStyle = 'white';
-        conparativectxStub.fillRect(0, 0, canvasResizerService.MIN_CANVAS_SIZE, canvasResizerService.MIN_CANVAS_SIZE);
+        conparativectxStub.fillRect(0, 0, MIN_CANVAS_SIZE, MIN_CANVAS_SIZE);
 
-        /* clearCanvasSpy = spyOn<any>(canvasResizerService, 'clearCanvas').and.callThrough();
-        changeCanvasYSpy = spyOn<any>(canvasResizerService, 'changeCanvasY').and.callThrough();
-        changeCanvasXSpy = spyOn<any>(canvasResizerService, 'changeCanvasX').and.callThrough();
-        */
         // tslint:disable-next-line: no-any
         changeResizeXSpy = spyOn<any>(canvasResizerService, 'changeResizeX').and.callThrough();
         // tslint:disable-next-line: no-any
@@ -66,19 +63,19 @@ describe('Service: CanvasResizer', () => {
     });
     it('changeResizeY is MIN_CANVAS_SIZE', () => {
         const numberResult: number = changeResizeYSpy(events.mouseEvent2, canvasResizerService);
-        expect(numberResult).toEqual(canvasResizerService.MIN_CANVAS_SIZE);
+        expect(numberResult).toEqual(MIN_CANVAS_SIZE);
     });
     it('changeResizeX is MIN_CANVAS_SIZE', () => {
         const numberResult: number = changeResizeXSpy(events.mouseEvent2, canvasResizerService);
-        expect(numberResult).toEqual(canvasResizerService.MIN_CANVAS_SIZE);
+        expect(numberResult).toEqual(MIN_CANVAS_SIZE);
     });
     it('changeResizeY is ouverSize', () => {
         const numberResult: number = changeResizeYSpy(events.mouseEventOutSate, canvasResizerService);
-        expect(numberResult).toEqual(canvasResizerService.resizeHeight - canvasResizerService.WORK_AREA_PADDING_SIZE);
+        expect(numberResult).toEqual(canvasResizerService.resizeHeight - WORK_AREA_PADDING_SIZE);
     });
     it('changeResizeX is ouverSize', () => {
         const numberResult: number = changeResizeXSpy(events.mouseEventOutSate, canvasResizerService);
-        expect(numberResult).toEqual(canvasResizerService.resizeWidth - canvasResizerService.WORK_AREA_PADDING_SIZE);
+        expect(numberResult).toEqual(canvasResizerService.resizeWidth - WORK_AREA_PADDING_SIZE);
     });
     it('changeResizeY is good size', () => {
         const numberResult: number = changeResizeYSpy(events.mouseEventX499Y500, canvasResizerService);
