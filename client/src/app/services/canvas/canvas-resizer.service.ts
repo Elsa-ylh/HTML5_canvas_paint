@@ -9,7 +9,7 @@ import { Vec2 } from '@app/classes/vec2';
 })
 export class CanvasResizerService {
     MIN_CANVAS_SIZE: number = 250;
-    WORK_AREA_PADDING_SIZE: number = 200;
+    WORK_AREA_PADDING_SIZE: number = 100;
     SIDEBAR_WIDTH: number = 226;
     ICON_WIDTH: number = 50;
     DEFAULT_WIDTH: number = (window.innerWidth - this.SIDEBAR_WIDTH - this.ICON_WIDTH) / 2;
@@ -61,6 +61,8 @@ export class CanvasResizerService {
                 case ResizeDirection.vertical:
                     if (event.offsetY < this.MIN_CANVAS_SIZE) {
                         resizeCtx.strokeRect(0, 0, this.canvasSize.x, this.MIN_CANVAS_SIZE);
+                    } else if (event.offsetY > this.resizeHeight - this.WORK_AREA_PADDING_SIZE) {
+                        resizeCtx.strokeRect(0, 0, this.canvasSize.x, this.resizeHeight - this.WORK_AREA_PADDING_SIZE);
                     } else {
                         resizeCtx.strokeRect(0, 0, this.canvasSize.x, event.offsetY);
                     }
@@ -68,6 +70,8 @@ export class CanvasResizerService {
                 case ResizeDirection.horizontal:
                     if (event.offsetX < this.MIN_CANVAS_SIZE) {
                         resizeCtx.strokeRect(0, 0, this.MIN_CANVAS_SIZE, this.canvasSize.y);
+                    } else if (event.offsetX > this.resizeWidth - this.WORK_AREA_PADDING_SIZE) {
+                        resizeCtx.strokeRect(0, 0, this.resizeWidth - this.WORK_AREA_PADDING_SIZE, this.canvasSize.y);
                     } else {
                         resizeCtx.strokeRect(0, 0, event.offsetX, this.canvasSize.y);
                     }
@@ -77,11 +81,15 @@ export class CanvasResizerService {
                     let rectHeight = 0;
                     if (event.offsetY < this.MIN_CANVAS_SIZE) {
                         rectHeight = this.MIN_CANVAS_SIZE;
+                    } else if (event.offsetY > this.resizeHeight - this.WORK_AREA_PADDING_SIZE) {
+                        rectHeight = this.resizeHeight - this.WORK_AREA_PADDING_SIZE;
                     } else {
                         rectHeight = event.offsetY;
                     }
                     if (event.offsetX < this.MIN_CANVAS_SIZE) {
                         rectWidth = this.MIN_CANVAS_SIZE;
+                    } else if (event.offsetX > this.resizeWidth - this.WORK_AREA_PADDING_SIZE) {
+                        rectWidth = this.resizeWidth - this.WORK_AREA_PADDING_SIZE;
                     } else {
                         rectWidth = event.offsetX;
                     }
@@ -94,6 +102,8 @@ export class CanvasResizerService {
     private changeCanvasY(event: MouseEvent): void {
         if (event.offsetY < this.MIN_CANVAS_SIZE) {
             this.canvasSize.y = this.MIN_CANVAS_SIZE;
+        } else if (event.offsetY > this.resizeHeight - this.WORK_AREA_PADDING_SIZE) {
+            this.canvasSize.y = this.resizeHeight - this.WORK_AREA_PADDING_SIZE;
         } else {
             this.canvasSize.y = event.offsetY;
         }
@@ -102,6 +112,8 @@ export class CanvasResizerService {
     private changeCanvasX(event: MouseEvent): void {
         if (event.offsetX < this.MIN_CANVAS_SIZE) {
             this.canvasSize.x = this.MIN_CANVAS_SIZE;
+        } else if (event.offsetX > this.resizeWidth - this.WORK_AREA_PADDING_SIZE) {
+            this.canvasSize.x = this.resizeWidth - this.WORK_AREA_PADDING_SIZE;
         } else {
             this.canvasSize.x = event.offsetX;
         }
