@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 // Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
@@ -12,9 +13,11 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class PencilService extends Tool {
+    pencilSize: number = 2;
+
     private pathData: Vec2[];
-    pencilSize: number = 1;
-    constructor(drawingService: DrawingService) {
+
+    constructor(drawingService: DrawingService, private colorService: ColorService) {
         super(drawingService);
         this.clearPath();
     }
@@ -23,8 +26,8 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             this.clearPath();
             this.mouseMove = false;
-            this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
-            this.drawingService.previewCtx.strokeStyle = '#000000';
+            this.drawingService.baseCtx.strokeStyle = this.colorService.getprimaryColor(); // to draw after erasing
+            this.drawingService.previewCtx.strokeStyle = this.colorService.getprimaryColor();
             this.drawingService.baseCtx.lineWidth = this.pencilSize;
             this.drawingService.previewCtx.lineWidth = this.pencilSize;
             this.drawingService.baseCtx.setLineDash([0, 0]); // reset

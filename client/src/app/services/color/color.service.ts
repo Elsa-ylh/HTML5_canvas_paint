@@ -8,7 +8,12 @@ export enum GradientStyle {
     lightToDark,
     colortoColor,
 }
-
+export interface LastColor {
+    color?: string;
+    active: boolean;
+}
+const VALUE_TEN = 10;
+const VALUE_FIVE = 5;
 @Injectable({
     providedIn: 'root',
 })
@@ -19,16 +24,24 @@ export class ColorService {
     private previewColor: string = '#ff6666';
     private primaryColorTransparency: number;
     private secondaryColorTransparency: number;
-    clickprimaryColor: boolean = true;
-    clicksecondaryColor: boolean = false;
+    isclicked: boolean = true;
+    private lastColors: LastColor[];
 
-    constructor(private drawingService: DrawingService) {}
-    // private lastChoiceColor: RGB[];
-    positionSlider: number;
+    constructor(private drawingService: DrawingService) {
+        // Last 10 colors
+
+        this.lastColors = new Array(VALUE_TEN);
+        this.lastColors.fill({ active: false });
+    }
+    // getters
+    getlastColors(): LastColor[] {
+        return this.lastColors;
+    }
+
     getselectedColor(): string {
         return this.selectedColor;
     }
-    // getters
+
     getpreviewColor(): string {
         return this.previewColor;
     }
@@ -67,6 +80,11 @@ export class ColorService {
     }
     setsecondaryColorTransparency(secondaryTransparency: number): void {
         this.secondaryColorTransparency = secondaryTransparency;
+    }
+
+    addLastColor(color: string): void {
+        this.getlastColors().shift();
+        this.getlastColors().push({ color, active: true }); // color : color => color
     }
 
     // https://malcoded.com/posts/angular-color-picker/
@@ -142,8 +160,7 @@ export class ColorService {
         ctx.lineCap = 'round';
         ctx.strokeStyle = '#000';
         ctx.fillStyle = '#FFF';
-        // tslint:disable-next-line: no-magic-numbers
-        ctx.fillRect(event.offsetX, event.offsetY, 5, 5);
+        ctx.fillRect(event.offsetX, event.offsetY, VALUE_FIVE, VALUE_FIVE);
     }
 
     // Ce code est complètement inspiré sans gêne de
@@ -155,11 +172,11 @@ export class ColorService {
 
     // change opacity of primary or secondary colors
     changeColorOpacity(value: number): void {
-        if (this.clickprimaryColor && !this.clicksecondaryColor) {
+        if (this.isclicked) {
             this.setprimaryColorTransparency(value);
             this.drawingService.baseCtx.globalAlpha = this.getprimaryColorTransparency();
             this.drawingService.previewCtx.globalAlpha = this.getprimaryColorTransparency();
-        } else if (!this.clickprimaryColor && this.clicksecondaryColor) {
+        } else {
             this.setsecondaryColorTransparency(value);
             this.drawingService.baseCtx.globalAlpha = this.getsecondaryColorTransparency();
             this.drawingService.previewCtx.globalAlpha = this.getsecondaryColorTransparency();
