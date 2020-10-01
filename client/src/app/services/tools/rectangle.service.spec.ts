@@ -280,10 +280,10 @@ describe('Service: Rectangle', () => {
         expect(service.mouseOut).toEqual(true);
     });
 
-    it(' should change mouseEnter value to true when the mouse is entering the canvas after leaving it while drawing', () => {
-        service.mouseOut = true;
-        service.onMouseEnter(mouseEvent);
-        expect(service.mouseEnter).toEqual(true);
+    it(' should not change mouseOut value to true when the mouse is living the canvas while left click is not pressed', () => {
+        service.mouseDown = false;
+        service.onMouseOut(mouseEvent);
+        expect(service.mouseOut).toEqual(false);
     });
 
     it(' should change mouseEnter value to true when the mouse is entering the canvas after leaving it while drawing', () => {
@@ -293,8 +293,8 @@ describe('Service: Rectangle', () => {
     });
 
     it(' should not change mouseEnter value to true when the mouse is entering the canvas after leaving it while not drawing', () => {
-        service.mouseOut = true;
+        service.mouseOut = false;
         service.onMouseEnter(mouseEvent);
-        expect(service.mouseEnter).toEqual(true);
+        expect(service.mouseEnter).toEqual(false);
     });
 });
