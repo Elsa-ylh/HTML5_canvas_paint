@@ -6,22 +6,25 @@ canvas {
     box-shadow: 0 1px 5px -3px black;
 }
 
-#previewLayer {
-    z-index: 5;
-}
-
-#canvas {
-    z-index: 4;
-}
-
-#drawCanvas {
-    z-index: 1;
-}
-
 #canvas-container {
     position: relative;
 }
 
-#canvasResizerPreview {
-    z-index: 1;
+#previewLayer {
+    z-index: 5;
+}
+
+#baseCanvas {
+    z-index: 4;
+}
+
+#whiteBackground {
+    position: absolute;
+    z-index: 3;
+    background-color: white;
+}
+
+#greyBackground {
+    z-index: 2;
+    background-color: grey;
 }

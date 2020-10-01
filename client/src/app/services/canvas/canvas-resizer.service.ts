@@ -9,11 +9,9 @@ import { Vec2 } from '@app/classes/vec2';
 })
 export class CanvasResizerService {
     MIN_CANVAS_SIZE: number = 250;
-    MAX_WIDTH_SIZE: number = 1920;
-    MAX_HEIGHT_SIZE: number = 1080;
-    minSizeWindow: number = 500;
 
-    WORK_AREA_PADDING_SIZE: number = 50;
+    // This constant is for usage to keep a small area to resize bigger
+    WORK_AREA_PADDING_SIZE: number = 200;
 
     SIDEBAR_WIDTH: number = 226;
     ICON_WIDTH: number = 50;
@@ -30,8 +28,8 @@ export class CanvasResizerService {
 
     isResizeDown: boolean = false;
     resizeDirection: ResizeDirection;
-    resizeWidth: number = this.MAX_WIDTH_SIZE - this.SIDEBAR_WIDTH - this.ICON_WIDTH;
-    resizeHeight: number = this.DEFAULT_HEIGHT;
+    resizeWidth: number = 3000;
+    resizeHeight: number = 3000;
     resizeCursor: string = cursorName.default;
 
     // Resizer canvas index
@@ -48,37 +46,39 @@ export class CanvasResizerService {
         if (this.isResizeDown) {
             this.resizerIndex = this.PRIORITY_INDEX; // We now put the whole surface in the foregound.
             this.resizeDirection = resizeDirection;
+            console.log(event.offsetX + ' ' + event.offsetY);
         }
     }
 
     onResize(event: MouseEvent, resizeCtx: CanvasRenderingContext2D): void {
         if (this.isResizeDown) {
-            this.clearCanvas(resizeCtx, { x: 1920 + 40, y: this.DEFAULT_HEIGHT });
-            resizeCtx.setLineDash([10, 10]);
+            this.clearCanvas(resizeCtx, { x: 3000, y: 3000 });
+            resizeCtx.setLineDash([10]);
+            resizeCtx.lineDashOffset = 4;
             resizeCtx.strokeStyle = '#000000';
-            resizeCtx.lineWidth = 2;
+            resizeCtx.lineWidth = 1;
             switch (this.resizeDirection) {
                 case ResizeDirection.vertical:
                     if (event.offsetY < this.MIN_CANVAS_SIZE) {
-                        resizeCtx.strokeRect(0, 0, this.canvasSize.x, this.MIN_CANVAS_SIZE / 2);
+                        resizeCtx.strokeRect(0, 0, this.canvasSize.x, this.MIN_CANVAS_SIZE);
                     } else {
-                        resizeCtx.strokeRect(0, 0, this.canvasSize.x, event.offsetY / 2);
+                        resizeCtx.strokeRect(0, 0, this.canvasSize.x, event.offsetY);
                     }
                     break;
                 case ResizeDirection.horizontal:
                     if (event.offsetX < this.MIN_CANVAS_SIZE) {
-                        resizeCtx.strokeRect(0, 0, this.MIN_CANVAS_SIZE, this.canvasSize.y / 2);
+                        resizeCtx.strokeRect(0, 0, this.MIN_CANVAS_SIZE, this.canvasSize.y);
                     } else {
-                        resizeCtx.strokeRect(0, 0, event.offsetX, this.canvasSize.y / 2);
+                        resizeCtx.strokeRect(0, 0, event.offsetX, this.canvasSize.y);
                     }
                     break;
                 case ResizeDirection.verticalAndHorizontal:
                     let rectWidth = 0;
                     let rectHeight = 0;
                     if (event.offsetY < this.MIN_CANVAS_SIZE) {
-                        rectHeight = this.MIN_CANVAS_SIZE / 2;
+                        rectHeight = this.MIN_CANVAS_SIZE;
                     } else {
-                        rectHeight = event.offsetY / 2;
+                        rectHeight = event.offsetY;
                     }
                     if (event.offsetX < this.MIN_CANVAS_SIZE) {
                         rectWidth = this.MIN_CANVAS_SIZE;
@@ -92,23 +92,24 @@ export class CanvasResizerService {
     }
 
     private changeCanvasY(event: MouseEvent): void {
-        if (event.clientY < this.MIN_CANVAS_SIZE) {
+        if (event.offsetY < this.MIN_CANVAS_SIZE) {
             this.canvasSize.y = this.MIN_CANVAS_SIZE;
         } else {
-            this.canvasSize.y = event.clientY;
+            this.canvasSize.y = event.offsetY;
         }
     }
 
     private changeCanvasX(event: MouseEvent): void {
-        if (event.clientX - this.SIDEBAR_WIDTH - this.ICON_WIDTH < this.MIN_CANVAS_SIZE) {
+        if (event.offsetX < this.MIN_CANVAS_SIZE) {
             this.canvasSize.x = this.MIN_CANVAS_SIZE;
         } else {
-            this.canvasSize.x = event.clientX - this.SIDEBAR_WIDTH - this.ICON_WIDTH;
+            this.canvasSize.x = event.offsetX;
         }
     }
 
     // https://stackoverflow.com/questions/8977369/drawing-png-to-a-canvas-element-not-showing-transparency
     onResizeUp(event: MouseEvent, resizeCtx: CanvasRenderingContext2D, baseCanvas: HTMLCanvasElement): void {
+        console.log(event.offsetX + ' ' + event.offsetY);
         if (this.isResizeDown) {
             const originalImage = new Image();
             originalImage.src = baseCanvas.toDataURL('image/png', 1);
@@ -130,7 +131,7 @@ export class CanvasResizerService {
                 ctx.drawImage(originalImage, 0, 0);
             };
         }
-        this.clearCanvas(resizeCtx, { x: 1920 + 40, y: this.DEFAULT_HEIGHT });
+        this.clearCanvas(resizeCtx, { x: 3000, y: 3000 });
         this.resizerIndex = this.NORMAL_INDEX;
         this.isResizeDown = false;
         this.resizeCursor = cursorName.default;

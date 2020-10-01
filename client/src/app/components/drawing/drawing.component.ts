@@ -17,16 +17,8 @@ export class DrawingComponent implements AfterViewInit {
         return this.canvasResizerService.canvasSize.x;
     }
 
-    get workWidth(): number {
-        return this.width + this.canvasResizerService.WORK_AREA_PADDING_SIZE;
-    }
-
     get height(): number {
         return this.canvasResizerService.canvasSize.y;
-    }
-
-    get workHeight(): number {
-        return this.height + this.canvasResizerService.WORK_AREA_PADDING_SIZE;
     }
 
     get cursorUsed(): string {
@@ -96,11 +88,8 @@ export class DrawingComponent implements AfterViewInit {
 
     // resize
     onResizeDown(event: MouseEvent): void {
-        const isVertical = this.canvasResizerService.canvasSize.y < event.clientY && event.clientY < this.canvasResizerService.canvasSize.y + 30;
-        const isHorizontal =
-            this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH < event.clientX &&
-            event.clientX <
-                this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH + 30;
+        const isVertical = this.canvasResizerService.canvasSize.y < event.offsetY && event.offsetY < this.canvasResizerService.canvasSize.y + 30;
+        const isHorizontal = this.canvasResizerService.canvasSize.x < event.offsetX && event.offsetX < this.canvasResizerService.canvasSize.x + 30;
 
         if (isVertical && isHorizontal) {
             this.canvasResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
@@ -118,12 +107,10 @@ export class DrawingComponent implements AfterViewInit {
         if (this.canvasResizerService.isResizeDown) {
             this.canvasResizerService.onResize(event, this.resizeCtx);
         } else {
-            const isVertical = this.canvasResizerService.canvasSize.y < event.clientY && event.clientY < this.canvasResizerService.canvasSize.y + 30;
+            const isVertical = this.canvasResizerService.canvasSize.y < event.offsetY && event.offsetY < this.canvasResizerService.canvasSize.y + 30;
             const isHorizontal =
-                this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH <
-                    event.clientX &&
-                event.clientX <
-                    this.canvasResizerService.canvasSize.x + this.canvasResizerService.SIDEBAR_WIDTH + this.canvasResizerService.ICON_WIDTH + 30;
+                this.canvasResizerService.canvasSize.x < event.offsetX && event.offsetX < this.canvasResizerService.canvasSize.x + 30;
+
             if (isVertical) {
                 this.canvasResizerService.resizeCursor = cursorName.resizeVertical;
             }
