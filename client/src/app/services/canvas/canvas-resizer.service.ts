@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
 import { cursorName } from '@app/classes/cursor-name';
 import { MouseButton } from '@app/classes/mouse-button';
+import {
+    ICON_WIDTH,
+    MIN_CANVAS_SIZE,
+    RESIZE_DASH_SPACING,
+    RESIZE_DASH_THICKNESS,
+    SIDEBAR_WIDTH,
+    WORK_AREA_PADDING_SIZE,
+} from '@app/classes/resize-canvas';
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { Vec2 } from '@app/classes/vec2';
 
@@ -8,11 +16,7 @@ import { Vec2 } from '@app/classes/vec2';
     providedIn: 'root',
 })
 export class CanvasResizerService {
-    MIN_CANVAS_SIZE: number = 250;
-    WORK_AREA_PADDING_SIZE: number = 100;
-    SIDEBAR_WIDTH: number = 226;
-    ICON_WIDTH: number = 50;
-    DEFAULT_WIDTH: number = (window.innerWidth - this.SIDEBAR_WIDTH - this.ICON_WIDTH) / 2;
+    DEFAULT_WIDTH: number = (window.innerWidth - SIDEBAR_WIDTH - ICON_WIDTH) / 2;
     DEFAULT_HEIGHT: number = window.innerHeight / 2;
 
     canvasSize: Vec2 = { x: this.DEFAULT_WIDTH, y: this.DEFAULT_HEIGHT };
@@ -21,19 +25,13 @@ export class CanvasResizerService {
     resizeDirection: ResizeDirection;
     resizeCursor: string = cursorName.default;
 
-    resizeWidth: number = window.innerWidth - this.SIDEBAR_WIDTH - this.ICON_WIDTH;
+    resizeWidth: number = window.innerWidth - SIDEBAR_WIDTH - ICON_WIDTH;
     resizeHeight: number = window.innerHeight;
-
-    RESIZE_DASH_SPACING: number = 10;
-    RESIZE_DASH_THICKNESS: number = 1;
 
     // Resizer canvas index
     PRIORITY_INDEX: number = 10;
     NORMAL_INDEX: number = 1;
     resizerIndex: number = 1;
-
-    // Resizer hook thickness
-    HOOK_THICKNESS: number = 30;
 
     private clearCanvas(context: CanvasRenderingContext2D, dimension: Vec2): void {
         context.clearRect(0, 0, dimension.x, dimension.y);
@@ -48,20 +46,20 @@ export class CanvasResizerService {
     }
 
     private changeResizeY(event: MouseEvent, crs: CanvasResizerService): number {
-        if (event.offsetY < crs.MIN_CANVAS_SIZE) {
-            return crs.MIN_CANVAS_SIZE;
-        } else if (event.offsetY > crs.resizeHeight - crs.WORK_AREA_PADDING_SIZE) {
-            return crs.resizeHeight - crs.WORK_AREA_PADDING_SIZE;
+        if (event.offsetY < MIN_CANVAS_SIZE) {
+            return MIN_CANVAS_SIZE;
+        } else if (event.offsetY > crs.resizeHeight - WORK_AREA_PADDING_SIZE) {
+            return crs.resizeHeight - WORK_AREA_PADDING_SIZE;
         } else {
             return event.offsetY;
         }
     }
 
     private changeResizeX(event: MouseEvent, crs: CanvasResizerService): number {
-        if (event.offsetX < crs.MIN_CANVAS_SIZE) {
-            return crs.MIN_CANVAS_SIZE;
-        } else if (event.offsetX > crs.resizeWidth - crs.WORK_AREA_PADDING_SIZE) {
-            return crs.resizeWidth - crs.WORK_AREA_PADDING_SIZE;
+        if (event.offsetX < MIN_CANVAS_SIZE) {
+            return MIN_CANVAS_SIZE;
+        } else if (event.offsetX > crs.resizeWidth - WORK_AREA_PADDING_SIZE) {
+            return crs.resizeWidth - WORK_AREA_PADDING_SIZE;
         } else {
             return event.offsetX;
         }
@@ -70,9 +68,9 @@ export class CanvasResizerService {
     onResize(event: MouseEvent, resizeCtx: CanvasRenderingContext2D): void {
         if (this.isResizeDown) {
             this.clearCanvas(resizeCtx, { x: this.resizeWidth, y: this.resizeHeight });
-            resizeCtx.setLineDash([this.RESIZE_DASH_SPACING]);
+            resizeCtx.setLineDash([RESIZE_DASH_SPACING]);
             resizeCtx.strokeStyle = '#000000';
-            resizeCtx.lineWidth = this.RESIZE_DASH_THICKNESS;
+            resizeCtx.lineWidth = RESIZE_DASH_THICKNESS;
             switch (this.resizeDirection) {
                 case ResizeDirection.vertical:
                     resizeCtx.strokeRect(0, 0, this.canvasSize.x, this.changeResizeY(event, this));
@@ -88,20 +86,20 @@ export class CanvasResizerService {
     }
 
     private changeCanvasY(event: MouseEvent): void {
-        if (event.offsetY < this.MIN_CANVAS_SIZE) {
-            this.canvasSize.y = this.MIN_CANVAS_SIZE;
-        } else if (event.offsetY > this.resizeHeight - this.WORK_AREA_PADDING_SIZE) {
-            this.canvasSize.y = this.resizeHeight - this.WORK_AREA_PADDING_SIZE;
+        if (event.offsetY < MIN_CANVAS_SIZE) {
+            this.canvasSize.y = MIN_CANVAS_SIZE;
+        } else if (event.offsetY > this.resizeHeight - WORK_AREA_PADDING_SIZE) {
+            this.canvasSize.y = this.resizeHeight - WORK_AREA_PADDING_SIZE;
         } else {
             this.canvasSize.y = event.offsetY;
         }
     }
 
     private changeCanvasX(event: MouseEvent): void {
-        if (event.offsetX < this.MIN_CANVAS_SIZE) {
-            this.canvasSize.x = this.MIN_CANVAS_SIZE;
-        } else if (event.offsetX > this.resizeWidth - this.WORK_AREA_PADDING_SIZE) {
-            this.canvasSize.x = this.resizeWidth - this.WORK_AREA_PADDING_SIZE;
+        if (event.offsetX < MIN_CANVAS_SIZE) {
+            this.canvasSize.x = MIN_CANVAS_SIZE;
+        } else if (event.offsetX > this.resizeWidth - WORK_AREA_PADDING_SIZE) {
+            this.canvasSize.x = this.resizeWidth - WORK_AREA_PADDING_SIZE;
         } else {
             this.canvasSize.x = event.offsetX;
         }
