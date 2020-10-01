@@ -72,8 +72,7 @@ export class EraserService extends Tool {
         }
         ctx.stroke();
     }
-
-    private clearPath(): void {
+    clearPath(): void {
         this.pathData = [];
     }
 }
