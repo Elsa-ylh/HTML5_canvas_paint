@@ -15,6 +15,7 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
+import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 
 @Component({
@@ -48,6 +49,7 @@ export class SidebarComponent {
         public rectangleService: RectangleService,
         public ellipseService: EllipseService,
         public brushService: BrushService,
+        public pencilService: PencilService,
         public eraserService: EraserService,
         public lineService: LineService,
     ) {
@@ -77,7 +79,7 @@ export class SidebarComponent {
     }
 
     pickPencil(): void {
-        this.drawingService.cursorUsed = cursorName.default;
+        this.drawingService.cursorUsed = cursorName.pencil;
         this.toolService.switchTool(ToolUsed.Pencil);
     }
 
@@ -113,7 +115,7 @@ export class SidebarComponent {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Line);
         this.toolService.currentTool.subToolSelect = SubToolselected.tool1;
-        this.pxSize = this.lineService.secondeSizePixel;
+        this.pxSize = this.lineService.secondarySizePixel;
         this.pxSizePoint = this.lineService.lineWidth;
     }
 
