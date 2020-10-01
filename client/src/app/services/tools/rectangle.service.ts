@@ -3,6 +3,7 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
@@ -10,8 +11,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class RectangleService extends Tool {
     lineWidth: number = 1;
-    fillColor: string = '#ffb366';
-    strokeColor: string = '#00ccff';
+    fillColor: string;
+    strokeColor: string;
     square: boolean = false;
     height: number;
     width: number;
@@ -21,13 +22,15 @@ export class RectangleService extends Tool {
     mouseEnter: boolean = false;
     mouseOut: boolean = false;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService) {
         super(drawingService);
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         this.drawingService.clearEffectTool();
+        this.strokeColor = this.colorService.getprimaryColor();
+        this.fillColor = this.colorService.getsecondaryColor();
         if (this.mouseEnter) {
             this.onMouseUp(event);
         }
@@ -86,7 +89,7 @@ export class RectangleService extends Tool {
     }
 
     drawFillRectangle(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
-        ctx.fillStyle = this.fillColor;
+        ctx.fillStyle = this.colorService.getsecondaryColor();
 
         if (this.square) {
             ctx.fillRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
@@ -96,7 +99,7 @@ export class RectangleService extends Tool {
     }
 
     drawRectangleOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
-        ctx.strokeStyle = this.strokeColor;
+        ctx.strokeStyle = this.colorService.getprimaryColor();
         ctx.lineWidth = this.lineWidth;
 
         if (this.square) {
@@ -107,8 +110,9 @@ export class RectangleService extends Tool {
     }
 
     drawFillRectangleOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
-        ctx.fillStyle = this.fillColor;
-        ctx.strokeStyle = this.strokeColor;
+        ctx.strokeStyle = this.colorService.getprimaryColor();
+        ctx.fillStyle = this.colorService.getsecondaryColor();
+
         ctx.lineWidth = this.lineWidth;
 
         if (this.square) {
