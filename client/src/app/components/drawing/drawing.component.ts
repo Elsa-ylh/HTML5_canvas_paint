@@ -1,5 +1,11 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { cursorName } from '@app/classes/cursor-name';
+import {
+    RESIZE_CORNER_PROPORTION,
+    RESIZE_HOOK_THICKNESS,
+    RESIZE_MIDDLE_LOWER_PROPORTION,
+    RESIZE_MIDDLE_UPPER_PROPORTION,
+} from '@app/classes/resize-canvas';
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -11,14 +17,14 @@ import { ToolService } from '@app/services/tool-service';
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit {
-    constructor(private drawingService: DrawingService, private toolService: ToolService, public canvasResizerService: CanvasResizerService) {}
+    constructor(private drawingService: DrawingService, private toolService: ToolService, public crs: CanvasResizerService) {}
 
     get width(): number {
-        return this.canvasResizerService.canvasSize.x;
+        return this.crs.canvasSize.x;
     }
 
     get height(): number {
-        return this.canvasResizerService.canvasSize.y;
+        return this.crs.canvasSize.y;
     }
 
     get cursorUsed(): string {
@@ -65,83 +71,71 @@ export class DrawingComponent implements AfterViewInit {
 
     onResizeDown(event: MouseEvent): void {
         const isVertical =
-            this.canvasResizerService.canvasSize.y < event.offsetY &&
-            event.offsetY < this.canvasResizerService.canvasSize.y + this.canvasResizerService.HOOK_THICKNESS &&
-            // tslint:disable-next-line: no-magic-numbers
-            this.canvasResizerService.canvasSize.x * (1 / 3) < event.offsetX &&
-            // tslint:disable-next-line: no-magic-numbers
-            event.offsetX < this.canvasResizerService.canvasSize.x * (2 / 3);
+            this.crs.canvasSize.y < event.offsetY &&
+            event.offsetY < this.crs.canvasSize.y + RESIZE_HOOK_THICKNESS &&
+            this.crs.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetX &&
+            event.offsetX < this.crs.canvasSize.x * RESIZE_MIDDLE_UPPER_PROPORTION;
         const isHorizontal =
-            this.canvasResizerService.canvasSize.x < event.offsetX &&
-            event.offsetX < this.canvasResizerService.canvasSize.x + this.canvasResizerService.HOOK_THICKNESS &&
-            // tslint:disable-next-line: no-magic-numbers
-            this.canvasResizerService.canvasSize.y * (1 / 3) < event.offsetY &&
-            // tslint:disable-next-line: no-magic-numbers
-            event.offsetY < this.canvasResizerService.canvasSize.y * (2 / 3);
+            this.crs.canvasSize.x < event.offsetX &&
+            event.offsetX < this.crs.canvasSize.x + RESIZE_HOOK_THICKNESS &&
+            this.crs.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetY &&
+            event.offsetY < this.crs.canvasSize.y * RESIZE_MIDDLE_UPPER_PROPORTION;
         const isVerticalAndHorizontal =
-            // tslint:disable-next-line: no-magic-numbers
-            this.canvasResizerService.canvasSize.y * (8 / 10) < event.offsetY &&
-            event.offsetY < this.canvasResizerService.canvasSize.y + this.canvasResizerService.HOOK_THICKNESS &&
-            // tslint:disable-next-line: no-magic-numbers
-            this.canvasResizerService.canvasSize.x * (8 / 10) < event.offsetX &&
-            event.offsetX < this.canvasResizerService.canvasSize.x + this.canvasResizerService.HOOK_THICKNESS;
+            this.crs.canvasSize.y * RESIZE_CORNER_PROPORTION < event.offsetY &&
+            event.offsetY < this.crs.canvasSize.y + RESIZE_HOOK_THICKNESS &&
+            this.crs.canvasSize.x * RESIZE_CORNER_PROPORTION < event.offsetX &&
+            event.offsetX < this.crs.canvasSize.x + RESIZE_HOOK_THICKNESS;
 
         if (isVerticalAndHorizontal) {
-            this.canvasResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
-            this.canvasResizerService.onResizeDown(event, ResizeDirection.verticalAndHorizontal);
+            this.crs.resizeCursor = cursorName.resizeVerticalAndHorizontal;
+            this.crs.onResizeDown(event, ResizeDirection.verticalAndHorizontal);
         } else if (isVertical) {
-            this.canvasResizerService.resizeCursor = cursorName.resizeVertical;
-            this.canvasResizerService.onResizeDown(event, ResizeDirection.vertical);
+            this.crs.resizeCursor = cursorName.resizeVertical;
+            this.crs.onResizeDown(event, ResizeDirection.vertical);
         } else if (isHorizontal) {
-            this.canvasResizerService.resizeCursor = cursorName.resizeHorizontal;
-            this.canvasResizerService.onResizeDown(event, ResizeDirection.horizontal);
+            this.crs.resizeCursor = cursorName.resizeHorizontal;
+            this.crs.onResizeDown(event, ResizeDirection.horizontal);
         }
     }
 
     onResizeMove(event: MouseEvent): void {
-        if (this.canvasResizerService.isResizeDown) {
-            this.canvasResizerService.onResize(event, this.resizeCtx);
+        if (this.crs.isResizeDown) {
+            this.crs.onResize(event, this.resizeCtx);
         } else {
             const isVertical =
-                this.canvasResizerService.canvasSize.y < event.offsetY &&
-                event.offsetY < this.canvasResizerService.canvasSize.y + this.canvasResizerService.HOOK_THICKNESS &&
-                // tslint:disable-next-line: no-magic-numbers
-                this.canvasResizerService.canvasSize.x * (1 / 3) < event.offsetX &&
-                // tslint:disable-next-line: no-magic-numbers
-                event.offsetX < this.canvasResizerService.canvasSize.x * (2 / 3);
+                this.crs.canvasSize.y < event.offsetY &&
+                event.offsetY < this.crs.canvasSize.y + RESIZE_HOOK_THICKNESS &&
+                this.crs.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetX &&
+                event.offsetX < this.crs.canvasSize.x * RESIZE_MIDDLE_UPPER_PROPORTION;
             const isHorizontal =
-                this.canvasResizerService.canvasSize.x < event.offsetX &&
-                event.offsetX < this.canvasResizerService.canvasSize.x + this.canvasResizerService.HOOK_THICKNESS &&
-                // tslint:disable-next-line: no-magic-numbers
-                this.canvasResizerService.canvasSize.y * (1 / 3) < event.offsetY &&
-                // tslint:disable-next-line: no-magic-numbers
-                event.offsetY < this.canvasResizerService.canvasSize.y * (2 / 3);
+                this.crs.canvasSize.x < event.offsetX &&
+                event.offsetX < this.crs.canvasSize.x + RESIZE_HOOK_THICKNESS &&
+                this.crs.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetY &&
+                event.offsetY < this.crs.canvasSize.y * RESIZE_MIDDLE_UPPER_PROPORTION;
             const isVerticalAndHorizontal =
-                // tslint:disable-next-line: no-magic-numbers
-                this.canvasResizerService.canvasSize.y * (8 / 10) < event.offsetY &&
-                event.offsetY < this.canvasResizerService.canvasSize.y + this.canvasResizerService.HOOK_THICKNESS &&
-                // tslint:disable-next-line: no-magic-numbers
-                this.canvasResizerService.canvasSize.x * (8 / 10) < event.offsetX &&
-                event.offsetX < this.canvasResizerService.canvasSize.x + this.canvasResizerService.HOOK_THICKNESS;
+                this.crs.canvasSize.y * RESIZE_CORNER_PROPORTION < event.offsetY &&
+                event.offsetY < this.crs.canvasSize.y + RESIZE_HOOK_THICKNESS &&
+                this.crs.canvasSize.x * RESIZE_CORNER_PROPORTION < event.offsetX &&
+                event.offsetX < this.crs.canvasSize.x + RESIZE_HOOK_THICKNESS;
 
             if (isVerticalAndHorizontal) {
-                this.canvasResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
+                this.crs.resizeCursor = cursorName.resizeVerticalAndHorizontal;
             } else if (isVertical) {
-                this.canvasResizerService.resizeCursor = cursorName.resizeVertical;
+                this.crs.resizeCursor = cursorName.resizeVertical;
             } else if (isHorizontal) {
-                this.canvasResizerService.resizeCursor = cursorName.resizeHorizontal;
+                this.crs.resizeCursor = cursorName.resizeHorizontal;
             } else {
-                this.canvasResizerService.resizeCursor = cursorName.default;
+                this.crs.resizeCursor = cursorName.default;
             }
         }
     }
 
     onResizeUp(event: MouseEvent): void {
-        this.canvasResizerService.onResizeUp(event, this.resizeCtx, this.baseCanvas.nativeElement);
+        this.crs.onResizeUp(event, this.resizeCtx, this.baseCanvas.nativeElement);
     }
 
     onResizeOut(event: MouseEvent): void {
-        this.canvasResizerService.onResizeOut(event, this.resizeCtx, this.baseCanvas.nativeElement);
+        this.crs.onResizeOut(event, this.resizeCtx, this.baseCanvas.nativeElement);
     }
 
     @HostListener('window:keydown.shift', ['$event'])
