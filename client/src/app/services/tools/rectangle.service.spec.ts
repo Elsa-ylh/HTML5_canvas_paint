@@ -16,6 +16,7 @@ describe('Service: Rectangle', () => {
     let drawFillRectangleSpy: jasmine.Spy<any>;
     let drawRectangleOutlineSpy: jasmine.Spy<any>;
     let drawFillRectangleOutlineSpy: jasmine.Spy<any>;
+    let onMouseUpSpy: jasmine.Spy<any>;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -23,7 +24,7 @@ describe('Service: Rectangle', () => {
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'clearEffectTool']);
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
@@ -32,6 +33,7 @@ describe('Service: Rectangle', () => {
         drawFillRectangleSpy = spyOn<any>(service, 'drawFillRectangle').and.callThrough();
         drawRectangleOutlineSpy = spyOn<any>(service, 'drawRectangleOutline').and.callThrough();
         drawFillRectangleOutlineSpy = spyOn<any>(service, 'drawFillRectangleOutline').and.callThrough();
+        onMouseUpSpy = spyOn<any>(service, 'onMouseUp').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -263,5 +265,36 @@ describe('Service: Rectangle', () => {
         service.OnShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawFillRectangleOutlineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onMouseDown should call onMouseUp if the mouse enter the canvas', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseEnter = true;
+        service.onMouseDown(mouseEvent);
+        expect(onMouseUpSpy).toHaveBeenCalled();
+    });
+
+    it(' should change mouseOut value to true when the mouse is living the canvas while left click is pressed', () => {
+        service.mouseDown = true;
+        service.onMouseOut(mouseEvent);
+        expect(service.mouseOut).toEqual(true);
+    });
+
+    it(' should change mouseEnter value to true when the mouse is entering the canvas after leaving it while drawing', () => {
+        service.mouseOut = true;
+        service.onMouseEnter(mouseEvent);
+        expect(service.mouseEnter).toEqual(true);
+    });
+
+    it(' should change mouseEnter value to true when the mouse is entering the canvas after leaving it while drawing', () => {
+        service.mouseOut = true;
+        service.onMouseEnter(mouseEvent);
+        expect(service.mouseEnter).toEqual(true);
+    });
+
+    it(' should not change mouseEnter value to true when the mouse is entering the canvas after leaving it while not drawing', () => {
+        service.mouseOut = true;
+        service.onMouseEnter(mouseEvent);
+        expect(service.mouseEnter).toEqual(true);
     });
 });
