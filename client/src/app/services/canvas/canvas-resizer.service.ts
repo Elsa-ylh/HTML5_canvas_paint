@@ -47,21 +47,21 @@ export class CanvasResizerService {
         }
     }
 
-    private changeResizeY(event: MouseEvent): number {
-        if (event.offsetY < this.MIN_CANVAS_SIZE) {
-            return this.MIN_CANVAS_SIZE;
-        } else if (event.offsetY > this.resizeHeight - this.WORK_AREA_PADDING_SIZE) {
-            return this.resizeHeight - this.WORK_AREA_PADDING_SIZE;
+    private changeResizeY(event: MouseEvent, crs: CanvasResizerService): number {
+        if (event.offsetY < crs.MIN_CANVAS_SIZE) {
+            return crs.MIN_CANVAS_SIZE;
+        } else if (event.offsetY > crs.resizeHeight - crs.WORK_AREA_PADDING_SIZE) {
+            return crs.resizeHeight - crs.WORK_AREA_PADDING_SIZE;
         } else {
             return event.offsetY;
         }
     }
 
-    private changeResizeX(event: MouseEvent): number {
-        if (event.offsetX < this.MIN_CANVAS_SIZE) {
-            return this.MIN_CANVAS_SIZE;
-        } else if (event.offsetX > this.resizeWidth - this.WORK_AREA_PADDING_SIZE) {
-            return this.resizeWidth - this.WORK_AREA_PADDING_SIZE;
+    private changeResizeX(event: MouseEvent, crs: CanvasResizerService): number {
+        if (event.offsetX < crs.MIN_CANVAS_SIZE) {
+            return crs.MIN_CANVAS_SIZE;
+        } else if (event.offsetX > crs.resizeWidth - crs.WORK_AREA_PADDING_SIZE) {
+            return crs.resizeWidth - crs.WORK_AREA_PADDING_SIZE;
         } else {
             return event.offsetX;
         }
@@ -75,13 +75,13 @@ export class CanvasResizerService {
             resizeCtx.lineWidth = this.RESIZE_DASH_THICKNESS;
             switch (this.resizeDirection) {
                 case ResizeDirection.vertical:
-                    resizeCtx.strokeRect(0, 0, this.canvasSize.x, this.changeResizeY(event));
+                    resizeCtx.strokeRect(0, 0, this.canvasSize.x, this.changeResizeY(event, this));
                     break;
                 case ResizeDirection.horizontal:
-                    resizeCtx.strokeRect(0, 0, this.changeResizeX(event), this.canvasSize.y);
+                    resizeCtx.strokeRect(0, 0, this.changeResizeX(event, this), this.canvasSize.y);
                     break;
                 case ResizeDirection.verticalAndHorizontal:
-                    resizeCtx.strokeRect(0, 0, this.changeResizeX(event), this.changeResizeY(event));
+                    resizeCtx.strokeRect(0, 0, this.changeResizeX(event, this), this.changeResizeY(event, this));
                     break;
             }
         }

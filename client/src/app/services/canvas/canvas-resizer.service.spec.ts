@@ -64,27 +64,27 @@ describe('Service: CanvasResizer', () => {
         expect(canvasResizerService.resizeDirection).toEqual(ResizeDirection.verticalAndHorizontal);
     });
     it('changeResizeY is MIN_CANVAS_SIZE', () => {
-        const numberResult: number = changeResizeYSpy(events.mouseEvent2);
+        const numberResult: number = changeResizeYSpy(events.mouseEvent2, canvasResizerService);
         expect(numberResult).toEqual(canvasResizerService.MIN_CANVAS_SIZE);
     });
     it('changeResizeX is MIN_CANVAS_SIZE', () => {
-        const numberResult: number = changeResizeXSpy(events.mouseEvent2);
+        const numberResult: number = changeResizeXSpy(events.mouseEvent2, canvasResizerService);
         expect(numberResult).toEqual(canvasResizerService.MIN_CANVAS_SIZE);
     });
     it('changeResizeY is ouverSize', () => {
-        const numberResult: number = changeResizeYSpy(events.mouseEventOutSate);
-        expect(numberResult).toEqual(canvasResizerService.resizeWidth - canvasResizerService.WORK_AREA_PADDING_SIZE);
+        const numberResult: number = changeResizeYSpy(events.mouseEventOutSate, canvasResizerService);
+        expect(numberResult).toEqual(canvasResizerService.resizeHeight - canvasResizerService.WORK_AREA_PADDING_SIZE);
     });
     it('changeResizeX is ouverSize', () => {
-        const numberResult: number = changeResizeXSpy(events.mouseEventOutSate);
+        const numberResult: number = changeResizeXSpy(events.mouseEventOutSate, canvasResizerService);
         expect(numberResult).toEqual(canvasResizerService.resizeWidth - canvasResizerService.WORK_AREA_PADDING_SIZE);
     });
     it('changeResizeY is good size', () => {
-        const numberResult: number = changeResizeYSpy(events.mouseEventX499Y500);
+        const numberResult: number = changeResizeYSpy(events.mouseEventX499Y500, canvasResizerService);
         expect(numberResult).toEqual(events.mouseEventX499Y500.offsetY);
     });
     it('changeResizeX is good size', () => {
-        const numberResult: number = changeResizeXSpy(events.mouseEventX499Y500);
+        const numberResult: number = changeResizeXSpy(events.mouseEventX499Y500, canvasResizerService);
         expect(numberResult).toEqual(events.mouseEventX499Y500.offsetX);
     });
     it('onResize is good vertical', () => {
