@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { RGB } from '@app/classes/rgb';
+import { RGBA } from '@app/classes/rgba';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService, GradientStyle } from '@app/services/color/color.service';
 
@@ -181,7 +181,7 @@ export class ColorComponent implements AfterViewInit {
         this.colorService.setpreviewColor(this.colorService.numeralToHex(this.colorService.getColor(position, this.horizontalCtx)));
     }
 
-    sendInput(rgb: RGB): void {
+    sendInput(rgb: RGBA): void {
         if (rgb.red <= 255 && rgb.green <= 255 && rgb.blue <= 255) {
             this.color = this.colorService.numeralToHex(rgb);
             this.colorService.setprimaryColor(this.color);
@@ -192,7 +192,7 @@ export class ColorComponent implements AfterViewInit {
     }
     openWarningMessage(templateRef: any): void {
         this.matDialog.open(templateRef, {
-            width: '200px',
+            width: '300px',
         });
     }
 }
