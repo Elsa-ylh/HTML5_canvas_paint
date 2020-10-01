@@ -13,7 +13,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
-    public pencilSize: number = 1;
+    pencilSize: number = 1;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
