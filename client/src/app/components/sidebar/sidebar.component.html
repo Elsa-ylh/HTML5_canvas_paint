@@ -40,20 +40,7 @@
     </div>
     <div class="toolbar" *ngIf="showAttributes">
         <div class="attributes" [ngSwitch]="this.toolService.currentToolName">
-            <mat-grid-list cols="6" *ngSwitchCase="0">
-                <mat-grid-tile colspan="6"> This is the settings to decrease or increase the size of a button</mat-grid-tile>
-                <mat-grid-tile colspan="6" rowspan="4">This is a great software for everyone. Let's keep doing UI with this tooling.</mat-grid-tile>
-                <mat-grid-tile colspan="6">
-                    <mat-slider tickInterval="1000" min="1" max="100000"></mat-slider>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6">
-                    <mat-form-field class="example-full-width">
-                        <mat-label>Leave a comment</mat-label>
-                        <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
-                    </mat-form-field>
-                </mat-grid-tile>
-            </mat-grid-list>
-
+            <mat-grid-list cols="6" *ngSwitchCase="0"> </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="1">
                 <mat-grid-tile> </mat-grid-tile>
                 <mat-grid-tile colspan="6" aria-rowspan="8"> Changer la taille du crayon </mat-grid-tile>
@@ -121,7 +108,8 @@
                         <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickRectangle(1)">Plein</mat-button-toggle>
                         <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickRectangle(2)">Contour</mat-button-toggle>
                         <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickRectangle(3)"
-                            >Plein avec contour</mat-button-toggle>
+                            >Plein avec contour</mat-button-toggle
+                        >
                     </mat-button-toggle-group>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="2"> Ce slider permet de modifier l'épaisseur du trait de contour des rectangles</mat-grid-tile>
@@ -129,7 +117,9 @@
                     <mat-slider min="1" max="50" step="1" [(ngModel)]="rectangleService.lineWidth"></mat-slider
                     ><samp>{{ rectangleService.lineWidth }}px</samp>
                 </mat-grid-tile>
-                <mat-grid-tile colspan="6"><samp>épaisseur du contour: {{ rectangleService.lineWidth }}px</samp></mat-grid-tile>
+                <mat-grid-tile colspan="6"
+                    ><samp>épaisseur du contour: {{ rectangleService.lineWidth }}px</samp></mat-grid-tile
+                >
             </mat-grid-list>
 
             <mat-grid-list cols="6" *ngSwitchCase="6">
@@ -146,9 +136,11 @@
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="3"> Ce slider permet de modifier l'épaisseur des lignes des coutours de l'ellipse</mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                  <mat-slider min="1" max="50" step="1" [(ngModel)]="ellipseService.lineWidth"></mat-slider>
+                    <mat-slider min="1" max="50" step="1" [(ngModel)]="ellipseService.lineWidth"></mat-slider>
                 </mat-grid-tile>
-                <mat-grid-tile colspan="6"><samp>épaisseur du contour: {{ ellipseService.lineWidth }}px</samp></mat-grid-tile>
+                <mat-grid-tile colspan="6"
+                    ><samp>épaisseur du contour: {{ ellipseService.lineWidth }}px</samp></mat-grid-tile
+                >
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="7">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
