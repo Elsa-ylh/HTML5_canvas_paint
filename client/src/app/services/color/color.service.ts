@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
+import { RGB } from '@app/classes/rgb';
 import { Vec2 } from '@app/classes/vec2';
-
-export type RGB = {
-    red: number;
-    green: number;
-    blue: number;
-    alpha: number;
-};
 
 export enum GradientStyle {
     rainbow,

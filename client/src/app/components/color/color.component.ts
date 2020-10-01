@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { RGB } from '@app/classes/rgb';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService, GradientStyle } from '@app/services/color/color.service';
 
@@ -45,6 +46,8 @@ export class ColorComponent implements AfterViewInit {
     opacitySliderCtx: CanvasRenderingContext2D;
     previewopacitySliderCtx: CanvasRenderingContext2D;
     cursorSliderOpacity: any;
+
+    color: string;
 
     constructor(private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer, public colorService: ColorService) {
         this.iconRegistry.addSvgIcon('red', this.sanitizer.bypassSecurityTrustResourceUrl('assets/apple.svg'));
@@ -163,5 +166,10 @@ export class ColorComponent implements AfterViewInit {
     onMouseOverHorizontal(event: MouseEvent): void {
         const position = { x: event.offsetX, y: event.offsetY };
         this.colorService.setpreviewColor(this.colorService.numeralToHex(this.colorService.getColor(position, this.horizontalCtx)));
+    }
+
+    sendInput(rgb: RGB): void {
+        this.color = this.colorService.numeralToHex(rgb);
+        this.colorService.setprimaryColor(this.color);
     }
 }
