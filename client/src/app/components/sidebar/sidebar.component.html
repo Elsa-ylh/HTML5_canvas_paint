@@ -67,21 +67,13 @@
                 <mat-grid-tile colspan="6" aria-rowspan="8"> Taille de l'efface : {{ eraserService.eraserWidth }} px </mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="3">
-                <mat-grid-tile colspan="6">
-                    <button mat-raised-button (click)="pickBrush(1)">pinceau 1</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6">
-                    <button mat-raised-button (click)="pickBrush(2)">pinceau 2</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6">
-                    <button mat-raised-button (click)="pickBrush(3)">pinceau 3</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6">
-                    <button mat-raised-button (click)="pickBrush(4)">pinceau 4</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6">
-                    <button mat-raised-button (click)="pickBrush(5)">pinceau 5</button>
-                </mat-grid-tile>
+                <mat-button-toggle-group vertical="true">
+                    <mat-button-toggle (click)="pickBrush(1)">pinceau 1</mat-button-toggle>
+                    <mat-button-toggle (click)="pickBrush(2)">pinceau 2</mat-button-toggle>
+                    <mat-button-toggle (click)="pickBrush(3)">pinceau 3</mat-button-toggle>
+                    <mat-button-toggle (click)="pickBrush(4)">pinceau 4</mat-button-toggle>
+                    <mat-button-toggle (click)="pickBrush(5)">pinceau 5</mat-button-toggle>
+                </mat-button-toggle-group>
                 <mat-grid-tile colspan="6">
                     <mat-slider max="50" min="1" [(ngModel)]="pxSize" (input)="sliderSliding($event)" [(ngModel)]="brushService.lineWidth">
                     </mat-slider

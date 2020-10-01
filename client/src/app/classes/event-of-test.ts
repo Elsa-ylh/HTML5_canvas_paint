@@ -1,0 +1,29 @@
+import { MouseButton } from '@app/classes/mouse-button';
+export class EventOfTest {
+    mouseEvent: MouseEvent = {
+        offsetX: 25,
+        offsetY: 10,
+        button: MouseButton.Left,
+    } as MouseEvent;
+    mouseEvent1: MouseEvent = {
+        offsetX: 0,
+        offsetY: 0,
+        button: MouseButton.Left,
+    } as MouseEvent;
+    mouseEvent2: MouseEvent = {
+        offsetX: 50,
+        offsetY: 50,
+        button: MouseButton.Left,
+    } as MouseEvent;
+    mouseEvent3: MouseEvent = {
+        offsetX: 0,
+        offsetY: 10,
+        button: MouseButton.Left,
+    } as MouseEvent;
+    mouseEventR: MouseEvent = {
+        offsetX: 0,
+        offsetY: 0,
+        button: MouseButton.Right,
+    } as MouseEvent;
+    backspceEvant: KeyboardEvent = new KeyboardEvent('backspace');
+}
