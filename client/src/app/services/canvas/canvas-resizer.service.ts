@@ -48,7 +48,6 @@ export class CanvasResizerService {
         if (this.isResizeDown) {
             this.resizerIndex = this.PRIORITY_INDEX; // We now put the whole surface in the foregound.
             this.resizeDirection = resizeDirection;
-            console.log(event.offsetX + ' ' + event.offsetY);
         }
     }
 
@@ -111,7 +110,6 @@ export class CanvasResizerService {
     // The following reference has been used to preserver canvas image. The whitening is automatic.
     // https://stackoverflow.com/questions/8977369/drawing-png-to-a-canvas-element-not-showing-transparency
     onResizeUp(event: MouseEvent, resizeCtx: CanvasRenderingContext2D, baseCanvas: HTMLCanvasElement): void {
-        console.log(event.offsetX + ' ' + event.offsetY);
         if (this.isResizeDown) {
             const originalImage = new Image();
             originalImage.src = baseCanvas.toDataURL('image/png', 1);

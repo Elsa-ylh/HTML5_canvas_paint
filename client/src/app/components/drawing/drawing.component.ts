@@ -66,12 +66,27 @@ export class DrawingComponent implements AfterViewInit {
     onResizeDown(event: MouseEvent): void {
         const isVertical =
             this.canvasResizerService.canvasSize.y < event.offsetY &&
-            event.offsetY < this.canvasResizerService.canvasSize.y + this.canvasResizerService.HOOK_THICKNESS;
+            event.offsetY < this.canvasResizerService.canvasSize.y + this.canvasResizerService.HOOK_THICKNESS &&
+            // tslint:disable-next-line: no-magic-numbers
+            this.canvasResizerService.canvasSize.x * (1 / 3) < event.offsetX &&
+            // tslint:disable-next-line: no-magic-numbers
+            event.offsetX < this.canvasResizerService.canvasSize.x * (2 / 3);
         const isHorizontal =
             this.canvasResizerService.canvasSize.x < event.offsetX &&
+            event.offsetX < this.canvasResizerService.canvasSize.x + this.canvasResizerService.HOOK_THICKNESS &&
+            // tslint:disable-next-line: no-magic-numbers
+            this.canvasResizerService.canvasSize.y * (1 / 3) < event.offsetY &&
+            // tslint:disable-next-line: no-magic-numbers
+            event.offsetY < this.canvasResizerService.canvasSize.y * (2 / 3);
+        const isVerticalAndHorizontal =
+            // tslint:disable-next-line: no-magic-numbers
+            this.canvasResizerService.canvasSize.y * (8 / 10) < event.offsetY &&
+            event.offsetY < this.canvasResizerService.canvasSize.y + this.canvasResizerService.HOOK_THICKNESS &&
+            // tslint:disable-next-line: no-magic-numbers
+            this.canvasResizerService.canvasSize.x * (8 / 10) < event.offsetX &&
             event.offsetX < this.canvasResizerService.canvasSize.x + this.canvasResizerService.HOOK_THICKNESS;
 
-        if (isVertical && isHorizontal) {
+        if (isVerticalAndHorizontal) {
             this.canvasResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
             this.canvasResizerService.onResizeDown(event, ResizeDirection.verticalAndHorizontal);
         } else if (isVertical) {
@@ -89,15 +104,27 @@ export class DrawingComponent implements AfterViewInit {
         } else {
             const isVertical =
                 this.canvasResizerService.canvasSize.y < event.offsetY &&
-                event.offsetY < this.canvasResizerService.canvasSize.y + this.canvasResizerService.HOOK_THICKNESS;
+                event.offsetY < this.canvasResizerService.canvasSize.y + this.canvasResizerService.HOOK_THICKNESS &&
+                // tslint:disable-next-line: no-magic-numbers
+                this.canvasResizerService.canvasSize.x * (1 / 3) < event.offsetX &&
+                // tslint:disable-next-line: no-magic-numbers
+                event.offsetX < this.canvasResizerService.canvasSize.x * (2 / 3);
             const isHorizontal =
                 this.canvasResizerService.canvasSize.x < event.offsetX &&
+                event.offsetX < this.canvasResizerService.canvasSize.x + this.canvasResizerService.HOOK_THICKNESS &&
+                // tslint:disable-next-line: no-magic-numbers
+                this.canvasResizerService.canvasSize.y * (1 / 3) < event.offsetY &&
+                // tslint:disable-next-line: no-magic-numbers
+                event.offsetY < this.canvasResizerService.canvasSize.y * (2 / 3);
+            const isVerticalAndHorizontal =
+                // tslint:disable-next-line: no-magic-numbers
+                this.canvasResizerService.canvasSize.y * (8 / 10) < event.offsetY &&
+                event.offsetY < this.canvasResizerService.canvasSize.y + this.canvasResizerService.HOOK_THICKNESS &&
+                // tslint:disable-next-line: no-magic-numbers
+                this.canvasResizerService.canvasSize.x * (8 / 10) < event.offsetX &&
                 event.offsetX < this.canvasResizerService.canvasSize.x + this.canvasResizerService.HOOK_THICKNESS;
 
-            if (isVertical) {
-                this.canvasResizerService.resizeCursor = cursorName.resizeVertical;
-            }
-            if (isVertical && isHorizontal) {
+            if (isVerticalAndHorizontal) {
                 this.canvasResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
             } else if (isVertical) {
                 this.canvasResizerService.resizeCursor = cursorName.resizeVertical;
