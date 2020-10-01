@@ -25,6 +25,7 @@ export class ColorComponent implements AfterViewInit {
 
     squareHeight: number = 200;
     horizontalHeight: number = 20;
+    PositionSlider: number;
 
     @ViewChild('previewSquare') previewSquare: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('squarePalette') squareCanvas: ElementRef<HTMLCanvasElement>;
@@ -32,7 +33,8 @@ export class ColorComponent implements AfterViewInit {
     @ViewChild('horizontalPalette') horizontalCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('opacitySlider') opacitySliderCanvas: ElementRef<HTMLCanvasElement>; // to have an opacity slider
     @ViewChild('opacitySliderPreview') opacitySliderPreview: ElementRef<HTMLCanvasElement>; // to have an opacity slider
-    @ViewChild('message', { static: false }) message: MatDialogRef<HTMLElement>;
+    @ViewChild('message', { static: false }) messageRGB: MatDialogRef<HTMLElement>;
+    @ViewChild('message', { static: false }) messageAlpha: MatDialogRef<HTMLElement>;
 
     squareDimension: Vec2 = { x: this.width, y: this.squareHeight };
     horizontalDimension: Vec2 = { x: this.width, y: this.horizontalHeight };
@@ -135,7 +137,7 @@ export class ColorComponent implements AfterViewInit {
 
     drawOpacitySlider(positionSliderOpacity: any): void {
         // on cree la palette
-        this.colorService.drawPalette(this.opacitySliderCtx, this.horizontalDimension, GradientStyle.lightToDark);
+        this.colorService.drawPalette(this.opacitySliderCtx, this.horizontalDimension, GradientStyle.colortoColor);
         // we generate the cursor with the slider
         this.cursorSliderOpacity.data1 = this.opacitySliderCtx;
         this.cursorSliderOpacity.data2 = this.cursorSliderColor;
@@ -181,13 +183,35 @@ export class ColorComponent implements AfterViewInit {
         this.colorService.setpreviewColor(this.colorService.numeralToHex(this.colorService.getColor(position, this.horizontalCtx)));
     }
 
+    onMouseOverOpacitySliderClick(event: MouseEvent): void {
+        const mousePos = { x: event.offsetX, y: event.offsetY };
+        // this.drawingService.baseCtx.globalAlpha =
+        // this.drawingService.previewCtx.globalAlpha =
+        this.drawOpacitySlider(mousePos);
+        console.log(this.findPositionSlider(event));
+    }
+
+    // return the value between 0 to 1 of the opacity slider
+    findPositionSlider(event: MouseEvent): number {
+        const position = { x: event.offsetX, y: event.offsetY };
+        console.log(position);
+        for (this.PositionSlider = 0.0; this.PositionSlider < 1.0; this.PositionSlider++) {
+            this.PositionSlider = position.x / 207;
+        }
+        return this.PositionSlider;
+    }
+
     sendInput(rgb: RGBA): void {
-        if (rgb.red <= 255 && rgb.green <= 255 && rgb.blue <= 255) {
+        if (!rgb.red && !rgb.green && !rgb.blue && rgb.alpha >= 0 && rgb.alpha <= 1) {
+            console.log(rgb.alpha);
+            this.colorService.changeColorOpacity(rgb.alpha);
+        }
+        if (rgb.red <= 255 && rgb.green <= 255 && rgb.blue <= 255 && rgb.alpha <= 1 && rgb.alpha >= 0) {
             this.color = this.colorService.numeralToHex(rgb);
             this.colorService.setprimaryColor(this.color);
-            this.colorService.setprimaryColorTransparency(rgb.alpha);
+            this.colorService.changeColorOpacity(rgb.alpha);
         } else {
-            this.openWarningMessage(this.message);
+            this.openWarningMessage(this.messageRGB); // change message
         }
     }
     openWarningMessage(templateRef: any): void {

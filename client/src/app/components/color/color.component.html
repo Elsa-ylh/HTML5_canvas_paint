@@ -20,7 +20,13 @@
     <canvas id="horizontalPalette" #horizontalPalette [attr.width]="width" [attr.height]="horizontalHeight"></canvas>
     <mat-divider></mat-divider>
 
-    <canvas id="opacitySliderPreview" #opacitySliderPreview [attr.width]="width" [attr.height]="horizontalHeight"></canvas>
+    <canvas
+        id="opacitySliderPreview"
+        #opacitySliderPreview
+        [attr.width]="width"
+        [attr.height]="horizontalHeight"
+        (click)="onMouseOverOpacitySliderClick($event)"
+    ></canvas>
     <canvas id="opacitySlider" #opacitySlider [attr.width]="width" [attr.height]="horizontalHeight"> </canvas>
     <mat-divider></mat-divider>
 
