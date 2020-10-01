@@ -2,14 +2,6 @@ import { UserGuide } from './interface-guide';
 
 export const dataUserGuide: UserGuide[] = [
     {
-        title: 'Guide utilisateur',
-        isTool: 'Divers',
-        description:
-            "Bienvenue dans le guide d'utilisation contenant les informations de bases sur l'utilisation de notre application Poly Dessin. Ici, vous trouverez comment utiliser les outils disponibles ainsi que leurs descriptions. Dans l'onglet Divers se trouvent les informations sur la base de l'application et l'onglet Dessiner couvrent les outils disponibles.  ",
-        gifPath: 'assets/..',
-        screenshotPath: '',
-    },
-    {
         title: 'Créer ou continuer dessin',
         isTool: 'Divers',
         description:
