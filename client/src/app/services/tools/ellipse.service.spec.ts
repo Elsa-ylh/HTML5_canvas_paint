@@ -16,15 +16,16 @@ describe('Service: Ellipse', () => {
     let drawFillEllipseSpy: jasmine.Spy<any>;
     let drawEllipseOutlineSpy: jasmine.Spy<any>;
     let drawFillEllipseOutlineSpy: jasmine.Spy<any>;
+    //let drawPreviewRectSpy: jasmine.Spy<any>;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
@@ -32,6 +33,9 @@ describe('Service: Ellipse', () => {
         drawFillEllipseSpy = spyOn<any>(service, 'drawFillEllipse').and.callThrough();
         drawEllipseOutlineSpy = spyOn<any>(service, 'drawEllipseOutline').and.callThrough();
         drawFillEllipseOutlineSpy = spyOn<any>(service, 'drawFillEllipseOutline').and.callThrough();
+        //drawPreviewRectSpy = spyOn<any>(service, 'drawPreviewRect').and.callThrough();
+
+
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -108,7 +112,7 @@ describe('Service: Ellipse', () => {
         expect(drawFillEllipseSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseUp should call drawFillEllipse if mouse was already down and tool2 selected', () => {
+    it(' onMouseUp should call drawEllipseOutline if mouse was already down and tool2 selected', () => {
         service.subToolSelect = SubToolselected.tool2;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -117,7 +121,7 @@ describe('Service: Ellipse', () => {
         expect(drawEllipseOutlineSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseUp should call drawFillEllipse if mouse was already down and tool3 selected', () => {
+    it(' onMouseUp should call drawFillEllipseOutline if mouse was already down and tool3 selected', () => {
         service.subToolSelect = SubToolselected.tool3;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -264,4 +268,18 @@ describe('Service: Ellipse', () => {
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawFillEllipseOutlineSpy).not.toHaveBeenCalled();
     });
+
+    // it(' onMouseUp should call drawFillEllipseOutline if mouse was already down and tool3 selected ans mouse position in -x and -y', () => {
+    //   service.subToolSelect = SubToolselected.tool3;
+    //   service.mouseDownCoord = { x: 0, y: 25 };
+    //   service.mouseDown = true;
+    //   service.mousePosition = { x:25, y: 0};
+
+
+    //   service.drawPreviewRect(previewCtxStub, service.mouseDownCoord, service.mousePosition, 2, 30, 30);
+    //   expect(service['drawingService'].previewCtx.strokeRect).toHaveBeenCalled();
+    // });
+
+
+
 });

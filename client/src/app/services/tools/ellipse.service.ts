@@ -20,6 +20,7 @@ export class EllipseService extends Tool {
     mousePosition: Vec2;
     dottedLineWidth: number = 2;
     dottedSpace: number = 10;
+    debug: number = 0;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -172,17 +173,7 @@ export class EllipseService extends Tool {
         ctx.strokeStyle = this.strokeRectColor;
         ctx.lineWidth = this.lineRectwidth;
         ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
-        if (this.drawingService.previewCtx === ctx) {
-            if (this.mousePosition.x > mouseDownPos.x && this.mousePosition.y > mouseDownPos.y) {
-                ctx.strokeRect(mouseDownPos.x - lineWidth / 2, mouseDownPos.y - lineWidth / 2, width + lineWidth, height + lineWidth);
-            } else if (this.mousePosition.x < mouseDownPos.x && this.mousePosition.y < mouseDownPos.y) {
-                ctx.strokeRect(mouseDownPos.x + lineWidth / 2, mouseDownPos.y + lineWidth / 2, width - lineWidth, height - lineWidth);
-            } else if (this.mousePosition.x > mouseDownPos.x && this.mousePosition.y < mouseDownPos.y) {
-                ctx.strokeRect(mouseDownPos.x - lineWidth / 2, mouseDownPos.y + lineWidth / 2, width + lineWidth, height - lineWidth);
-            } else if (this.mousePosition.x < mouseDownPos.x && this.mousePosition.y > mouseDownPos.y) {
-                ctx.strokeRect(mouseDownPos.x + lineWidth / 2, mouseDownPos.y - lineWidth / 2, width - lineWidth, height + lineWidth);
-            }
-        }
+        this.drawPreviewRect(ctx,mouseDownPos, mouseUpPos, lineWidth, height, width);
     }
 
     drawFillEllipseOutline(
@@ -211,17 +202,22 @@ export class EllipseService extends Tool {
         ctx.strokeStyle = this.strokeRectColor;
         ctx.lineWidth = this.lineRectwidth;
         ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
+        this.drawPreviewRect(ctx, mouseDownPos, mouseUpPos, lineWidth, height, width);
 
-        if (this.drawingService.previewCtx === ctx) {
-            if (this.mousePosition.x > mouseDownPos.x && this.mousePosition.y > mouseDownPos.y) {
-                ctx.strokeRect(mouseDownPos.x - lineWidth / 2, mouseDownPos.y - lineWidth / 2, width + lineWidth, height + lineWidth);
-            } else if (this.mousePosition.x < mouseDownPos.x && this.mousePosition.y < mouseDownPos.y) {
-                ctx.strokeRect(mouseDownPos.x + lineWidth / 2, mouseDownPos.y + lineWidth / 2, width - lineWidth, height - lineWidth);
-            } else if (this.mousePosition.x > mouseDownPos.x && this.mousePosition.y < mouseDownPos.y) {
-                ctx.strokeRect(mouseDownPos.x - lineWidth / 2, mouseDownPos.y + lineWidth / 2, width + lineWidth, height - lineWidth);
-            } else if (this.mousePosition.x < mouseDownPos.x && this.mousePosition.y > mouseDownPos.y) {
-                ctx.strokeRect(mouseDownPos.x + lineWidth / 2, mouseDownPos.y - lineWidth / 2, width - lineWidth, height + lineWidth);
-            }
+    }
+
+    drawPreviewRect(ctx:CanvasRenderingContext2D, mouseDownPos: Vec2, mousePosition: Vec2, lineWidth: number, height:number, width:number):void {
+
+      if (this.drawingService.previewCtx === ctx) {
+        if (mousePosition.x > mouseDownPos.x && mousePosition.y > mouseDownPos.y) {
+            ctx.strokeRect(mouseDownPos.x - lineWidth / 2, mouseDownPos.y - lineWidth / 2, width + lineWidth, height + lineWidth);
+        } else if (mousePosition.x < mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
+            ctx.strokeRect(mouseDownPos.x + lineWidth / 2, mouseDownPos.y + lineWidth / 2, width - lineWidth, height - lineWidth);
+        } else if (mousePosition.x > mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
+            ctx.strokeRect(mouseDownPos.x - lineWidth / 2, mouseDownPos.y + lineWidth / 2, width + lineWidth, height - lineWidth);
+        } else if (mousePosition.x < mouseDownPos.x && mousePosition.y > mouseDownPos.y) {
+            ctx.strokeRect(mouseDownPos.x + lineWidth / 2, mouseDownPos.y - lineWidth / 2, width - lineWidth, height + lineWidth);
         }
+      }
     }
 }
