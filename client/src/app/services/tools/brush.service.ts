@@ -191,7 +191,8 @@ export class BrushService extends Tool {
     private drawLineBrush5(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const sizePx = ctx.lineWidth;
-        ctx.lineWidth = sizePx / motionDifference; // on divise par quatre pour que la grandeur maximal du diamétre soit le même que les autre tools pinceau
+        // on divise par quatre pour que la grandeur maximal du diamétre soit le même que les autre tools pinceau
+        ctx.lineWidth = sizePx / motionDifference;
         for (let index = 1; index <= sizePx; index += 1) {
             ctx.beginPath();
             ctx.globalAlpha = index / sizePx;
