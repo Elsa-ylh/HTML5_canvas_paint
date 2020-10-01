@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RGBA } from '@app/classes/rgba';
 import { Vec2 } from '@app/classes/vec2';
-import { DrawingService } from '../drawing/drawing.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 export enum GradientStyle {
     rainbow,
@@ -12,25 +12,25 @@ export interface LastColor {
     color?: string;
     active: boolean;
 }
-
+const VALUE_TEN = 10;
+const VALUE_FIVE = 5;
 @Injectable({
     providedIn: 'root',
 })
 export class ColorService {
     private primaryColor: string = '#000000';
     private secondaryColor: string = '#ff6666';
-    private selectedColor = this.primaryColor;
+    private selectedColor: string = this.primaryColor;
     private previewColor: string = '#ff6666';
     private primaryColorTransparency: number;
     private secondaryColorTransparency: number;
     isclicked: boolean = true;
     private lastColors: LastColor[];
-    PositionSlider: number;
 
     constructor(private drawingService: DrawingService) {
         // Last 10 colors
 
-        this.lastColors = new Array(10);
+        this.lastColors = new Array(VALUE_TEN);
         this.lastColors.fill({ active: false });
     }
     // getters
@@ -160,7 +160,7 @@ export class ColorService {
         ctx.lineCap = 'round';
         ctx.strokeStyle = '#000';
         ctx.fillStyle = '#FFF';
-        ctx.fillRect(event.offsetX, event.offsetY, 5, 5);
+        ctx.fillRect(event.offsetX, event.offsetY, VALUE_FIVE, VALUE_FIVE);
     }
 
     // Ce code est complètement inspiré sans gêne de

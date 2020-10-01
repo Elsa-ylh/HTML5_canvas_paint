@@ -8,12 +8,13 @@ import { Vec2 } from '@app/classes/vec2';
 import { ColorService, GradientStyle, LastColor } from '@app/services/color/color.service';
 
 // certaines parties du code a ete inspiree de l'auteur
+const SIZE_OPACITY = 207;
+const MAX_VALUE_RGB = 255;
 @Component({
     selector: 'app-color',
     templateUrl: './color.component.html',
     styleUrls: ['./color.component.scss'],
 })
-
 // The following code has been highly inspired but not copied from this website
 // The website mainly teach how to do the drawing with canvas2d the gradient
 // https://malcoded.com/posts/angular-color-picker/
@@ -23,10 +24,12 @@ export class ColorComponent implements AfterViewInit {
 
     // tslint:disable-next-line:no-magic-numbers
     width: number = 207;
-
+    // tslint:disable-next-line:no-magic-numbers
     squareHeight: number = 200;
+    // tslint:disable-next-line:no-magic-numbers
     horizontalHeight: number = 20;
-    PositionSlider: number;
+    // tslint:disable-next-line:no-magic-numbers
+    positionSlider: number;
 
     @ViewChild('previewSquare') previewSquare: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('squarePalette') squareCanvas: ElementRef<HTMLCanvasElement>;
@@ -42,14 +45,16 @@ export class ColorComponent implements AfterViewInit {
 
     previewSquareCtx: CanvasRenderingContext2D;
     squareCtx: CanvasRenderingContext2D;
+    // tslint:disable-next-line:no-any
     cursorSquarePalette: any;
 
     previewHorizontalCtx: CanvasRenderingContext2D;
     horizontalCtx: CanvasRenderingContext2D;
+    // tslint:disable-next-line:no-any
     cursorSliderColor: any;
-
     opacitySliderCtx: CanvasRenderingContext2D;
     previewopacitySliderCtx: CanvasRenderingContext2D;
+    // tslint:disable-next-line:no-any
     cursorSliderOpacity: any;
     lastColors: LastColor[];
 
@@ -88,23 +93,32 @@ export class ColorComponent implements AfterViewInit {
         this.cursorSquarePalette = new Image(1, 1);
         this.cursorSquarePalette.src = '/assets/cursorSlider_Palette.svg';
         this.cursorSquarePalette.position = { x: 103, y: 103 };
+        // tslint:disable-next-line:typedef
         this.cursorSquarePalette.onload = function () {
+            // tslint:disable-next-line:no-magic-numbers
             this.data1.drawImage(this.data2, this.position.x, this.position.y, 15, 15); // pos, taille,taille
         };
 
         // cursor for color slider
         this.cursorSliderColor = new Image(1, 1);
+        // tslint:disable-next-line:typedef
         this.cursorSliderColor.src = '/assets/cursorSlider_Palette.svg';
         this.cursorSliderColor.position = { x: 0, y: 0 };
+        // tslint:disable-next-line:typedef
         this.cursorSliderColor.onload = function () {
+            // tslint:disable-next-line:no-magic-numbers
             this.data1.drawImage(this.data2, this.position.x, 0, 20, 20);
         };
 
-        //cursor for opacity slider
+        // cursor for opacity slider
+        // tslint:disable-next-line:typedef
         this.cursorSliderOpacity = new Image(1, 1);
         this.cursorSliderOpacity.src = '/assets/cursorSlider_Palette.svg';
+        // tslint:disable-next-line:typedef
         this.cursorSliderOpacity.position = { x: 0, y: 0 };
+        // tslint:disable-next-line:typedef
         this.cursorSliderOpacity.onload = function () {
+            // tslint:disable-next-line:no-magic-numbers
             this.data1.drawImage(this.data2, this.position.x, 0, 20, 20);
         };
     }
@@ -116,6 +130,7 @@ export class ColorComponent implements AfterViewInit {
         this.colorService.isclicked = false;
     }
 
+    // tslint:disable-next-line:no-any
     drawSquarePalette(positionPalette: any): void {
         this.colorService.drawPalette(this.squareCtx, this.squareDimension, GradientStyle.lightToDark);
         // we generate the cursor with the slider
@@ -123,9 +138,10 @@ export class ColorComponent implements AfterViewInit {
         this.cursorSquarePalette.data2 = this.cursorSquarePalette;
         this.cursorSquarePalette.position = positionPalette;
         // Reset image
+        // tslint:disable-next-line:no-any
         this.cursorSquarePalette.src = '/assets/cursorSlider_Palette.svg' + '#' + new Date().getTime();
     }
-
+    // tslint:disable-next-line:no-any
     drawHorizontalPalette(positionSliderColor: any): void {
         this.colorService.drawPalette(this.horizontalCtx, this.horizontalDimension, GradientStyle.rainbow);
         // we generate the cursor with the slider
@@ -136,6 +152,7 @@ export class ColorComponent implements AfterViewInit {
         this.cursorSliderColor.src = '/assets/cursorSlider_Palette.svg' + '#' + new Date().getTime();
     }
 
+    // tslint:disable-next-line:no-any
     drawOpacitySlider(positionSliderOpacity: any): void {
         // on cree la palette
         this.colorService.drawPalette(this.opacitySliderCtx, this.horizontalDimension, GradientStyle.colortoColor);
@@ -205,13 +222,13 @@ export class ColorComponent implements AfterViewInit {
     // return the value between 0 to 1 of the opacity slider
     findPositionSlider(event: MouseEvent): number {
         const position = { x: event.offsetX, y: event.offsetY };
-        this.PositionSlider = 1 - position.x / 207;
-        return this.PositionSlider;
+        this.positionSlider = 1 - position.x / SIZE_OPACITY;
+        return this.positionSlider;
     }
     sendInput(rgb: RGBA): void {
         if (!rgb.red && !rgb.green && !rgb.blue && rgb.alpha >= 0 && rgb.alpha <= 1) {
             this.colorService.changeColorOpacity(rgb.alpha);
-        } else if (rgb.red <= 255 && rgb.green <= 255 && rgb.blue <= 255 && rgb.alpha <= 1 && rgb.alpha >= 0) {
+        } else if (rgb.red <= MAX_VALUE_RGB && rgb.green <= MAX_VALUE_RGB && rgb.blue <= MAX_VALUE_RGB && rgb.alpha <= 1 && rgb.alpha >= 0) {
             this.color = this.colorService.numeralToHex(rgb);
             this.colorService.setprimaryColor(this.color);
             this.colorService.changeColorOpacity(rgb.alpha);
@@ -219,6 +236,7 @@ export class ColorComponent implements AfterViewInit {
             this.openWarningMessage(this.messageRGB);
         }
     }
+    // tslint:disable-next-line:no-any
     openWarningMessage(templateRef: any): void {
         this.matDialog.open(templateRef, {
             width: '300px',
