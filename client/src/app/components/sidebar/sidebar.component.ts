@@ -101,10 +101,10 @@ export class SidebarComponent {
     pickBrush(subTool: number): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Brush);
+        this.toolService.currentTool.subToolSelect = subTool;
         if (this.drawingService.baseCtx.lineWidth < this.brushService.pixelMinBrush) {
             this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.pxSize = this.brushService.pixelMinBrush;
         } else this.pxSize = this.drawingService.previewCtx.lineWidth = this.drawingService.baseCtx.lineWidth;
-        this.toolService.currentTool.subToolSelect = subTool;
     }
 
     get brushChecked(): boolean {

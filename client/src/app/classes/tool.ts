@@ -46,4 +46,12 @@ export abstract class Tool {
     onKeyEscape(event: KeyboardEvent): void {}
 
     onKeyBackSpace(event: KeyboardEvent): void {}
+
+    cleanPaintGrout(): void {
+        this.clearPath();
+        this.clearPreviewCtx();
+    }
+
+    protected clearPath(): void {}
+    protected clearPreviewCtx(): void {}
 }

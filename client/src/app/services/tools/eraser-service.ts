@@ -72,8 +72,10 @@ export class EraserService extends Tool {
         }
         ctx.stroke();
     }
-
-    private clearPath(): void {
+    clearPreviewCtx(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    }
+    clearPath(): void {
         this.pathData = [];
     }
 }

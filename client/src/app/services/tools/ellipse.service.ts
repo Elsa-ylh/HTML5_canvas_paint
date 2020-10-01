@@ -202,7 +202,9 @@ export class EllipseService extends Tool {
         ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
         this.drawPreviewRect(ctx, mouseDownPos, mouseUpPos, lineWidth, height, width);
     }
-
+    clearPreviewCtx(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    }
     drawPreviewRect(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mousePosition: Vec2, lineWidth: number, height: number, width: number): void {
         if (this.drawingService.previewCtx === ctx) {
             if (mousePosition.x > mouseDownPos.x && mousePosition.y > mouseDownPos.y) {
