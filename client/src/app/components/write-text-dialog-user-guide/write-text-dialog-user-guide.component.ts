@@ -22,4 +22,8 @@ export class WriteTextDialogUserGuideComponent {
     testDataGuide(txt: string): boolean {
         return txt === this.selectionList;
     }
+
+    testSelection(): boolean {
+        return this.selectionList === 'Dessiner';
+    }
 }
