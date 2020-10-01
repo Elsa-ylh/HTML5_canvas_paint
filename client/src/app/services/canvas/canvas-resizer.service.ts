@@ -35,10 +35,6 @@ export class CanvasResizerService {
     // Resizer hook thickness
     HOOK_THICKNESS: number = 30;
 
-    onWindowResize(): void {
-        console.log('to be removed');
-    }
-
     private clearCanvas(context: CanvasRenderingContext2D, dimension: Vec2): void {
         context.clearRect(0, 0, dimension.x, dimension.y);
     }
