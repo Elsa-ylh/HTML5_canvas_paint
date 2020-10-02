@@ -1,9 +1,143 @@
-<div class="container">
-    <p>Barre latérale pour vos outils!</p>
-    <p>
-        Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet <br />
-        L'implémentation ici ne couvre pas tous les critères d'acceptation du projet<br />
-        Vous êtes encouragés de modifier et compléter le code.<br />
-        N'oubliez pas de regarder les tests dans les fichiers spec.ts aussi!
-    </p>
+<div class="sidebar">
+    <div class="toolbar">
+        <div class="small-buttons">
+            <mat-list class="tools-buttons">
+                <mat-button-toggle-group vertical="true">
+                    <mat-button-toggle (click)="pickPencil()" [checked]="pencilChecked" matTooltip="Outil crayon" matTooltipPosition="right">
+                        <mat-icon>edit</mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle (click)="pickEraser()" [checked]="eraserChecked" matTooltip="Outil efface" matTooltipPosition="right">
+                        <mat-icon svgIcon="eraser"></mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle (click)="pickBrush(1)" [checked]="brushChecked" matTooltip="Outil pinceau" matTooltipPosition="right">
+                        <mat-icon>brush</mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle (click)="pickLine()" [checked]="lineChecked" matTooltip="Outil ligne" matTooltipPosition="right">
+                        <mat-icon>horizontal_rule</mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle (click)="pickRectangle(1)" [checked]="rectangleChecked" matTooltip="Outil rectangle" matTooltipPosition="right">
+                        <mat-icon>crop_16_9</mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle (click)="pickEllipse(1)" [checked]="ellipseChecked" matTooltip="Outil ellipse" matTooltipPosition="right">
+                        <mat-icon>panorama_fish_eye</mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle (click)="pickColor()" [checked]="colorChecked" matTooltip="Selectionner les couleurs" matTooltipPosition="right">
+                        <mat-icon>color_lens</mat-icon>
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </mat-list>
+            <mat-list class="miscellaneous-buttons">
+                <mat-button-toggle-group vertical="true">
+                    <mat-button-toggle appearance="radio" (click)="createNewDrawing()" matTooltip="Nouveau dessin" matTooltipPosition="right">
+                        <mat-icon>add</mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle (click)="openUserGuide()" matTooltip="Guide d'utilisation" matTooltipPosition="right">
+                        <mat-icon>article</mat-icon>
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </mat-list>
+        </div>
+    </div>
+    <div class="toolbar" *ngIf="showAttributes">
+        <div class="attributes" [ngSwitch]="this.toolService.currentToolName">
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.NONE"> </mat-grid-list>
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Pencil">
+                <mat-grid-tile> </mat-grid-tile>
+                <mat-grid-tile colspan="6" aria-rowspan="8"> Changer la taille du crayon </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider min="1" max="50" value="1" step="0.5" [(ngModel)]="pencilService.pencilSize"> </mat-slider>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" aria-rowspan="8"> Taille du crayon : {{ pencilService.pencilSize }} px </mat-grid-tile>
+            </mat-grid-list>
+
+            <mat-grid-list cols="6" *ngSwitchCase="2">
+                <mat-grid-tile> </mat-grid-tile>
+                <mat-grid-tile colspan="6" aria-rowspan="8"> Changer la taille de l'efface </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider min="5" max="50" value="1" step="0.5" [(ngModel)]="eraserService.eraserWidth"> </mat-slider>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" aria-rowspan="8"> Valeur minimale : 5px </mat-grid-tile>
+                <mat-grid-tile colspan="6" aria-rowspan="8"> Taille de l'efface : {{ eraserService.eraserWidth }} px </mat-grid-tile>
+            </mat-grid-list>
+
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Brush">
+                <mat-grid-tile colspan="6" rowspan="2">
+                    <button mat-raised-button (click)="pickBrush(1)">Pinceau 1</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2">
+                    <button mat-raised-button (click)="pickBrush(2)">Pinceau 2</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2">
+                    <button mat-raised-button (click)="pickBrush(3)">Pinceau 3</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2">
+                    <button mat-raised-button (click)="pickBrush(4)">Pinceau 4</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2">
+                    <button mat-raised-button (click)="pickBrush(5)">Pinceau 5</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider max="50" min="1" [(ngModel)]="brushService.lineWidth"> </mat-slider><samp>{{ brushService.lineWidth }}px</samp>
+                </mat-grid-tile>
+            </mat-grid-list>
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Line">
+                <mat-grid-tile colspan="6"></mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2"> Pour quiter l'outil Ligne effectuez un double clique gauche avec votre souris</mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider max="50" min="1" [(ngModel)]="lineService.lineWidth"> </mat-slider><samp>{{ lineService.lineWidth }}px</samp>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-checkbox [(ngModel)]="lineService.isBallOn" (change)="CheckboxChangeToggle($event)">Avec Point</mat-checkbox>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider max="50" min="1" step="1" [(ngModel)]="lineService.secondarySizePixel"> </mat-slider>
+                    <samp>{{ lineService.secondarySizePixel }}px</samp>
+                </mat-grid-tile>
+            </mat-grid-list>
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Rectangle">
+                <mat-grid-tile colspan="6"></mat-grid-tile>
+                <mat-grid-tile colspan="6"> Choisissez un type de rectangle</mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">
+                    <mat-button-toggle-group vertical="true">
+                        <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickRectangle(1)">Plein</mat-button-toggle>
+                        <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickRectangle(2)">Contour</mat-button-toggle>
+                        <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickRectangle(3)"
+                            >Plein avec contour</mat-button-toggle
+                        >
+                    </mat-button-toggle-group>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2"> Ce slider permet de modifier l'épaisseur du trait de contour des rectangles</mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider min="1" max="50" step="1" [(ngModel)]="rectangleService.lineWidth"></mat-slider>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6"
+                    ><samp>épaisseur du contour: {{ rectangleService.lineWidth }}px</samp></mat-grid-tile
+                >
+            </mat-grid-list>
+
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Ellipse">
+                <mat-grid-tile colspan="6"></mat-grid-tile>
+                <mat-grid-tile colspan="6"> Choisissez un type d'ellipse</mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">
+                    <mat-button-toggle-group vertical="true">
+                        <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickEllipse(1)">Plein</mat-button-toggle>
+                        <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickEllipse(2)">Contour</mat-button-toggle>
+                        <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickEllipse(3)"
+                            >Plein avec contour</mat-button-toggle
+                        >
+                    </mat-button-toggle-group>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="3"> Ce slider permet de modifier l'épaisseur des lignes des coutours de l'ellipse</mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider min="1" max="50" step="1" [(ngModel)]="ellipseService.lineWidth"></mat-slider>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6"
+                    ><samp>épaisseur du contour: {{ ellipseService.lineWidth }}px</samp></mat-grid-tile
+                >
+            </mat-grid-list>
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Color">
+                <app-color></app-color>
+            </mat-grid-list>
+        </div>
+    </div>
 </div>

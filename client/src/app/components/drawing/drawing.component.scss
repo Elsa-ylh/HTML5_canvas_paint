@@ -1,19 +1,30 @@
 canvas {
-    cursor: crosshair;
-    border: 2px solid #000000;
+    // cursor: crosshair;
     position: absolute;
-    left: 0;
-    top: 0;
+    left: 1px;
+    top: 1px;
+    box-shadow: 0 1px 5px -3px black;
 }
 
-#canvas{
-    z-index: 0;
-}
-
-#drawCanvas{
-    z-index: 1;
-}
-
-#canvas-container{
+#canvas-container {
     position: relative;
+}
+
+#previewLayer {
+    z-index: 5;
+}
+
+#baseCanvas {
+    z-index: 4;
+}
+
+#whiteBackground {
+    position: absolute;
+    z-index: 3;
+    background-color: white;
+}
+
+#greyBackground {
+    z-index: 2;
+    background-color: grey;
 }

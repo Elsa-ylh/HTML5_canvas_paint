@@ -1,0 +1,116 @@
+<div class="color-container">
+    <canvas
+        id="previewSquare"
+        [attr.width]="width"
+        [attr.height]="squareHeight"
+        #previewSquare
+        (mousemove)="onMouseOverSquare($event)"
+        (click)="onMouseOverSquareClick($event)"
+    ></canvas>
+    <canvas id="squarePalette" [attr.width]="width" [attr.height]="squareHeight" #squarePalette></canvas>
+    <mat-divider></mat-divider>
+    <canvas
+        id="previewHorizontal"
+        #previewHorizontal
+        [attr.width]="width"
+        [attr.height]="horizontalHeight"
+        (mousemove)="onMouseOverHorizontal($event)"
+        (click)="onMouseOverHorizontalClick($event)"
+    ></canvas>
+    <canvas id="horizontalPalette" #horizontalPalette [attr.width]="width" [attr.height]="horizontalHeight"></canvas>
+    <mat-divider></mat-divider>
+
+    <canvas
+        id="opacitySliderPreview"
+        #opacitySliderPreview
+        [attr.width]="width"
+        [attr.height]="horizontalHeight"
+        (click)="onMouseOverOpacitySliderClick($event)"
+    ></canvas>
+    <canvas id="opacitySlider" #opacitySlider [attr.width]="width" [attr.height]="horizontalHeight"> </canvas>
+    <mat-divider></mat-divider>
+
+    <table>
+        <mat-grid-list cols="2" rowHeight="2:1">
+            <div>Aperçu</div>
+            <div id="previewColor" [ngStyle]="{ 'background-color': colorService.previewColor }"></div>
+            <mat-grid-tile id="previewColorHexa">{{ colorService.previewColor }}</mat-grid-tile>
+        </mat-grid-list>
+    </table>
+    <mat-divider></mat-divider>
+    <table id="table">
+        <th>
+            <div id="primaryColorTitle">Primaire</div>
+            <mat-grid-list cols="2" rowHeight="2:1" (click)="primaryClick()">
+                <div
+                    id="primaryColor"
+                    [style.border]="colorService.isclicked ? '2px solid red' : ''"
+                    [ngStyle]="{ 'background-color': colorService.primaryColor }"
+                ></div>
+                <span></span>
+                <mat-grid-tile id="primaryColorHexa">{{ colorService.primaryColor }}</mat-grid-tile>
+            </mat-grid-list>
+        </th>
+        <br />
+        <div id="swapbutton">
+            <button mat-raised-button color="white" (click)="colorService.swapColor()"><mat-icon>swap_horiz</mat-icon></button>
+        </div>
+
+        <th>
+            <div>Secondaire</div>
+            <mat-grid-list cols="2" rowHeight="2:1" (click)="secondaryClick()">
+                <div
+                    id="secondaryColor"
+                    [style.border]="!colorService.isclicked ? '2px solid red' : ''"
+                    [ngStyle]="{ 'background-color': colorService.secondaryColor }"
+                ></div>
+                <span></span>
+                <mat-grid-tile id="secondaryColorHexa">{{ colorService.secondaryColor }}</mat-grid-tile>
+            </mat-grid-list>
+        </th>
+    </table>
+
+    <div class="lastColorsContainer">
+        <div
+            class="lastColor"
+            *ngFor="let color of lastColors; let i = index"
+            [ngStyle]="{ 'background-color': color.active ? color.color : 'grey' }"
+            (click)="onMouseLastColorClick($event, color)"
+            (contextmenu)="onMouseLastColorClick($event, color)"
+        ></div>
+    </div>
+
+    <ng-template #message>
+        <h3>Veuillez entrer des données valides!</h3>
+        <h4>La valeur RGB doit être comprise en 0 et 255.</h4>
+        <h4>La valeur alpha doit être comprise entre 0 et 1.</h4>
+        <button mat-button mat-dialog-close>OK</button>
+    </ng-template>
+    <mat-form-field appearance="outline">
+        <mat-label>R</mat-label>
+        <input matInput placeholder="0-255" max="255" maxlength="3" #inputR type="number" />
+        <mat-icon matSuffix svgIcon="red"></mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>G</mat-label>
+        <input matInput placeholder="0-255" maxValue="255" maxlength="3" #inputG type="number" />
+        <mat-icon matSuffix svgIcon="green"></mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>B</mat-label>
+        <input matInput placeholder="0-255" maxValue="255" maxlength="3" #inputB type="number" />
+        <mat-icon matSuffix svgIcon="blue"></mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Alpha</mat-label>
+        <input matInput placeholder="0-1" maxValue="1" maxlength="1" #inputAlpha type="number" />
+        <mat-icon matSuffix svgIcon="alpha"></mat-icon>
+    </mat-form-field>
+
+    <button
+        mat-button
+        (click)="sendInput({ red: inputR.valueAsNumber, green: inputG.valueAsNumber, blue: inputB.valueAsNumber, alpha: inputAlpha.valueAsNumber })"
+    >
+        Valider
+    </button>
+</div>

@@ -1,12 +1,46 @@
-.container {
-    height: auto;
-    min-height: 98vh;
-    border: 1px solid black;
-    padding: 0 5px 0 5px;
-    margin-right: 5px;
+.sidebar {
+    min-width: 276px;
 }
 
-.sidebar-container {
+.toolbar {
+    position: relative;
+    top: 0;
+    height: 100%;
+    text-align: center;
+    float: left;
+}
+
+.small-buttons {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100vh;
+    width: 50px;
+}
+
+.attributes {
+    position: relative;
+    top: 0;
+    margin: 0px;
+    width: 226px;
+    float: right;
+}
+
+mat-slider {
+    width: 90%;
+}
+
+.tools-buttons {
+    position: relative;
+    height: auto;
+    margin-top: -7px;
+}
+
+.miscellaneous-buttons {
+    position: relative;
+}
+
+.sub-button {
+    width: 150px;
 }

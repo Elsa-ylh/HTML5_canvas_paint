@@ -1,4 +1,31 @@
-<div id="canvas-container">
-    <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height"></canvas>
-    <canvas id="previewLayer" #previewCanvas [attr.width]="width" [attr.height]="height"></canvas>
+<div id="canvas-container" [ngStyle]="{ 'min-width.px': crs.resizeWidth, 'min-height.px': crs.resizeHeight }">
+    <canvas
+        id="previewLayer"
+        #previewCanvas
+        [attr.width]="width"
+        [attr.height]="height"
+        [ngStyle]="{ cursor: cursorUsed }"
+        (mousedown)="onMouseDown($event)"
+        (mousemove)="onMouseMove($event)"
+        (mouseup)="onMouseUp($event)"
+        (mouseout)="onMouseOut($event)"
+        (mouseenter)="onMouseEnter($event)"
+    ></canvas>
+    <canvas id="baseCanvas" #baseCanvas [attr.width]="width" [attr.height]="height" [ngStyle]="{ cursor: cursorUsed }"></canvas>
+    <div id="whiteBackground" [ngStyle]="{ 'width.px': width, 'height.px': height }"></div>
+    <canvas
+        id="canvasResizerPreview"
+        #canvasResizingPreview
+        [attr.width]="crs.resizeWidth"
+        [attr.height]="crs.resizeHeight"
+        [ngStyle]="{
+            'z-index': crs.resizerIndex,
+            cursor: crs.resizeCursor
+        }"
+        (mousedown)="onResizeDown($event)"
+        (mousemove)="onResizeMove($event)"
+        (mouseup)="onResizeUp($event)"
+        (mouseout)="onResizeOut($event)"
+    ></canvas>
+    <div id="greyBackground" [ngStyle]="{ 'width.px': crs.resizeWidth, 'height.px': crs.resizeHeight }"></div>
 </div>

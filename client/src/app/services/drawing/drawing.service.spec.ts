@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { DrawingService } from './drawing.service';
-
+import { DrawingService } from '@app/services/drawing/drawing.service';
 describe('DrawingService', () => {
     let service: DrawingService;
 
@@ -22,5 +21,21 @@ describe('DrawingService', () => {
         const pixelBuffer = new Uint32Array(service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height).data.buffer);
         const hasColoredPixels = pixelBuffer.some((color) => color !== 0);
         expect(hasColoredPixels).toEqual(false);
+    });
+
+    it('isCanvasBlank should return true if canvas is empty', () => {
+        service.clearCanvas(service.baseCtx);
+        expect(service.isCanvasBlank()).toEqual(true);
+    });
+
+    it('isCanvasBlank should return false if canvas is not empty', () => {
+        // tslint:disable: no-magic-numbers
+        service.baseCtx.fillRect(20, 20, 100, 100);
+        expect(service.isCanvasBlank()).toEqual(false);
+    });
+
+    it('clearEffectTool should reset canvas styles to default', () => {
+        service.clearEffectTool();
+        expect(service.baseCtx.globalAlpha).toEqual(1);
     });
 });
