@@ -29,8 +29,8 @@ export class RectangleService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         this.drawingService.clearEffectTool();
-        this.strokeColor = this.colorService.getprimaryColor();
-        this.fillColor = this.colorService.getsecondaryColor();
+        this.strokeColor = this.colorService.primaryColor;
+        this.fillColor = this.colorService.secondaryColor;
         if (this.mouseEnter) {
             this.onMouseUp(event);
         }
@@ -89,7 +89,7 @@ export class RectangleService extends Tool {
     }
 
     drawFillRectangle(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
-        ctx.fillStyle = this.colorService.getsecondaryColor();
+        ctx.fillStyle = this.colorService.secondaryColor;
 
         if (this.square) {
             ctx.fillRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
@@ -99,7 +99,7 @@ export class RectangleService extends Tool {
     }
 
     drawRectangleOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
-        ctx.strokeStyle = this.colorService.getprimaryColor();
+        ctx.strokeStyle = this.colorService.primaryColor;
         ctx.lineWidth = this.lineWidth;
 
         if (this.square) {
@@ -110,8 +110,8 @@ export class RectangleService extends Tool {
     }
 
     drawFillRectangleOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
-        ctx.strokeStyle = this.colorService.getprimaryColor();
-        ctx.fillStyle = this.colorService.getsecondaryColor();
+        ctx.strokeStyle = this.colorService.primaryColor;
+        ctx.fillStyle = this.colorService.secondaryColor;
 
         ctx.lineWidth = this.lineWidth;
 
