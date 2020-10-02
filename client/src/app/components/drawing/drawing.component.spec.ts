@@ -38,7 +38,7 @@ describe('DrawingComponent', () => {
             pencilStub = new PencilService(drawingStub, colorStub);
             eraserStub = new EraserService(drawingStub);
             brushStub = new BrushService(drawingStub, colorStub);
-            lineStub = new LineService(drawingStub);
+            lineStub = new LineService(drawingStub, colorStub);
             rectangleStub = new RectangleService(drawingStub, colorStub);
             ellipseStub = new EllipseService(drawingStub, colorStub);
 

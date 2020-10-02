@@ -3,8 +3,8 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ColorService } from '../color/color.service';
 
 @Injectable({
     providedIn: 'root',
@@ -169,7 +169,8 @@ export class LineService extends Tool {
     private clearEffectTool(): void {
         this.drawingService.baseCtx.shadowColor = 'rgba(0,0,0,0)';
         this.drawingService.previewCtx.shadowColor = 'rgba(0,0,0,0)';
-        this.drawingService.previewCtx.strokeStyle = this.drawingService.baseCtx.strokeStyle = this.colorService.getprimaryColor(); // to draw after erasing
+        this.drawingService.baseCtx.strokeStyle = this.colorService.getprimaryColor(); // to draw after erasing
+        this.drawingService.previewCtx.strokeStyle = this.colorService.getprimaryColor();
         this.drawingService.baseCtx.lineJoin = 'bevel';
         this.drawingService.baseCtx.lineCap = 'butt';
         this.drawingService.previewCtx.lineJoin = 'bevel';
