@@ -184,7 +184,7 @@ export class BrushService extends Tool {
             this.lastPoint = point;
         }
         ctx.stroke();
-        ctx.strokeStyle = this.colorService.getpreviewColor();
+        ctx.strokeStyle = this.colorService.getprimaryColor();
         ctx.lineWidth = sizePx;
     }
 
@@ -206,6 +206,7 @@ export class BrushService extends Tool {
 
     private witchBrush(select: number): void {
         this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.lineWidth;
+
         this.clearEffectTool();
         switch (select) {
             case SubToolselected.tool1:
@@ -246,13 +247,11 @@ export class BrushService extends Tool {
         this.mouseOut = false;
     }
     private clearEffectTool(): void {
-        this.drawingService.baseCtx.shadowColor = 'rgba(0,0,0,0)';
-        this.drawingService.previewCtx.shadowColor = 'rgba(0,0,0,0)';
-        this.drawingService.baseCtx.strokeStyle = this.colorService.getpreviewColor(); // to draw after erasing
-        this.drawingService.previewCtx.strokeStyle = this.colorService.getpreviewColor();
+        this.drawingService.baseCtx.shadowColor = this.drawingService.previewCtx.shadowColor = 'rgba(0,0,0,0)';
+        this.drawingService.baseCtx.strokeStyle = this.drawingService.previewCtx.strokeStyle = this.colorService.getprimaryColor();
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
-        this.drawingService.baseCtx.setLineDash([0, 0]); // reset
-        this.drawingService.previewCtx.setLineDash([0, 0]);
+        this.drawingService.baseCtx.setLineDash([]); // reset
+        this.drawingService.previewCtx.setLineDash([]);
         this.drawingService.baseCtx.globalAlpha = 1;
         this.drawingService.previewCtx.globalAlpha = 1;
     }
