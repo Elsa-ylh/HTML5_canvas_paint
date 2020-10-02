@@ -101,8 +101,8 @@ export const dataUserGuide: UserGuide[] = [
         isTool: 'Dessiner',
         description:
             "La palette de couleur est un attribut partagé par tous les outils. Dans la barre latérale secondaire, vous pouvez voir que le panneau d’attributs contient deux couleurs configurables : couleurs principale et secondaire Le panneau possède un bouton permettant d’intervertir ces deux couleurs. Il vous est aussi possible de modifier l'opacité. Une couleur parfaitement opaque masquera la couleur originale. À l’opposé, une opacité nulle équivaut à l’absence de pigments. Vous pouvez sélectionner la couleur principale ou secondaire à partir d'une palette de couleurs. Une fois la couleur choisie et confirmée, la palette sera de nouveau masquée. L'outil palette de couleur vous offre aussi la possibilité d’y entrer les valeurs de rouge, vert et bleu manuellement (en hexadécimale) dans des champs texte prévus à cet effet.",
-        gifPath: '',
-        screenshotPath: '',
+        gifPath: 'assets/user_guide/color.gif',
+        screenshotPath: 'assets/user_guide/color.gif',
     },
     {
         title: 'Annuler-refaire',
