@@ -3,6 +3,7 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
@@ -10,8 +11,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class EllipseService extends Tool {
     lineWidth: number = 1;
-    fillColor: string = '#ffb366';
-    strokeColor: string = '#00ccff';
+    fillColor: string;
+    strokeColor: string;
     strokeRectColor: string = '#000000';
     lineRectwidth: number = 1;
     circle: boolean = false;
@@ -23,7 +24,7 @@ export class EllipseService extends Tool {
     mouseEnter: boolean = false;
     mouseOut: boolean = false;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService) {
         super(drawingService);
     }
 
@@ -32,6 +33,8 @@ export class EllipseService extends Tool {
         this.drawingService.baseCtx.lineWidth = this.dottedLineWidth;
         this.drawingService.previewCtx.lineWidth = this.dottedLineWidth;
         this.drawingService.clearEffectTool();
+        this.strokeColor = this.colorService.getprimaryColor();
+        this.fillColor = this.colorService.getsecondaryColor();
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
         this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
         if (this.mouseEnter) {

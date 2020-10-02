@@ -3,35 +3,35 @@
         <div class="small-buttons">
             <mat-list class="tools-buttons">
                 <mat-button-toggle-group vertical="true">
-                    <mat-button-toggle (click)="pickPencil()" [checked]="pencilChecked">
+                    <mat-button-toggle (click)="pickPencil()" [checked]="pencilChecked" matTooltip="Outil crayon" matTooltipPosition="right">
                         <mat-icon>edit</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickEraser()" [checked]="eraserChecked">
+                    <mat-button-toggle (click)="pickEraser()" [checked]="eraserChecked" matTooltip="Outil efface" matTooltipPosition="right">
                         <mat-icon svgIcon="eraser"></mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickBrush(1)" [checked]="brushChecked">
+                    <mat-button-toggle (click)="pickBrush(1)" [checked]="brushChecked" matTooltip="Outil pinceau" matTooltipPosition="right">
                         <mat-icon>brush</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickLine()" [checked]="lineChecked">
+                    <mat-button-toggle (click)="pickLine()" [checked]="lineChecked" matTooltip="Outil ligne" matTooltipPosition="right">
                         <mat-icon>horizontal_rule</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickRectangle(1)" [checked]="rectangleChecked">
+                    <mat-button-toggle (click)="pickRectangle(1)" [checked]="rectangleChecked" matTooltip="Outil rectangle" matTooltipPosition="right">
                         <mat-icon>crop_16_9</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickEllipse(1)" [checked]="ellipseChecked">
+                    <mat-button-toggle (click)="pickEllipse(1)" [checked]="ellipseChecked" matTooltip="Outil ellipse" matTooltipPosition="right">
                         <mat-icon>panorama_fish_eye</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="pickColor()" [checked]="colorChecked">
+                    <mat-button-toggle (click)="pickColor()" [checked]="colorChecked" matTooltip="Selectionner les couleurs" matTooltipPosition="right">
                         <mat-icon>color_lens</mat-icon>
                     </mat-button-toggle>
                 </mat-button-toggle-group>
             </mat-list>
             <mat-list class="miscellaneous-buttons">
                 <mat-button-toggle-group vertical="true">
-                    <mat-button-toggle appearance="radio" (click)="createNewDrawing()">
+                    <mat-button-toggle appearance="radio" (click)="createNewDrawing()" matTooltip="Nouveau dessin" matTooltipPosition="right">
                         <mat-icon>add</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle (click)="openUserGuide()">
+                    <mat-button-toggle (click)="openUserGuide()" matTooltip="Guide d'utilisation" matTooltipPosition="right">
                         <mat-icon>article</mat-icon>
                     </mat-button-toggle>
                 </mat-button-toggle-group>
@@ -77,25 +77,21 @@
                     <button mat-raised-button (click)="pickBrush(5)">Pinceau 5</button>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-slider max="50" min="1" [(ngModel)]="pxSize" (input)="sliderSliding($event)" [(ngModel)]="brushService.lineWidth">
-                    </mat-slider
-                    ><samp>{{ pxSize }}px</samp>
+                    <mat-slider max="50" min="1" [(ngModel)]="brushService.lineWidth"> </mat-slider><samp>{{ brushService.lineWidth }}px</samp>
                 </mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Line">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="2"> Pour quiter l'outil Ligne effectuez un double clique gauche avec votre souris</mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-slider max="50" min="1" [(ngModel)]="lineService.lineWidth" (input)="sliderSliding($event)"> </mat-slider
-                    ><samp>{{ pxSize }}px</samp>
+                    <mat-slider max="50" min="1" [(ngModel)]="lineService.lineWidth"> </mat-slider><samp>{{ lineService.lineWidth }}px</samp>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-checkbox [(ngModel)]="checked" (change)="CheckboxChangeToggle($event)">Avec Point</mat-checkbox>
+                    <mat-checkbox [(ngModel)]="lineService.isBallOn" (change)="CheckboxChangeToggle($event)">Avec Point</mat-checkbox>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-slider max="50" min="1" step="1" [(ngModel)]="lineService.secondarySizePixel" (input)="sliderSlidingPoint($event)">
-                    </mat-slider>
-                    <samp>{{ pxSizePoint }}px</samp>
+                    <mat-slider max="50" min="1" step="1" [(ngModel)]="lineService.secondarySizePixel"> </mat-slider>
+                    <samp>{{ lineService.secondarySizePixel }}px</samp>
                 </mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Rectangle">
