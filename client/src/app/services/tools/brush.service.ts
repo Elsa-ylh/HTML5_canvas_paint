@@ -171,7 +171,7 @@ export class BrushService extends Tool {
         // le motif en forme de flaiche comment ici
         ctx.beginPath();
         ctx.lineWidth = px2;
-        ctx.strokeStyle = this.colorService.getsecondaryColor();
+        ctx.strokeStyle = this.colorService.secondaryColor;
         this.lastPoint = path[0];
         for (const point of path) {
             ctx.moveTo(this.lastPoint.x, this.lastPoint.y + moveModify);
@@ -185,7 +185,7 @@ export class BrushService extends Tool {
             this.lastPoint = point;
         }
         ctx.stroke();
-        ctx.strokeStyle = this.colorService.getprimaryColor();
+        ctx.strokeStyle = this.colorService.primaryColor;
         ctx.lineWidth = sizePx;
     }
 
@@ -217,8 +217,8 @@ export class BrushService extends Tool {
             case SubToolselected.tool2:
                 this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
                 this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
-                this.drawingService.baseCtx.shadowColor = this.colorService.getsecondaryColor();
-                this.drawingService.previewCtx.shadowColor = this.colorService.getsecondaryColor();
+                this.drawingService.baseCtx.shadowColor = this.colorService.secondaryColor;
+                this.drawingService.previewCtx.shadowColor = this.colorService.secondaryColor;
                 this.drawingService.baseCtx.shadowBlur = this.drawingService.baseCtx.lineWidth;
                 this.drawingService.previewCtx.shadowBlur = this.drawingService.baseCtx.lineWidth;
                 break;
@@ -249,7 +249,7 @@ export class BrushService extends Tool {
     }
     private clearEffectTool(): void {
         this.drawingService.baseCtx.shadowColor = this.drawingService.previewCtx.shadowColor = 'rgba(0,0,0,0)';
-        this.drawingService.baseCtx.strokeStyle = this.drawingService.previewCtx.strokeStyle = this.colorService.getprimaryColor();
+        this.drawingService.baseCtx.strokeStyle = this.drawingService.previewCtx.strokeStyle = this.colorService.primaryColor;
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
         this.drawingService.baseCtx.setLineDash([]); // reset
         this.drawingService.previewCtx.setLineDash([]);

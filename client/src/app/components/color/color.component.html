@@ -32,23 +32,23 @@
 
     <table>
         <mat-grid-list cols="2" rowHeight="2:1">
-            <div>Preview:</div>
-            <div id="previewColor" [ngStyle]="{ 'background-color': colorService.getpreviewColor() }"></div>
-            <mat-grid-tile id="previewColorHexa">{{ colorService.getpreviewColor() }}</mat-grid-tile>
+            <div>Aperçu</div>
+            <div id="previewColor" [ngStyle]="{ 'background-color': colorService.previewColor }"></div>
+            <mat-grid-tile id="previewColorHexa">{{ colorService.previewColor }}</mat-grid-tile>
         </mat-grid-list>
     </table>
     <mat-divider></mat-divider>
     <table id="table">
         <th>
-            <div id="primaryColorTitle">Primary:</div>
+            <div id="primaryColorTitle">Primaire</div>
             <mat-grid-list cols="2" rowHeight="2:1" (click)="primaryClick()">
                 <div
                     id="primaryColor"
                     [style.border]="colorService.isclicked ? '2px solid red' : ''"
-                    [ngStyle]="{ 'background-color': colorService.getprimaryColor() }"
+                    [ngStyle]="{ 'background-color': colorService.primaryColor }"
                 ></div>
                 <span></span>
-                <mat-grid-tile id="primaryColorHexa">{{ colorService.getprimaryColor() }}</mat-grid-tile>
+                <mat-grid-tile id="primaryColorHexa">{{ colorService.primaryColor }}</mat-grid-tile>
             </mat-grid-list>
         </th>
         <br />
@@ -57,15 +57,15 @@
         </div>
 
         <th>
-            <div>Secondary:</div>
+            <div>Secondaire</div>
             <mat-grid-list cols="2" rowHeight="2:1" (click)="secondaryClick()">
                 <div
                     id="secondaryColor"
                     [style.border]="!colorService.isclicked ? '2px solid red' : ''"
-                    [ngStyle]="{ 'background-color': colorService.getsecondaryColor() }"
+                    [ngStyle]="{ 'background-color': colorService.secondaryColor }"
                 ></div>
                 <span></span>
-                <mat-grid-tile id="secondaryColorHexa">{{ colorService.getsecondaryColor() }}</mat-grid-tile>
+                <mat-grid-tile id="secondaryColorHexa">{{ colorService.secondaryColor }}</mat-grid-tile>
             </mat-grid-list>
         </th>
     </table>
@@ -81,10 +81,10 @@
     </div>
 
     <ng-template #message>
-        <h3>enter some valid input</h3>
-        <h4>rgba value must be from 0 and 255</h4>
-        <h4>alpha value must be from 0 and 1</h4>
-        <button mat-button mat-dialog-close>ok</button>
+        <h3>Veuillez entrer des données valides!</h3>
+        <h4>La valeur RGB doit être comprise en 0 et 255.</h4>
+        <h4>La valeur alpha doit être comprise entre 0 et 1.</h4>
+        <button mat-button mat-dialog-close>OK</button>
     </ng-template>
     <mat-form-field appearance="outline">
         <mat-label>R</mat-label>

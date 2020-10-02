@@ -169,8 +169,8 @@ export class LineService extends Tool {
     private clearEffectTool(): void {
         this.drawingService.baseCtx.shadowColor = 'rgba(0,0,0,0)';
         this.drawingService.previewCtx.shadowColor = 'rgba(0,0,0,0)';
-        this.drawingService.baseCtx.strokeStyle = this.colorService.getprimaryColor(); // to draw after erasing
-        this.drawingService.previewCtx.strokeStyle = this.colorService.getprimaryColor();
+        this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // to draw after erasing
+        this.drawingService.previewCtx.strokeStyle = this.colorService.primaryColor;
         this.drawingService.baseCtx.lineJoin = 'bevel';
         this.drawingService.baseCtx.lineCap = 'butt';
         this.drawingService.previewCtx.lineJoin = 'bevel';
