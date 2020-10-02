@@ -77,25 +77,21 @@
                     <button mat-raised-button (click)="pickBrush(5)">Pinceau 5</button>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-slider max="50" min="1" [(ngModel)]="pxSize" (input)="sliderSliding($event)" [(ngModel)]="brushService.lineWidth">
-                    </mat-slider
-                    ><samp>{{ pxSize }}px</samp>
+                    <mat-slider max="50" min="1" [(ngModel)]="brushService.lineWidth"> </mat-slider><samp>{{ brushService.lineWidth }}px</samp>
                 </mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Line">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="2"> Pour quiter l'outil Ligne effectuez un double clique gauche avec votre souris</mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-slider max="50" min="1" [(ngModel)]="lineService.lineWidth" (input)="sliderSliding($event)"> </mat-slider
-                    ><samp>{{ pxSize }}px</samp>
+                    <mat-slider max="50" min="1" [(ngModel)]="lineService.lineWidth"> </mat-slider><samp>{{ lineService.lineWidth }}px</samp>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-checkbox [(ngModel)]="checked" (change)="CheckboxChangeToggle($event)">Avec Point</mat-checkbox>
+                    <mat-checkbox [(ngModel)]="lineService.isBallOn" (change)="CheckboxChangeToggle($event)">Avec Point</mat-checkbox>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-slider max="50" min="1" step="1" [(ngModel)]="lineService.secondarySizePixel" (input)="sliderSlidingPoint($event)">
-                    </mat-slider>
-                    <samp>{{ pxSizePoint }}px</samp>
+                    <mat-slider max="50" min="1" step="1" [(ngModel)]="lineService.secondarySizePixel"> </mat-slider>
+                    <samp>{{ lineService.secondarySizePixel }}px</samp>
                 </mat-grid-tile>
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Rectangle">

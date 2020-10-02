@@ -11,6 +11,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class LineService extends Tool {
     secondarySizePixel: number = 2;
     lineWidth: number = 2;
+    isBallOn: boolean = false;
     private pathData: Vec2[] = [];
     private pointMouse: Vec2 = { x: 0, y: 0 };
     private pointShiftMemori: Vec2 = { x: 0, y: 0 };

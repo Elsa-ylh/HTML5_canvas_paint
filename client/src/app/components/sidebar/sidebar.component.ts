@@ -2,7 +2,6 @@ import { Component, HostListener } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
-import { MatSliderChange } from '@angular/material/slider';
 import { DomSanitizer } from '@angular/platform-browser';
 import { cursorName } from '@app/classes/cursor-name';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
@@ -33,11 +32,8 @@ export class SidebarComponent {
     showAttributes: boolean;
     isDialogOpen: boolean = false;
     lineWidth: number;
-    pxSize: number;
-    pxSizePoint: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
-    checked: boolean = false;
     private isPencilChecked: boolean = false;
     private isEraserChecked: boolean = false;
     private isBrushChecked: boolean = false;
@@ -110,8 +106,8 @@ export class SidebarComponent {
         this.toolService.switchTool(ToolUsed.Brush);
         this.toolService.currentTool.subToolSelect = subTool;
         if (this.drawingService.baseCtx.lineWidth < this.brushService.pixelMinBrush) {
-            this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.pxSize = this.brushService.pixelMinBrush;
-        } else this.pxSize = this.drawingService.previewCtx.lineWidth = this.drawingService.baseCtx.lineWidth;
+            this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.brushService.pixelMinBrush;
+        } else this.drawingService.previewCtx.lineWidth = this.drawingService.baseCtx.lineWidth;
     }
 
     get brushChecked(): boolean {
@@ -122,8 +118,6 @@ export class SidebarComponent {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Line);
         this.toolService.currentTool.subToolSelect = SubToolselected.tool1;
-        this.pxSize = this.lineService.secondarySizePixel;
-        this.pxSizePoint = this.lineService.lineWidth;
     }
 
     get lineChecked(): boolean {
@@ -159,12 +153,6 @@ export class SidebarComponent {
         return this.isColorChecked;
     }
 
-    sliderSliding(args: MatSliderChange): void {
-        if (args.value) {
-            this.pxSize = args.value;
-        }
-    }
-
     resetCheckedButton(): void {
         this.isPencilChecked = false;
         this.isEraserChecked = false;
@@ -176,12 +164,6 @@ export class SidebarComponent {
     }
     CheckboxChangeToggle(args: MatCheckboxChange): void {
         this.toolService.currentTool.subToolSelect = args.checked ? SubToolselected.tool2 : SubToolselected.tool1;
-    }
-
-    sliderSlidingPoint(args: MatSliderChange): void {
-        if (args.value) {
-            this.pxSizePoint = args.value;
-        }
     }
 
     // keybind control o for new drawing
