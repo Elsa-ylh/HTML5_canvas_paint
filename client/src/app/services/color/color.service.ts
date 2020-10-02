@@ -13,7 +13,8 @@ export interface LastColor {
     active: boolean;
 }
 const VALUE_TEN = 10;
-const VALUE_FIVE = 5;
+const SLIDER_STOPPER_RECT_WIDTH = 2;
+const SLIDER_STOPPER_RECT_HEIGHT = 20;
 @Injectable({
     providedIn: 'root',
 })
@@ -155,12 +156,12 @@ export class ColorService {
         ctx.closePath();
     }
 
-    drawMovingDot(ctx: CanvasRenderingContext2D, dimension: Vec2, event: MouseEvent): void {
+    drawMovingStopper(ctx: CanvasRenderingContext2D, dimension: Vec2, event: MouseEvent): void {
         ctx.clearRect(0, 0, dimension.x, dimension.y);
         ctx.lineCap = 'round';
-        ctx.strokeStyle = '#000';
-        ctx.fillStyle = '#FFF';
-        ctx.fillRect(event.offsetX, event.offsetY, VALUE_FIVE, VALUE_FIVE);
+        ctx.strokeStyle = '#000000';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(event.offsetX, 0, SLIDER_STOPPER_RECT_WIDTH, SLIDER_STOPPER_RECT_HEIGHT);
     }
 
     // Ce code est complètement inspiré sans gêne de

@@ -51,6 +51,7 @@ export class ColorComponent implements AfterViewInit {
 
     opacitySliderCtx: CanvasRenderingContext2D;
     previewopacitySliderCtx: CanvasRenderingContext2D;
+
     lastColors: LastColor[];
 
     color: string;
@@ -131,6 +132,7 @@ export class ColorComponent implements AfterViewInit {
             this.colorService.addLastColor(this.colorService.getsecondaryColor());
         }
         this.colorService.setselectedColor(this.colorService.getpreviewColor()); // to update palette UI (primary + secondary).
+        this.colorService.drawMovingStopper(this.previewHorizontalCtx, { x: this.width, y: this.horizontalHeight }, event);
         this.drawSquarePalette(); // updates the color palette
         this.drawHorizontalPalette(); // updates the color slider cursors' position
         this.drawOpacitySlider();
@@ -143,6 +145,7 @@ export class ColorComponent implements AfterViewInit {
 
     onMouseOverOpacitySliderClick(event: MouseEvent): void {
         this.drawOpacitySlider();
+        this.colorService.drawMovingStopper(this.previewopacitySliderCtx, { x: this.width, y: this.horizontalHeight }, event);
         this.colorService.changeColorOpacity(this.findPositionSlider(event)); // change opacity via the slider.
     }
     onMouseLastColorClick(event: MouseEvent, clickedColor: LastColor): boolean {
