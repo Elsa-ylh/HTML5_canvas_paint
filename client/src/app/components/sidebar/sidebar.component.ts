@@ -162,6 +162,7 @@ export class SidebarComponent {
         this.isEllipseChecked = false;
         this.isColorChecked = false;
     }
+
     CheckboxChangeToggle(args: MatCheckboxChange): void {
         this.toolService.currentTool.subToolSelect = args.checked ? SubToolselected.tool2 : SubToolselected.tool1;
     }
@@ -208,6 +209,7 @@ export class SidebarComponent {
             this.pickPencil();
         }
     }
+
     @HostListener('window:keydown.w', ['$event'])
     changeBrushMode(event: KeyboardEvent): void {
         if (this.toolService.currentToolName !== ToolUsed.Color) {
@@ -216,6 +218,7 @@ export class SidebarComponent {
             this.pickBrush(SubToolselected.tool1);
         }
     }
+
     @HostListener('window:keydown.l', ['$event'])
     changeLineMode(event: KeyboardEvent): void {
         if (this.toolService.currentToolName !== ToolUsed.Color) {

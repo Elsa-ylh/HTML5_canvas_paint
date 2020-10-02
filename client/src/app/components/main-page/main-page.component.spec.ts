@@ -47,6 +47,7 @@ describe('MainPageComponent', () => {
             expect(component.createNewDrawing).toHaveBeenCalled();
         });
     });
+
     it('should open a new drawin modal user guide', () => {
         fixture.whenStable().then(() => {
             component.openUserGuide();
