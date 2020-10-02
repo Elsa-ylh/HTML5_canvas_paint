@@ -87,12 +87,13 @@ export class BrushService extends Tool {
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
             }
+            this.clearPath();
+            this.clearPreviewCtx();
         }
     }
 
     onMouseEnter(event: MouseEvent): void {
         if (this.mouseDown && this.mouseOut) {
-            this.clearPath();
             this.mouseDownCoord = this.lastPoint;
             if (this.subToolSelect === SubToolselected.tool4) {
                 const point = new PointArc(this.mouseDownCoord, this.remdomInt(), Math.random());
