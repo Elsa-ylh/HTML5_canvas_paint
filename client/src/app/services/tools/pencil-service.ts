@@ -26,8 +26,8 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             this.clearPath();
             this.mouseMove = false;
-            this.drawingService.baseCtx.strokeStyle = this.colorService.getprimaryColor(); // to draw after erasing
-            this.drawingService.previewCtx.strokeStyle = this.colorService.getprimaryColor();
+            this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // to draw after erasing
+            this.drawingService.previewCtx.strokeStyle = this.colorService.primaryColor;
             this.drawingService.baseCtx.lineWidth = this.pencilSize;
             this.drawingService.previewCtx.lineWidth = this.pencilSize;
             this.drawingService.baseCtx.setLineDash([0, 0]); // reset

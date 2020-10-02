@@ -33,8 +33,8 @@
     <table>
         <mat-grid-list cols="2" rowHeight="2:1">
             <div>Aperçu</div>
-            <div id="previewColor" [ngStyle]="{ 'background-color': colorService.getpreviewColor() }"></div>
-            <mat-grid-tile id="previewColorHexa">{{ colorService.getpreviewColor() }}</mat-grid-tile>
+            <div id="previewColor" [ngStyle]="{ 'background-color': colorService.previewColor }"></div>
+            <mat-grid-tile id="previewColorHexa">{{ colorService.previewColor }}</mat-grid-tile>
         </mat-grid-list>
     </table>
     <mat-divider></mat-divider>
@@ -45,10 +45,10 @@
                 <div
                     id="primaryColor"
                     [style.border]="colorService.isclicked ? '2px solid red' : ''"
-                    [ngStyle]="{ 'background-color': colorService.getprimaryColor() }"
+                    [ngStyle]="{ 'background-color': colorService.primaryColor }"
                 ></div>
                 <span></span>
-                <mat-grid-tile id="primaryColorHexa">{{ colorService.getprimaryColor() }}</mat-grid-tile>
+                <mat-grid-tile id="primaryColorHexa">{{ colorService.primaryColor }}</mat-grid-tile>
             </mat-grid-list>
         </th>
         <br />
@@ -62,10 +62,10 @@
                 <div
                     id="secondaryColor"
                     [style.border]="!colorService.isclicked ? '2px solid red' : ''"
-                    [ngStyle]="{ 'background-color': colorService.getsecondaryColor() }"
+                    [ngStyle]="{ 'background-color': colorService.secondaryColor }"
                 ></div>
                 <span></span>
-                <mat-grid-tile id="secondaryColorHexa">{{ colorService.getsecondaryColor() }}</mat-grid-tile>
+                <mat-grid-tile id="secondaryColorHexa">{{ colorService.secondaryColor }}</mat-grid-tile>
             </mat-grid-list>
         </th>
     </table>

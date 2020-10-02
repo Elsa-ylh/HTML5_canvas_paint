@@ -106,17 +106,17 @@ export class ColorComponent implements AfterViewInit {
 
     onMouseOverSquare(event: MouseEvent): void {
         const position = { x: event.offsetX, y: event.offsetY };
-        this.colorService.setpreviewColor(this.colorService.numeralToHex(this.colorService.getColor(position, this.squareCtx)));
+        this.colorService.previewColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.squareCtx));
     }
 
     onMouseOverSquareClick(event: MouseEvent): void {
         // palette
         if (this.colorService.isclicked) {
-            this.colorService.setprimaryColor(this.colorService.getpreviewColor());
-            this.colorService.addLastColor(this.colorService.getprimaryColor());
+            this.colorService.primaryColor = this.colorService.previewColor;
+            this.colorService.addLastColor(this.colorService.primaryColor);
         } else {
-            this.colorService.setsecondaryColor(this.colorService.getpreviewColor());
-            this.colorService.addLastColor(this.colorService.getsecondaryColor());
+            this.colorService.secondaryColor = this.colorService.previewColor;
+            this.colorService.addLastColor(this.colorService.secondaryColor);
         }
         this.drawSquarePalette(); // cursor
         this.drawOpacitySlider();
@@ -125,13 +125,13 @@ export class ColorComponent implements AfterViewInit {
     onMouseOverHorizontalClick(event: MouseEvent): void {
         // color slider
         if (this.colorService.isclicked) {
-            this.colorService.setprimaryColor(this.colorService.getpreviewColor());
-            this.colorService.addLastColor(this.colorService.getprimaryColor());
+            this.colorService.primaryColor = this.colorService.previewColor;
+            this.colorService.addLastColor(this.colorService.primaryColor);
         } else {
-            this.colorService.setsecondaryColor(this.colorService.getpreviewColor());
-            this.colorService.addLastColor(this.colorService.getsecondaryColor());
+            this.colorService.secondaryColor = this.colorService.previewColor;
+            this.colorService.addLastColor(this.colorService.secondaryColor);
         }
-        this.colorService.setselectedColor(this.colorService.getpreviewColor()); // to update palette UI (primary + secondary).
+        this.colorService.selectedColor = this.colorService.previewColor; // to update palette UI (primary + secondary).
         this.colorService.drawMovingStopper(this.previewHorizontalCtx, { x: this.width, y: this.horizontalHeight }, event);
         this.drawSquarePalette(); // updates the color palette
         this.drawHorizontalPalette(); // updates the color slider cursors' position
@@ -140,7 +140,7 @@ export class ColorComponent implements AfterViewInit {
 
     onMouseOverHorizontal(event: MouseEvent): void {
         const position = { x: event.offsetX, y: event.offsetY };
-        this.colorService.setpreviewColor(this.colorService.numeralToHex(this.colorService.getColor(position, this.horizontalCtx)));
+        this.colorService.previewColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.horizontalCtx));
     }
 
     onMouseOverOpacitySliderClick(event: MouseEvent): void {
@@ -151,9 +151,9 @@ export class ColorComponent implements AfterViewInit {
     onMouseLastColorClick(event: MouseEvent, clickedColor: LastColor): boolean {
         if (clickedColor.active) {
             if (MouseButton.Left === event.button) {
-                this.colorService.setprimaryColor(clickedColor.color as string);
+                this.colorService.primaryColor = clickedColor.color as string;
             } else if (MouseButton.Right === event.button) {
-                this.colorService.setsecondaryColor(clickedColor.color as string);
+                this.colorService.secondaryColor = clickedColor.color as string;
                 return false;
             }
         }
@@ -170,7 +170,7 @@ export class ColorComponent implements AfterViewInit {
             this.colorService.changeColorOpacity(rgb.alpha);
         } else if (rgb.red <= MAX_VALUE_RGB && rgb.green <= MAX_VALUE_RGB && rgb.blue <= MAX_VALUE_RGB && rgb.alpha <= 1 && rgb.alpha >= 0) {
             this.color = this.colorService.numeralToHex(rgb);
-            this.colorService.setprimaryColor(this.color);
+            this.colorService.primaryColor = this.color;
             this.colorService.changeColorOpacity(rgb.alpha);
         } else {
             this.openWarningMessage(this.messageRGB);

@@ -2,13 +2,14 @@
 
 import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { EventOfTest } from '@app/classes/event-of-test';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 describe('ColorService', () => {
     let service: ColorService;
     let DrawingService: DrawingService;
-    // let mouseEventDrawDot: MouseEvent;
+    let mouseEventDrawDot: EventOfTest;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -31,11 +32,7 @@ describe('ColorService', () => {
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
 
-        /*   mouseEventDrawDot = {
-            offsetX: 25,
-            offsetY: 25,
-            button: MouseButton.Left,
-        } as MouseEvent; */
+        mouseEventDrawDot = new EventOfTest();
     });
 
     it('should be created', inject([ColorService], (serviceCol: ColorService) => {
@@ -50,45 +47,21 @@ describe('ColorService', () => {
     });
     */
 
-    it('selectedColor() and getselectedColor() should return the attribut: selectedColor ', () => {
-        service.setselectedColor('#FFFFFF');
-        service.getselectedColor();
-        expect(service.getselectedColor()).toEqual('#FFFFFF');
+    it('drawMovingDot should call drawMovingDot should change line cap,stroke style and fillstyle', () => {
+        service.drawMovingStopper(baseCtxStub, { x: 50, y: 50 }, mouseEventDrawDot.mouseEvent1);
+        expect(baseCtxStub.lineCap).toEqual('round');
+        expect(baseCtxStub.strokeStyle).toEqual('#000000');
+        expect(baseCtxStub.fillStyle).toEqual('#ffffff');
     });
 
-    it('setpreviewColor() and getpreviewColor() should return the attribut: previewColor', () => {
-        service.setpreviewColor('#FFFFFF');
-        service.getpreviewColor();
-        expect(service.getpreviewColor()).toEqual('#FFFFFF');
-    });
-
-    it('setprimaryColor() and getprimaryColor() should return the attribut: primaryColor', () => {
-        service.setprimaryColor('#0000000');
-        service.getprimaryColor();
-        expect(service.getprimaryColor()).toEqual('#0000000');
-    });
-
-    it('setsecondaryColor() and getsecondaryColor() should return the attribut: secondaryColor ', () => {
-        service.setsecondaryColor('#FFFFFF');
-        service.getsecondaryColor();
-        expect(service.getsecondaryColor()).toEqual('#FFFFFF');
-    });
-
-    it('setprimaryColorTransparency() and getprimaryColorTransparency() should return the attribut: primaryColorTransparency ', () => {
-        service.setprimaryColorTransparency(1);
-        service.getprimaryColorTransparency();
-        expect(service.getprimaryColorTransparency()).toEqual(1);
-    });
-
-    it('setsecondaryColorTransparency() and getsecondaryColorTransparency() should return the attribut: secondaryColorTransparency ', () => {
-        service.setsecondaryColorTransparency(2);
-        service.getsecondaryColorTransparency();
-        expect(service.getsecondaryColorTransparency()).toEqual(2);
-    });
-
-    /*
-    it('drawMovingDot should call clearrect() ', () => {
-
-
-    }); */
+    it('getcolor() should read data from the canvas '),
+        () => {
+            baseCtxStub.strokeStyle = 'black';
+            service.getColor({ x: 0, y: 0 }, baseCtxStub);
+            const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
+            expect(imageData.data[0]).toEqual(0); // R
+            expect(imageData.data[1]).toEqual(0); // G
+            expect(imageData.data[2]).toEqual(0); // B
+            expect(imageData.data[3]).toEqual(1); // A
+        };
 });
