@@ -13,7 +13,7 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
 import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
-
+// tslint:disable:no-any
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;

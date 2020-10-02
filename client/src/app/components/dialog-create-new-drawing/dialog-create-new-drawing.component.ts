@@ -11,7 +11,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class DialogCreateNewDrawingComponent {
     private warningCounter: number = 0;
-
     message: string = 'Êtes-vous sûr de vouloir effacer votre dessin actuel ?';
 
     constructor(
