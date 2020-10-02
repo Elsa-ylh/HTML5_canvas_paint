@@ -4,6 +4,7 @@ import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ColorService } from '../color/color.service';
 
 @Injectable({
     providedIn: 'root',
@@ -11,17 +12,19 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class LineService extends Tool {
     secondarySizePixel: number = 2;
     lineWidth: number = 2;
+    isBallOn: boolean = false;
     private pathData: Vec2[] = [];
     private pointMouse: Vec2 = { x: 0, y: 0 };
     private pointShiftMemori: Vec2 = { x: 0, y: 0 };
     private shiftKeyDown: boolean = false;
     private mouseOut: boolean = false;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService) {
         super(drawingService);
     }
 
     onMouseDown(event: MouseEvent): void {
+        if (!this.mouseDown) this.clearEffectTool();
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown && !this.shiftKeyDown && !this.mouseOut) {
             this.mouseMove = true;
@@ -166,8 +169,7 @@ export class LineService extends Tool {
     private clearEffectTool(): void {
         this.drawingService.baseCtx.shadowColor = 'rgba(0,0,0,0)';
         this.drawingService.previewCtx.shadowColor = 'rgba(0,0,0,0)';
-        this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
-        this.drawingService.previewCtx.strokeStyle = '#000000';
+        this.drawingService.previewCtx.strokeStyle = this.drawingService.baseCtx.strokeStyle = this.colorService.getprimaryColor(); // to draw after erasing
         this.drawingService.baseCtx.lineJoin = 'bevel';
         this.drawingService.baseCtx.lineCap = 'butt';
         this.drawingService.previewCtx.lineJoin = 'bevel';
