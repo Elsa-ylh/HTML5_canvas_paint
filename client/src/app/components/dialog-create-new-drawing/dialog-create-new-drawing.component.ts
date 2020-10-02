@@ -20,6 +20,7 @@ export class DialogCreateNewDrawingComponent {
         private drawingService: DrawingService,
         private canvasResizerService: CanvasResizerService,
         private router: Router,
+
     ) {
         if (this.data) {
             this.message = data.message;
@@ -31,6 +32,7 @@ export class DialogCreateNewDrawingComponent {
     }
 
     onConfirmClick(): void {
+
         if (
             this.message === 'Êtes-vous sûr de vouloir effacer votre dessin actuel ?' &&
             !this.drawingService.isCanvasBlank() &&
