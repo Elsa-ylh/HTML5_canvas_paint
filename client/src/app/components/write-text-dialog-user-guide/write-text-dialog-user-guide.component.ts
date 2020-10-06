@@ -19,6 +19,9 @@ export class WriteTextDialogUserGuideComponent {
     drawListSelection(): void {
         this.selectionList = 'Dessiner';
     }
+    shortcutsListSelection(): void {
+      this.selectionList = "Raccourcis clavier"
+    }
     testDataGuide(txt: string): boolean {
         return txt === this.selectionList;
     }

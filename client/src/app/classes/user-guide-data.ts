@@ -1,6 +1,9 @@
 import { UserGuide } from './interface-guide';
 
 export const dataUserGuide: UserGuide[] = [
+
+    // Divers
+
     {
         title: 'Créer ou continuer dessin',
         isTool: 'Divers',
@@ -32,6 +35,9 @@ export const dataUserGuide: UserGuide[] = [
         gifPath: '',
         screenshotPath: '',
     },
+
+    // Dessiner
+
     {
         title: 'Outils',
         isTool: 'Dessiner',
@@ -44,7 +50,7 @@ export const dataUserGuide: UserGuide[] = [
         title: 'Outils - Crayon',
         isTool: 'Dessiner',
         description:
-            "Le crayon est l’outil de base du logiciel de dessin. Il ne sert qu’à faire de simples traits sans texture particulière. Il dispose d'une pointe ronde et il est possible de modifier son épaisseur via la barre latérale secondaire.",
+            "Le crayon est l’outil de base du logiciel de dessin. Il ne sert qu’à faire de simples traits sans texture particulière. Il dispose d'une pointe ronde et il est possible de modifier son épaisseur via la barre latérale secondaire. Il est aussi possible d'utiliser la touche C de votre clavier afin de basculer directement sur l'outil crayon.",
         gifPath: 'assets/user_guide/pencil.gif',
         screenshotPath: 'assets/user_guide/pencil.png',
     },
@@ -52,7 +58,7 @@ export const dataUserGuide: UserGuide[] = [
         title: 'Outils - Efface',
         isTool: 'Dessiner',
         description:
-            'Cet outil permet d’effacer (rendre blanc) des pixels de la surface de dessin. Lorsque le clic gauche de la souris est enfoncé, tous les pixels se trouvant sous l’icône du pointeur de la souris deviennent blancs. Pour représenter l’efface, l’icône du pointeur de la souris est représenté par un carré blanc avec une très mince bordure noire. Il est possible de modifier son épaisseur via la barre latérale secondaire.',
+            "Cet outil permet d’effacer (rendre blanc) des pixels de la surface de dessin. Lorsque le clic gauche de la souris est enfoncé, tous les pixels se trouvant sous l’icône du pointeur de la souris deviennent blancs. Pour représenter l’efface, l’icône du pointeur de la souris est représenté par un carré blanc avec une très mince bordure noire. Il est possible de modifier son épaisseur via la barre latérale secondaire. Il est aussi possible d'utiliser la touche E de votre clavier afin de basculer directement sur l'outil efface.",
         gifPath: 'assets/user_guide/eraser.gif',
         screenshotPath: 'assets/user_guide/eraser.png',
     },
@@ -60,7 +66,7 @@ export const dataUserGuide: UserGuide[] = [
         title: 'Outils - Pinceau',
         isTool: 'Dessiner',
         description:
-            'Cet outil est similaire au crayon. Il n’en diffère que par la texture du trait. Il est possible de choisir parmi cinq textures différentes. On peut modifier son épaisseur et la texture via la barre latérale secondaire',
+            "Cet outil est similaire au crayon. Il n’en diffère que par la texture du trait. Il est possible de choisir parmi cinq textures différentes. On peut modifier son épaisseur et la texture via la barre latérale secondaire. Il est aussi possible d'utiliser la touche W de votre clavier afin de basculer directement sur l'outil pinceau.",
         gifPath: 'assets/user_guide/brush.gif',
         screenshotPath: 'assets/user_guide/brush.png',
     },
@@ -68,7 +74,7 @@ export const dataUserGuide: UserGuide[] = [
         title: 'Outils - Ligne',
         isTool: 'Dessiner',
         description:
-            "Cet outil permet de tracer une ligne composée d’un ou plusieurs segments. Votre premier clic définit la position de départ de la ligne. Ensuite, chaque clic qui suit « connecte » avec le clic qui le précède pour former un segment de la ligne. Lorsque vous maintenez la touche Shift enfoncée, le segment temporaire s’orientera selon l’un des angles suivants : 0, 45, 90, 135, 180, 225, 270 ou 315 degrés. Afin de quitter l'outil ligne, il vous faudra effectuer un double-clique gauche.",
+            "Cet outil permet de tracer une ligne composée d’un ou plusieurs segments. Votre premier clic définit la position de départ de la ligne. Ensuite, chaque clic qui suit « connecte » avec le clic qui le précède pour former un segment de la ligne. Lorsque vous maintenez la touche Shift enfoncée, le segment temporaire s’orientera selon l’un des angles suivants : 0, 45, 90, 135, 180, 225, 270 ou 315 degrés. Afin de quitter l'outil ligne, il vous faudra effectuer un double-clique gauche. Il est aussi possible d'utiliser la touche L de votre clavier afin de basculer directement sur l'outil ligne.",
         gifPath: 'assets/user_guide/line.gif',
         screenshotPath: 'assets/user_guide/line.png',
     },
@@ -76,7 +82,7 @@ export const dataUserGuide: UserGuide[] = [
         title: 'Outils - Rectangle',
         isTool: 'Dessiner',
         description:
-            "Cet outil permet de dessiner des rectangles. Il vous est possible de créer des rectangles sur la surface de dessin en faisant des glisser-déposer. Si vous souhaitez tracé un carré, appuyez sur la touche Shift pendant votre glisser-déposer. De plus, il vous est possible de choisir entre trois types de rectangles : contour (on ne dessine que les contours), plein (intérieur rempli sans contour) ou plein avec contour (on dessine l'intérieur et les contours du rectangle). Aussi, vous pouvez modifier l'épaisseur des contours via la barre latérale secondaire.",
+            "Cet outil permet de dessiner des rectangles. Il vous est possible de créer des rectangles sur la surface de dessin en faisant des glisser-déposer. Si vous souhaitez tracé un carré, appuyez sur la touche Shift pendant votre glisser-déposer. De plus, il vous est possible de choisir entre trois types de rectangles : contour (on ne dessine que les contours), plein (intérieur rempli sans contour) ou plein avec contour (on dessine l'intérieur et les contours du rectangle). Aussi, vous pouvez modifier l'épaisseur des contours via la barre latérale secondaire. Il est possible d'utiliser la touche 1 de votre clavier afin de basculer directement sur l'outil rectangle.",
         gifPath: 'assets/user_guide/rectangle.gif',
         screenshotPath: 'assets/user_guide/assets/user_guide/rectangle.png',
     },
@@ -84,9 +90,17 @@ export const dataUserGuide: UserGuide[] = [
         title: 'Outils - Ellipse',
         isTool: 'Dessiner',
         description:
-            "Cet outil permet de dessiner des ellipses. Il vous est possible de créer des ellipses sur la surface de dessin en faisant des glisser-déposer. Si vous souhaitez tracé un cercle, appuyez sur la touche Shift pendant votre glisser-déposer. De plus, il vous est possible de choisir entre trois types d'ellipses : contour (on ne dessine que les contours), plein (intérieur rempli sans contour) ou plein avec contour (on dessine l'intérieur et les contours). Aussi, vous pouvez modifier l'épaisseur des contours via la barre latérale secondaire.",
+            "Cet outil permet de dessiner des ellipses. Il vous est possible de créer des ellipses sur la surface de dessin en faisant des glisser-déposer. Si vous souhaitez tracé un cercle, appuyez sur la touche Shift pendant votre glisser-déposer. De plus, il vous est possible de choisir entre trois types d'ellipses : contour (on ne dessine que les contours), plein (intérieur rempli sans contour) ou plein avec contour (on dessine l'intérieur et les contours). Aussi, vous pouvez modifier l'épaisseur des contours via la barre latérale secondaire. Il est possible d'utiliser la touche 2 de votre clavier afin de basculer directement sur l'outil ellipse.",
         gifPath: 'assets/user_guide/ellipse.gif',
         screenshotPath: 'assets/user_guide/ellipse.png',
+    },
+    {
+      title: 'Outils - Polygone',
+      isTool: 'Dessiner',
+      description:
+          "Cet outil permet de dessiner des polygones. Il vous est possible de créer des polygones sur la surface de dessin en faisant des glisser-déposer. Le nombre de côtés peut être modifié (de 3 à 12) afin de tracé le polygone souhaité. De plus, il vous est possible de choisir entre trois types de polygones : contour (on ne dessine que les contours), plein (intérieur rempli sans contour) ou plein avec contour (on dessine l'intérieur et les contours). Aussi, vous pouvez modifier l'épaisseur des contours via la barre latérale secondaire. Il est possible d'utiliser la touche 3 de votre clavier afin de basculer directement sur l'outil polygone.",
+      gifPath: 'assets/user_guide/ellipse.gif',
+      screenshotPath: 'assets/user_guide/ellipse.png',
     },
     {
         title: 'Manipulation de sélection',
@@ -126,5 +140,12 @@ export const dataUserGuide: UserGuide[] = [
         description: 'Cette fonctionnalité sera implémentée lors du sprint 2.',
         gifPath: '',
         screenshotPath: '',
+    },
+    {
+      title: 'Aide - Raccourcis clavier',
+      isTool: 'Raccourcis clavier',
+      description: 'Voici un tableau récapitulatif de tous les raccourcis clavier présents sur notre application PolyDessin. Les raccourcis clavier seront utilisables au fur et à mesure que les outils et/ou fonctionnalités seront ajoutés.',
+      gifPath: '',
+      screenshotPath: 'shortcut_keyboard.png',
     },
 ];
