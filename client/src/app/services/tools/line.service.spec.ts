@@ -254,7 +254,7 @@ describe('Service: Line', () => {
         service.onKeyEscape(events.backspceEvant);
         expect(clearPathSpy).toHaveBeenCalled();
     });
-    it('onMouseDown,onMouseMove, OnShiftKeyDown and  onMouseMove and brush ligne in de canvas ', () => {
+    it('onMouseDown, onMouseMove, onShiftKeyDown, onMouseMove of brush line in canvas', () => {
         service.onMouseDown(events.mouseEvent1);
         service.onMouseMove(events.mouseEvent2);
         service.OnShiftKeyDown(events.backspceEvant);
