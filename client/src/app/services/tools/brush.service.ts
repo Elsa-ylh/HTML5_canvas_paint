@@ -247,14 +247,12 @@ export class BrushService extends Tool {
         this.brush4Data = [];
         this.mouseOut = false;
     }
-    private clearEffectTool(): void {
+    clearEffectTool(): void {
         this.drawingService.baseCtx.shadowColor = this.drawingService.previewCtx.shadowColor = 'rgba(0,0,0,0)';
         this.drawingService.baseCtx.strokeStyle = this.drawingService.previewCtx.strokeStyle = this.colorService.primaryColor;
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
         this.drawingService.baseCtx.setLineDash([]); // reset
         this.drawingService.previewCtx.setLineDash([]);
-        this.drawingService.baseCtx.globalAlpha = 1;
-        this.drawingService.previewCtx.globalAlpha = 1;
     }
     private remdomInt(): number {
         const min = this.drawingService.baseCtx.lineWidth / motionDifference; // le cercle vont avoir une grande entre le rayon et son quarte

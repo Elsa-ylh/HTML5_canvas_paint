@@ -35,7 +35,5 @@ export class DrawingService {
         this.previewCtx.lineCap = 'square';
         this.baseCtx.setLineDash([0, 0]); // reset
         this.previewCtx.setLineDash([0, 0]);
-        this.baseCtx.globalAlpha = 1;
-        this.previewCtx.globalAlpha = 1;
     }
 }

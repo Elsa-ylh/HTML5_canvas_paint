@@ -134,6 +134,8 @@ export class EllipseService extends Tool {
         }
     }
 
+    clearEffectTool(): void {}
+
     // draw a basic ellipse + circle if shift pressed
     private drawEllipse(ctx: CanvasRenderingContext2D, radiusX: number, radiusY: number): void {
         let centerX = 0;
