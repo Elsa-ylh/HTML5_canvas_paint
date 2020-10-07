@@ -52,7 +52,7 @@ export abstract class Tool {
         this.clearPreviewCtx();
     }
 
-    protected abstract clearEffectTool(): void;
+    protected clearEffectTool(): void {}
 
     protected clearPath(): void {}
     protected clearPreviewCtx(): void {}
