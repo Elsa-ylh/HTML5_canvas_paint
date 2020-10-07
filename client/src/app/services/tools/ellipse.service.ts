@@ -32,7 +32,7 @@ export class EllipseService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         this.drawingService.baseCtx.lineWidth = this.dottedLineWidth;
         this.drawingService.previewCtx.lineWidth = this.dottedLineWidth;
-        this.drawingService.clearEffectTool();
+        this.clearEffectTool();
         this.strokeColor = this.colorService.primaryColor;
         this.fillColor = this.colorService.secondaryColor;
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
@@ -132,6 +132,19 @@ export class EllipseService extends Tool {
                     break;
             }
         }
+    }
+
+    clearEffectTool(): void {
+        this.drawingService.baseCtx.shadowColor = 'rgba(0,0,0,0)';
+        this.drawingService.previewCtx.shadowColor = 'rgba(0,0,0,0)';
+        this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
+        this.drawingService.previewCtx.strokeStyle = '#000000';
+        this.drawingService.baseCtx.lineJoin = 'miter';
+        this.drawingService.baseCtx.lineCap = 'square';
+        this.drawingService.previewCtx.lineJoin = 'miter';
+        this.drawingService.previewCtx.lineCap = 'square';
+        this.drawingService.baseCtx.setLineDash([0, 0]); // reset
+        this.drawingService.previewCtx.setLineDash([0, 0]);
     }
 
     // draw a basic ellipse + circle if shift pressed

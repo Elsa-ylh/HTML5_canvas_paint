@@ -166,7 +166,7 @@ export class LineService extends Tool {
         return dx <= maximumDistance && dy <= maximumDistance;
     }
 
-    private clearEffectTool(): void {
+    clearEffectTool(): void {
         this.drawingService.baseCtx.shadowColor = 'rgba(0,0,0,0)';
         this.drawingService.previewCtx.shadowColor = 'rgba(0,0,0,0)';
         this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // to draw after erasing
@@ -178,8 +178,6 @@ export class LineService extends Tool {
         this.drawingService.previewCtx.lineWidth = this.drawingService.baseCtx.lineWidth = this.lineWidth;
         this.drawingService.baseCtx.setLineDash([]); // reset
         this.drawingService.previewCtx.setLineDash([]);
-        this.drawingService.baseCtx.globalAlpha = 1;
-        this.drawingService.previewCtx.globalAlpha = 1;
         this.clearPreviewCtx();
     }
 
