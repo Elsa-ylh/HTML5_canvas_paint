@@ -80,12 +80,12 @@ export class PencilService extends Tool {
     }
 
     clearEffectTool(): void {
-        this.drawingService.baseCtx.setLineDash([0, 0]); // reset
-        this.drawingService.previewCtx.setLineDash([0, 0]); // reset
         this.drawingService.baseCtx.lineCap = 'round';
         this.drawingService.baseCtx.lineJoin = 'round';
         this.drawingService.previewCtx.lineCap = 'round';
         this.drawingService.previewCtx.lineJoin = 'round';
+        this.drawingService.baseCtx.setLineDash([0, 0]); // reset
+        this.drawingService.previewCtx.setLineDash([0, 0]);
     }
 
     clearPath(): void {

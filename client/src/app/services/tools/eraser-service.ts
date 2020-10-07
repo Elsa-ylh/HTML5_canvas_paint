@@ -21,14 +21,7 @@ export class EraserService extends Tool {
             this.mouseMove = false;
             this.drawingService.baseCtx.strokeStyle = '#FFF'; // draw in white
             this.drawingService.previewCtx.strokeStyle = '#FFF'; // when changecolor is implemented call pencil weith white.
-            this.drawingService.baseCtx.setLineDash([0, 0]); // reset
-            this.drawingService.previewCtx.setLineDash([0, 0]); // reset
-            this.drawingService.baseCtx.lineWidth = this.eraserWidth;
-            this.drawingService.previewCtx.lineWidth = this.eraserWidth;
-            this.drawingService.baseCtx.lineCap = 'butt';
-            this.drawingService.baseCtx.lineJoin = 'bevel';
-            this.drawingService.previewCtx.lineCap = 'butt';
-            this.drawingService.previewCtx.lineJoin = 'bevel';
+            this.clearEffectTool();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -63,6 +56,17 @@ export class EraserService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.RemoveLine(this.drawingService.previewCtx, this.pathData);
         }
+    }
+
+    clearEffectTool(): void {
+        this.drawingService.baseCtx.setLineDash([0, 0]); // reset
+        this.drawingService.previewCtx.setLineDash([0, 0]); // reset
+        this.drawingService.baseCtx.lineWidth = this.eraserWidth;
+        this.drawingService.previewCtx.lineWidth = this.eraserWidth;
+        this.drawingService.baseCtx.lineCap = 'butt';
+        this.drawingService.baseCtx.lineJoin = 'bevel';
+        this.drawingService.previewCtx.lineCap = 'butt';
+        this.drawingService.previewCtx.lineJoin = 'bevel';
     }
 
     private RemoveLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {

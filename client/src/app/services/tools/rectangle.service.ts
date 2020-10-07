@@ -28,7 +28,7 @@ export class RectangleService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-        this.drawingService.clearEffectTool();
+        this.clearEffectTool();
         this.strokeColor = this.colorService.primaryColor;
         this.fillColor = this.colorService.secondaryColor;
         if (this.mouseEnter) {
@@ -86,6 +86,19 @@ export class RectangleService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.selectRectangle(this.mousePosition, false);
         }
+    }
+
+    clearEffectTool(): void {
+        this.drawingService.baseCtx.shadowColor = 'rgba(0,0,0,0)';
+        this.drawingService.previewCtx.shadowColor = 'rgba(0,0,0,0)';
+        this.drawingService.baseCtx.strokeStyle = '#000000'; // to draw after erasing
+        this.drawingService.previewCtx.strokeStyle = '#000000';
+        this.drawingService.baseCtx.lineJoin = 'miter';
+        this.drawingService.baseCtx.lineCap = 'square';
+        this.drawingService.previewCtx.lineJoin = 'miter';
+        this.drawingService.previewCtx.lineCap = 'square';
+        this.drawingService.baseCtx.setLineDash([0, 0]); // reset
+        this.drawingService.previewCtx.setLineDash([0, 0]);
     }
 
     drawFillRectangle(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
