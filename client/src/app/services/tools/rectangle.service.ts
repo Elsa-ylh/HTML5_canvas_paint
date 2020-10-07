@@ -146,16 +146,19 @@ export class RectangleService extends Tool {
         if (base) {
             switch (this.subToolSelect) {
                 case SubToolselected.tool1: {
+                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
                     this.drawFillRectangle(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition);
                     break;
                 }
 
                 case SubToolselected.tool2: {
+                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
                     this.drawRectangleOutline(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition);
                     break;
                 }
 
                 case SubToolselected.tool3: {
+                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
                     this.drawFillRectangleOutline(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition);
                     break;
                 }
