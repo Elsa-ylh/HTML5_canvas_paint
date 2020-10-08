@@ -1,3 +1,4 @@
+import { DataController } from '@app/controllers/data.controller';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
@@ -7,7 +8,6 @@ import * as logger from 'morgan';
 import { DateController } from './controllers/date.controller';
 import { IndexController } from './controllers/index.controller';
 import { TYPES } from './types';
-
 @injectable()
 export class Application {
     private readonly internalError: number = 500;
@@ -16,6 +16,7 @@ export class Application {
     constructor(
         @inject(TYPES.IndexController) private indexController: IndexController,
         @inject(TYPES.DateController) private dateController: DateController,
+        @inject(TYPES.DataController) private dataController: DataController,
     ) {
         this.app = express();
 
@@ -37,6 +38,7 @@ export class Application {
         // Notre application utilise le routeur de notre API `Index`
         this.app.use('/api/index', this.indexController.router);
         this.app.use('/api/date', this.dateController.router);
+        this.app.use('/api/data', this.dataController.router);
         this.errorHandling();
     }
 

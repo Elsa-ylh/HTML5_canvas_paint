@@ -22,6 +22,6 @@
             "@common/*": ["../common/*"]
         }
     },
-    "include": ["app/**/*.ts"],
+    "include": ["app/**/*.ts", "app/services/database.service.ts"],, "../common/communication/canvas-information.ts"
     "exclude": ["node_modules", "dist", "**/*.spec.ts", "test/*"]
 }
