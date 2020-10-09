@@ -1,9 +1,17 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIconRegistry } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { DomSanitizer } from '@angular/platform-browser';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
-import { ToolUsed } from '@app/classes/tool';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
@@ -13,6 +21,9 @@ import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { ColorComponent } from '../color/color.component';
+import { DialogCreateNewDrawingComponent } from '../dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { WriteTextDialogUserGuideComponent } from '../write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { SidebarComponent } from './sidebar.component';
 
 describe('SidebarComponent', () => {
@@ -39,7 +50,20 @@ describe('SidebarComponent', () => {
         toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub);
 
         await TestBed.configureTestingModule({
-            declarations: [SidebarComponent],
+            declarations: [SidebarComponent, ColorComponent, WriteTextDialogUserGuideComponent, DialogCreateNewDrawingComponent],
+            imports: [
+                MatIconModule,
+                MatGridListModule,
+                MatSlideToggleModule,
+                MatButtonToggleModule,
+                MatButtonModule,
+                MatListModule,
+                MatFormFieldModule,
+                MatInputModule,
+                MatCheckboxModule,
+                BrowserAnimationsModule,
+                HttpClientModule,
+            ],
             providers: [
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ToolService, useValue: toolServiceStub },
@@ -51,20 +75,10 @@ describe('SidebarComponent', () => {
                 { provide: LineService, useValue: lineStub },
                 { provide: ToolService, useValue: toolServiceStub },
                 { provide: MatDialog, useValue: {} },
-                {
-                    provide: MatIconRegistry,
-                    useValue: {
-                        addSvgIcon: () => '',
-                    },
-                },
-                {
-                    provide: DomSanitizer,
-                    useValue: {
-                        bypassSecurityTrustResourceUrl: () => '',
-                    },
-                },
             ],
         }).compileComponents();
+
+        TestBed.inject(DomSanitizer);
     });
 
     beforeEach(() => {
@@ -81,21 +95,5 @@ describe('SidebarComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
-    });
-    it('pickPencil', () => {
-        component.pickPencil();
-        expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Pencil);
-    });
-    it('pickEraser()', () => {
-        component.pickEraser();
-        expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Eraser);
-    });
-    it('pickRectangle()', () => {
-        component.pickRectangle(SubToolselected.tool1);
-        expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Rectangle);
-    });
-    it('pickEllipse()', () => {
-        component.pickEllipse(SubToolselected.tool1);
-        expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Ellipse);
     });
 });

@@ -1,6 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIconRegistry } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { DomSanitizer } from '@angular/platform-browser';
 // import { ColorService } from '@app/services/color/color.service';
 // import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -18,6 +23,7 @@ describe('ColorComponent', () => {
         // matDialog= new MatDialog;
         await TestBed.configureTestingModule({
             declarations: [ColorComponent],
+            imports: [MatIconModule, MatGridListModule, MatDividerModule, MatFormFieldModule, MatListModule, MatButtonModule],
             providers: [
                 { provide: MatDialog, useValue: {} },
                 {

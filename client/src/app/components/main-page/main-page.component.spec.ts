@@ -1,6 +1,9 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListItem, MatListModule } from '@angular/material/list';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IndexService } from '@app/services/index/index.service';
 import { of } from 'rxjs';
@@ -20,7 +23,7 @@ describe('MainPageComponent', () => {
             indexServiceSpy.basicPost.and.returnValue(of());
 
             TestBed.configureTestingModule({
-                imports: [RouterTestingModule, HttpClientModule],
+                imports: [RouterTestingModule, HttpClientModule, MatIconModule, MatListModule, MatListItem, MatButtonModule],
                 declarations: [MainPageComponent],
                 providers: [{ provide: MatDialog, useValue: {} }],
             }).compileComponents();

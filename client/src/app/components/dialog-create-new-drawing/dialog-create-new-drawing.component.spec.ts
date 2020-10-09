@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -20,7 +22,7 @@ describe('DialogCreateNewDrawingComponent', () => {
         canvasResizerStub = new CanvasResizerService();
 
         await TestBed.configureTestingModule({
-            imports: [MatDialogModule],
+            imports: [MatDialogModule, MatIconModule, MatGridListModule],
             declarations: [DialogCreateNewDrawingComponent],
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: {} },
