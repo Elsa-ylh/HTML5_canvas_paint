@@ -5,7 +5,7 @@ import 'reflect-metadata';
 // CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://Admin:LOG2990gr103@saved-canvas-images.2ticq.mongodb.net/project2?retryWrites=true&w=majority';
 const DATABASE_NAME = 'project2';
-const DATABASE_COLLECTION = 'saved_canvas_images';
+const DATABASE_COLLECTION = 'saved_canvas_pictures';
 @injectable()
 export class DatabaseService {
     collection: Collection<CancasInformation>;
@@ -25,32 +25,59 @@ export class DatabaseService {
             });
         console.log(this.collection);
     }
-    async getImageLabals(setLabels: string[]): Promise<CancasInformation[]> {
+    async getPictureLabals(setLabels: string[]): Promise<CancasInformation[]> {
         if (!setLabels.length) {
-            return this.getImage();
+            return this.getPictures();
         } else {
             return this.collection
                 .find({
                     'labels.label': { $in: setLabels },
                 }) /* { labels.label: { $in: Labels } } doit ajouté les condition en 'ou'logique pour le filtrage des étiquette */
                 .toArray()
-                .then((image: CancasInformation[]) => {
-                    return image;
+                .then((picture: CancasInformation[]) => {
+                    return picture;
                 })
                 .catch((error: Error) => {
                     throw error;
                 });
         }
     }
-    async getImage(): Promise<CancasInformation[]> {
+    async getPictures(): Promise<CancasInformation[]> {
         return this.collection
             .find()
             .toArray()
-            .then((image: CancasInformation[]) => {
-                return image;
+            .then((pictures: CancasInformation[]) => {
+                return pictures;
             })
             .catch((error: Error) => {
                 throw error;
             });
+    }
+    async getPicture(namePicture: string): Promise<CancasInformation> {
+        return this.collection
+            .findOne({ name: namePicture })
+            .then((picture: CancasInformation) => {
+                return picture;
+            })
+            .catch((error: Error) => {
+                throw error;
+            });
+    }
+
+    async addPicture(picture: CancasInformation): Promise<void> {
+        if (this.validatePicture(picture)) {
+            this.collection.insertOne(picture).catch((error: Error) => {
+                throw error;
+            });
+        } else {
+            throw new Error('Invalid picture');
+        }
+    }
+    private async validatePicture(Cancas: CancasInformation): Promise<boolean> {
+        return (await this.validateName(Cancas.name)) || Cancas.picture !== '';
+    }
+    private async validateName(namePicture: string): Promise<boolean> {
+        const picture = await this.getPicture(namePicture);
+        return !(namePicture === picture.name);
     }
 }
