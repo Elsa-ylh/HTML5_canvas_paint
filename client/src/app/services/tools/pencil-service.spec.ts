@@ -32,6 +32,8 @@ describe('PencilService', () => {
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
 
+        baseCtxStub.fillStyle = '#000000'; // make sure everything is black
+
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,

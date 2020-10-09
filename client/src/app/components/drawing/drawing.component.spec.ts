@@ -1,4 +1,6 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Tool } from '@app/classes/tool';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
@@ -48,6 +50,7 @@ describe('DrawingComponent', () => {
 
             TestBed.configureTestingModule({
                 declarations: [DrawingComponent],
+                imports: [BrowserAnimationsModule, HttpClientModule],
                 providers: [
                     { provide: DrawingService, useValue: drawingStub },
                     { provide: ToolService, useValue: toolServiceStub },

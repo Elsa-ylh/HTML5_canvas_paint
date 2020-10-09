@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -58,7 +57,6 @@ describe('SidebarComponent', () => {
                 MatButtonToggleModule,
                 MatButtonModule,
                 MatListModule,
-                MatFormFieldModule,
                 MatInputModule,
                 MatCheckboxModule,
                 BrowserAnimationsModule,

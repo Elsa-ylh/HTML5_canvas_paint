@@ -1,8 +1,17 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ColorComponent } from '@app/components/color/color.component';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
-import { ColorComponent } from '../color/color.component';
 import { EditorComponent } from './editor.component';
 
 describe('EditorComponent', () => {
@@ -13,7 +22,17 @@ describe('EditorComponent', () => {
         waitForAsync(() => {
             TestBed.configureTestingModule({
                 declarations: [EditorComponent, DrawingComponent, SidebarComponent, ColorComponent],
-                imports: [],
+                imports: [
+                    MatIconModule,
+                    MatButtonModule,
+                    MatGridListModule,
+                    MatListModule,
+                    MatInputModule,
+                    MatButtonToggleModule,
+                    MatDividerModule,
+                    BrowserAnimationsModule,
+                    HttpClientModule,
+                ],
                 providers: [
                     { provide: MAT_DIALOG_DATA, useValue: {} },
                     { provide: MatDialog, useValue: {} },
