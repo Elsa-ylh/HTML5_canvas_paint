@@ -32,8 +32,6 @@ describe('PencilService', () => {
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
 
-        baseCtxStub.fillStyle = '#000000'; // make sure everything is black
-
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
@@ -102,6 +100,11 @@ describe('PencilService', () => {
     });
 
     it(' onMouseUp should draw a dot when onMouseDown once and no onMouseMove', () => {
+        service['drawingService'].clearCanvas(baseCtxStub);
+        service['drawingService'].clearCanvas(previewCtxStub);
+
+        service.pencilSize = 5;
+
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
 
