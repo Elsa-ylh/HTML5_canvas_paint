@@ -26,6 +26,12 @@ describe('EditorComponent', () => {
         fixture.detectChanges();
     });
 
+    afterEach(() => {
+        if (fixture.nativeElement && 'remove' in fixture.nativeElement) {
+            (fixture.nativeElement as HTMLElement).remove();
+        }
+    });
+
     it('should create', () => {
         expect(component).toBeTruthy();
     });
