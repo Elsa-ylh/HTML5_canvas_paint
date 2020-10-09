@@ -6,10 +6,10 @@ import 'reflect-metadata';
 const DATABASE_URL = 'mongodb+srv://Admin:LOG2990gr103@saved-canvas-images.2ticq.mongodb.net/project2?retryWrites=true&w=majority';
 const DATABASE_NAME = 'project2';
 const DATABASE_COLLECTION = 'saved_canvas_pictures';
+
 @injectable()
 export class DatabaseService {
     collection: Collection<CancasInformation>;
-
     private options: MongoClientOptions = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -23,7 +23,6 @@ export class DatabaseService {
                 console.error('CONNECTION ERROR. EXITING PROCESS');
                 process.exit(1);
             });
-        console.log(this.collection);
     }
     async getPictureLabals(setLabels: string[]): Promise<CancasInformation[]> {
         if (!setLabels.length) {
@@ -43,6 +42,7 @@ export class DatabaseService {
         }
     }
     async getPictures(): Promise<CancasInformation[]> {
+        console.log(this.collection);
         return this.collection
             .find()
             .toArray()
