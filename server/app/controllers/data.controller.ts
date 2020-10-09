@@ -1,4 +1,4 @@
-import { DatabaseService } from '@app/services/database.service';
+import { DatabasePicureService } from '@app/services/dataBasePicture.service';
 import { CancasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { NextFunction, Request, Response, Router } from 'express';
@@ -9,7 +9,7 @@ import { TYPES } from '../types';
 export class DataController {
     router: Router;
 
-    constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
+    constructor(@inject(TYPES.DatabasePicureService) private databaseService: DatabasePicureService) {
         this.configureRouter();
     }
     private configureRouter(): void {
@@ -30,7 +30,7 @@ export class DataController {
         });
         this.router.post('/labels', (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
-                .getPictureLabals(req.body)
+                .getPicturesLabals(req.body)
                 .then((CancasInformation: CancasInformation[]) => {
                     res.json(CancasInformation);
                 })
