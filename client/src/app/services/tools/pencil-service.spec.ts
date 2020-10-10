@@ -9,7 +9,6 @@ import { PencilService } from './pencil-service';
 describe('PencilService', () => {
     let service: PencilService;
     let mouseEvent: MouseEvent;
-    // let mouseEvent1: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
@@ -99,21 +98,16 @@ describe('PencilService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
-    it(' onMouseUp should draw a dot when onMouseDown once and no onMouseMove', () => {
-        service['drawingService'].clearCanvas(baseCtxStub);
-        service['drawingService'].clearCanvas(previewCtxStub);
+    it(' onMouseUp should draw a dot when onMouseDown called once and no onMouseMove', () => {
+        service.mouseDown = true;
+        service.mouseMove = false;
 
-        const THICK_PENCIL_SIZE = 5;
-        service.pencilSize = THICK_PENCIL_SIZE;
-
-        service.onMouseDown(mouseEvent);
+        baseCtxStub.strokeStyle = '#000000';
         service.onMouseUp(mouseEvent);
+        expect(baseCtxStub.fillStyle).toBe('#000000');
+        expect(previewCtxStub.fillStyle).toBe('#000000');
 
-        const imageData: ImageData = baseCtxStub.getImageData(mouseEvent.offsetX, mouseEvent.offsetY, 1, 1);
-        expect(imageData.data[0]).toEqual(0); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0); // A
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawLineSpy).toHaveBeenCalled();
     });
 });
