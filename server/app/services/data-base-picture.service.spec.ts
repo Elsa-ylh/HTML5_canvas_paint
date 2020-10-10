@@ -28,6 +28,8 @@ describe('Database service', () => {
         databaseService.collection = db.collection('test');
         testCancasInformationAdd = { id: '', name: 'test5', labels: [{ label: 'label1' }], date: '2020-10-08', picture: 'test5' };
         databaseService.collection.insertMany(allDataTest);
+        // aller voir le form du cour
+        await databaseService.getPictures(); // mongo et node appel une erreur parseque le serveur mongodb est pas utilise je doit le faire travail pour rien
     });
 
     afterEach(async () => {
@@ -71,8 +73,6 @@ describe('Database service', () => {
     });
 
     it('should addPicture is not add collection', async () => {
-        // aller voir le form du cour
-        await databaseService.getPictures(); // mongo et node appel une erreur parseque le serveur mongodb est pas utilise je doit le faire travail pour rien
         const newPictError = { name: '', labels: [{ label: 'label2' }], date: '2020-10-08', picture: 'a' } as CancasInformation;
         await databaseService
             .addPicture(newPictError)
