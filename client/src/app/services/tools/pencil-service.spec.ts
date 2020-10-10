@@ -103,7 +103,8 @@ describe('PencilService', () => {
         service['drawingService'].clearCanvas(baseCtxStub);
         service['drawingService'].clearCanvas(previewCtxStub);
 
-        service.pencilSize = 5;
+        const THICK_PENCIL_SIZE = 5;
+        service.pencilSize = THICK_PENCIL_SIZE;
 
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);

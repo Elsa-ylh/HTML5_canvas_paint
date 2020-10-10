@@ -11,6 +11,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ColorComponent } from '@app/components/color/color.component';
+import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
@@ -20,9 +23,6 @@ import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
-import { ColorComponent } from '../color/color.component';
-import { DialogCreateNewDrawingComponent } from '../dialog-create-new-drawing/dialog-create-new-drawing.component';
-import { WriteTextDialogUserGuideComponent } from '../write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { SidebarComponent } from './sidebar.component';
 
 describe('SidebarComponent', () => {
