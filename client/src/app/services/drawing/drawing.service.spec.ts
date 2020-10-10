@@ -33,9 +33,4 @@ describe('DrawingService', () => {
         service.baseCtx.fillRect(20, 20, 100, 100);
         expect(service.isCanvasBlank()).toEqual(false);
     });
-
-    it('clearEffectTool should reset canvas styles to default', () => {
-        service.clearEffectTool();
-        expect(service.baseCtx.globalAlpha).toEqual(1);
-    });
 });
