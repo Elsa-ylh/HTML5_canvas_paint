@@ -1,4 +1,5 @@
 export interface CancasInformation {
+    id: string;
     name: string;
     labels: Array<Label>;
     date: string;

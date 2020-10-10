@@ -28,7 +28,7 @@ export class DataController {
                     res.json(errorMessage);
                 });
         });
-        this.router.post('/labels', (req: Request, res: Response, next: NextFunction) => {
+        /* this.router.post('/labels', (req: Request, res: Response, next: NextFunction) => {
             console.log(req);
             this.databaseService
                 .getPicturesLabals(req.body.label)
@@ -42,6 +42,6 @@ export class DataController {
                     };
                     res.json(errorMessage);
                 });
-        });
+        }); */
     }
 }

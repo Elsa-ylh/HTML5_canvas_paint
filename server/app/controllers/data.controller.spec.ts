@@ -13,7 +13,7 @@ describe('Data Controller', () => {
 
     let dataService: Stubbed<DatabasePicureService>;
     let app: Express.Application;
-    const testCancasInformationAdd: CancasInformation = { name: 'test5', labels: [{ label: 'label1' }], date: '2020-10-08', picture: 'test5' };
+    const testCancasInformationAdd: CancasInformation = {id:'', name: 'test5', labels: [{ label: 'label1' }], date: '2020-10-08', picture: 'test5' };
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
         container.rebind(TYPES.DatabasePicureService).toConstantValue({
@@ -31,6 +31,15 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_OK)
             .then((reponse: any) => {
                 expect(reponse.body).to.deep.equal(testCancasInformationAdd);
+            });
+    });
+    it('should return rejet ', async () => {
+        dataService.getPictures.rejects(new Error('error in the service'));
+        return supertest(app)
+            .get('/api/data')
+            .expect(HTTP_STATUS_OK)
+            .then((reponse: any) => {
+                expect(reponse.body.title).to.deep.equal('Error');
             });
     });
     /* it('should post test ', async () => {
