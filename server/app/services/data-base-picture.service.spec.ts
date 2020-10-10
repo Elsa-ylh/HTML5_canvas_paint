@@ -56,6 +56,7 @@ describe('Database service', () => {
         const getImageData: CancasInformation = await databaseService.getPictureName(label);
         expect(getImageData.name).to.equal('Error');
     });
+    
     it('test error addPicture', async () => {
         client.close();
         await databaseService
