@@ -13,7 +13,13 @@ describe('Data Controller', () => {
 
     let dataService: Stubbed<DatabasePicureService>;
     let app: Express.Application;
-    const testCancasInformationAdd: CancasInformation = {id:'', name: 'test5', labels: [{ label: 'label1' }], date: '2020-10-08', picture: 'test5' };
+    const testCancasInformationAdd: CancasInformation = {
+        id: '',
+        name: 'test5',
+        labels: [{ label: 'label1' }],
+        date: '2020-10-08',
+        picture: 'test5',
+    };
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
         container.rebind(TYPES.DatabasePicureService).toConstantValue({
