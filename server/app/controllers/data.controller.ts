@@ -4,7 +4,8 @@ import { Message } from '@common/communication/message';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
-// const HTTP_STATUS_BAD_REQUEST = 400;
+
+const HTTP_STATUS_BAD_REQUEST = 400;
 @injectable()
 export class DataController {
     router: Router;
@@ -28,21 +29,21 @@ export class DataController {
                     res.json(errorMessage);
                 });
         });
-        /* this.router.post('/labels', (req: Request, res: Response, next: NextFunction) => {
-            console.log(req.body.body);
+        this.router.post('/labels', (req: Request, res: Response, next: NextFunction) => {
             let sbody: string;
+            let labels: string[] = [];
             try {
-                sbody = req.body;
+                sbody = req.body.body;
+                labels = this.textToTable(sbody);
             } catch (error) {
                 const errorMessage: Message = {
                     title: 'Error',
                     body: error as string,
                 };
-                res.status(HTTP_STATUS_BAD_REQUEST).send(errorMessage);
+                res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
                 sbody = 'Error';
             }
             if (sbody !== 'Error') {
-                const labels = this.textToTable(sbody);
                 this.databaseService
                     .getPicturesLabals(labels)
                     .then((cancasInformation: CancasInformation[]) => {
@@ -56,9 +57,9 @@ export class DataController {
                         res.json(errorMessage);
                     });
             }
-        });*/
+        });
     }
-    /*private textToTable(theTest: string): string[] {
-        return theTest.split('#');
-    }*/
+    private textToTable(theTest: string): string[] {
+        return theTest.split(',');
+    }
 }
