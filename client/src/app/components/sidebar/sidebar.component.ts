@@ -16,6 +16,7 @@ import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 
 @Component({
@@ -41,6 +42,7 @@ export class SidebarComponent {
     private isRectangleChecked: boolean = false;
     private isEllipseChecked: boolean = false;
     private isColorChecked: boolean = false;
+    private isPolygonChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -55,10 +57,12 @@ export class SidebarComponent {
         public eraserService: EraserService,
         public colorService: ColorService,
         public lineService: LineService,
+        public polygonService: PolygonService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
+        this.iconRegistry.addSvgIcon('polygon', this.sanitizer.bypassSecurityTrustResourceUrl('assets/polygon.svg'));
     }
 
     clearCanvas(): void {
@@ -144,6 +148,16 @@ export class SidebarComponent {
         return this.isEllipseChecked;
     }
 
+    pickPolygon(subTool3: number): void {
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.Polygon);
+        this.toolService.currentTool.subToolSelect = subTool3;
+    }
+
+    get polygonChecked(): boolean {
+        return this.isPolygonChecked;
+    }
+
     pickColor(): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Color);
@@ -189,6 +203,15 @@ export class SidebarComponent {
             this.resetCheckedButton();
             this.isEllipseChecked = true;
             this.pickEllipse(SubToolselected.tool1);
+        }
+    }
+
+    @HostListener('window:keydown.3', ['$event'])
+    changePolygonMode(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isPolygonChecked = true;
+            this.pickPolygon(SubToolselected.tool3);
         }
     }
 

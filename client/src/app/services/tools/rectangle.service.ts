@@ -102,7 +102,7 @@ export class RectangleService extends Tool {
     }
 
     drawFillRectangle(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
-        ctx.fillStyle = this.colorService.secondaryColor;
+        ctx.fillStyle = this.colorService.primaryColor;
 
         if (this.square) {
             ctx.fillRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
@@ -112,7 +112,7 @@ export class RectangleService extends Tool {
     }
 
     drawRectangleOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
-        ctx.strokeStyle = this.colorService.primaryColor;
+        ctx.strokeStyle = this.colorService.secondaryColor;
         ctx.lineWidth = this.lineWidth;
 
         if (this.square) {
@@ -123,8 +123,8 @@ export class RectangleService extends Tool {
     }
 
     drawFillRectangleOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
-        ctx.strokeStyle = this.colorService.primaryColor;
-        ctx.fillStyle = this.colorService.secondaryColor;
+        ctx.strokeStyle = this.colorService.secondaryColor;
+        ctx.fillStyle = this.colorService.primaryColor;
 
         ctx.lineWidth = this.lineWidth;
 
