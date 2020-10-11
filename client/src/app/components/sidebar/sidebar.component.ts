@@ -41,6 +41,7 @@ export class SidebarComponent {
     private isRectangleChecked: boolean = false;
     private isEllipseChecked: boolean = false;
     private isColorChecked: boolean = false;
+    private isDropperChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -153,6 +154,15 @@ export class SidebarComponent {
         return this.isColorChecked;
     }
 
+    pickDropper(): void {
+        this.drawingService.cursorUsed = 'pointer';
+        this.toolService.switchTool(ToolUsed.Dropper);
+    }
+
+    get dropperChecked(): boolean {
+        return this.isDropperChecked;
+    }
+
     resetCheckedButton(): void {
         this.isPencilChecked = false;
         this.isEraserChecked = false;
@@ -161,6 +171,7 @@ export class SidebarComponent {
         this.isRectangleChecked = false;
         this.isEllipseChecked = false;
         this.isColorChecked = false;
+        this.isDropperChecked = false;
     }
 
     CheckboxChangeToggle(args: MatCheckboxChange): void {
@@ -226,5 +237,12 @@ export class SidebarComponent {
             this.isLineChecked = true;
             this.pickLine();
         }
+    }
+
+    @HostListener('window:keydown.i', ['$event'])
+    changeDropperMode(event: KeyboardEvent): void {
+        this.resetCheckedButton();
+        this.isDropperChecked = true;
+        this.pickDropper();
     }
 }

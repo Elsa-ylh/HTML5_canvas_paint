@@ -34,6 +34,9 @@
                     >
                         <mat-icon>color_lens</mat-icon>
                     </mat-button-toggle>
+                    <mat-button-toggle (click)="pickDropper()" [checked]="dropperChecked" matTooltip="Outil pipette" matTooltipPosition="right">
+                        <mat-icon>colorize</mat-icon>
+                    </mat-button-toggle>
                 </mat-button-toggle-group>
             </mat-list>
             <mat-list class="miscellaneous-buttons">
@@ -147,6 +150,10 @@
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Color">
                 <app-color></app-color>
+            </mat-grid-list>
+
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Dropper">
+                <app-dropper-color></app-dropper-color>
             </mat-grid-list>
         </div>
     </div>

@@ -11,6 +11,7 @@ export enum ToolUsed {
     Rectangle = 5,
     Ellipse = 6,
     Color = 1000,
+    Dropper = 1003,
 }
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
