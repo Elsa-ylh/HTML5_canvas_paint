@@ -7,7 +7,7 @@ import * as supertest from 'supertest';
 import { Stubbed, testingContainer } from '../../test/test-utils';
 // tslint:disable:no-any
 const HTTP_STATUS_OK = 200;
-
+// const HTTP_STATUS_POST_OK = 300;
 describe('Data Controller', () => {
     // const baseMessageErreur = { title: 'Error', body: '' } as Message;
 
@@ -48,13 +48,22 @@ describe('Data Controller', () => {
                 expect(reponse.body.title).to.deep.equal('Error');
             });
     });
-    /* it('should post test ', async () => {
+    /*it('should post test ', async () => {
         dataService.getPicturesLabals.resolves(testCancasInformationAdd);
+        const service = {
+            title: 'labels',
+            body: 'label1',
+        };
+
         return supertest(app)
-            .get('/api/data/labels')
-            .expect(HTTP_STATUS_OK)
-            .then((reponse: any) => {
-                expect(reponse.body).to.deep.equal(testCancasInformationAdd);
+            .post('/api/data/labels')
+            .expect(HTTP_STATUS_POST_OK).
+            .then(async (reponse: any) => {
+                console.log(reponse);
+                expect(reponse).to.deep.equal(testCancasInformationAdd);
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
             });
     });*/
 });

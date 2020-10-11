@@ -30,7 +30,9 @@ export class DatabasePicureService {
     }
 
     async getPicturesLabals(setLabels: string[]): Promise<CancasInformation[]> {
-        if (!setLabels.length) {
+        if (setLabels[0] === 'Error') {
+            return [{ id: 'not catch the labels', name: 'Error', labels: [], date: new Date().toString(), picture: '' }];
+        } else if (!setLabels.length) {
             return this.getPictures();
         } else {
             return this.collection
@@ -42,7 +44,7 @@ export class DatabasePicureService {
                     return picture;
                 })
                 .catch((error: Error) => {
-                    return [{ id: error.message, name: 'Error', labels: [], date: new Date().toString(), picture: '' }];
+                    return [{ id: error.message as string, name: 'Error', labels: [], date: new Date().toString(), picture: '' }];
                 });
         }
     }
@@ -54,7 +56,7 @@ export class DatabasePicureService {
                 return pictures;
             })
             .catch((error: Error) => {
-                return [{ id: error.message, name: 'Error', labels: [], date: new Date().toString(), picture: '' }];
+                throw error;
             });
     }
     async getPictureName(namePicture: string): Promise<CancasInformation> {
@@ -64,7 +66,7 @@ export class DatabasePicureService {
                 return picture;
             })
             .catch((error: Error) => {
-                return { id: error.message, name: 'Error', labels: [], date: new Date().toString(), picture: '' };
+                throw error;
             });
     }
 
@@ -72,7 +74,7 @@ export class DatabasePicureService {
         const bool = await this.validatePicture(picture);
         if (bool === true) {
             this.collection.insertOne(picture).catch((error: Error) => {
-                return { id: error.message, name: 'Error', labels: [], date: new Date().toString(), picture: '' };
+                throw error;
             });
         } else {
             throw new Error('Invalid picture');

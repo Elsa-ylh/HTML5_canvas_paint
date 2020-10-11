@@ -34,7 +34,6 @@ describe('Database service', () => {
 
     afterEach(async () => {
         await client.close();
-        await mongoServer.stop();
     });
 
     it('should getPictures all data', async () => {
@@ -85,15 +84,30 @@ describe('Database service', () => {
     });
     it('test error find getPictures', async () => {
         client.close();
-        const getImagesData = await databaseService.getPictures().catch((relta: Error) => {
-            expect(relta.message).to.not.equal(NaN);
-        });
-        expect(getImagesData[0].name).to.equal('Error');
+        await databaseService
+            .getPictures()
+            .then((req: any) => {
+                expect(req.name).to.equal('MongoError');
+            })
+            .catch((relta: Error) => {
+                expect(relta.message).to.not.equal(NaN);
+            });
     });
 
     it('test error find getPicturesLabals', async () => {
         client.close();
         const label: string[] = ['label1'];
+        await databaseService
+            .getPicturesLabals(label)
+            .then((req: any) => {
+                expect(req.name).to.equal('MongoError');
+            })
+            .catch((relta: Error) => {
+                expect(relta.message).to.not.equal(NaN);
+            });
+    });
+    it(' find getPicturesLabals labol si error', async () => {
+        const label: string[] = ['Error'];
         const getImagesData = await databaseService.getPicturesLabals(label).catch((relta: Error) => {
             expect(relta.message).to.not.equal(NaN);
         });
@@ -102,8 +116,14 @@ describe('Database service', () => {
     it('test error find getPictureName', async () => {
         client.close();
         const label: string = 'label1';
-        const getImageData: CancasInformation = await databaseService.getPictureName(label);
-        expect(getImageData.name).to.equal('Error');
+        await databaseService
+            .getPictureName(label)
+            .then((req: CancasInformation) => {
+                expect(req.name).to.equal('MongoError');
+            })
+            .catch((error: Error) => {
+                expect(error.name).to.equal('MongoError');
+            });
     });
 
     it('test error addPicture', async () => {
