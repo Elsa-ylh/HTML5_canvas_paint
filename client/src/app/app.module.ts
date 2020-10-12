@@ -37,27 +37,28 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DropperColorComponent } from '@app/components/dropper-color/dropper-color.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
 import { ColorComponent } from './components/color/color.component';
 import { DialogCreateNewDrawingComponent } from './components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
+import { DropperColorComponent } from './components/dropper-color/dropper-color.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { WriteTextDialogUserGuideComponent } from './components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+
 @NgModule({
     declarations: [
         AppComponent,
         ColorComponent,
         DialogCreateNewDrawingComponent,
         DrawingComponent,
-        DropperColorComponent,
         EditorComponent,
         MainPageComponent,
         SidebarComponent,
         WriteTextDialogUserGuideComponent,
+        DropperColorComponent,
     ],
     imports: [
         ReactiveFormsModule,
