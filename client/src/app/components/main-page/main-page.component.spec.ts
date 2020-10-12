@@ -1,6 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IndexService } from '@app/services/index/index.service';
 import { of } from 'rxjs';
@@ -20,7 +24,15 @@ describe('MainPageComponent', () => {
             indexServiceSpy.basicPost.and.returnValue(of());
 
             TestBed.configureTestingModule({
-                imports: [RouterTestingModule, HttpClientModule],
+                imports: [
+                    RouterTestingModule,
+                    HttpClientModule,
+                    MatIconModule,
+                    MatListModule,
+                    MatButtonModule,
+                    BrowserAnimationsModule,
+                    HttpClientModule,
+                ],
                 declarations: [MainPageComponent],
                 providers: [{ provide: MatDialog, useValue: {} }],
             }).compileComponents();
@@ -31,6 +43,12 @@ describe('MainPageComponent', () => {
         fixture = TestBed.createComponent(MainPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+    });
+
+    afterEach(() => {
+        if (fixture.nativeElement && 'remove' in fixture.nativeElement) {
+            (fixture.nativeElement as HTMLElement).remove();
+        }
     });
 
     it('should create', () => {

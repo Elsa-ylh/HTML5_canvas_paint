@@ -9,7 +9,6 @@ import { PencilService } from './pencil-service';
 describe('PencilService', () => {
     let service: PencilService;
     let mouseEvent: MouseEvent;
-    // let mouseEvent1: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
@@ -37,12 +36,6 @@ describe('PencilService', () => {
             offsetY: 25,
             button: MouseButton.Left,
         } as MouseEvent;
-
-        // mouseEvent1 = {
-        //    offsetX: 0,
-        //    offsetY: 0,
-        //    button: MouseButton.Left,
-        // } as MouseEvent;
     });
 
     it('should be created', () => {
@@ -105,21 +98,16 @@ describe('PencilService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
-    // Exemple de test d'intégration qui est quand même utile
-    // it(' should change the pixel of the canvas ', () => {
-    //    //  service.pencilSize = 5;
-    //    baseCtxStub.strokeStyle = 'black';
-    //    baseCtxStub.fillStyle = 'black';
-    //    service.onMouseDown(mouseEvent1);
-    //    service.mouseMove = false;
-    //    service.onMouseUp(mouseEvent1);
-    //
-    //    // Premier pixel seulement
-    //   const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
-    //    expect(imageData.data[0]).toEqual(0); // R
-    //    expect(imageData.data[1]).toEqual(0); // G
-    //    expect(imageData.data[2]).toEqual(0); // B
-    //    // tslint:disable-next-line:no-magic-numbers
-    //    expect(imageData.data[3]).not.toEqual(0); // A
-    // });
+    it(' onMouseUp should draw a dot when onMouseDown called once and no onMouseMove', () => {
+        service.mouseDown = true;
+        service.mouseMove = false;
+
+        baseCtxStub.strokeStyle = '#000000';
+        service.onMouseUp(mouseEvent);
+        expect(baseCtxStub.fillStyle).toBe('#000000');
+        expect(previewCtxStub.fillStyle).toBe('#000000');
+
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawLineSpy).toHaveBeenCalled();
+    });
 });

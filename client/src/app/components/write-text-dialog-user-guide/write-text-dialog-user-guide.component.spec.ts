@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatListModule } from '@angular/material/list';
 import { WriteTextDialogUserGuideComponent } from './write-text-dialog-user-guide.component';
 
 describe('WriteTextDialogUserGuideComponent', () => {
@@ -11,6 +13,7 @@ describe('WriteTextDialogUserGuideComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [WriteTextDialogUserGuideComponent],
+            imports: [MatButtonToggleModule, MatListModule],
         }).compileComponents();
     });
 
