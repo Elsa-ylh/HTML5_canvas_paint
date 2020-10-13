@@ -16,14 +16,14 @@ export const dataUserGuide: UserGuide[] = [
         title: 'Caroussel de dessin',
         isTool: 'Divers',
         description:
-            "Le carroussel de dessin vous permet d'accéder à vos précédents dessins sauvegardés. Cette option sera accessible plus tard dans la session.",
+            "Le carroussel de dessin vous permet d'accéder à vos précédents dessins sauvegardés sur le serveur. Vos dessins seront affichés sous forme de petites fiches comportant votre dessin, son nom et les étiquettes associées au dessin. Il vous est possible de filtrer le contenu du carrousel en spécifiant une ou plusieurs étiquettes.",
         gifPath: '',
         screenshotPath: '',
     },
     {
         title: 'Sauvegarde automatique et manuelle',
         isTool: 'Divers',
-        description: "L'outil de sauvegarde, automatique ou manuelle, sera implémenté lors du sprint 2.",
+        description: "En tant qu'utilisateur, il vous est possible de sauvegarder vos dessins sur un serveur. Il vous faudra fournir un nom pour votre dessin et vous pouurez aussi rajouter des étiquettes (tags) valides afin de mieux répertorier votre dessin dans le serveur. Le format du dessin sauvegardé sera PNG.",
         gifPath: '',
         screenshotPath: '',
     },
@@ -31,7 +31,7 @@ export const dataUserGuide: UserGuide[] = [
         title: 'Exportation',
         isTool: 'Divers',
         description:
-            'La fonctionnalité Exportation offre de créer une image à partir de la surface de dessin et de l’exporter dans un des formats suivants : JPG ou PNG. Il vous faudra entrer un nom pour le fichier exporté. Si vous le souhaitez, plutôt que de sauvegarder localement votre dessin exporté, il vous est possible de l’envoyer par courriel. Il vous est aussi possible d’appliquer un filtre sur l’image avant que l’exportation ne soit effectuée parmiles  cinq filtres différents disponibles',
+            'La fonctionnalité Exportation offre de créer une image à partir de la surface de dessin et de l’exporter dans un des formats suivants : JPG ou PNG. Il vous faudra entrer un nom pour le fichier exporté. Si vous le souhaitez, plutôt que de sauvegarder localement votre dessin exporté, il vous est possible de l’envoyer par courriel. Il vous est aussi possible d’appliquer un filtre sur l’image avant que l’exportation ne soit effectuée parmiles  cinq filtres différents disponibles.',
         gifPath: '',
         screenshotPath: '',
     },
@@ -99,17 +99,32 @@ export const dataUserGuide: UserGuide[] = [
       isTool: 'Dessiner',
       description:
           "Cet outil permet de dessiner des polygones. Il vous est possible de créer des polygones sur la surface de dessin en faisant des glisser-déposer. Le nombre de côtés peut être modifié (de 3 à 12) afin de tracé le polygone souhaité. De plus, il vous est possible de choisir entre trois types de polygones : contour (on ne dessine que les contours), plein (intérieur rempli sans contour) ou plein avec contour (on dessine l'intérieur et les contours). Aussi, vous pouvez modifier l'épaisseur des contours via la barre latérale secondaire. Il est possible d'utiliser la touche 3 de votre clavier afin de basculer directement sur l'outil polygone.",
-      gifPath: 'assets/user_guide/ellipse.gif',
-      screenshotPath: 'assets/user_guide/ellipse.png',
+      gifPath: '',
+      screenshotPath: '',
     },
     {
-        title: 'Manipulation de sélection',
+      title: 'Outils - Plume',
+      isTool: 'Dessiner',
+      description:
+          "Cet outil est aussi similaire au crayon. Cependant, la forme de sa pointe doit être une mince ligne plutôt que d’être ronde.. Vous pouvez configurer les attributs suivants : la longueur de la ligne en pixels et l'angle d’orientation de la ligne en degrés. Il vous est aussi possible de changer l’angle de la ligne à l’aide de la roulette de votre souris. À chaque cran de roulette, une rotation de 15 degrés est effectuée. Si vous maintenez la touche Alt de votre clavier pendant cette action, la rotation sera de 1 degré.",
+      gifPath: '',
+      screenshotPath: '',
+    },
+    {
+        title: 'Outils de sélection',
         isTool: 'Dessiner',
         description:
-            'Les trois outils vous permettent de sélectionner une partie de la surface de dessin que vous pouvez ensuite déplacer, redimensionner ou faire pivoter. Votre sélection sera toujours accompagnée de deux types d’indicateurs visuels : un contour de sélection et une boite englobante. Le contour de votre sélection représente la frontière d’un groupe de pixels sélectionnés et sera illustré par une ligne pointillée. Aussi, des manipulations peuvent faire en sorte que la sélection se retrouve, en partie ou en tout, en dehors de la surface de dessin',
+            'Les trois outils vous permettent de sélectionner une partie de la surface de dessin que vous pouvez ensuite déplacer, redimensionner ou faire pivoter. Votre sélection sera toujours accompagnée de deux types d’indicateurs visuels : un contour de sélection et une boite englobante. Le contour de votre sélection représente la frontière d’un groupe de pixels sélectionnés et sera illustré par une ligne pointillée. Aussi, des manipulations peuvent faire en sorte que la sélection se retrouve, en partie ou en tout, en dehors de la surface de dessin. Il vous est possible de sélectionner la zone que vous souhaitez selon un rectangle ou une ellipse. Si vous maintenez la touche Shift de votre clavier, la sélection devriendra un carré ou un cercle respectivement.',
         gifPath: '',
         screenshotPath: '',
     },
+    {
+      title: 'Manipulation de sélection',
+      isTool: 'Dessiner',
+      description:"Des manipulations peuvent faire en sorte que la sélection se retrouve, en partie ou en tout, en dehors de la surface de dessin. Il vous est possible de déplacer une sélection en utilisant votre souris ou les touches directionnelles de votre clavier.",
+      gifPath: '',
+      screenshotPath: '',
+  },
     {
         title: 'Palette de couleur',
         isTool: 'Dessiner',
@@ -119,10 +134,25 @@ export const dataUserGuide: UserGuide[] = [
         screenshotPath: 'assets/user_guide/color.gif',
     },
     {
+      title: 'Outils - Sceau de peinture',
+      isTool: 'Dessiner',
+      description:
+          "Cet outil permet d’effectuer un « remplissage » qui colore une ou plusieurs étendues de pixels en fonction de leur couleur. L’outil peut s’utiliser selon deux modes d’opérations : « pixels contigus » et « pixels non contigus ». Il est possible de sélectionner l'outil Sceau de Peinture avec la touche B.",
+      gifPath: '',
+      screenshotPath: '',
+    },
+    {
+      title: 'Outils - Pipette',
+      isTool: 'Dessiner',
+      description:"Cet outil est utilisé pour saisir la couleur sous le pointeur de votre souris. Un clic avec votre bouton gauche assigne la couleur saisie à la couleur principale. Un clic avec votre bouton droit l’assigne à la couleur secondaire. Un cercle de prévisualisation (comme une loupe), représentant la surdimension des pixels sous le pointeur et ceux qui l'entourent, sera disponible de la barre latérale secondaire.",
+      gifPath: '',
+      screenshotPath: '',
+    },
+    {
         title: 'Annuler-refaire',
         isTool: 'Dessiner',
         description:
-            "En activant la fonction annuler à répétition, vous pouvez « reculer » dans l’état de votre dessin, et ce jusqu’à en revenir à l’état de départ.À l'inverse, il vous sera possible de refaire chaque action annulée en suivant l’ordre inverse.",
+            "En activant la fonction annuler à répétition, vous pouvez « reculer » dans l’état de votre dessin, et ce jusqu’à en revenir à l’état de départ. Pour ce faire, vous pouvez utiliser le raccourci clavier Crtl + Z. À l'inverse, il vous sera possible de refaire chaque action annulée en suivant l’ordre inverse. Pour ce faire, vous pouvez utiliser le raccourci clavier Crtl + Maj + Z.",
         gifPath: '',
         screenshotPath: '',
     },
