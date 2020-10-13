@@ -16,6 +16,7 @@ fdescribe('ClientServerCommunicationService', () => {
         });
         service = TestBed.inject(ClientServerCommunicationService);
         httpMock = TestBed.inject(HttpTestingController);
+        // tslint:disable: no-string-literal
         baseUrl = service['HTTP_SERVE_LOCAL'];
     });
 
