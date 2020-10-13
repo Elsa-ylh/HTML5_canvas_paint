@@ -1,4 +1,5 @@
 <div id="canvas-container" [ngStyle]="{ 'min-width.px': crs.resizeWidth, 'min-height.px': crs.resizeHeight }">
+    <!--dropperLayer.offsetWidth, dropperLayer.offsetHeight) -->
     <canvas
         id="previewLayer"
         #previewCanvas
@@ -6,7 +7,7 @@
         [attr.height]="height"
         [ngStyle]="{ cursor: cursorUsed }"
         (mousedown)="onMouseDown($event)"
-        (mousemove)="onMouseMove($event)"
+        (mousemove)="onMouseMove($event); showCircle($event)"
         (mouseup)="onMouseUp($event)"
         (mouseout)="onMouseOut($event)"
         (mouseenter)="onMouseEnter($event)"
@@ -27,5 +28,6 @@
         (mouseup)="onResizeUp($event)"
         (mouseout)="onResizeOut($event)"
     ></canvas>
+    <canvas id="dropperLayer" #dropperLayer width="40px" height="40px"></canvas>
     <div id="greyBackground" [ngStyle]="{ 'width.px': crs.resizeWidth, 'height.px': crs.resizeHeight }"></div>
 </div>

@@ -5,7 +5,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -15,6 +15,7 @@ import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
 import { ColorComponent } from '@app/components/color/color.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DropperColorComponent } from '@app/components/dropper-color/dropper-color.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -51,10 +52,17 @@ describe('SidebarComponent', () => {
         eraserStub = new EraserService(drawingStub);
         lineStub = new LineService(drawingStub, colorStub);
         dropperServiceStub = new DropperService(drawingStub, colorStub);
+
         toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, dropperServiceStub);
 
         await TestBed.configureTestingModule({
-            declarations: [SidebarComponent, ColorComponent, WriteTextDialogUserGuideComponent, DialogCreateNewDrawingComponent],
+            declarations: [
+                SidebarComponent,
+                ColorComponent,
+                WriteTextDialogUserGuideComponent,
+                DialogCreateNewDrawingComponent,
+                DropperColorComponent,
+            ],
             imports: [
                 MatIconModule,
                 MatGridListModule,
@@ -77,20 +85,8 @@ describe('SidebarComponent', () => {
                 { provide: EraserService, useValue: eraserStub },
                 { provide: LineService, useValue: lineStub },
                 { provide: ToolService, useValue: toolServiceStub },
-                { provide: MatDialog, useValue: {} },
                 { provide: DropperService, useValue: dropperServiceStub },
-                {
-                    provide: MatIconRegistry,
-                    useValue: {
-                        addSvgIcon: () => '',
-                    },
-                },
-                {
-                    provide: DomSanitizer,
-                    useValue: {
-                        bypassSecurityTrustResourceUrl: () => '',
-                    },
-                },
+                { provide: MatDialog, useValue: {} },
             ],
         }).compileComponents();
         TestBed.inject(DomSanitizer);

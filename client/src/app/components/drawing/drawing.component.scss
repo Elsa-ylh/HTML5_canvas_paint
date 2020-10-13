@@ -28,3 +28,8 @@ canvas {
     z-index: 2;
     background-color: grey;
 }
+
+#dropperLayer {
+    z-index: 3;
+    position: absolute;
+}

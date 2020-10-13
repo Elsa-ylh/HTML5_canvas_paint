@@ -36,10 +36,19 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizingPreview', { static: false }) canvasResizingPreview: ElementRef<HTMLCanvasElement>;
+    @ViewChild('dropperLayer', { static: false }) dropperLayer: ElementRef<HTMLCanvasElement>;
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private resizeCtx: CanvasRenderingContext2D;
+    private dropperCtx: CanvasRenderingContext2D;
+    private circleWidth: number;
+    private circleHeight: number;
+    private circlePositionX: number;
+    private circlePositionY: number;
+    private circleRadius: number = 18;
+    private angleBegin: number = 0;
+    private endAngle: number = 2 * Math.PI;
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -48,6 +57,7 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.dropperCtx = this.dropperLayer.nativeElement.getContext('2d') as CanvasRenderingContext2D;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -161,5 +171,22 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('window:keydown.backspace', ['$event'])
     onKeyBackSpace(event: KeyboardEvent): void {
         this.toolService.currentTool.onKeyBackSpace(event);
+    }
+
+    showCircle(event: MouseEvent): void {
+        this.circleWidth = this.dropperLayer.nativeElement.offsetWidth / 2; // magic number needed to center cursor
+        this.circleHeight = this.dropperLayer.nativeElement.offsetHeight / 2;
+        this.circlePositionX = this.dropperLayer.nativeElement.offsetWidth / 2;
+        this.circlePositionY = this.dropperLayer.nativeElement.offsetHeight / 2;
+        this.dropperLayer.nativeElement.style.left = event.offsetX - this.circleWidth + 'px';
+        this.dropperLayer.nativeElement.style.top = event.offsetY - this.circleHeight + 'px';
+        this.shapeCircle();
+    }
+    shapeCircle(): void {
+        this.dropperCtx.beginPath();
+        this.dropperCtx.arc(this.circlePositionX, this.circlePositionY, this.circleRadius, this.angleBegin, this.endAngle);
+        this.dropperCtx.fillStyle = 'green';
+        this.dropperCtx.fill();
+        this.dropperCtx.stroke();
     }
 }
