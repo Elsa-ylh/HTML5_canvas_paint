@@ -20,7 +20,7 @@ export class WriteTextDialogUserGuideComponent {
         this.selectionList = 'Dessiner';
     }
     shortcutsListSelection(): void {
-      this.selectionList = "Raccourcis clavier"
+        this.selectionList = 'Raccourcis clavier';
     }
     testDataGuide(txt: string): boolean {
         return txt === this.selectionList;
