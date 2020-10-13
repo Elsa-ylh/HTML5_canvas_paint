@@ -46,7 +46,7 @@ describe('Data Controller', () => {
             .get('/api/data')
             .expect(HTTP_STATUS_OK)
             .then((reponse: any) => {
-                expect(reponse.body.title).to.deep.equal('Error');
+                expect(reponse.body.id).to.deep.equal('Error');
             });
     });
     it('should post test ', async () => {

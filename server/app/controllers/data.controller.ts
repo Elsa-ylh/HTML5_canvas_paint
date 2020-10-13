@@ -1,6 +1,5 @@
 import { DatabasePicureService } from '@app/services/data-base-picture.service';
 import { CancasInformation } from '@common/communication/canvas-information';
-import { Message } from '@common/communication/message';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
@@ -22,9 +21,12 @@ export class DataController {
                     res.json(cancasInformation);
                 })
                 .catch((reason: unknown) => {
-                    const errorMessage: Message = {
-                        title: 'Error',
-                        body: reason as string,
+                    const errorMessage: CancasInformation = {
+                        id: 'Error',
+                        name: reason as string,
+                        labels: [],
+                        date: new Date().toString(),
+                        picture: '',
                     };
                     res.json(errorMessage);
                 });
@@ -36,11 +38,14 @@ export class DataController {
                 sbody = req.body.body;
                 labels = this.textToTable(sbody);
             } catch (error) {
-                const errorMessage: Message = {
-                    title: 'Error',
-                    body: error as string,
+                const errorData: CancasInformation = {
+                    id: 'Error',
+                    name: error as string,
+                    labels: [],
+                    date: new Date().toString(),
+                    picture: '',
                 };
-                res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
+                res.status(HTTP_STATUS_BAD_REQUEST).json(errorData);
                 sbody = 'Error';
             }
             if (sbody !== 'Error') {
@@ -50,9 +55,12 @@ export class DataController {
                         res.json(cancasInformation);
                     })
                     .catch((reason: unknown) => {
-                        const errorMessage: Message = {
-                            title: 'Error',
-                            body: reason as string,
+                        const errorMessage: CancasInformation = {
+                            id: 'Error',
+                            name: reason as string,
+                            labels: [],
+                            date: new Date().toString(),
+                            picture: '',
                         };
                         res.json(errorMessage);
                     });
