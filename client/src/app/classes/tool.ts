@@ -11,6 +11,7 @@ export enum ToolUsed {
     Rectangle = 5,
     Ellipse = 6,
     Polygon = 7,
+    PaintBucket = 8,
     Color = 1000,
 }
 

@@ -18,6 +18,7 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { PaintBucketService} from '@app/services/tools/paintBucket.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -43,6 +44,7 @@ export class SidebarComponent {
     private isEllipseChecked: boolean = false;
     private isColorChecked: boolean = false;
     private isPolygonChecked: boolean = false;
+    private isPaintBucketChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -58,6 +60,7 @@ export class SidebarComponent {
         public colorService: ColorService,
         public lineService: LineService,
         public polygonService: PolygonService,
+        public paintBucketService : PaintBucketService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
@@ -167,6 +170,15 @@ export class SidebarComponent {
         return this.isColorChecked;
     }
 
+    pickPaintBucket(): void {
+      this.drawingService.cursorUsed = cursorName.default;
+      this.toolService.switchTool(ToolUsed.PaintBucket);
+  }
+
+  get paintBucketChecked(): boolean {
+      return this.isPaintBucketChecked;
+  }
+
     resetCheckedButton(): void {
         this.isPencilChecked = false;
         this.isEraserChecked = false;
@@ -175,6 +187,7 @@ export class SidebarComponent {
         this.isRectangleChecked = false;
         this.isEllipseChecked = false;
         this.isColorChecked = false;
+        this.isPaintBucketChecked = false;
     }
 
     CheckboxChangeToggle(args: MatCheckboxChange): void {
@@ -190,7 +203,7 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.1', ['$event']) onKeyDown1(event: KeyboardEvent): void {
+    @HostListener('window:keydown.1', ['$event']) changeRectangleMode(event: KeyboardEvent): void {
         if (this.toolService.currentToolName !== ToolUsed.Color) {
             this.resetCheckedButton();
             this.isRectangleChecked = true;
@@ -198,7 +211,7 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.2', ['$event']) onKeyDown2(event: KeyboardEvent): void {
+    @HostListener('window:keydown.2', ['$event']) changeEllipseMode(event: KeyboardEvent): void {
         if (this.toolService.currentToolName !== ToolUsed.Color) {
             this.resetCheckedButton();
             this.isEllipseChecked = true;
@@ -248,6 +261,14 @@ export class SidebarComponent {
             this.resetCheckedButton();
             this.isLineChecked = true;
             this.pickLine();
+        }
+      }
+
+    @HostListener('window:keydown.b', ['$event'])
+    changePaintBucketMode(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName !== ToolUsed.PaintBucket) {
+            this.resetCheckedButton();
+            this.isPaintBucketChecked = true;
         }
     }
 }
