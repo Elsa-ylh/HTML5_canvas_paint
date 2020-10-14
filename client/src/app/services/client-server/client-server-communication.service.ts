@@ -12,14 +12,14 @@ export class ClientServerCommunicationService {
 
     constructor(private http: HttpClient) {}
 
-    getData(): Observable<CancasInformation> {
-        return this.http.get<CancasInformation>(this.HTTP_SERVE_LOCAL).pipe(catchError(this.handleError<CancasInformation>('basicGet')));
+    getData(): Observable<CancasInformation[]> {
+        return this.http.get<CancasInformation[]>(this.HTTP_SERVE_LOCAL).pipe(catchError(this.handleError<CancasInformation[]>('basicGet')));
     }
 
-    poshData(message: Message): Observable<CancasInformation> {
+    poshData(message: Message): Observable<CancasInformation[]> {
         return this.http
-            .post<CancasInformation>(this.HTTP_SERVE_LOCAL + '/labels', message)
-            .pipe(catchError(this.handleError<CancasInformation>('basicPost')));
+            .post<CancasInformation[]>(this.HTTP_SERVE_LOCAL + '/labels', message)
+            .pipe(catchError(this.handleError<CancasInformation[]>('basicPost')));
     }
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return (error: Error): Observable<T> => {

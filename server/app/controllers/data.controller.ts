@@ -34,13 +34,25 @@ export class DataController {
         this.router.post('/labels', (req: Request, res: Response, next: NextFunction) => {
             let sbody: string;
             let labels: string[] = [];
-            try {
-                sbody = req.body.body;
-                labels = this.textToTable(sbody);
-            } catch (error) {
+            if (req.body.title === 'labels') {
+                try {
+                    sbody = req.body.body;
+                    labels = this.textToTable(sbody);
+                } catch (error) {
+                    const errorData: CancasInformation = {
+                        id: 'Error',
+                        name: error as string,
+                        labels: [],
+                        date: new Date().toString(),
+                        picture: '',
+                    };
+                    res.status(HTTP_STATUS_BAD_REQUEST).json(errorData);
+                    sbody = 'Error';
+                }
+            } else {
                 const errorData: CancasInformation = {
                     id: 'Error',
-                    name: error as string,
+                    name: 'Titre message non valide',
                     labels: [],
                     date: new Date().toString(),
                     picture: '',
@@ -48,6 +60,7 @@ export class DataController {
                 res.status(HTTP_STATUS_BAD_REQUEST).json(errorData);
                 sbody = 'Error';
             }
+
             if (sbody !== 'Error') {
                 this.databaseService
                     .getPicturesLabals(labels)
