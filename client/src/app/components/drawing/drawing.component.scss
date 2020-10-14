@@ -30,6 +30,7 @@ canvas {
 }
 
 #dropperLayer {
-    z-index: 3;
+    z-index: 4;
     position: absolute;
+    box-shadow: 0 1px 5px -3px white;
 }

@@ -8,6 +8,7 @@ import {
 } from '@app/classes/resize-canvas';
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 
@@ -17,7 +18,12 @@ import { ToolService } from '@app/services/tool-service';
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit {
-    constructor(private drawingService: DrawingService, private toolService: ToolService, public crs: CanvasResizerService) {}
+    constructor(
+        private drawingService: DrawingService,
+        private toolService: ToolService,
+        public crs: CanvasResizerService,
+        private colorService: ColorService,
+    ) {}
 
     get width(): number {
         return this.crs.canvasSize.x;
@@ -41,6 +47,7 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private resizeCtx: CanvasRenderingContext2D;
+
     private dropperCtx: CanvasRenderingContext2D;
     private circleWidth: number;
     private circleHeight: number;
@@ -49,6 +56,7 @@ export class DrawingComponent implements AfterViewInit {
     private circleRadius: number = 18;
     private angleBegin: number = 0;
     private endAngle: number = 2 * Math.PI;
+    private currentColor: string;
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -58,6 +66,8 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.dropperCtx = this.dropperLayer.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.baseCtx.fillStyle = 'white';
+        this.baseCtx.fillRect(0, 0, this.baseCanvas.nativeElement.width, this.baseCanvas.nativeElement.height);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -176,16 +186,18 @@ export class DrawingComponent implements AfterViewInit {
     showCircle(event: MouseEvent): void {
         this.circleWidth = this.dropperLayer.nativeElement.offsetWidth / 2; // magic number needed to center cursor
         this.circleHeight = this.dropperLayer.nativeElement.offsetHeight / 2;
-        this.circlePositionX = this.dropperLayer.nativeElement.offsetWidth / 2;
-        this.circlePositionY = this.dropperLayer.nativeElement.offsetHeight / 2;
         this.dropperLayer.nativeElement.style.left = event.offsetX - this.circleWidth + 'px';
         this.dropperLayer.nativeElement.style.top = event.offsetY - this.circleHeight + 'px';
-        this.shapeCircle();
+        const position = { x: event.offsetX, y: event.offsetY };
+        this.currentColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.baseCtx));
+        this.shapeCircle(this.currentColor);
     }
-    shapeCircle(): void {
+    shapeCircle(color: string): void {
+        this.circlePositionX = this.circleWidth;
+        this.circlePositionY = this.circleHeight;
         this.dropperCtx.beginPath();
         this.dropperCtx.arc(this.circlePositionX, this.circlePositionY, this.circleRadius, this.angleBegin, this.endAngle);
-        this.dropperCtx.fillStyle = 'green';
+        this.dropperCtx.fillStyle = color;
         this.dropperCtx.fill();
         this.dropperCtx.stroke();
     }
