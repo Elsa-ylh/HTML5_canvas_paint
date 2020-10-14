@@ -176,7 +176,7 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.1', ['$event']) onKeyDown1(event: KeyboardEvent): void {
+    @HostListener('window:keydown.1', ['$event']) changeRectnagleMode(event: KeyboardEvent): void {
         if (this.toolService.currentToolName !== ToolUsed.Color) {
             this.resetCheckedButton();
             this.isRectangleChecked = true;
@@ -184,7 +184,7 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.2', ['$event']) onKeyDown2(event: KeyboardEvent): void {
+    @HostListener('window:keydown.2', ['$event']) changleEllipseMode(event: KeyboardEvent): void {
         if (this.toolService.currentToolName !== ToolUsed.Color) {
             this.resetCheckedButton();
             this.isEllipseChecked = true;
