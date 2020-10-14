@@ -179,6 +179,6 @@ export const dataUserGuide: UserGuide[] = [
         description:
             'Voici un tableau récapitulatif de tous les raccourcis clavier présents sur notre application PolyDessin. Les raccourcis clavier seront utilisables au fur et à mesure que les outils et/ou fonctionnalités seront ajoutés.',
         gifPath: '',
-        screenshotPath: 'shortcut_keyboard.png',
+        screenshotPath: 'assets/user_guide/shortcut_keyboard.png',
     },
 ];
