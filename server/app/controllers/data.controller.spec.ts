@@ -80,7 +80,26 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .then((reponse: any) => {
                 console.log(reponse.body);
-                expect(reponse.body.title).to.equal('Error');
+                expect(reponse.body.id).to.equal('Error');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err.message);
+            });
+    });
+    it('should post test ', async () => {
+        dataService.getPicturesLabals.rejects(new Error('error in the service'));
+        const service = {
+            title: 'Titre',
+            body: 'lable1',
+        };
+
+        return supertest(app)
+            .post('/api/data/labels')
+            .send(service)
+            .expect(HTTP_STATUS_BAD_REQUEST_OK)
+            .then((reponse: any) => {
+                console.log(reponse.body);
+                expect(reponse.body.id).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err.message);
