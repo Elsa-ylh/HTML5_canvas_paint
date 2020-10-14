@@ -4,7 +4,7 @@ import { CancasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { ClientServerCommunicationService } from './client-server-communication.service';
 
-fdescribe('ClientServerCommunicationService', () => {
+describe('ClientServerCommunicationService', () => {
     let service: ClientServerCommunicationService;
     let httpMock: HttpTestingController;
     let baseUrl: string;
@@ -57,8 +57,8 @@ fdescribe('ClientServerCommunicationService', () => {
             expect(response[0].name).toEqual(expectedCancasInformation[0].name, 'name check');
         }, fail);
 
-        const req = httpMock.expectOne(baseUrl);
-        expect(req.request.method).toBe('basicPost');
+        const req = httpMock.expectOne(baseUrl + '/labels');
+        expect(req.request.method).toBe('POST');
         // actually send the request
         req.flush(expectedCancasInformation);
     });
