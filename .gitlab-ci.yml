@@ -1,4 +1,4 @@
-image: vicovaro/patched-node-chromium-mongo:1.1
+image: vicovaro/patched-node-chromium-mongo:1.2
 
 cache:
     key: '${CI_COMMIT_REF_SLUG}-client'
