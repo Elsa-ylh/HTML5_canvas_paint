@@ -53,6 +53,8 @@ describe('Service: Line', () => {
         service.subToolSelect = SubToolselected.tool1;
         pathData = [];
         events = new EventOfTest();
+
+        baseCtxStub.fillStyle = '#000000'; // make sure everything is black
     });
 
     it('should create', inject([LineService], (serviceRec: LineService) => {
@@ -104,14 +106,6 @@ describe('Service: Line', () => {
         const boolFonction = mergeFirstPointSpy(pathData);
         expect(boolFonction).toEqual(false);
     });
-    it(' onMouseMove should not call drawLine if mouse was not already down', () => {
-        service.subToolSelect = SubToolselected.tool1;
-        service.onMouseDown(events.mouseEventR);
-
-        service.onMouseMove(events.mouseEvent);
-        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
-        expect(drawLineLastPointSpy).not.toHaveBeenCalled();
-    });
     it(' onMouseMove should call drawLine if mouse was already down', () => {
         service.subToolSelect = SubToolselected.tool1;
         service.onMouseDown(events.mouseEvent1);
@@ -119,14 +113,6 @@ describe('Service: Line', () => {
         service.onMouseMove(events.mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineLastPointSpy).toHaveBeenCalled();
-    });
-    it(' onMouseMove should not call drawLine if mouse was not already down', () => {
-        service.subToolSelect = SubToolselected.tool2;
-        service.onMouseDown(events.mouseEventR);
-
-        service.onMouseMove(events.mouseEvent);
-        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
-        expect(drawLineLastPointSpy).not.toHaveBeenCalled();
     });
     it(' onMouseMove should call drawLine if mouse was already down', () => {
         service.subToolSelect = SubToolselected.tool2;
@@ -216,21 +202,6 @@ describe('Service: Line', () => {
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 50, y: 0 });
         expect(vec2).toEqual({ x: 50, y: 0 });
     });
-    // it('backspceEvant fonction if drush in one point', () => {
-    //    service.subToolSelect = SubToolselected.tool2;
-    //    service.onMouseDown(events.mouseEvent2);
-    //    service.onKeyBackSpace(events.backspceEvant);
-    //    service.onDoubleClick(events.mouseEvent);
-    //    const imageData: ImageData = baseCtxStub.getImageData(Math.floor(events.mouseEvent2.offsetX), Math.floor(events.mouseEvent2.offsetY), 1, 1);
-    //    // tslint:disable-next-line:no-magic-numbers
-    //    expect(imageData.data[0]).toEqual(63); // R white check
-    //    // tslint:disable-next-line:no-magic-numbers
-    //    expect(imageData.data[1]).toEqual(63); // G white check
-    //    // tslint:disable-next-line:no-magic-numbers
-    //    expect(imageData.data[2]).toEqual(63); // B white check
-    //    // tslint:disable-next-line:no-magic-numbers
-    //   expect(imageData.data[3]).not.toEqual(0); // A
-    // });
     it('backspceEvant fonction if not drush in second point', () => {
         service.subToolSelect = SubToolselected.tool2;
         service.onMouseDown(events.mouseEvent1);
@@ -270,7 +241,7 @@ describe('Service: Line', () => {
         service.onKeyEscape(events.backspceEvant);
         expect(clearPathSpy).toHaveBeenCalled();
     });
-    it('onMouseDown,onMouseMove, OnShiftKeyDown and  onMouseMove and brush ligne in de canvas ', () => {
+    it('onMouseDown, onMouseMove, onShiftKeyDown, onMouseMove of brush line in canvas', () => {
         service.onMouseDown(events.mouseEvent1);
         service.onMouseMove(events.mouseEvent2);
         service.OnShiftKeyDown(events.backspceEvant);

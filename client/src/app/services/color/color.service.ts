@@ -13,17 +13,18 @@ export interface LastColor {
     active: boolean;
 }
 const VALUE_TEN = 10;
-const VALUE_FIVE = 5;
+const SLIDER_STOPPER_RECT_WIDTH = 2;
+const SLIDER_STOPPER_RECT_HEIGHT = 20;
 @Injectable({
     providedIn: 'root',
 })
 export class ColorService {
-    private primaryColor: string = '#000000';
-    private secondaryColor: string = '#ff6666';
-    private selectedColor: string = this.primaryColor;
-    private previewColor: string = '#ff6666';
-    private primaryColorTransparency: number;
-    private secondaryColorTransparency: number;
+    primaryColor: string = '#000000';
+    secondaryColor: string = '#ff6666';
+    selectedColor: string = this.primaryColor;
+    previewColor: string = '#ff6666';
+    primaryColorTransparency: number;
+    secondaryColorTransparency: number;
     isclicked: boolean = true;
     private lastColors: LastColor[];
 
@@ -33,58 +34,13 @@ export class ColorService {
         this.lastColors = new Array(VALUE_TEN);
         this.lastColors.fill({ active: false });
     }
-    // getters
+
     getlastColors(): LastColor[] {
         return this.lastColors;
     }
-
-    getselectedColor(): string {
-        return this.selectedColor;
-    }
-
-    getpreviewColor(): string {
-        return this.previewColor;
-    }
-
-    getprimaryColor(): string {
-        return this.primaryColor;
-    }
-
-    getsecondaryColor(): string {
-        return this.secondaryColor;
-    }
-    getprimaryColorTransparency(): number {
-        return this.primaryColorTransparency;
-    }
-    // transparency
-    getsecondaryColorTransparency(): number {
-        return this.secondaryColorTransparency;
-    }
-    // setters
-    setpreviewColor(colorPreview: string): void {
-        this.previewColor = colorPreview;
-    }
-
-    setprimaryColor(colorPrimary: string): void {
-        this.primaryColor = colorPrimary;
-    }
-    setsecondaryColor(colorSecondary: string): void {
-        this.secondaryColor = colorSecondary;
-    }
-    setselectedColor(color: string): void {
-        this.selectedColor = color;
-    }
-    // transparency
-    setprimaryColorTransparency(primaryTransparency: number): void {
-        this.primaryColorTransparency = primaryTransparency;
-    }
-    setsecondaryColorTransparency(secondaryTransparency: number): void {
-        this.secondaryColorTransparency = secondaryTransparency;
-    }
-
     addLastColor(color: string): void {
-        this.getlastColors().shift();
-        this.getlastColors().push({ color, active: true }); // color : color => color
+        this.lastColors.shift();
+        this.lastColors.push({ color, active: true }); // color : color => color
     }
 
     // https://malcoded.com/posts/angular-color-picker/
@@ -155,12 +111,12 @@ export class ColorService {
         ctx.closePath();
     }
 
-    drawMovingDot(ctx: CanvasRenderingContext2D, dimension: Vec2, event: MouseEvent): void {
+    drawMovingStopper(ctx: CanvasRenderingContext2D, dimension: Vec2, event: MouseEvent): void {
         ctx.clearRect(0, 0, dimension.x, dimension.y);
         ctx.lineCap = 'round';
-        ctx.strokeStyle = '#000';
-        ctx.fillStyle = '#FFF';
-        ctx.fillRect(event.offsetX, event.offsetY, VALUE_FIVE, VALUE_FIVE);
+        ctx.strokeStyle = '#000000';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(event.offsetX, 0, SLIDER_STOPPER_RECT_WIDTH, SLIDER_STOPPER_RECT_HEIGHT);
     }
 
     // Ce code est complètement inspiré sans gêne de
@@ -171,15 +127,15 @@ export class ColorService {
     }
 
     // change opacity of primary or secondary colors
-    changeColorOpacity(value: number): void {
+    changeColorOpacity(alpha: number): void {
         if (this.isclicked) {
-            this.setprimaryColorTransparency(value);
-            this.drawingService.baseCtx.globalAlpha = this.getprimaryColorTransparency();
-            this.drawingService.previewCtx.globalAlpha = this.getprimaryColorTransparency();
+            this.primaryColorTransparency = alpha;
+            this.drawingService.baseCtx.globalAlpha = this.primaryColorTransparency;
+            this.drawingService.previewCtx.globalAlpha = this.primaryColorTransparency;
         } else {
-            this.setsecondaryColorTransparency(value);
-            this.drawingService.baseCtx.globalAlpha = this.getsecondaryColorTransparency();
-            this.drawingService.previewCtx.globalAlpha = this.getsecondaryColorTransparency();
+            this.secondaryColorTransparency = alpha;
+            this.drawingService.baseCtx.globalAlpha = this.secondaryColorTransparency;
+            this.drawingService.previewCtx.globalAlpha = this.secondaryColorTransparency;
         }
     }
 

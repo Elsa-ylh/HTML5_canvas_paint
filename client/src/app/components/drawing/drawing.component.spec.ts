@@ -1,4 +1,6 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Tool } from '@app/classes/tool';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
@@ -13,7 +15,7 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
 import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
-
+// tslint:disable:no-any
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
@@ -37,8 +39,8 @@ describe('DrawingComponent', () => {
             colorStub = new ColorService(drawingStub);
             pencilStub = new PencilService(drawingStub, colorStub);
             eraserStub = new EraserService(drawingStub);
-            brushStub = new BrushService(drawingStub);
-            lineStub = new LineService(drawingStub);
+            brushStub = new BrushService(drawingStub, colorStub);
+            lineStub = new LineService(drawingStub, colorStub);
             rectangleStub = new RectangleService(drawingStub, colorStub);
             ellipseStub = new EllipseService(drawingStub, colorStub);
 
@@ -48,6 +50,7 @@ describe('DrawingComponent', () => {
 
             TestBed.configureTestingModule({
                 declarations: [DrawingComponent],
+                imports: [BrowserAnimationsModule, HttpClientModule],
                 providers: [
                     { provide: DrawingService, useValue: drawingStub },
                     { provide: ToolService, useValue: toolServiceStub },
@@ -61,6 +64,12 @@ describe('DrawingComponent', () => {
         fixture = TestBed.createComponent(DrawingComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+    });
+
+    afterEach(() => {
+        if (fixture.nativeElement && 'remove' in fixture.nativeElement) {
+            (fixture.nativeElement as HTMLElement).remove();
+        }
     });
 
     it('should create', () => {

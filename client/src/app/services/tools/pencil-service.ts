@@ -26,16 +26,11 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             this.clearPath();
             this.mouseMove = false;
-            this.drawingService.baseCtx.strokeStyle = this.colorService.getprimaryColor(); // to draw after erasing
-            this.drawingService.previewCtx.strokeStyle = this.colorService.getprimaryColor();
+            this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // to draw after erasing
+            this.drawingService.previewCtx.strokeStyle = this.colorService.primaryColor;
             this.drawingService.baseCtx.lineWidth = this.pencilSize;
             this.drawingService.previewCtx.lineWidth = this.pencilSize;
-            this.drawingService.baseCtx.setLineDash([0, 0]); // reset
-            this.drawingService.previewCtx.setLineDash([0, 0]); // reset
-            this.drawingService.baseCtx.lineCap = 'round';
-            this.drawingService.baseCtx.lineJoin = 'round';
-            this.drawingService.previewCtx.lineCap = 'round';
-            this.drawingService.previewCtx.lineJoin = 'round';
+            this.clearEffectTool();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -50,7 +45,7 @@ export class PencilService extends Tool {
             if (this.mouseMove) {
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
-                this.drawLine(this.drawingService.previewCtx, this.pathData);
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
             } else {
                 // draw circle
                 this.drawingService.baseCtx.fillStyle = '#000000';
@@ -59,7 +54,7 @@ export class PencilService extends Tool {
                 this.drawingService.baseCtx.arc(mousePosition.x, mousePosition.y, diametreCir, angleCir, Math.PI * 2);
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
-                this.drawLine(this.drawingService.previewCtx, this.pathData);
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
             }
         }
         this.mouseDown = false;
@@ -71,7 +66,6 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.mouseMove = true;
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
@@ -83,6 +77,15 @@ export class PencilService extends Tool {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
+    }
+
+    clearEffectTool(): void {
+        this.drawingService.baseCtx.lineCap = 'round';
+        this.drawingService.baseCtx.lineJoin = 'round';
+        this.drawingService.previewCtx.lineCap = 'round';
+        this.drawingService.previewCtx.lineJoin = 'round';
+        this.drawingService.baseCtx.setLineDash([0, 0]); // reset
+        this.drawingService.previewCtx.setLineDash([0, 0]);
     }
 
     clearPath(): void {
