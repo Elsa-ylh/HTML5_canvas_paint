@@ -71,7 +71,7 @@ export class DatabasePicureService {
     async addPicture(picture: CancasInformation): Promise<void> {
         const bool = await this.validatePicture(picture);
         if (bool === true) {
-            this.collection.insertOne(picture); //.catch((error: Error) => {throw error;});
+            this.collection.insertOne(picture); // .catch((error: Error) => {throw error;});
         } else {
             throw new Error('Invalid picture');
         }
