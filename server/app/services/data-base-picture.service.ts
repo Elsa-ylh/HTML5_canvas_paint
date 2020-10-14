@@ -3,8 +3,6 @@ import { injectable } from 'inversify';
 import { Collection, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
 
-// CHANGE the URL for your database information
-
 const DATABASE_URL = 'mongodb+srv://Admin:LOG2990gr103@saved-canvas-images.2ticq.mongodb.net/project2?retryWrites=true&w=majority';
 const DATABASE_NAME = 'project2';
 const DATABASE_COLLECTION = 'saved_canvas_pictures';
@@ -73,9 +71,7 @@ export class DatabasePicureService {
     async addPicture(picture: CancasInformation): Promise<void> {
         const bool = await this.validatePicture(picture);
         if (bool === true) {
-            this.collection.insertOne(picture).catch((error: Error) => {
-                throw error;
-            });
+            this.collection.insertOne(picture); //.catch((error: Error) => {throw error;});
         } else {
             throw new Error('Invalid picture');
         }
