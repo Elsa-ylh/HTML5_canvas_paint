@@ -7,7 +7,7 @@
         [attr.height]="height"
         [ngStyle]="{ cursor: cursorUsed }"
         (mousedown)="onMouseDown($event)"
-        (mousemove)="onMouseMove($event); showCircle($event)"
+        (mousemove)="onMouseMove($event)"
         (mouseup)="onMouseUp($event)"
         (mouseout)="onMouseOut($event)"
         (mouseenter)="onMouseEnter($event)"
@@ -28,6 +28,12 @@
         (mouseup)="onResizeUp($event)"
         (mouseout)="onResizeOut($event)"
     ></canvas>
-    <canvas id="dropperLayer" #dropperLayer width="40px" height="40px"></canvas>
+    <canvas
+        id="dropperLayer"
+        #dropperLayer
+        width="40px"
+        height="40px"
+        [style.display]="this.toolService.currentToolName == dropper ? 'inline-block' : 'none'"
+    ></canvas>
     <div id="greyBackground" [ngStyle]="{ 'width.px': crs.resizeWidth, 'height.px': crs.resizeHeight }"></div>
 </div>
