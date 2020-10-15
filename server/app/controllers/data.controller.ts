@@ -1,5 +1,5 @@
 import { DatabasePicureService } from '@app/services/data-base-picture.service';
-import { CancasInformation } from '@common/communication/canvas-information';
+import { CancasInformation, Label } from '@common/communication/canvas-information';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
@@ -19,6 +19,30 @@ export class DataController {
                 .getPictures()
                 .then((cancasInformation: CancasInformation[]) => {
                     res.json(cancasInformation);
+                })
+                .catch((reason: unknown) => {
+                    const errorMessage: CancasInformation = {
+                        id: 'Error',
+                        name: reason as string,
+                        labels: [],
+                        date: new Date().toString(),
+                        picture: '',
+                    };
+                    res.json(errorMessage);
+                });
+        });
+        this.router.get('/label', (req: Request, res: Response, next: NextFunction) => {
+            this.databaseService
+                .getAllLabel()
+                .then((labelsInformation: Label[]) => {
+                    const informationMessage: CancasInformation = {
+                        id: 'list_of_all_labals',
+                        name: 'labels',
+                        labels: labelsInformation,
+                        date: new Date().toString(),
+                        picture: '',
+                    };
+                    res.json(informationMessage);
                 })
                 .catch((reason: unknown) => {
                     const errorMessage: CancasInformation = {

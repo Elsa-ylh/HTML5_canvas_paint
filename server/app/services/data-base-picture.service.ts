@@ -1,4 +1,4 @@
-import { CancasInformation } from '@common/communication/canvas-information';
+import { CancasInformation, Label } from '@common/communication/canvas-information';
 import { injectable } from 'inversify';
 import { Collection, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
@@ -57,6 +57,35 @@ export class DatabasePicureService {
             .catch((error: Error) => {
                 throw error;
             });
+    }
+    async getAllLabel(): Promise<Label[]> {
+        let listLabels: Label[] = [];
+        let collectionPincture: CancasInformation[] = await this.collection
+            .find({ 'labels.label': { $exists: true } })
+            .project({ 'labels.label': 1 }) //{{},{labels:1 ,label:1}}
+            .toArray()
+            .then((pictures: CancasInformation[]) => {
+                return pictures;
+            })
+            .catch((error: Error) => {
+                throw error;
+            });
+        collectionPincture.forEach((element) => {
+            for (let index = 0; index < element.labels.length; index++) {
+                if (this.testLabelInList(listLabels, element.labels[index])) listLabels.push(element.labels[index]);
+            }
+        });
+        return listLabels;
+    }
+    private testLabelInList(listLabels: Label[], label: Label): boolean {
+        let booltouver: boolean = true;
+        for (let index = 0; index < listLabels.length; index++) {
+            if (listLabels[index].label === label.label) {
+                booltouver = false;
+                index = listLabels.length;
+            }
+        }
+        return booltouver;
     }
 
     async getPictureName(namePicture: string): Promise<CancasInformation> {
