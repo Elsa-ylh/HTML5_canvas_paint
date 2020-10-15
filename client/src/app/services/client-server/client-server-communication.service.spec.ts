@@ -8,10 +8,7 @@ describe('ClientServerCommunicationService', () => {
     let service: ClientServerCommunicationService;
     let httpMock: HttpTestingController;
     let baseUrl: string;
-    // let httpClient: HttpClient;
     beforeEach(() => {
-        // httpClient = new HttpClient(new HttpHandler());
-        // service = new ClientServerCommunicationService(httpClient);
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
         });
@@ -61,5 +58,15 @@ describe('ClientServerCommunicationService', () => {
         expect(req.request.method).toBe('POST');
         // actually send the request
         req.flush(expectedCancasInformation);
+    });
+
+    it('should handle http error safely', () => {
+        service.getData().subscribe((response: CancasInformation[]) => {
+            expect(response).toBeUndefined();
+        }, fail);
+
+        const req = httpMock.expectOne(baseUrl);
+        expect(req.request.method).toBe('GET');
+        req.error(new ErrorEvent('Random error occured'));
     });
 });

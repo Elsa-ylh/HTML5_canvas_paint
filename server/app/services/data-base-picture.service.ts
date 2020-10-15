@@ -46,6 +46,7 @@ export class DatabasePicureService {
                 });
         }
     }
+
     async getPictures(): Promise<CancasInformation[]> {
         return this.collection
             .find()
@@ -57,6 +58,7 @@ export class DatabasePicureService {
                 throw error;
             });
     }
+
     async getPictureName(namePicture: string): Promise<CancasInformation> {
         return this.collection
             .findOne({ name: namePicture })
@@ -76,11 +78,13 @@ export class DatabasePicureService {
             throw new Error('Invalid picture');
         }
     }
+
     private async validatePicture(cancas: CancasInformation): Promise<boolean> {
         const boolTestCancas = cancas.picture !== '' && cancas.name !== '';
         if (!boolTestCancas) return boolTestCancas;
         return await this.validateName(cancas.id);
     }
+
     private async validateName(idPicture: string): Promise<boolean> {
         const picture = await this.getPictureName(idPicture);
         return picture === null;
