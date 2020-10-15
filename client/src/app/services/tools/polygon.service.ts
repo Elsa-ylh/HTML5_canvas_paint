@@ -125,11 +125,11 @@ export class PolygonService extends Tool {
         this.drawPreviewCircle(ctx, mouseDownPos, mouseUpPos);
     }
 
-    selectPolygon(mousePosition: Vec2, base: boolean): void {
+    selectPolygon(mousePosition: Vec2, isRenderingBase: boolean): void {
         this.distanceX = mousePosition.x - this.mouseDownCoord.x;
         this.distanceY = mousePosition.y - this.mouseDownCoord.y;
         this.radius = Math.sqrt(Math.pow(mousePosition.x - this.mouseDownCoord.x, 2) + Math.pow(mousePosition.y - this.mouseDownCoord.y, 2));
-        if (base) {
+        if (isRenderingBase) {
             switch (this.subToolSelect) {
                 case SubToolselected.tool1: {
                     this.drawFillPolygon(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition);
