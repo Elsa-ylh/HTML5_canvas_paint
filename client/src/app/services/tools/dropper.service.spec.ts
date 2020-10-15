@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { MouseButton } from '@app/classes/mouse-button';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -7,10 +8,12 @@ import { DropperService } from '@app/services/tools/dropper.service';
 describe('DropperService', () => {
     let dropperService: DropperService;
     let colorServiceMock: jasmine.SpyObj<ColorService>;
+    let dropperStubCtx: CanvasRenderingContext2D;
 
     beforeEach(() => {
         const colorSpy = jasmine.createSpyObj('ColorService', ['numeralToHex', 'getColor']);
         const drawingSpy = jasmine.createSpyObj('DrawingService', ['baseCtx', 'previewCtx']);
+        dropperStubCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         TestBed.configureTestingModule({
             providers: [
                 { provide: ColorService, useValue: colorSpy },
@@ -19,6 +22,7 @@ describe('DropperService', () => {
         });
         dropperService = TestBed.inject(DropperService);
         colorServiceMock = TestBed.inject(ColorService) as jasmine.SpyObj<ColorService>;
+        dropperService['drawingService'].dropperCtx = dropperStubCtx;
     });
 
     it('should be created', () => {
@@ -44,6 +48,16 @@ describe('DropperService', () => {
     it('should should be called', () => {
         const mouseEvent = { x: 15, y: 6, button: MouseButton.Right } as MouseEvent;
         dropperService.onMouseDown(mouseEvent);
+        expect(colorServiceMock.numeralToHex).toHaveBeenCalled();
+    });
+    it('should call getColor onMouseMove', () => {
+        const mouseEvent = { offsetX: 15, offsetY: 6 } as MouseEvent;
+        dropperService.onMouseMove(mouseEvent);
+        expect(colorServiceMock.getColor).toHaveBeenCalled();
+    });
+    it('should call numeralToHex', () => {
+        const mouseEvent = { offsetX: 15, offsetY: 6 } as MouseEvent;
+        dropperService.onMouseMove(mouseEvent);
         expect(colorServiceMock.numeralToHex).toHaveBeenCalled();
     });
 });
