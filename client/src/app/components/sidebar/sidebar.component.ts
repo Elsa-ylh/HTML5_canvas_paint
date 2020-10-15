@@ -17,6 +17,7 @@ import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection-service';
 
 @Component({
     selector: 'app-sidebar',
@@ -41,6 +42,9 @@ export class SidebarComponent {
     private isRectangleChecked: boolean = false;
     private isEllipseChecked: boolean = false;
     private isColorChecked: boolean = false;
+    private isSelectionChecked: boolean = false;
+    private isSelectionEllipseChecked: boolean = false;
+    private isSelectionRectangleChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -55,6 +59,7 @@ export class SidebarComponent {
         public eraserService: EraserService,
         public colorService: ColorService,
         public lineService: LineService,
+        public selectionService: SelectionService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
@@ -153,6 +158,24 @@ export class SidebarComponent {
         return this.isColorChecked;
     }
 
+    pickSelection(subTool: number): void {
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.Selection);
+        this.toolService.currentTool.subToolSelect = subTool;
+    }
+
+    get selectionChecked(): boolean {
+        return this.isSelectionChecked;
+    }
+
+    get selectionEllipseChecked(): boolean {
+        return this.isSelectionEllipseChecked;
+    }
+
+    get selectionRectangleChecked(): boolean {
+        return this.isSelectionRectangleChecked;
+    }
+
     resetCheckedButton(): void {
         this.isPencilChecked = false;
         this.isEraserChecked = false;
@@ -161,6 +184,9 @@ export class SidebarComponent {
         this.isRectangleChecked = false;
         this.isEllipseChecked = false;
         this.isColorChecked = false;
+        this.isSelectionChecked = false;
+        this.isSelectionEllipseChecked = false;
+        this.isSelectionRectangleChecked = false;
     }
 
     CheckboxChangeToggle(args: MatCheckboxChange): void {
@@ -225,6 +251,28 @@ export class SidebarComponent {
             this.resetCheckedButton();
             this.isLineChecked = true;
             this.pickLine();
+        }
+    }
+
+    @HostListener('window:keydown.r', ['$event']) changeSelectionRectangleMode(event: KeyboardEvent): void {
+        this.resetCheckedButton();
+        this.isSelectionChecked = true;
+        this.isSelectionRectangleChecked = true;
+        this.pickSelection(1);
+    }
+
+    @HostListener('window:keydown.s', ['$event']) changeSelectionEllipseMode(event: KeyboardEvent): void {
+        this.resetCheckedButton();
+        this.isSelectionChecked = true;
+        this.isSelectionEllipseChecked = true;
+        this.pickSelection(2);
+    }
+
+    @HostListener('window:keydown.control.a', ['$event']) selectAllCanvas(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Selection) {
+            event.preventDefault();
+            this.selectionService.selectAll();
+            console.log('test');
         }
     }
 }

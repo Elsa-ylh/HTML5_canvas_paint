@@ -34,6 +34,10 @@
                     >
                         <mat-icon>color_lens</mat-icon>
                     </mat-button-toggle>
+
+                    <mat-button-toggle (click)="pickSelection(1)" [checked]="selectionChecked" matTooltip="Selectionner les couleurs" matTooltipPosition="right">
+                      <mat-icon>crop_free</mat-icon>
+                    </mat-button-toggle>
                 </mat-button-toggle-group>
             </mat-list>
             <mat-list class="miscellaneous-buttons">
@@ -147,6 +151,20 @@
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Color">
                 <app-color></app-color>
+            </mat-grid-list>
+
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Selection">
+              <mat-grid-tile colspan="6"></mat-grid-tile>
+              <mat-grid-tile colspan="6"> Choisissez une forme de sélection</mat-grid-tile>
+              <mat-grid-tile colspan="6" rowspan="4">
+                  <mat-button-toggle-group vertical="true">
+                      <mat-button-toggle class="sub-button" mat-button color="primary" [checked]="selectionRectangleChecked" (click)="pickSelection(1)">Rectangle</mat-button-toggle>
+                      <mat-button-toggle class="sub-button" mat-button color="primary" [checked]="selectionEllipseChecked" (click)="pickSelection(2)">Ellipse</mat-button-toggle>
+                  </mat-button-toggle-group>
+              </mat-grid-tile>
+              <mat-grid-tile colspan="6">
+                <button mat-raised-button (click)="selectionService.selectAll()">Selectionner tout le dessin</button>
+              </mat-grid-tile>
             </mat-grid-list>
         </div>
     </div>

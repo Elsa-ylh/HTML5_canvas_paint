@@ -23,6 +23,7 @@ import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection-service';
 import { SidebarComponent } from './sidebar.component';
 
 describe('SidebarComponent', () => {
@@ -37,6 +38,8 @@ describe('SidebarComponent', () => {
     let eraserStub: EraserService;
     let lineStub: LineService;
     let colorStub: ColorService;
+    let selectionStub: SelectionService;
+
     beforeEach(async () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
@@ -46,7 +49,8 @@ describe('SidebarComponent', () => {
         pencilStub = new PencilService(drawingStub, colorStub);
         eraserStub = new EraserService(drawingStub);
         lineStub = new LineService(drawingStub, colorStub);
-        toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub);
+        selectionStub = new SelectionService(drawingStub);
+        toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, selectionStub);
 
         await TestBed.configureTestingModule({
             declarations: [SidebarComponent, ColorComponent, WriteTextDialogUserGuideComponent, DialogCreateNewDrawingComponent],
@@ -71,6 +75,7 @@ describe('SidebarComponent', () => {
                 { provide: PencilService, useValue: pencilStub },
                 { provide: EraserService, useValue: eraserStub },
                 { provide: LineService, useValue: lineStub },
+                { provide: SelectionService, useValue: selectionStub },
                 { provide: ToolService, useValue: toolServiceStub },
                 { provide: MatDialog, useValue: {} },
             ],
