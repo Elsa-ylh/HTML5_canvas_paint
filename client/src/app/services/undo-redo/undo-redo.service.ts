@@ -7,13 +7,17 @@ import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
 export class UndoRedoService {
     constructor() {}
 
-    listUndo: AbsUndoRedo[] = [];
-    listRedo: AbsUndoRedo[] = [];
+    private listUndo: AbsUndoRedo[] = [];
+    private listRedo: AbsUndoRedo[] = []; // LIFO
 
-    // function that cancels the last modification
+    // function that redoes the latest undo.
     redo(): void {
         if (this.listRedo.length > 0) {
-            this.listRedo.push();
+            let action = this.listRedo.pop();
+            if (action) {
+                this.listUndo.push(action);
+                action.reapply(); // applies the action
+            }
         }
     }
 
@@ -21,11 +25,24 @@ export class UndoRedoService {
     clearUndo(): void {
         this.listUndo = [];
     }
+    // allows to reset the listRedo
+    clearRedo(): void {
+        this.listRedo = [];
+    }
 
-    // function that redoes the lastest modification. we push the lastest element removed from the undo list.
+    // adds the latest  action to the undo stack.
+    addUndo(action: AbsUndoRedo): void {
+        this.listUndo.push(action);
+    }
+    // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
     undo(): void {
         if (this.listUndo.length > 0) {
-            this.listUndo.push();
+            // list has an element
+            let action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
+            if (action) {
+                this.listRedo.push(action); // save into redo to be able to cancel the undo.
+                action.deapply(); // deapplies the action
+            }
         }
     }
 }

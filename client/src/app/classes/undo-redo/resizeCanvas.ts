@@ -3,14 +3,16 @@ import { Vec2 } from '../vec2';
 import { AbsUndoRedo } from './abs-undo-redo';
 
 export class ResizeCanvas extends AbsUndoRedo {
-    constructor(private canvasResize: CanvasResizerService) {
+    constructor(private canvasResize: CanvasResizerService, private resizeCanvasBefore: Vec2, private resizeCanvasAfter: Vec2) {
         super();
     }
-    resizeCanvasBefore: Vec2;
+
     reapply(): void {
         // save the canvas size
-        this.resizeCanvasBefore = this.canvasResize.canvasSize;
+        this.canvasResize.canvasSize = this.resizeCanvasAfter;
     }
 
-    deapply(): void {}
+    deapply(): void {
+        this.canvasResize.canvasSize = this.resizeCanvasBefore;
+    }
 }
