@@ -17,6 +17,7 @@ import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { SelectionPictureComponent } from '../selection-picture/selection-picture.component';
 
 @Component({
     selector: 'app-sidebar',
@@ -34,6 +35,7 @@ export class SidebarComponent {
     lineWidth: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
+    newSelectionPictureRef: MatDialogRef<SelectionPictureComponent>;
     private isPencilChecked: boolean = false;
     private isEraserChecked: boolean = false;
     private isBrushChecked: boolean = false;
@@ -72,6 +74,13 @@ export class SidebarComponent {
 
     createNewDrawing(): void {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
+    }
+
+    openSelection(): void {
+        this.newSelectionPictureRef = this.dialogCreator.open(SelectionPictureComponent, {
+            width: '90%',
+            height: '90%',
+        });
     }
 
     openUserGuide(): void {

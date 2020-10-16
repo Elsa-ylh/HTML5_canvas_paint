@@ -44,6 +44,7 @@ import { DialogCreateNewDrawingComponent } from './components/dialog-create-new-
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
+import { SelectionPictureComponent } from './components/selection-picture/selection-picture.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { WriteTextDialogUserGuideComponent } from './components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 @NgModule({
@@ -56,6 +57,7 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         DialogCreateNewDrawingComponent,
         WriteTextDialogUserGuideComponent,
         ColorComponent,
+        SelectionPictureComponent,
     ],
     imports: [
         ReactiveFormsModule,
