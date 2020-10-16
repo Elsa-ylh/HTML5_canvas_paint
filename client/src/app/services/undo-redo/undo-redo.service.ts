@@ -8,11 +8,11 @@ export class UndoRedoService {
     isundoRedoDisabled: boolean = true; // to disactivate the option to redo-redo. diabled=true (cant undo-red0 when app loads)
     private listUndo: AbsUndoRedo[] = [];
     private listRedo: AbsUndoRedo[] = []; // LIFO
-    constructor() {}
+    // constructor() {}
     // function that redoes the latest undo.
     redo(): void {
         if (this.listRedo.length > 0) {
-            let action = this.listRedo.pop();
+            const action = this.listRedo.pop();
             if (action) {
                 this.listUndo.push(action);
                 action.reapply(); // applies the action
@@ -37,7 +37,7 @@ export class UndoRedoService {
     undo(): void {
         if (this.listUndo.length > 0) {
             // list has an element
-            let action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
+            const action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
             if (action) {
                 this.listRedo.push(action); // save into redo to be able to cancel the undo.
                 action.deapply(); // deapplies the action
