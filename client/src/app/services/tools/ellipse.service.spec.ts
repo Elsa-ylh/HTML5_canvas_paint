@@ -134,7 +134,7 @@ describe('Service: Ellipse', () => {
 
     it(' pressing shift should change circle value to true', () => {
         service.onMouseDown(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(service.circle).toEqual(true);
     });
 
@@ -162,7 +162,7 @@ describe('Service: Ellipse', () => {
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool1;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
-        service.OnShiftKeyUp(shiftEvent);
+        service.onShiftKeyUp(shiftEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawFillEllipseSpy).toHaveBeenCalled();
     });
@@ -171,7 +171,7 @@ describe('Service: Ellipse', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
-        service.OnShiftKeyUp(shiftEvent);
+        service.onShiftKeyUp(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawFillEllipseSpy).not.toHaveBeenCalled();
     });
@@ -181,16 +181,16 @@ describe('Service: Ellipse', () => {
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool1;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawFillEllipseSpy).toHaveBeenCalled();
     });
 
-    it(' OnShiftKeyDown should not call drawFillEllipse if mouse was not already down and tool1 selected', () => {
+    it(' onShiftKeyDown should not call drawFillEllipse if mouse was not already down and tool1 selected', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawFillEllipseSpy).not.toHaveBeenCalled();
     });
@@ -200,7 +200,7 @@ describe('Service: Ellipse', () => {
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool2;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
-        service.OnShiftKeyUp(shiftEvent);
+        service.onShiftKeyUp(shiftEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawEllipseOutlineSpy).toHaveBeenCalled();
     });
@@ -209,7 +209,7 @@ describe('Service: Ellipse', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
-        service.OnShiftKeyUp(shiftEvent);
+        service.onShiftKeyUp(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawEllipseOutlineSpy).not.toHaveBeenCalled();
     });
@@ -219,16 +219,16 @@ describe('Service: Ellipse', () => {
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool2;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawEllipseOutlineSpy).toHaveBeenCalled();
     });
 
-    it(' OnShiftKeyDown should not call drawEllipseOutline if mouse was not already down and tool2 selected', () => {
+    it(' onShiftKeyDown should not call drawEllipseOutline if mouse was not already down and tool2 selected', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawEllipseOutlineSpy).not.toHaveBeenCalled();
     });
@@ -238,7 +238,7 @@ describe('Service: Ellipse', () => {
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool3;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
-        service.OnShiftKeyUp(shiftEvent);
+        service.onShiftKeyUp(shiftEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawFillEllipseOutlineSpy).toHaveBeenCalled();
     });
@@ -247,7 +247,7 @@ describe('Service: Ellipse', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
-        service.OnShiftKeyUp(shiftEvent);
+        service.onShiftKeyUp(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawFillEllipseOutlineSpy).not.toHaveBeenCalled();
     });
@@ -257,16 +257,16 @@ describe('Service: Ellipse', () => {
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool3;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawFillEllipseOutlineSpy).toHaveBeenCalled();
     });
 
-    it(' OnShiftKeyDown should not call drawFillEllipseOutline if mouse was not already down and tool1 selected', () => {
+    it(' onShiftKeyDown should not call drawFillEllipseOutline if mouse was not already down and tool1 selected', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawFillEllipseOutlineSpy).not.toHaveBeenCalled();
     });
@@ -301,14 +301,4 @@ describe('Service: Ellipse', () => {
         service.onMouseEnter(mouseEvent);
         expect(service.mouseEnter).toEqual(false);
     });
-
-    // it(' onMouseUp should call drawFillEllipseOutline if mouse was already down and tool3 selected ans mouse position in -x and -y', () => {
-    //   service.subToolSelect = SubToolselected.tool3;
-    //   service.mouseDownCoord = { x: 0, y: 25 };
-    //   service.mouseDown = true;
-    //   service.mousePosition = { x:25, y: 0};
-
-    //   service.drawPreviewRect(previewCtxStub, service.mouseDownCoord, service.mousePosition, 2, 30, 30);
-    //   expect(service['drawingService'].previewCtx.strokeRect).toHaveBeenCalled();
-    // });
 });

@@ -87,19 +87,23 @@ export class DrawingComponent implements AfterViewInit {
         if (isVerticalAndHorizontal) {
             this.cvsResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
             this.cvsResizerService.onResizeDown(event, ResizeDirection.verticalAndHorizontal);
-        } else if (isVertical) {
+            return;
+        }
+        if (isVertical) {
             this.cvsResizerService.resizeCursor = cursorName.resizeVertical;
             this.cvsResizerService.onResizeDown(event, ResizeDirection.vertical);
-        } else if (isHorizontal) {
+            return;
+        }
+        if (isHorizontal) {
             this.cvsResizerService.resizeCursor = cursorName.resizeHorizontal;
             this.cvsResizerService.onResizeDown(event, ResizeDirection.horizontal);
+            return;
         }
     }
 
     onResizeMove(event: MouseEvent): void {
         if (this.cvsResizerService.isResizeDown) {
             this.cvsResizerService.onResize(event, this.resizeCtx);
-            return;
         }
 
         const isVertical =
@@ -120,12 +124,15 @@ export class DrawingComponent implements AfterViewInit {
 
         if (isVerticalAndHorizontal) {
             this.cvsResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
-        } else if (isVertical) {
+            return;
+        }
+        if (isVertical) {
             this.cvsResizerService.resizeCursor = cursorName.resizeVertical;
-        } else if (isHorizontal) {
+            return;
+        }
+        if (isHorizontal) {
             this.cvsResizerService.resizeCursor = cursorName.resizeHorizontal;
-        } else {
-            this.cvsResizerService.resizeCursor = cursorName.default;
+            return;
         }
     }
 
@@ -139,12 +146,12 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('window:keydown.shift', ['$event'])
     onKeyShiftDown(event: KeyboardEvent): void {
-        this.toolService.currentTool.OnShiftKeyDown(event);
+        this.toolService.currentTool.onShiftKeyDown(event);
     }
 
     @HostListener('window:keyup.shift', ['$event'])
     onKeyShiftUp(event: KeyboardEvent): void {
-        this.toolService.currentTool.OnShiftKeyUp(event);
+        this.toolService.currentTool.onShiftKeyUp(event);
     }
 
     @HostListener('dblclick', ['$event'])

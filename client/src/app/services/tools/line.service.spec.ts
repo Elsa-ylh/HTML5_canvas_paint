@@ -248,7 +248,7 @@ describe('Service: Line', () => {
         service.onMouseMove(events.mouseEvent3);
         expect(service['pointShiftMemory']).not.toEqual({ x: 0, y: 0 });
     });
-    it('onMouseDown,onMouseMove, OnShiftKeyDown and onMouseMove OnShiftKeyUp and not brush ligne in de canvas in position of OnShiftKeyDown', () => {
+    it('onMouseDown, onMouseMove, onShiftKeyDown and onMouseMove onShiftKeyUp and not brush ligne in de canvas in position of OnShiftKeyDown', () => {
         service.onMouseDown(events.mouseEvent1);
         service.onMouseMove(events.mouseEvent2);
         service.onShiftKeyDown(events.backspceEvant);
@@ -257,7 +257,7 @@ describe('Service: Line', () => {
         service.onDoubleClick(events.mouseEvent3);
         expect(shiftDrawAngleLineSpy).toHaveBeenCalled();
     });
-    it('onMouseDown,onMouseMove, OnShiftKeyDown, onMouseDown and OnShiftKeyUp and brush ligne in de canvas in position ', () => {
+    it('onMouseDown, onMouseMove, onShiftKeyDown, onMouseDown and onShiftKeyUp and brush ligne in de canvas in position ', () => {
         service.onMouseDown(events.mouseEvent1);
         service.onMouseMove(events.mouseEvent2);
         service.onShiftKeyDown(events.backspceEvant);
@@ -266,7 +266,7 @@ describe('Service: Line', () => {
         service.onDoubleClick(events.mouseEvent1);
         expect(shiftDrawAngleLineSpy).toHaveBeenCalled();
     });
-    it('OnShiftKeyDown and OnShiftKeyUp not call drawLineLastPoint and drawLineSpy', () => {
+    it('onShiftKeyDown and onShiftKeyUp not call drawLineLastPoint and drawLineSpy', () => {
         service.onShiftKeyDown(events.backspceEvant);
         service.onShiftKeyUp(events.backspceEvant);
         expect(drawLineLastPointSpy).not.toHaveBeenCalled();
