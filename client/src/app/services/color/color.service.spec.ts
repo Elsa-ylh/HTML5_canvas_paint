@@ -27,7 +27,7 @@ describe('ColorService', () => {
         service = TestBed.inject(ColorService);
 
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEventDrawDot = new EventOfTest();

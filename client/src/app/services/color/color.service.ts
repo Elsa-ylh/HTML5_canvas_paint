@@ -40,7 +40,7 @@ export class ColorService {
     }
     addLastColor(color: string): void {
         this.lastColors.shift();
-        this.lastColors.push({ color, active: true }); // color : color => color
+        this.lastColors.push({ color, active: true });
     }
 
     // https://malcoded.com/posts/angular-color-picker/
@@ -126,7 +126,6 @@ export class ColorService {
         return { red: imageData[0], green: imageData[1], blue: imageData[2], alpha: 1 };
     }
 
-    // change opacity of primary or secondary colors
     changeColorOpacity(alpha: number): void {
         if (this.isClicked) {
             this.primaryColorTransparency = alpha;

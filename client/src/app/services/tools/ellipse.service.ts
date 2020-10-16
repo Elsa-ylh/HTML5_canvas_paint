@@ -61,8 +61,6 @@ export class EllipseService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.mousePosition = mousePosition;
-
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.selectEllipse(mousePosition, false);
         }
