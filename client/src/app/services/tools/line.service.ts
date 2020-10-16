@@ -30,7 +30,9 @@ export class LineService extends Tool {
             this.mouseMove = true;
             this.pathData.push(this.getPositionFromMouse(event));
             this.drawLine(this.drawingService.previewCtx, this.pathData);
-        } else if (this.mouseDown && this.shiftKeyDown) {
+            return;
+        }
+        if (this.mouseDown && this.shiftKeyDown) {
             this.pathData.push(this.pointMouse);
             this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
@@ -40,7 +42,9 @@ export class LineService extends Tool {
         if (this.mouseMove && !this.shiftKeyDown) {
             this.pointShiftMemory = this.pointMouse = this.getPositionFromMouse(event);
             this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointMouse);
-        } else if (this.shiftKeyDown) {
+            return;
+        }
+        if (this.shiftKeyDown) {
             this.pointShiftMemory = this.getPositionFromMouse(event);
         }
     }
@@ -69,7 +73,6 @@ export class LineService extends Tool {
 
     private shiftDrawAngleLine(path: Vec2[], lastPoint: Vec2): Vec2 {
         // Attention le calcul est en rad  le 0 rad  point vers la droit de la page et +-Pi rad point vers le gauche de la page.
-        let newPoint: Vec2;
         const leastone = -1;
         const denominator8 = 8;
         const denominator4 = 4;
@@ -81,19 +84,19 @@ export class LineService extends Tool {
         const dy = lastPoint.y - firstPoint.y;
         const angleabs = Math.abs(Math.atan2(dy, dx));
         if (angleabs < Math.PI / denominator8 || angleabs > (Math.PI * numerator7) / denominator8) {
-            newPoint = { x: lastPoint.x, y: firstPoint.y };
-        } else if (angleabs >= Math.PI / denominator8 && angleabs <= (Math.PI * numerator3) / denominator8) {
+            return { x: lastPoint.x, y: firstPoint.y };
+        }
+        if (angleabs >= Math.PI / denominator8 && angleabs <= (Math.PI * numerator3) / denominator8) {
             const axey: number = dy > 0 ? leastone : 1;
             const newY: number = Math.round(Math.tan((Math.PI * numerator3) / denominator4) * dx * axey);
-            newPoint = { x: lastPoint.x, y: firstPoint.y + newY };
-        } else if (angleabs <= (Math.PI * numerator7) / denominator8 && angleabs >= (Math.PI * numerator5) / denominator8) {
+            return { x: lastPoint.x, y: firstPoint.y + newY };
+        }
+        if (angleabs <= (Math.PI * numerator7) / denominator8 && angleabs >= (Math.PI * numerator5) / denominator8) {
             const axey: number = dy > 0 ? leastone : 1;
             const newY: number = Math.round(Math.tan(Math.PI / denominator4) * dx * axey);
-            newPoint = { x: lastPoint.x, y: firstPoint.y + newY };
-        } else {
-            newPoint = { x: firstPoint.x, y: lastPoint.y };
+            return { x: lastPoint.x, y: firstPoint.y + newY };
         }
-        return newPoint;
+        return { x: firstPoint.x, y: lastPoint.y };
     }
 
     onDoubleClick(event: MouseEvent): void {

@@ -226,27 +226,34 @@ export class EllipseService extends Tool {
                     this.width + this.lineWidth,
                     this.height + this.lineWidth,
                 );
-            } else if (mousePosition.x < mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
+                return;
+            }
+            if (mousePosition.x < mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
                 ctx.strokeRect(
                     mouseDownPos.x + this.lineWidth / 2,
                     mouseDownPos.y + this.lineWidth / 2,
                     this.width - this.lineWidth,
                     this.height - this.lineWidth,
                 );
-            } else if (mousePosition.x > mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
+                return;
+            }
+            if (mousePosition.x > mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
                 ctx.strokeRect(
                     mouseDownPos.x - this.lineWidth / 2,
                     mouseDownPos.y + this.lineWidth / 2,
                     this.width + this.lineWidth,
                     this.height - this.lineWidth,
                 );
-            } else if (mousePosition.x < mouseDownPos.x && mousePosition.y > mouseDownPos.y) {
+                return;
+            }
+            if (mousePosition.x < mouseDownPos.x && mousePosition.y > mouseDownPos.y) {
                 ctx.strokeRect(
                     mouseDownPos.x + this.lineWidth / 2,
                     mouseDownPos.y - this.lineWidth / 2,
                     this.width - this.lineWidth,
                     this.height + this.lineWidth,
                 );
+                return;
             }
         }
     }
