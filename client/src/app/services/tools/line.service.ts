@@ -72,7 +72,6 @@ export class LineService extends Tool {
     }
 
     private shiftDrawAngleLine(path: Vec2[], lastPoint: Vec2): Vec2 {
-        // Attention le calcul est en rad  le 0 rad  point vers la droit de la page et +-Pi rad point vers le gauche de la page.
         const leastone = -1;
         const denominator8 = 8;
         const denominator4 = 4;
