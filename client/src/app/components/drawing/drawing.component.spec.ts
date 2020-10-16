@@ -196,10 +196,45 @@ describe('DrawingComponent', () => {
         expect(onResizeUpSpy).toHaveBeenCalled();
     });
 
-    it(' should onResizeUp trigger resizer service', () => {
+    it(' should onResizeOut trigger resizer service', () => {
         const event = {} as MouseEvent;
         const onResizeOutSpy = spyOn(canvasResizerStub, 'onResizeOut').and.callThrough();
         component.onResizeOut(event);
         expect(onResizeOutSpy).toHaveBeenCalled();
+    });
+
+    it(' should onShiftKeyDown trigger tool service', () => {
+        const event = {} as KeyboardEvent;
+        const onShiftKeyDownSpy = spyOn(toolStub, 'onShiftKeyDown').and.callThrough();
+        component.onKeyShiftDown(event);
+        expect(onShiftKeyDownSpy).toHaveBeenCalled();
+    });
+
+    it(' should onShiftKeyUp trigger tool service', () => {
+        const event = {} as KeyboardEvent;
+        const onShiftKeyUpSpy = spyOn(toolStub, 'onShiftKeyUp').and.callThrough();
+        component.onKeyShiftUp(event);
+        expect(onShiftKeyUpSpy).toHaveBeenCalled();
+    });
+
+    it(' should onDoubleClick trigger tool service', () => {
+        const event = {} as MouseEvent;
+        const onDoubleClickSpy = spyOn(toolStub, 'onDoubleClick').and.callThrough();
+        component.onDoubleClick(event);
+        expect(onDoubleClickSpy).toHaveBeenCalled();
+    });
+
+    it(' should onKeyEscape trigger tool service', () => {
+        const event = {} as KeyboardEvent;
+        const onKeyEscapeSpy = spyOn(toolStub, 'onKeyEscape').and.callThrough();
+        component.onKeyEscape(event);
+        expect(onKeyEscapeSpy).toHaveBeenCalled();
+    });
+
+    it(' should onKeyBackSpace trigger tool service', () => {
+        const event = {} as KeyboardEvent;
+        const onKeyBackSpaceSpy = spyOn(toolStub, 'onKeyBackSpace').and.callThrough();
+        component.onKeyBackSpace(event);
+        expect(onKeyBackSpaceSpy).toHaveBeenCalled();
     });
 });
