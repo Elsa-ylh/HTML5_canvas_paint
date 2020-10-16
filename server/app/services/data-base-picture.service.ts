@@ -72,12 +72,12 @@ export class DatabasePicureService {
             });
         collectionPincture.forEach((element) => {
             for (let index = 0; index < element.labels.length; index++) {
-                if (this.testLabelInList(listLabels, element.labels[index])) listLabels.push(element.labels[index]);
+                if (this.testLabelItsNotinList(listLabels, element.labels[index])) listLabels.push(element.labels[index]);
             }
         });
         return listLabels;
     }
-    private testLabelInList(listLabels: Label[], label: Label): boolean {
+    private testLabelItsNotinList(listLabels: Label[], label: Label): boolean {
         let booltouver: boolean = true;
         for (let index = 0; index < listLabels.length; index++) {
             if (listLabels[index].label === label.label) {
@@ -102,7 +102,9 @@ export class DatabasePicureService {
     async addPicture(picture: CancasInformation): Promise<void> {
         const bool = await this.validatePicture(picture);
         if (bool === true) {
-            this.collection.insertOne(picture); // .catch((error: Error) => {throw error;});
+            this.collection.insertOne(picture).catch((error: Error) => {
+                throw error;
+            });
         } else {
             throw new Error('Invalid picture');
         }

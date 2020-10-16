@@ -17,7 +17,17 @@ export class CarrouselPictureComponent {
     private addAllData(): void {
         this.clientServerCommunicationService.getData().subscribe((info) => (this.dataPicture = info));
     }
-    getPictures(): CancasInformation[] {
+    getPicturesTestAll(): CancasInformation[] {
         return this.dataPicture;
     }
+    /*getPicture1():void{
+
+    };
+    getPicture2():void{
+
+    };
+    getPicture3():void{
+
+    };*/
+    
 }

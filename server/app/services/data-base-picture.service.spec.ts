@@ -28,8 +28,7 @@ describe('Database service', () => {
         databaseService.collection = db.collection('test');
         testCancasInformationAdd = { id: '', name: 'test5', labels: [{ label: 'label1' }], date: '2020-10-08', picture: 'test5' };
         databaseService.collection.insertMany(allDataTest);
-        // aller voir le form du cour
-        await databaseService.getPictures(); // mongo et node appel une erreur parseque le serveur mongodb est pas utilise je doit le faire travail pour rien
+        await databaseService.getPictures();
     });
 
     afterEach(async () => {
@@ -82,6 +81,35 @@ describe('Database service', () => {
                 expect(resol.message).to.equal('Invalid picture');
             });
     });
+    it('all many label but 3 diferant label', async () => {
+        await databaseService.collection.insertOne({
+            name: 'test5',
+            labels: [{ label: 'label3' }],
+            date: '2020-10-08',
+            picture: 'test5',
+        } as CancasInformation);
+        await databaseService
+            .getAllLabel()
+            .then((resol: any) => {
+                expect(resol[0].label).to.equal('label1');
+                expect(resol[1].label).to.equal('label2');
+                expect(resol[2].label).to.equal('label3');
+            })
+            .catch((resol: Error) => {
+                console.log('errer test :' + resol.message);
+            });
+    });
+    it('', async () => {
+        await databaseService
+            .getAllLabel()
+            .then((resol: any) => {
+                expect(resol[0].label).to.equal('label1');
+                expect(resol[1].label).to.equal('label2');
+            })
+            .catch((resol: Error) => {
+                console.log('errer test :' + resol.message);
+            });
+    });
     it('test error find getPictures', async () => {
         client.close();
         await databaseService
@@ -106,14 +134,14 @@ describe('Database service', () => {
                 expect(relta.message).to.not.equal(NaN);
             });
     });
-    it(' find getPicturesLabals labol si error', async () => {
+    it('find getPicturesLabals labol si error', async () => {
         const label: string[] = ['Error'];
         const getImagesData = await databaseService.getPicturesLabals(label).catch((relta: Error) => {
             expect(relta.message).to.not.equal(NaN);
         });
         expect(getImagesData[0].name).to.equal('Error');
     });
-    it('test error find getPictureName', async () => {
+    it('test error catch getPictureName', async () => {
         client.close();
         const label: string = 'label1';
         await databaseService
@@ -126,10 +154,21 @@ describe('Database service', () => {
             });
     });
 
-    it('test error addPicture', async () => {
+    it('test error find addPicture', async () => {
         client.close();
         await databaseService
             .addPicture(testCancasInformationAdd)
+            .then((value: any) => {
+                expect(value.name).to.equal('Error');
+            })
+            .catch((error: unknown) => {
+                return error;
+            });
+    });
+    it('test error find getAllLabel', async () => {
+        client.close();
+        await databaseService
+            .getAllLabel()
             .then((value: any) => {
                 expect(value.name).to.equal('Error');
             })
