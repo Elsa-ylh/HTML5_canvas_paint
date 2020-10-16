@@ -16,8 +16,8 @@ import { Vec2 } from '@app/classes/vec2';
     providedIn: 'root',
 })
 export class CanvasResizerService {
-    private readonly DEFAULT_WIDTH: number = (window.innerWidth - SIDEBAR_WIDTH - ICON_WIDTH) / 2;
-    private readonly DEFAULT_HEIGHT: number = window.innerHeight / 2;
+    readonly DEFAULT_WIDTH: number = (window.innerWidth - SIDEBAR_WIDTH - ICON_WIDTH) / 2;
+    readonly DEFAULT_HEIGHT: number = window.innerHeight / 2;
 
     canvasSize: Vec2 = { x: this.DEFAULT_WIDTH, y: this.DEFAULT_HEIGHT };
 
@@ -29,8 +29,8 @@ export class CanvasResizerService {
     resizeHeight: number = window.innerHeight;
 
     // Resizer canvas index
-    private readonly PRIORITY_INDEX: number = 10;
-    private readonly NORMAL_INDEX: number = 1;
+    readonly PRIORITY_INDEX: number = 10;
+    readonly NORMAL_INDEX: number = 1;
     resizerIndex: number = 1;
 
     private clearCanvas(context: CanvasRenderingContext2D, dimension: Vec2): void {
