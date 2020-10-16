@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 
-import { inject, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { EventOfTest } from '@app/classes/event-of-test';
 import { RGBA } from '@app/classes/rgba';
@@ -25,7 +25,6 @@ describe('ColorService', () => {
         });
 
         service = TestBed.inject(ColorService);
-        //  drawMovingDotSpy= spyOn<any>(service, 'drawMovingDot').and.callThrough();
 
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
@@ -34,17 +33,9 @@ describe('ColorService', () => {
         mouseEventDrawDot = new EventOfTest();
     });
 
-    it('should be created', inject([ColorService], (serviceCol: ColorService) => {
-        expect(serviceCol).toBeTruthy();
-    }));
-
-    /*
-    it('getLastColor() and setLastColor() should get et set the color from lastColors ', () => {
-        service.addLastColor('#FFFFFF');
-        service.getlastColors();
-        
+    it('should be created', () => {
+        expect(service).toBeTruthy();
     });
-    */
 
     it('drawMovingDot should call drawMovingDot should change line cap,stroke style and fillstyle', () => {
         service.drawMovingStopper(baseCtxStub, { x: 50, y: 50 }, mouseEventDrawDot.mouseEvent1);
@@ -52,24 +43,15 @@ describe('ColorService', () => {
         expect(baseCtxStub.strokeStyle).toEqual('#000000');
         expect(baseCtxStub.fillStyle).toEqual('#ffffff');
     });
-    /*
-    it('getcolor() should read data from the canvas ', () => {
-        const imageData: RGBA = service.getColor({ x: 0, y: 0 }, baseCtxStub);
-        expect(imageData[0]).toEqual(0); // R
-        expect(imageData.[1]).toEqual(255); // G
-        expect(imageData.[2]).toEqual(255); // B
-        expect(imageData.[3]).toEqual(255); // A
-    });
-    */
-    it('changeColoOpacity should change the opacity of primary color ', () => {
-        service.isclicked = true;
+    it('changeColorOpacity should change the opacity of primary color ', () => {
+        service.isClicked = true;
         service.changeColorOpacity(1);
         expect(service.primaryColorTransparency).toEqual(1);
         expect(baseCtxStub.globalAlpha).toEqual(1);
     });
 
-    it('changeColoOpacity should change the opacity of secondary color ', () => {
-        service.isclicked = false;
+    it('changeColorOpacity should change the opacity of secondary color ', () => {
+        service.isClicked = false;
         service.changeColorOpacity(1);
         expect(service.secondaryColorTransparency).toEqual(1);
         expect(baseCtxStub.globalAlpha).toEqual(1);

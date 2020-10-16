@@ -16,8 +16,8 @@ import { Vec2 } from '@app/classes/vec2';
     providedIn: 'root',
 })
 export class CanvasResizerService {
-    DEFAULT_WIDTH: number = (window.innerWidth - SIDEBAR_WIDTH - ICON_WIDTH) / 2;
-    DEFAULT_HEIGHT: number = window.innerHeight / 2;
+    readonly DEFAULT_WIDTH: number = (window.innerWidth - SIDEBAR_WIDTH - ICON_WIDTH) / 2;
+    readonly DEFAULT_HEIGHT: number = window.innerHeight / 2;
 
     canvasSize: Vec2 = { x: this.DEFAULT_WIDTH, y: this.DEFAULT_HEIGHT };
 
@@ -29,8 +29,8 @@ export class CanvasResizerService {
     resizeHeight: number = window.innerHeight;
 
     // Resizer canvas index
-    PRIORITY_INDEX: number = 10;
-    NORMAL_INDEX: number = 1;
+    readonly PRIORITY_INDEX: number = 10;
+    readonly NORMAL_INDEX: number = 1;
     resizerIndex: number = 1;
 
     private clearCanvas(context: CanvasRenderingContext2D, dimension: Vec2): void {
@@ -48,21 +48,21 @@ export class CanvasResizerService {
     private changeResizeY(event: MouseEvent, crs: CanvasResizerService): number {
         if (event.offsetY < MIN_CANVAS_SIZE) {
             return MIN_CANVAS_SIZE;
-        } else if (event.offsetY > crs.resizeHeight - WORK_AREA_PADDING_SIZE) {
-            return crs.resizeHeight - WORK_AREA_PADDING_SIZE;
-        } else {
-            return event.offsetY;
         }
+        if (event.offsetY > crs.resizeHeight - WORK_AREA_PADDING_SIZE) {
+            return crs.resizeHeight - WORK_AREA_PADDING_SIZE;
+        }
+        return event.offsetY;
     }
 
     private changeResizeX(event: MouseEvent, crs: CanvasResizerService): number {
         if (event.offsetX < MIN_CANVAS_SIZE) {
             return MIN_CANVAS_SIZE;
-        } else if (event.offsetX > crs.resizeWidth - WORK_AREA_PADDING_SIZE) {
-            return crs.resizeWidth - WORK_AREA_PADDING_SIZE;
-        } else {
-            return event.offsetX;
         }
+        if (event.offsetX > crs.resizeWidth - WORK_AREA_PADDING_SIZE) {
+            return crs.resizeWidth - WORK_AREA_PADDING_SIZE;
+        }
+        return event.offsetX;
     }
 
     onResize(event: MouseEvent, resizeCtx: CanvasRenderingContext2D): void {
@@ -88,21 +88,25 @@ export class CanvasResizerService {
     private changeCanvasY(event: MouseEvent): void {
         if (event.offsetY < MIN_CANVAS_SIZE) {
             this.canvasSize.y = MIN_CANVAS_SIZE;
-        } else if (event.offsetY > this.resizeHeight - WORK_AREA_PADDING_SIZE) {
-            this.canvasSize.y = this.resizeHeight - WORK_AREA_PADDING_SIZE;
-        } else {
-            this.canvasSize.y = event.offsetY;
+            return;
         }
+        if (event.offsetY > this.resizeHeight - WORK_AREA_PADDING_SIZE) {
+            this.canvasSize.y = this.resizeHeight - WORK_AREA_PADDING_SIZE;
+            return;
+        }
+        this.canvasSize.y = event.offsetY;
     }
 
     private changeCanvasX(event: MouseEvent): void {
         if (event.offsetX < MIN_CANVAS_SIZE) {
             this.canvasSize.x = MIN_CANVAS_SIZE;
-        } else if (event.offsetX > this.resizeWidth - WORK_AREA_PADDING_SIZE) {
-            this.canvasSize.x = this.resizeWidth - WORK_AREA_PADDING_SIZE;
-        } else {
-            this.canvasSize.x = event.offsetX;
+            return;
         }
+        if (event.offsetX > this.resizeWidth - WORK_AREA_PADDING_SIZE) {
+            this.canvasSize.x = this.resizeWidth - WORK_AREA_PADDING_SIZE;
+            return;
+        }
+        this.canvasSize.x = event.offsetX;
     }
 
     // The following reference has been used to preserver canvas image. The whitening is automatic.
