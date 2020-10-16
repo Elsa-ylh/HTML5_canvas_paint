@@ -79,7 +79,7 @@ export class EllipseService extends Tool {
         this.mouseOut = false;
     }
 
-    OnShiftKeyDown(event: KeyboardEvent): void {
+    onShiftKeyDown(event: KeyboardEvent): void {
         this.circle = true;
         if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -87,7 +87,7 @@ export class EllipseService extends Tool {
         }
     }
 
-    OnShiftKeyUp(event: KeyboardEvent): void {
+    onShiftKeyUp(event: KeyboardEvent): void {
         this.circle = false;
         if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
