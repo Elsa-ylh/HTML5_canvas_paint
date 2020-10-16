@@ -5,11 +5,10 @@ import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
     providedIn: 'root',
 })
 export class UndoRedoService {
-    constructor() {}
-
+    isundoRedoDisabled: boolean = true; // to disactivate the option to redo-redo. diabled=true (cant undo-red0 when app loads)
     private listUndo: AbsUndoRedo[] = [];
     private listRedo: AbsUndoRedo[] = []; // LIFO
-
+    constructor() {}
     // function that redoes the latest undo.
     redo(): void {
         if (this.listRedo.length > 0) {

@@ -17,6 +17,7 @@ import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -55,6 +56,7 @@ export class SidebarComponent {
         public eraserService: EraserService,
         public colorService: ColorService,
         public lineService: LineService,
+        public undoRedoService: UndoRedoService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar

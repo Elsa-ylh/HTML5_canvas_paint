@@ -37,6 +37,26 @@
                 </mat-button-toggle-group>
             </mat-list>
             <mat-list class="miscellaneous-buttons">
+                <mat-button-toggle
+                    value="justify"
+                    disable
+                    aria-label="text align justify"
+                    matTooltip="Annuler"
+                    matTooltipPosition="right"
+                    [disabled]="undoRedoService.isundoRedoDisabled"
+                >
+                    <mat-icon> undo</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle
+                    value="justify"
+                    disable
+                    aria-label="text align justify"
+                    matTooltip="Refaire"
+                    matTooltipPosition="right"
+                    [disabled]="undoRedoService.isundoRedoDisabled"
+                >
+                    <mat-icon> redo</mat-icon>
+                </mat-button-toggle>
                 <mat-button-toggle-group vertical="true">
                     <mat-button-toggle appearance="radio" (click)="createNewDrawing()" matTooltip="Nouveau dessin" matTooltipPosition="right">
                         <mat-icon>add</mat-icon>
