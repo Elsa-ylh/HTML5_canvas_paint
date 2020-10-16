@@ -1,0 +1,11 @@
+<p>selection-picture works!</p>
+
+<div *ngFor="let picture of getPictures()">
+    <div>
+        {{ picture.name }}
+        <div *ngFor="let indix of picture.labels">
+            {{ indix.label }}
+        </div>
+        <img />
+    </div>
+</div>

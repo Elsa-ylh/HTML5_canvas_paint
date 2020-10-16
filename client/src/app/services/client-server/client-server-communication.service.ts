@@ -13,6 +13,7 @@ export class ClientServerCommunicationService {
     constructor(private http: HttpClient) {}
 
     getData(): Observable<CancasInformation[]> {
+        console.log('get si go');
         return this.http.get<CancasInformation[]>(this.HTTP_SERVE_LOCAL).pipe(catchError(this.handleError<CancasInformation[]>('basicGet')));
     }
 

@@ -39,12 +39,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
+import { CarrouselPictureComponent } from './components/carrousel-picture/carrousel-picture.component';
 import { ColorComponent } from './components/color/color.component';
 import { DialogCreateNewDrawingComponent } from './components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
-import { SelectionPictureComponent } from './components/selection-picture/selection-picture.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { WriteTextDialogUserGuideComponent } from './components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 @NgModule({
@@ -57,7 +57,7 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         DialogCreateNewDrawingComponent,
         WriteTextDialogUserGuideComponent,
         ColorComponent,
-        SelectionPictureComponent,
+        CarrouselPictureComponent,
     ],
     imports: [
         ReactiveFormsModule,
