@@ -60,8 +60,8 @@ export class DatabasePicureService {
     }
     async getAllLabel(): Promise<Label[]> {
         try {
-            let listLabels: Label[] = [];
-            let collectionPincture: CancasInformation[] = await this.collection
+            const listLabels: Label[] = [];
+            const collectionPincture: CancasInformation[] = await this.collection
                 .find({ 'labels.label': { $exists: true } })
                 .project({ 'labels.label': 1 })
                 .toArray()
@@ -69,9 +69,9 @@ export class DatabasePicureService {
                     return pictures;
                 });
             collectionPincture.forEach((element) => {
-                for (let index = 0; index < element.labels.length; index++) {
-                    if (this.testLabelItsNotinList(listLabels, element.labels[index])) listLabels.push(element.labels[index]);
-                }
+                element.labels.forEach((lable) => {
+                    if (this.testLabelItsNotinList(listLabels, lable)) listLabels.push(lable);
+                });
             });
             return listLabels;
         } catch (error) {
@@ -79,7 +79,7 @@ export class DatabasePicureService {
         }
     }
     private testLabelItsNotinList(listLabels: Label[], label: Label): boolean {
-        let booltouver: boolean = true;
+        let booltouver = true;
         for (let index = 0; index < listLabels.length; index++) {
             if (listLabels[index].label === label.label) {
                 booltouver = false;
