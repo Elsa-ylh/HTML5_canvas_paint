@@ -31,8 +31,6 @@ export class DrawingComponent implements AfterViewInit {
         return this.drawingService.cursorUsed;
     }
 
-    // On utilise ce canvas pour dessiner sans affecter le dessin final, aussi utilisé pour sauvegarder
-    // une version du dessin avant de l'appliquer au final.
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizingPreview', { static: false }) canvasResizingPreview: ElementRef<HTMLCanvasElement>;

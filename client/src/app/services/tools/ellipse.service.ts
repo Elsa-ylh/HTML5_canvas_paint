@@ -61,8 +61,6 @@ export class EllipseService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.mousePosition = mousePosition;
-
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.selectEllipse(mousePosition, false);
         }
@@ -228,27 +226,34 @@ export class EllipseService extends Tool {
                     this.width + this.lineWidth,
                     this.height + this.lineWidth,
                 );
-            } else if (mousePosition.x < mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
+                return;
+            }
+            if (mousePosition.x < mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
                 ctx.strokeRect(
                     mouseDownPos.x + this.lineWidth / 2,
                     mouseDownPos.y + this.lineWidth / 2,
                     this.width - this.lineWidth,
                     this.height - this.lineWidth,
                 );
-            } else if (mousePosition.x > mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
+                return;
+            }
+            if (mousePosition.x > mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
                 ctx.strokeRect(
                     mouseDownPos.x - this.lineWidth / 2,
                     mouseDownPos.y + this.lineWidth / 2,
                     this.width + this.lineWidth,
                     this.height - this.lineWidth,
                 );
-            } else if (mousePosition.x < mouseDownPos.x && mousePosition.y > mouseDownPos.y) {
+                return;
+            }
+            if (mousePosition.x < mouseDownPos.x && mousePosition.y > mouseDownPos.y) {
                 ctx.strokeRect(
                     mouseDownPos.x + this.lineWidth / 2,
                     mouseDownPos.y - this.lineWidth / 2,
                     this.width - this.lineWidth,
                     this.height + this.lineWidth,
                 );
+                return;
             }
         }
     }

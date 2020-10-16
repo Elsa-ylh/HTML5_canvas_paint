@@ -7,7 +7,6 @@ import { RGBA } from '@app/classes/rgba';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService, GradientStyle, LastColor } from '@app/services/color/color.service';
 
-// certaines parties du code a ete inspiree de l'auteur
 const SIZE_OPACITY = 207;
 const MAX_VALUE_RGB = 255;
 @Component({

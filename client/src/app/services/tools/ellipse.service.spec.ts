@@ -40,7 +40,6 @@ describe('Service: Ellipse', () => {
         onMouseUpSpy = spyOn<any>(service, 'onMouseUp').and.callThrough();
         // drawPreviewRectSpy = spyOn<any>(service, 'drawPreviewRect').and.callThrough();
 
-        // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
