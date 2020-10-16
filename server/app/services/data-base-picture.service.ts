@@ -59,23 +59,24 @@ export class DatabasePicureService {
             });
     }
     async getAllLabel(): Promise<Label[]> {
-        let listLabels: Label[] = [];
-        let collectionPincture: CancasInformation[] = await this.collection
-            .find({ 'labels.label': { $exists: true } })
-            .project({ 'labels.label': 1 }) //{{},{labels:1 ,label:1}}
-            .toArray()
-            .then((pictures: CancasInformation[]) => {
-                return pictures;
-            })
-            .catch((error: Error) => {
-                throw error;
+        try {
+            let listLabels: Label[] = [];
+            let collectionPincture: CancasInformation[] = await this.collection
+                .find({ 'labels.label': { $exists: true } })
+                .project({ 'labels.label': 1 })
+                .toArray()
+                .then((pictures: CancasInformation[]) => {
+                    return pictures;
+                });
+            collectionPincture.forEach((element) => {
+                for (let index = 0; index < element.labels.length; index++) {
+                    if (this.testLabelItsNotinList(listLabels, element.labels[index])) listLabels.push(element.labels[index]);
+                }
             });
-        collectionPincture.forEach((element) => {
-            for (let index = 0; index < element.labels.length; index++) {
-                if (this.testLabelItsNotinList(listLabels, element.labels[index])) listLabels.push(element.labels[index]);
-            }
-        });
-        return listLabels;
+            return listLabels;
+        } catch (error) {
+            return error;
+        }
     }
     private testLabelItsNotinList(listLabels: Label[], label: Label): boolean {
         let booltouver: boolean = true;
@@ -102,9 +103,7 @@ export class DatabasePicureService {
     async addPicture(picture: CancasInformation): Promise<void> {
         const bool = await this.validatePicture(picture);
         if (bool === true) {
-            this.collection.insertOne(picture).catch((error: Error) => {
-                throw error;
-            });
+            this.collection.insertOne(picture); // .catch((error: Error) => {throw error;});
         } else {
             throw new Error('Invalid picture');
         }

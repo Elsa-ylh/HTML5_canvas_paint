@@ -1,7 +1,7 @@
 import { Application } from '@app/app';
 import { DatabasePicureService } from '@app/services/data-base-picture.service';
 import { TYPES } from '@app/types';
-import { CancasInformation } from '@common/communication/canvas-information';
+import { CancasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { expect } from 'chai';
 import * as supertest from 'supertest';
@@ -26,6 +26,7 @@ describe('Data Controller', () => {
         container.rebind(TYPES.DatabasePicureService).toConstantValue({
             getPicturesLabals: sandbox.stub().resolves(testCancasInformationAdd),
             getPictures: sandbox.stub().resolves(testCancasInformationAdd),
+            getAllLabel: sandbox.stub(),
         });
         dataService = container.get(TYPES.DatabasePicureService);
         app = container.get<Application>(TYPES.Application).app;
@@ -79,7 +80,6 @@ describe('Data Controller', () => {
             .send(service)
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .then((reponse: any) => {
-                console.log(reponse.body);
                 expect(reponse.body.id).to.equal('Error');
             })
             .catch((err: Error) => {
@@ -103,6 +103,50 @@ describe('Data Controller', () => {
             })
             .catch((err: Error) => {
                 console.log('Error ' + err.message);
+            });
+    });
+    it('should post test ', async () => {
+        dataService.getPicturesLabals.rejects(new Error('error in the service mongo'));
+        const service: Message = {
+            title: 'labels',
+            body: 'label1',
+        };
+
+        return supertest(app)
+            .post('/api/data/labels')
+            .send(service)
+            .expect(HTTP_STATUS_OK)
+            .then(async (reponse: any) => {
+                expect(reponse.body.id).to.equal('Error');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('should get test error /all_label', async () => {
+        dataService.getAllLabel.rejects(new Error('error in the service mongo'));
+        return supertest(app)
+            .get('/api/data/all_label')
+            .send()
+            .expect(HTTP_STATUS_OK)
+            .then(async (reponse: any) => {
+                expect(reponse.body.id).to.equal('Error');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('should get test /all_label', async () => {
+        const Labels: Label[] = [{ label: 'label1' }, { label: 'label2' }];
+        dataService.getAllLabel.resolves(Labels);
+        return supertest(app)
+            .get('/api/data/all_label')
+            .expect(HTTP_STATUS_OK)
+            .then(async (reponse: any) => {
+                expect(reponse.body.labels).to.equal(Labels);
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
             });
     });
 });

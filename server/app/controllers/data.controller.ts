@@ -31,7 +31,7 @@ export class DataController {
                     res.json(errorMessage);
                 });
         });
-        this.router.get('/label', (req: Request, res: Response, next: NextFunction) => {
+        this.router.get('/all_label', (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getAllLabel()
                 .then((labelsInformation: Label[]) => {
