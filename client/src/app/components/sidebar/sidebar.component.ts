@@ -15,10 +15,10 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
+import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
-import { PaintBucketService} from '@app/services/tools/paintBucket.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -60,7 +60,7 @@ export class SidebarComponent {
         public colorService: ColorService,
         public lineService: LineService,
         public polygonService: PolygonService,
-        public paintBucketService : PaintBucketService,
+        public paintBucketService: PaintBucketService,
     ) {
         this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
@@ -171,13 +171,13 @@ export class SidebarComponent {
     }
 
     pickPaintBucket(): void {
-      this.drawingService.cursorUsed = cursorName.default;
-      this.toolService.switchTool(ToolUsed.PaintBucket);
-  }
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.PaintBucket);
+    }
 
-  get paintBucketChecked(): boolean {
-      return this.isPaintBucketChecked;
-  }
+    get paintBucketChecked(): boolean {
+        return this.isPaintBucketChecked;
+    }
 
     resetCheckedButton(): void {
         this.isPencilChecked = false;
@@ -262,7 +262,7 @@ export class SidebarComponent {
             this.isLineChecked = true;
             this.pickLine();
         }
-      }
+    }
 
     @HostListener('window:keydown.b', ['$event'])
     changePaintBucketMode(event: KeyboardEvent): void {
