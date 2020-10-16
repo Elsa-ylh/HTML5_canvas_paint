@@ -19,9 +19,9 @@ const MAX_VALUE_RGB = 255;
 // The website mainly teach how to do the drawing with canvas2d the gradient
 // https://malcoded.com/posts/angular-color-picker/
 export class ColorComponent implements AfterViewInit {
-    private readonly WIDTH: number = 207;
-    private readonly squareHeight: number = 200;
-    private readonly horizontalHeight: number = 20;
+    readonly WIDTH: number = 207;
+    readonly SQUARE_HEIGHT: number = 200;
+    horizontalHeight: number = 20;
     private positionSlider: number;
 
     @ViewChild('previewSquare') previewSquare: ElementRef<HTMLCanvasElement>; // used to do a hover position
@@ -33,7 +33,7 @@ export class ColorComponent implements AfterViewInit {
     @ViewChild('message', { static: false }) messageRGB: MatDialogRef<HTMLElement>;
     @ViewChild('message', { static: false }) messageAlpha: MatDialogRef<HTMLElement>;
 
-    squareDimension: Vec2 = { x: this.WIDTH, y: this.squareHeight };
+    squareDimension: Vec2 = { x: this.WIDTH, y: this.SQUARE_HEIGHT };
     horizontalDimension: Vec2 = { x: this.WIDTH, y: this.horizontalHeight };
 
     previewSquareCtx: CanvasRenderingContext2D;

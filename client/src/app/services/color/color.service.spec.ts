@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 
-import { inject, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { EventOfTest } from '@app/classes/event-of-test';
 import { RGBA } from '@app/classes/rgba';
@@ -33,9 +33,9 @@ describe('ColorService', () => {
         mouseEventDrawDot = new EventOfTest();
     });
 
-    it('should be created', inject([ColorService], (serviceCol: ColorService) => {
-        expect(serviceCol).toBeTruthy();
-    }));
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
 
     it('drawMovingDot should call drawMovingDot should change line cap,stroke style and fillstyle', () => {
         service.drawMovingStopper(baseCtxStub, { x: 50, y: 50 }, mouseEventDrawDot.mouseEvent1);
