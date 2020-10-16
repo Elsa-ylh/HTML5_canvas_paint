@@ -20,7 +20,7 @@ describe('Service: Line', () => {
     let clearPathSpy: jasmine.Spy<any>;
     let events: EventOfTest;
 
-    let drawPoinSpy: jasmine.Spy<any>;
+    let drawPointSpy: jasmine.Spy<any>;
     const sizeCanvas = 100;
     let ctx: CanvasRenderingContext2D;
 
@@ -43,7 +43,7 @@ describe('Service: Line', () => {
         service = TestBed.inject(LineService);
         drawLineLastPointSpy = spyOn<any>(service, 'drawLineLastPoint').and.callThrough();
         mergeFirstPointSpy = spyOn<any>(service, 'mergeFirstPoint').and.callThrough();
-        drawPoinSpy = spyOn<any>(service, 'drawPoin').and.callThrough();
+        drawPointSpy = spyOn<any>(service, 'drawPoint').and.callThrough();
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         shiftDrawAngleLineSpy = spyOn<any>(service, 'shiftDrawAngleLine').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
@@ -127,14 +127,14 @@ describe('Service: Line', () => {
         service.onMouseDown(events.mouseEvent1);
 
         service.onMouseMove(events.mouseEvent);
-        expect(drawPoinSpy).not.toHaveBeenCalled();
+        expect(drawPointSpy).not.toHaveBeenCalled();
     });
-    it(' onMouseMove should call drawPoin if mouse was already down', () => {
+    it(' onMouseMove should call drawPoint if mouse was already down', () => {
         service.subToolSelect = SubToolselected.tool2;
         service.onMouseDown(events.mouseEvent1);
 
         service.onMouseMove(events.mouseEvent);
-        expect(drawPoinSpy).toHaveBeenCalled();
+        expect(drawPointSpy).toHaveBeenCalled();
     });
     it('doubleClick', () => {
         service.onMouseDown(events.mouseEvent);
@@ -218,14 +218,13 @@ describe('Service: Line', () => {
     });
     it('onMouseDown fonction', () => {
         service.onMouseDown(events.mouseEvent1);
+        expect(drawLineSpy).toHaveBeenCalled();
         service.onMouseDown(events.mouseEvent2);
+        expect(drawLineSpy).toHaveBeenCalled();
         service.onDoubleClick(events.mouseEvent);
-        const imageData: ImageData = baseCtxStub.getImageData(Math.floor(events.mouseEvent1.offsetX), Math.floor(events.mouseEvent1.offsetY), 1, 1);
-        expect(imageData.data[0]).toEqual(0); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0); // A
+        expect(mergeFirstPointSpy).toHaveBeenCalled();
+        expect(drawLineSpy).toHaveBeenCalled();
+        expect(clearPathSpy).toHaveBeenCalled();
     });
 
     it('onMouseUp should not call drawLineLastPointSpy fonction ', () => {
@@ -242,21 +241,12 @@ describe('Service: Line', () => {
         expect(clearPathSpy).toHaveBeenCalled();
     });
     it('onMouseDown, onMouseMove, onShiftKeyDown, onMouseMove of brush line in canvas', () => {
+        service['pointShiftMemory'] = { x: 0, y: 0 };
         service.onMouseDown(events.mouseEvent1);
         service.onMouseMove(events.mouseEvent2);
         service.OnShiftKeyDown(events.backspceEvant);
         service.onMouseMove(events.mouseEvent3);
-        const imageData: ImageData = previewCtxStub.getImageData(
-            Math.floor(events.mouseEvent2.offsetX / 2),
-            Math.floor(events.mouseEvent2.offsetY / 2),
-            1,
-            1,
-        );
-        expect(imageData.data[0]).toEqual(0); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0); // A
+        expect(service['pointShiftMemory']).not.toEqual({ x: 0, y: 0 });
     });
     it('onMouseDown,onMouseMove, OnShiftKeyDown and onMouseMove OnShiftKeyUp and not brush ligne in de canvas in position of OnShiftKeyDown', () => {
         service.onMouseDown(events.mouseEvent1);

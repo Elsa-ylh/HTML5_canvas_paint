@@ -15,7 +15,7 @@ export class LineService extends Tool {
     isBallOn: boolean = false;
     private pathData: Vec2[] = [];
     private pointMouse: Vec2 = { x: 0, y: 0 };
-    private pointShiftMemori: Vec2 = { x: 0, y: 0 };
+    private pointShiftMemory: Vec2 = { x: 0, y: 0 };
     private shiftKeyDown: boolean = false;
     private mouseOut: boolean = false;
 
@@ -38,10 +38,10 @@ export class LineService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseMove && !this.shiftKeyDown) {
-            this.pointShiftMemori = this.pointMouse = this.getPositionFromMouse(event);
+            this.pointShiftMemory = this.pointMouse = this.getPositionFromMouse(event);
             this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointMouse);
         } else if (this.shiftKeyDown) {
-            this.pointShiftMemori = this.getPositionFromMouse(event);
+            this.pointShiftMemory = this.getPositionFromMouse(event);
         }
     }
     onMouseOut(event: MouseEvent): void {
@@ -63,7 +63,7 @@ export class LineService extends Tool {
         if (this.mouseDown && this.shiftKeyDown) {
             this.mouseMove = true;
             this.shiftKeyDown = false;
-            this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointShiftMemori);
+            this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointShiftMemory);
         }
     }
 
@@ -129,7 +129,7 @@ export class LineService extends Tool {
         }
         ctx.stroke();
 
-        if (this.subToolSelect === SubToolselected.tool2) this.drawPoin(ctx, path);
+        if (this.subToolSelect === SubToolselected.tool2) this.drawPoint(ctx, path);
     }
 
     private drawLineLastPoint(ctx: CanvasRenderingContext2D, path: Vec2[], lastPoint: Vec2): void {
@@ -142,10 +142,10 @@ export class LineService extends Tool {
         }
         ctx.lineTo(lastPoint.x, lastPoint.y);
         ctx.stroke();
-        if (this.subToolSelect === SubToolselected.tool2) this.drawPoin(ctx, path);
+        if (this.subToolSelect === SubToolselected.tool2) this.drawPoint(ctx, path);
     }
 
-    private drawPoin(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawPoint(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineJoin = ctx.lineCap = 'round';
         const sizePx = ctx.lineWidth;
         ctx.lineWidth = this.secondarySizePixel;
@@ -191,6 +191,6 @@ export class LineService extends Tool {
         this.mouseDown = this.mouseMove = false;
         this.pointMouse = { x: 0, y: 0 };
         this.shiftKeyDown = false;
-        this.pointShiftMemori = { x: 0, y: 0 };
+        this.pointShiftMemory = { x: 0, y: 0 };
     }
 }
