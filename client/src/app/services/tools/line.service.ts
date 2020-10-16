@@ -50,7 +50,7 @@ export class LineService extends Tool {
     onMouseEnter(event: MouseEvent): void {
         this.mouseOut = false;
     }
-    OnShiftKeyDown(event: KeyboardEvent): void {
+    onShiftKeyDown(event: KeyboardEvent): void {
         if (this.mouseDown && this.mouseMove) {
             this.shiftKeyDown = true;
             this.mouseMove = false;
@@ -59,7 +59,7 @@ export class LineService extends Tool {
         }
     }
 
-    OnShiftKeyUp(event: KeyboardEvent): void {
+    onShiftKeyUp(event: KeyboardEvent): void {
         if (this.mouseDown && this.shiftKeyDown) {
             this.mouseMove = true;
             this.shiftKeyDown = false;

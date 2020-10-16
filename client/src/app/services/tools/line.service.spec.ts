@@ -244,31 +244,31 @@ describe('Service: Line', () => {
         service['pointShiftMemory'] = { x: 0, y: 0 };
         service.onMouseDown(events.mouseEvent1);
         service.onMouseMove(events.mouseEvent2);
-        service.OnShiftKeyDown(events.backspceEvant);
+        service.onShiftKeyDown(events.backspceEvant);
         service.onMouseMove(events.mouseEvent3);
         expect(service['pointShiftMemory']).not.toEqual({ x: 0, y: 0 });
     });
     it('onMouseDown,onMouseMove, OnShiftKeyDown and onMouseMove OnShiftKeyUp and not brush ligne in de canvas in position of OnShiftKeyDown', () => {
         service.onMouseDown(events.mouseEvent1);
         service.onMouseMove(events.mouseEvent2);
-        service.OnShiftKeyDown(events.backspceEvant);
+        service.onShiftKeyDown(events.backspceEvant);
         service.onMouseMove(events.mouseEvent3);
-        service.OnShiftKeyUp(events.backspceEvant);
+        service.onShiftKeyUp(events.backspceEvant);
         service.onDoubleClick(events.mouseEvent3);
         expect(shiftDrawAngleLineSpy).toHaveBeenCalled();
     });
     it('onMouseDown,onMouseMove, OnShiftKeyDown, onMouseDown and OnShiftKeyUp and brush ligne in de canvas in position ', () => {
         service.onMouseDown(events.mouseEvent1);
         service.onMouseMove(events.mouseEvent2);
-        service.OnShiftKeyDown(events.backspceEvant);
+        service.onShiftKeyDown(events.backspceEvant);
         service.onMouseDown(events.mouseEvent1);
-        service.OnShiftKeyUp(events.backspceEvant);
+        service.onShiftKeyUp(events.backspceEvant);
         service.onDoubleClick(events.mouseEvent1);
         expect(shiftDrawAngleLineSpy).toHaveBeenCalled();
     });
     it('OnShiftKeyDown and OnShiftKeyUp not call drawLineLastPoint and drawLineSpy', () => {
-        service.OnShiftKeyDown(events.backspceEvant);
-        service.OnShiftKeyUp(events.backspceEvant);
+        service.onShiftKeyDown(events.backspceEvant);
+        service.onShiftKeyUp(events.backspceEvant);
         expect(drawLineLastPointSpy).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
     });

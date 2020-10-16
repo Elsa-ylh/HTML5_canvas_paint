@@ -17,14 +17,14 @@ import { ToolService } from '@app/services/tool-service';
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit {
-    constructor(private drawingService: DrawingService, private toolService: ToolService, public crs: CanvasResizerService) {}
+    constructor(private drawingService: DrawingService, private toolService: ToolService, public cvsResizerService: CanvasResizerService) {}
 
     get width(): number {
-        return this.crs.canvasSize.x;
+        return this.cvsResizerService.canvasSize.x;
     }
 
     get height(): number {
-        return this.crs.canvasSize.y;
+        return this.cvsResizerService.canvasSize.y;
     }
 
     get cursorUsed(): string {
@@ -71,71 +71,72 @@ export class DrawingComponent implements AfterViewInit {
 
     onResizeDown(event: MouseEvent): void {
         const isVertical =
-            this.crs.canvasSize.y < event.offsetY &&
-            event.offsetY < this.crs.canvasSize.y + RESIZE_HOOK_THICKNESS &&
-            this.crs.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetX &&
-            event.offsetX < this.crs.canvasSize.x * RESIZE_MIDDLE_UPPER_PROPORTION;
+            this.cvsResizerService.canvasSize.y < event.offsetY &&
+            event.offsetY < this.cvsResizerService.canvasSize.y + RESIZE_HOOK_THICKNESS &&
+            this.cvsResizerService.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetX &&
+            event.offsetX < this.cvsResizerService.canvasSize.x * RESIZE_MIDDLE_UPPER_PROPORTION;
         const isHorizontal =
-            this.crs.canvasSize.x < event.offsetX &&
-            event.offsetX < this.crs.canvasSize.x + RESIZE_HOOK_THICKNESS &&
-            this.crs.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetY &&
-            event.offsetY < this.crs.canvasSize.y * RESIZE_MIDDLE_UPPER_PROPORTION;
+            this.cvsResizerService.canvasSize.x < event.offsetX &&
+            event.offsetX < this.cvsResizerService.canvasSize.x + RESIZE_HOOK_THICKNESS &&
+            this.cvsResizerService.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetY &&
+            event.offsetY < this.cvsResizerService.canvasSize.y * RESIZE_MIDDLE_UPPER_PROPORTION;
         const isVerticalAndHorizontal =
-            this.crs.canvasSize.y * RESIZE_CORNER_PROPORTION < event.offsetY &&
-            event.offsetY < this.crs.canvasSize.y + RESIZE_HOOK_THICKNESS &&
-            this.crs.canvasSize.x * RESIZE_CORNER_PROPORTION < event.offsetX &&
-            event.offsetX < this.crs.canvasSize.x + RESIZE_HOOK_THICKNESS;
+            this.cvsResizerService.canvasSize.y * RESIZE_CORNER_PROPORTION < event.offsetY &&
+            event.offsetY < this.cvsResizerService.canvasSize.y + RESIZE_HOOK_THICKNESS &&
+            this.cvsResizerService.canvasSize.x * RESIZE_CORNER_PROPORTION < event.offsetX &&
+            event.offsetX < this.cvsResizerService.canvasSize.x + RESIZE_HOOK_THICKNESS;
 
         if (isVerticalAndHorizontal) {
-            this.crs.resizeCursor = cursorName.resizeVerticalAndHorizontal;
-            this.crs.onResizeDown(event, ResizeDirection.verticalAndHorizontal);
+            this.cvsResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
+            this.cvsResizerService.onResizeDown(event, ResizeDirection.verticalAndHorizontal);
         } else if (isVertical) {
-            this.crs.resizeCursor = cursorName.resizeVertical;
-            this.crs.onResizeDown(event, ResizeDirection.vertical);
+            this.cvsResizerService.resizeCursor = cursorName.resizeVertical;
+            this.cvsResizerService.onResizeDown(event, ResizeDirection.vertical);
         } else if (isHorizontal) {
-            this.crs.resizeCursor = cursorName.resizeHorizontal;
-            this.crs.onResizeDown(event, ResizeDirection.horizontal);
+            this.cvsResizerService.resizeCursor = cursorName.resizeHorizontal;
+            this.cvsResizerService.onResizeDown(event, ResizeDirection.horizontal);
         }
     }
 
     onResizeMove(event: MouseEvent): void {
-        if (this.crs.isResizeDown) {
-            this.crs.onResize(event, this.resizeCtx);
-        } else {
-            const isVertical =
-                this.crs.canvasSize.y < event.offsetY &&
-                event.offsetY < this.crs.canvasSize.y + RESIZE_HOOK_THICKNESS &&
-                this.crs.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetX &&
-                event.offsetX < this.crs.canvasSize.x * RESIZE_MIDDLE_UPPER_PROPORTION;
-            const isHorizontal =
-                this.crs.canvasSize.x < event.offsetX &&
-                event.offsetX < this.crs.canvasSize.x + RESIZE_HOOK_THICKNESS &&
-                this.crs.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetY &&
-                event.offsetY < this.crs.canvasSize.y * RESIZE_MIDDLE_UPPER_PROPORTION;
-            const isVerticalAndHorizontal =
-                this.crs.canvasSize.y * RESIZE_CORNER_PROPORTION < event.offsetY &&
-                event.offsetY < this.crs.canvasSize.y + RESIZE_HOOK_THICKNESS &&
-                this.crs.canvasSize.x * RESIZE_CORNER_PROPORTION < event.offsetX &&
-                event.offsetX < this.crs.canvasSize.x + RESIZE_HOOK_THICKNESS;
+        if (this.cvsResizerService.isResizeDown) {
+            this.cvsResizerService.onResize(event, this.resizeCtx);
+            return;
+        }
 
-            if (isVerticalAndHorizontal) {
-                this.crs.resizeCursor = cursorName.resizeVerticalAndHorizontal;
-            } else if (isVertical) {
-                this.crs.resizeCursor = cursorName.resizeVertical;
-            } else if (isHorizontal) {
-                this.crs.resizeCursor = cursorName.resizeHorizontal;
-            } else {
-                this.crs.resizeCursor = cursorName.default;
-            }
+        const isVertical =
+            this.cvsResizerService.canvasSize.y < event.offsetY &&
+            event.offsetY < this.cvsResizerService.canvasSize.y + RESIZE_HOOK_THICKNESS &&
+            this.cvsResizerService.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetX &&
+            event.offsetX < this.cvsResizerService.canvasSize.x * RESIZE_MIDDLE_UPPER_PROPORTION;
+        const isHorizontal =
+            this.cvsResizerService.canvasSize.x < event.offsetX &&
+            event.offsetX < this.cvsResizerService.canvasSize.x + RESIZE_HOOK_THICKNESS &&
+            this.cvsResizerService.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetY &&
+            event.offsetY < this.cvsResizerService.canvasSize.y * RESIZE_MIDDLE_UPPER_PROPORTION;
+        const isVerticalAndHorizontal =
+            this.cvsResizerService.canvasSize.y * RESIZE_CORNER_PROPORTION < event.offsetY &&
+            event.offsetY < this.cvsResizerService.canvasSize.y + RESIZE_HOOK_THICKNESS &&
+            this.cvsResizerService.canvasSize.x * RESIZE_CORNER_PROPORTION < event.offsetX &&
+            event.offsetX < this.cvsResizerService.canvasSize.x + RESIZE_HOOK_THICKNESS;
+
+        if (isVerticalAndHorizontal) {
+            this.cvsResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
+        } else if (isVertical) {
+            this.cvsResizerService.resizeCursor = cursorName.resizeVertical;
+        } else if (isHorizontal) {
+            this.cvsResizerService.resizeCursor = cursorName.resizeHorizontal;
+        } else {
+            this.cvsResizerService.resizeCursor = cursorName.default;
         }
     }
 
     onResizeUp(event: MouseEvent): void {
-        this.crs.onResizeUp(event, this.resizeCtx, this.baseCanvas.nativeElement);
+        this.cvsResizerService.onResizeUp(event, this.resizeCtx, this.baseCanvas.nativeElement);
     }
 
     onResizeOut(event: MouseEvent): void {
-        this.crs.onResizeOut(event, this.resizeCtx, this.baseCanvas.nativeElement);
+        this.cvsResizerService.onResizeOut(event, this.resizeCtx, this.baseCanvas.nativeElement);
     }
 
     @HostListener('window:keydown.shift', ['$event'])

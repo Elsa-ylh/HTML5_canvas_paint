@@ -29,7 +29,6 @@ export class SidebarComponent {
     // tslint:disable-next-line: typedef
     toolUsed = ToolUsed;
 
-    showAttributes: boolean;
     isDialogOpen: boolean = false;
     lineWidth: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
@@ -56,7 +55,6 @@ export class SidebarComponent {
         public colorService: ColorService,
         public lineService: LineService,
     ) {
-        this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
     }

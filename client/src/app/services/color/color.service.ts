@@ -6,13 +6,13 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export enum GradientStyle {
     rainbow,
     lightToDark,
-    colortoColor,
+    colorToColor,
 }
 export interface LastColor {
     color?: string;
     active: boolean;
 }
-const VALUE_TEN = 10;
+const COLORS_HISTORY_SIZE = 10;
 const SLIDER_STOPPER_RECT_WIDTH = 2;
 const SLIDER_STOPPER_RECT_HEIGHT = 20;
 @Injectable({
@@ -25,17 +25,17 @@ export class ColorService {
     previewColor: string = '#ff6666';
     primaryColorTransparency: number;
     secondaryColorTransparency: number;
-    isclicked: boolean = true;
+    isClicked: boolean = true;
     private lastColors: LastColor[];
 
     constructor(private drawingService: DrawingService) {
         // Last 10 colors
 
-        this.lastColors = new Array(VALUE_TEN);
+        this.lastColors = new Array(COLORS_HISTORY_SIZE);
         this.lastColors.fill({ active: false });
     }
 
-    getlastColors(): LastColor[] {
+    getLastColors(): LastColor[] {
         return this.lastColors;
     }
     addLastColor(color: string): void {
@@ -71,7 +71,7 @@ export class ColorService {
         gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
     }
     // This gradient is used for the opacity. Made by tria
-    private colortoColor(gradient: CanvasGradient, hexColor: string): void {
+    private colorToColor(gradient: CanvasGradient, hexColor: string): void {
         // fractions make more sense to do seperation between colors
         gradient.addColorStop(1, 'rgba(255, 255, 255, 1)');
         // tslint:disable-next-line: no-magic-numbers
@@ -93,9 +93,9 @@ export class ColorService {
                 gradient = ctx.createLinearGradient(0, 0, dimension.x, 0);
                 this.lightToDark(gradient, this.selectedColor);
                 break;
-            case GradientStyle.colortoColor:
+            case GradientStyle.colorToColor:
                 gradient = ctx.createLinearGradient(0, 0, dimension.x, 0);
-                this.colortoColor(gradient, this.selectedColor);
+                this.colorToColor(gradient, this.selectedColor);
                 break;
             case GradientStyle.rainbow:
             default:
@@ -128,7 +128,7 @@ export class ColorService {
 
     // change opacity of primary or secondary colors
     changeColorOpacity(alpha: number): void {
-        if (this.isclicked) {
+        if (this.isClicked) {
             this.primaryColorTransparency = alpha;
             this.drawingService.baseCtx.globalAlpha = this.primaryColorTransparency;
             this.drawingService.previewCtx.globalAlpha = this.primaryColorTransparency;
