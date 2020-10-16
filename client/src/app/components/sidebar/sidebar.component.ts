@@ -229,4 +229,24 @@ export class SidebarComponent {
             this.pickLine();
         }
     }
+
+    @HostListener('window:keydown.control.z', ['$event'])
+    callUndo(event: KeyboardEvent): void {
+        if (!this.undoRedoService.isundoRedoDisabled) {
+            // ITS DISABLED
+            // this.undoRedoService.addUndo()
+            this.undoRedoService.undo();
+            // console.log('ctrl z works : undo called');
+        }
+    }
+
+    @HostListener('window:keydown.control.shift.z', ['$event'])
+    callRedo(event: KeyboardEvent): void {
+        if (!this.undoRedoService.isundoRedoDisabled) {
+            // ITS DISABLED
+            // this.undoRedoService.addUndo()
+            this.undoRedoService.redo();
+            // console.log('ctrl shift z works : redo called');
+        }
+    }
 }
