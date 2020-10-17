@@ -12,7 +12,7 @@ export interface LastColor {
     color?: string;
     active: boolean;
 }
-const COLORS_HISTORY_SIZE = 10;
+export const COLORS_HISTORY_SIZE = 10;
 const SLIDER_STOPPER_RECT_WIDTH = 2;
 const SLIDER_STOPPER_RECT_HEIGHT = 20;
 @Injectable({
@@ -28,9 +28,11 @@ export class ColorService {
     isClicked: boolean = true;
     private lastColors: LastColor[];
 
-    constructor(private drawingService: DrawingService) {
-        // Last 10 colors
+    squareStopperPosition: MouseEvent = { offsetX: NaN, offsetY: NaN } as MouseEvent;
+    colorStopperPosition: MouseEvent = { offsetX: NaN, offsetY: NaN } as MouseEvent;
+    alphaStopperPosition: MouseEvent = { offsetX: NaN, offsetY: NaN } as MouseEvent;
 
+    constructor(private drawingService: DrawingService) {
         this.lastColors = new Array(COLORS_HISTORY_SIZE);
         this.lastColors.fill({ active: false });
     }
@@ -38,6 +40,7 @@ export class ColorService {
     getLastColors(): LastColor[] {
         return this.lastColors;
     }
+
     addLastColor(color: string): void {
         this.lastColors.shift();
         this.lastColors.push({ color, active: true });
@@ -119,7 +122,7 @@ export class ColorService {
         ctx.fillRect(event.offsetX, 0, SLIDER_STOPPER_RECT_WIDTH, SLIDER_STOPPER_RECT_HEIGHT);
     }
 
-    // Ce code est complètement inspiré sans gêne de
+    // This code has been inspired by the following link.
     // https://malcoded.com/posts/angular-color-picker/#detecting-mouse-events-on-the-color-slider
     getColor(position: Vec2, ctx: CanvasRenderingContext2D): RGBA {
         const imageData = ctx.getImageData(position.x, position.y, 1, 1).data;
