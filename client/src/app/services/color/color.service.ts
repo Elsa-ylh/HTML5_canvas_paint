@@ -6,13 +6,13 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export enum GradientStyle {
     rainbow,
     lightToDark,
-    colortoColor,
+    colorToColor,
 }
 export interface LastColor {
     color?: string;
     active: boolean;
 }
-const VALUE_TEN = 10;
+export const COLORS_HISTORY_SIZE = 10;
 const SLIDER_STOPPER_RECT_WIDTH = 2;
 const SLIDER_STOPPER_RECT_HEIGHT = 20;
 @Injectable({
@@ -25,22 +25,25 @@ export class ColorService {
     previewColor: string = '#ff6666';
     primaryColorTransparency: number;
     secondaryColorTransparency: number;
-    isclicked: boolean = true;
+    isClicked: boolean = true;
     private lastColors: LastColor[];
 
-    constructor(private drawingService: DrawingService) {
-        // Last 10 colors
+    squareStopperPosition: MouseEvent = { offsetX: NaN, offsetY: NaN } as MouseEvent;
+    colorStopperPosition: MouseEvent = { offsetX: NaN, offsetY: NaN } as MouseEvent;
+    alphaStopperPosition: MouseEvent = { offsetX: NaN, offsetY: NaN } as MouseEvent;
 
-        this.lastColors = new Array(VALUE_TEN);
+    constructor(private drawingService: DrawingService) {
+        this.lastColors = new Array(COLORS_HISTORY_SIZE);
         this.lastColors.fill({ active: false });
     }
 
-    getlastColors(): LastColor[] {
+    getLastColors(): LastColor[] {
         return this.lastColors;
     }
+
     addLastColor(color: string): void {
         this.lastColors.shift();
-        this.lastColors.push({ color, active: true }); // color : color => color
+        this.lastColors.push({ color, active: true });
     }
 
     // https://malcoded.com/posts/angular-color-picker/
@@ -71,7 +74,7 @@ export class ColorService {
         gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
     }
     // This gradient is used for the opacity. Made by tria
-    private colortoColor(gradient: CanvasGradient, hexColor: string): void {
+    private colorToColor(gradient: CanvasGradient, hexColor: string): void {
         // fractions make more sense to do seperation between colors
         gradient.addColorStop(1, 'rgba(255, 255, 255, 1)');
         // tslint:disable-next-line: no-magic-numbers
@@ -93,9 +96,9 @@ export class ColorService {
                 gradient = ctx.createLinearGradient(0, 0, dimension.x, 0);
                 this.lightToDark(gradient, this.selectedColor);
                 break;
-            case GradientStyle.colortoColor:
+            case GradientStyle.colorToColor:
                 gradient = ctx.createLinearGradient(0, 0, dimension.x, 0);
-                this.colortoColor(gradient, this.selectedColor);
+                this.colorToColor(gradient, this.selectedColor);
                 break;
             case GradientStyle.rainbow:
             default:
@@ -119,16 +122,15 @@ export class ColorService {
         ctx.fillRect(event.offsetX, 0, SLIDER_STOPPER_RECT_WIDTH, SLIDER_STOPPER_RECT_HEIGHT);
     }
 
-    // Ce code est complètement inspiré sans gêne de
+    // This code has been inspired by the following link.
     // https://malcoded.com/posts/angular-color-picker/#detecting-mouse-events-on-the-color-slider
     getColor(position: Vec2, ctx: CanvasRenderingContext2D): RGBA {
         const imageData = ctx.getImageData(position.x, position.y, 1, 1).data;
         return { red: imageData[0], green: imageData[1], blue: imageData[2], alpha: 1 };
     }
 
-    // change opacity of primary or secondary colors
     changeColorOpacity(alpha: number): void {
-        if (this.isclicked) {
+        if (this.isClicked) {
             this.primaryColorTransparency = alpha;
             this.drawingService.baseCtx.globalAlpha = this.primaryColorTransparency;
             this.drawingService.previewCtx.globalAlpha = this.primaryColorTransparency;
