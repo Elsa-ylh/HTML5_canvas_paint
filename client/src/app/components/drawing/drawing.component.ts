@@ -57,9 +57,13 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.dropperCtx = this.dropperLayer.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.drawingService.dropperCtx = this.dropperCtx;
+        this.setCanvasBackgroundColor();
+    }
+
+    setCanvasBackgroundColor(): void {
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.baseCanvas.nativeElement.width, this.baseCanvas.nativeElement.height);
-        this.drawingService.dropperCtx = this.dropperCtx;
     }
 
     onMouseDown(event: MouseEvent): void {
