@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { EventOfTest } from '@app/classes/event-of-test';
 import { RGBA } from '@app/classes/rgba';
+import { Vec2 } from '@app/classes/vec2';
 // import { RGBA } from '@app/classes/rgba';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -70,5 +71,23 @@ describe('ColorService', () => {
 
         service.numeralToHex(value);
         expect(service.numeralToHex(value)).toEqual('#ff0000');
+    });
+
+    it(' should add the latest color to the history', () => {
+        service.addLastColor('#000000');
+        const lastColors = service.getLastColors();
+        expect(lastColors[9]).toEqual({ color: '#000000', active: true });
+    });
+
+    it(' should be able to get color of a pixel from a position', () => {
+        const position = { x: 0, y: 0 } as Vec2;
+        const canvas = document.createElement('canvas');
+        canvas.setAttribute('width', '100');
+        canvas.setAttribute('height', '100');
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+        const expectedRGBA = { red: 0, green: 0, blue: 0, alpha: 1 } as RGBA;
+
+        expect(service.getColor(position, ctx)).toEqual(expectedRGBA);
     });
 });

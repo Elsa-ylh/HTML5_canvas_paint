@@ -182,7 +182,7 @@ export class ColorComponent implements AfterViewInit {
             this.openWarningMessage(this.messageRGB);
         }
     }
-    // tslint:disable-next-line:no-any
+
     openWarningMessage(templateRef: TemplateRef<HTMLElement>): void {
         this.matDialog.open(templateRef, {
             width: '300px',

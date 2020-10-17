@@ -45,22 +45,22 @@ export class CanvasResizerService {
         }
     }
 
-    private changeResizeY(event: MouseEvent, crs: CanvasResizerService): number {
+    private changeResizeY(event: MouseEvent, cvsResizerService: CanvasResizerService): number {
         if (event.offsetY < MIN_CANVAS_SIZE) {
             return MIN_CANVAS_SIZE;
         }
-        if (event.offsetY > crs.resizeHeight - WORK_AREA_PADDING_SIZE) {
-            return crs.resizeHeight - WORK_AREA_PADDING_SIZE;
+        if (event.offsetY > cvsResizerService.resizeHeight - WORK_AREA_PADDING_SIZE) {
+            return cvsResizerService.resizeHeight - WORK_AREA_PADDING_SIZE;
         }
         return event.offsetY;
     }
 
-    private changeResizeX(event: MouseEvent, crs: CanvasResizerService): number {
+    private changeResizeX(event: MouseEvent, cvsResizerService: CanvasResizerService): number {
         if (event.offsetX < MIN_CANVAS_SIZE) {
             return MIN_CANVAS_SIZE;
         }
-        if (event.offsetX > crs.resizeWidth - WORK_AREA_PADDING_SIZE) {
-            return crs.resizeWidth - WORK_AREA_PADDING_SIZE;
+        if (event.offsetX > cvsResizerService.resizeWidth - WORK_AREA_PADDING_SIZE) {
+            return cvsResizerService.resizeWidth - WORK_AREA_PADDING_SIZE;
         }
         return event.offsetX;
     }
