@@ -42,7 +42,7 @@ export class ColorComponent implements AfterViewInit {
     horizontalCtx: CanvasRenderingContext2D;
 
     opacitySliderCtx: CanvasRenderingContext2D;
-    previewopacitySliderCtx: CanvasRenderingContext2D;
+    previewOpacitySliderCtx: CanvasRenderingContext2D;
 
     lastColors: LastColor[];
 
@@ -67,9 +67,25 @@ export class ColorComponent implements AfterViewInit {
 
         this.previewHorizontalCtx = this.previewHorizontal.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.horizontalCtx = this.horizontalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        // tslint:disable-next-line: use-isnan
+        if (this.colorService.colorStopperPosition.offsetX !== NaN) {
+            this.colorService.drawMovingStopper(
+                this.previewHorizontalCtx,
+                { x: this.WIDTH, y: this.horizontalHeight },
+                this.colorService.colorStopperPosition,
+            );
+        }
 
-        this.previewopacitySliderCtx = this.opacitySliderPreview.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.previewOpacitySliderCtx = this.opacitySliderPreview.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.opacitySliderCtx = this.opacitySliderCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        // tslint:disable-next-line: use-isnan
+        if (this.colorService.alphaStopperPosition.offsetX !== NaN) {
+            this.colorService.drawMovingStopper(
+                this.previewOpacitySliderCtx,
+                { x: this.WIDTH, y: this.horizontalHeight },
+                this.colorService.alphaStopperPosition,
+            );
+        }
 
         this.drawSquarePalette();
         this.drawHorizontalPalette();
@@ -120,6 +136,7 @@ export class ColorComponent implements AfterViewInit {
             this.colorService.addLastColor(this.colorService.secondaryColor);
         }
         this.colorService.selectedColor = this.colorService.previewColor;
+        this.colorService.colorStopperPosition = event;
         this.colorService.drawMovingStopper(this.previewHorizontalCtx, { x: this.WIDTH, y: this.horizontalHeight }, event);
         this.drawSquarePalette();
         this.drawHorizontalPalette();
@@ -133,7 +150,8 @@ export class ColorComponent implements AfterViewInit {
 
     onMouseOverOpacitySliderClick(event: MouseEvent): void {
         this.drawOpacitySlider();
-        this.colorService.drawMovingStopper(this.previewopacitySliderCtx, { x: this.WIDTH, y: this.horizontalHeight }, event);
+        this.colorService.alphaStopperPosition = event;
+        this.colorService.drawMovingStopper(this.previewOpacitySliderCtx, { x: this.WIDTH, y: this.horizontalHeight }, event);
         this.colorService.changeColorOpacity(this.findPositionSlider(event)); // change opacity via the slider.
     }
     onMouseLastColorClick(event: MouseEvent, clickedColor: LastColor): boolean {

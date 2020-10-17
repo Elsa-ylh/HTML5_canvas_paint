@@ -28,6 +28,9 @@ export class ColorService {
     isClicked: boolean = true;
     private lastColors: LastColor[];
 
+    colorStopperPosition: MouseEvent = { offsetX: NaN, offsetY: NaN } as MouseEvent;
+    alphaStopperPosition: MouseEvent = { offsetX: NaN, offsetY: NaN } as MouseEvent;
+
     constructor(private drawingService: DrawingService) {
         // Last 10 colors
 
