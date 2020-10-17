@@ -46,7 +46,7 @@ describe('Index service', () => {
     });
 
     it('should handle an error from DateService', (done: Mocha.Done) => {
-        dateService.currentTime.rejects(new Error('error in the service'));
+        dateService.currentTime.rejects(new Error('error in the service allo'));
         indexService
             .helloWorld()
             .then((result: Message) => {

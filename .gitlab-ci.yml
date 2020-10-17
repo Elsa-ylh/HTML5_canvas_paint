@@ -1,4 +1,4 @@
-image: xwiillz/node-chromium:lts-alpine
+image: vicovaro/patched-node-chromium-mongo:1.2
 
 cache:
     key: '${CI_COMMIT_REF_SLUG}-client'
