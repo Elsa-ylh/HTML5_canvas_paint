@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AfterViewInit, Component, ElementRef, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MouseButton } from '@app/classes/mouse-button';
@@ -29,8 +29,7 @@ export class ColorComponent implements AfterViewInit {
     @ViewChild('horizontalPalette') horizontalCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('opacitySlider') opacitySliderCanvas: ElementRef<HTMLCanvasElement>; // to have an opacity slider
     @ViewChild('opacitySliderPreview') opacitySliderPreview: ElementRef<HTMLCanvasElement>; // to have a hover
-    @ViewChild('message', { static: false }) messageRGB: MatDialogRef<HTMLElement>;
-    @ViewChild('message', { static: false }) messageAlpha: MatDialogRef<HTMLElement>;
+    @ViewChild('message', { static: false }) messageRGB: TemplateRef<HTMLElement>;
 
     squareDimension: Vec2 = { x: this.WIDTH, y: this.SQUARE_HEIGHT };
     horizontalDimension: Vec2 = { x: this.WIDTH, y: this.horizontalHeight };
@@ -184,7 +183,7 @@ export class ColorComponent implements AfterViewInit {
         }
     }
     // tslint:disable-next-line:no-any
-    openWarningMessage(templateRef: any): void {
+    openWarningMessage(templateRef: TemplateRef<HTMLElement>): void {
         this.matDialog.open(templateRef, {
             width: '300px',
         });
