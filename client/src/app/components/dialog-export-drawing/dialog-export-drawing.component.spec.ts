@@ -1,7 +1,7 @@
 /* tslint:disable:no-unused-variable */
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogExportDrawingComponent } from './dialog-export-drawing.component';
@@ -14,6 +14,10 @@ describe('DialogExportDrawingComponent', () => {
         waitForAsync(() => {
             TestBed.configureTestingModule({
                 imports: [MatDialogModule, MatIconModule, BrowserAnimationsModule, HttpClientModule],
+                providers: [
+                    { provide: MAT_DIALOG_DATA, useValue: {} },
+                    { provide: MatDialogRef, useValue: { close: () => '' } },
+                ],
                 declarations: [DialogExportDrawingComponent],
             }).compileComponents();
 
