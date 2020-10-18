@@ -7,7 +7,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
-const motionDifference = 4; // le numbre va faire marcher le ThichBrush
+const motionDifference = 4;
 const citcle = Math.PI * 2;
 @Injectable({
     providedIn: 'root',
@@ -32,7 +32,7 @@ export class BrushService extends Tool {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             if (this.subToolSelect === SubToolselected.tool4) {
-                const point = new PointArc(this.mouseDownCoord, this.remdomInt(), Math.random());
+                const point = new PointArc(this.mouseDownCoord, this.randomInt(), Math.random());
                 this.brush4Data.push(point);
             } else {
                 this.pathData.push(this.mouseDownCoord);
@@ -45,7 +45,7 @@ export class BrushService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             if (this.subToolSelect === SubToolselected.tool4) {
-                const point = new PointArc(mousePosition, this.remdomInt(), Math.random());
+                const point = new PointArc(mousePosition, this.randomInt(), Math.random());
                 this.brush4Data.push(point);
                 this.drawBrushTool4(this.drawingService.baseCtx, this.brush4Data);
             } else {
@@ -61,10 +61,9 @@ export class BrushService extends Tool {
     onMouseMove(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.mouseDown && !this.mouseOut) {
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.clearPreviewCtx();
             if (this.subToolSelect === SubToolselected.tool4) {
-                const point = new PointArc(mousePosition, this.remdomInt(), Math.random());
+                const point = new PointArc(mousePosition, this.randomInt(), Math.random());
                 this.brush4Data.push(point);
                 this.drawBrushTool4(this.drawingService.previewCtx, this.brush4Data);
             } else {
@@ -80,7 +79,7 @@ export class BrushService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             if (this.subToolSelect === SubToolselected.tool4) {
-                const point = new PointArc(mousePosition, this.remdomInt(), Math.random());
+                const point = new PointArc(mousePosition, this.randomInt(), Math.random());
                 this.brush4Data.push(point);
                 this.drawBrushTool4(this.drawingService.baseCtx, this.brush4Data);
             } else {
@@ -96,7 +95,7 @@ export class BrushService extends Tool {
         if (this.mouseDown && this.mouseOut) {
             this.mouseDownCoord = this.lastPoint;
             if (this.subToolSelect === SubToolselected.tool4) {
-                const point = new PointArc(this.mouseDownCoord, this.remdomInt(), Math.random());
+                const point = new PointArc(this.mouseDownCoord, this.randomInt(), Math.random());
                 this.brush4Data.push(point);
             } else {
                 this.pathData.push(this.mouseDownCoord);
@@ -168,7 +167,6 @@ export class BrushService extends Tool {
         }
         ctx.stroke();
 
-        // le motif en forme de flaiche comment ici
         ctx.beginPath();
         ctx.lineWidth = px2;
         ctx.strokeStyle = this.colorService.secondaryColor;
@@ -192,7 +190,6 @@ export class BrushService extends Tool {
     private drawLineBrush5(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const sizePx = ctx.lineWidth;
-        // on divise par quatre pour que la grandeur maximal du diamétre soit le même que les autre tools pinceau
         ctx.lineWidth = sizePx / motionDifference;
         for (let index = 1; index <= sizePx; index += 1) {
             ctx.beginPath();
@@ -251,12 +248,12 @@ export class BrushService extends Tool {
         this.drawingService.baseCtx.shadowColor = this.drawingService.previewCtx.shadowColor = 'rgba(0,0,0,0)';
         this.drawingService.baseCtx.strokeStyle = this.drawingService.previewCtx.strokeStyle = this.colorService.primaryColor;
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
-        this.drawingService.baseCtx.setLineDash([0, 0]); // reset
+        this.drawingService.baseCtx.setLineDash([0, 0]);
         this.drawingService.previewCtx.setLineDash([0, 0]);
     }
-    private remdomInt(): number {
-        const min = this.drawingService.baseCtx.lineWidth / motionDifference; // le cercle vont avoir une grande entre le rayon et son quarte
-        const differnve = this.drawingService.baseCtx.lineWidth - min;
-        return Math.floor(Math.random() * differnve) + min;
+    private randomInt(): number {
+        const min = this.drawingService.baseCtx.lineWidth / motionDifference;
+        const difference = this.drawingService.baseCtx.lineWidth - min;
+        return Math.floor(Math.random() * difference) + min;
     }
 }

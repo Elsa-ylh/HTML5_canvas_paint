@@ -9,3 +9,5 @@ https://www.flaticon.com/free-icon/wave_3061188?term=ocean&page=1&position=1
 https://www.flaticon.com/free-icon/transparency_593440?term=transparency&page=1&position=28
 
 https://www.flaticon.com/free-icon/polygon_2708358?term=polygon&page=1&position=18
+
+https://www.flaticon.com/free-icon/paint-bucket_1224886?term=bucket&page=1&position=8

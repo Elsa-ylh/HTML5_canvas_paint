@@ -54,7 +54,7 @@
             </mat-list>
         </div>
     </div>
-    <div class="toolbar" *ngIf="showAttributes">
+    <div class="toolbar">
         <div class="attributes" [ngSwitch]="this.toolService.currentToolName">
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.NONE"> </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Pencil">

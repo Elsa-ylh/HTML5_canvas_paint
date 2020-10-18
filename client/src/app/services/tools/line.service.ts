@@ -15,7 +15,7 @@ export class LineService extends Tool {
     isBallOn: boolean = false;
     private pathData: Vec2[] = [];
     private pointMouse: Vec2 = { x: 0, y: 0 };
-    private pointShiftMemori: Vec2 = { x: 0, y: 0 };
+    private pointShiftMemory: Vec2 = { x: 0, y: 0 };
     private shiftKeyDown: boolean = false;
     private mouseOut: boolean = false;
 
@@ -30,7 +30,9 @@ export class LineService extends Tool {
             this.mouseMove = true;
             this.pathData.push(this.getPositionFromMouse(event));
             this.drawLine(this.drawingService.previewCtx, this.pathData);
-        } else if (this.mouseDown && this.shiftKeyDown) {
+            return;
+        }
+        if (this.mouseDown && this.shiftKeyDown) {
             this.pathData.push(this.pointMouse);
             this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
@@ -38,10 +40,12 @@ export class LineService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseMove && !this.shiftKeyDown) {
-            this.pointShiftMemori = this.pointMouse = this.getPositionFromMouse(event);
+            this.pointShiftMemory = this.pointMouse = this.getPositionFromMouse(event);
             this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointMouse);
-        } else if (this.shiftKeyDown) {
-            this.pointShiftMemori = this.getPositionFromMouse(event);
+            return;
+        }
+        if (this.shiftKeyDown) {
+            this.pointShiftMemory = this.getPositionFromMouse(event);
         }
     }
     onMouseOut(event: MouseEvent): void {
@@ -50,7 +54,7 @@ export class LineService extends Tool {
     onMouseEnter(event: MouseEvent): void {
         this.mouseOut = false;
     }
-    OnShiftKeyDown(event: KeyboardEvent): void {
+    onShiftKeyDown(event: KeyboardEvent): void {
         if (this.mouseDown && this.mouseMove) {
             this.shiftKeyDown = true;
             this.mouseMove = false;
@@ -59,17 +63,15 @@ export class LineService extends Tool {
         }
     }
 
-    OnShiftKeyUp(event: KeyboardEvent): void {
+    onShiftKeyUp(event: KeyboardEvent): void {
         if (this.mouseDown && this.shiftKeyDown) {
             this.mouseMove = true;
             this.shiftKeyDown = false;
-            this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointShiftMemori);
+            this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointShiftMemory);
         }
     }
 
     private shiftDrawAngleLine(path: Vec2[], lastPoint: Vec2): Vec2 {
-        // Attention le calcul est en rad  le 0 rad  point vers la droit de la page et +-Pi rad point vers le gauche de la page.
-        let newPoint: Vec2;
         const leastone = -1;
         const denominator8 = 8;
         const denominator4 = 4;
@@ -81,19 +83,19 @@ export class LineService extends Tool {
         const dy = lastPoint.y - firstPoint.y;
         const angleabs = Math.abs(Math.atan2(dy, dx));
         if (angleabs < Math.PI / denominator8 || angleabs > (Math.PI * numerator7) / denominator8) {
-            newPoint = { x: lastPoint.x, y: firstPoint.y };
-        } else if (angleabs >= Math.PI / denominator8 && angleabs <= (Math.PI * numerator3) / denominator8) {
+            return { x: lastPoint.x, y: firstPoint.y };
+        }
+        if (angleabs >= Math.PI / denominator8 && angleabs <= (Math.PI * numerator3) / denominator8) {
             const axey: number = dy > 0 ? leastone : 1;
             const newY: number = Math.round(Math.tan((Math.PI * numerator3) / denominator4) * dx * axey);
-            newPoint = { x: lastPoint.x, y: firstPoint.y + newY };
-        } else if (angleabs <= (Math.PI * numerator7) / denominator8 && angleabs >= (Math.PI * numerator5) / denominator8) {
+            return { x: lastPoint.x, y: firstPoint.y + newY };
+        }
+        if (angleabs <= (Math.PI * numerator7) / denominator8 && angleabs >= (Math.PI * numerator5) / denominator8) {
             const axey: number = dy > 0 ? leastone : 1;
             const newY: number = Math.round(Math.tan(Math.PI / denominator4) * dx * axey);
-            newPoint = { x: lastPoint.x, y: firstPoint.y + newY };
-        } else {
-            newPoint = { x: firstPoint.x, y: lastPoint.y };
+            return { x: lastPoint.x, y: firstPoint.y + newY };
         }
-        return newPoint;
+        return { x: firstPoint.x, y: lastPoint.y };
     }
 
     onDoubleClick(event: MouseEvent): void {
@@ -129,7 +131,7 @@ export class LineService extends Tool {
         }
         ctx.stroke();
 
-        if (this.subToolSelect === SubToolselected.tool2) this.drawPoin(ctx, path);
+        if (this.subToolSelect === SubToolselected.tool2) this.drawPoint(ctx, path);
     }
 
     private drawLineLastPoint(ctx: CanvasRenderingContext2D, path: Vec2[], lastPoint: Vec2): void {
@@ -142,10 +144,10 @@ export class LineService extends Tool {
         }
         ctx.lineTo(lastPoint.x, lastPoint.y);
         ctx.stroke();
-        if (this.subToolSelect === SubToolselected.tool2) this.drawPoin(ctx, path);
+        if (this.subToolSelect === SubToolselected.tool2) this.drawPoint(ctx, path);
     }
 
-    private drawPoin(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawPoint(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineJoin = ctx.lineCap = 'round';
         const sizePx = ctx.lineWidth;
         ctx.lineWidth = this.secondarySizePixel;
@@ -191,6 +193,6 @@ export class LineService extends Tool {
         this.mouseDown = this.mouseMove = false;
         this.pointMouse = { x: 0, y: 0 };
         this.shiftKeyDown = false;
-        this.pointShiftMemori = { x: 0, y: 0 };
+        this.pointShiftMemory = { x: 0, y: 0 };
     }
 }

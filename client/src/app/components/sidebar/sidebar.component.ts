@@ -31,7 +31,6 @@ export class SidebarComponent {
     // tslint:disable-next-line: typedef
     toolUsed = ToolUsed;
 
-    showAttributes: boolean;
     isDialogOpen: boolean = false;
     lineWidth: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
@@ -62,10 +61,10 @@ export class SidebarComponent {
         public polygonService: PolygonService,
         public paintBucketService: PaintBucketService,
     ) {
-        this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
         this.iconRegistry.addSvgIcon('polygon', this.sanitizer.bypassSecurityTrustResourceUrl('assets/polygon.svg'));
+        this.iconRegistry.addSvgIcon('paint-bucket', this.sanitizer.bypassSecurityTrustResourceUrl('assets/paint-bucket.svg'));
     }
 
     clearCanvas(): void {
