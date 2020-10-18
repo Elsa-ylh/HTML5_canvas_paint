@@ -17,6 +17,7 @@ import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { DialogExportDrawingComponent } from '../dialog-export-drawing/dialog-export-drawing.component';
 
 @Component({
     selector: 'app-sidebar',
@@ -66,6 +67,10 @@ export class SidebarComponent {
                 this.isDialogOpen = false;
             });
         }
+    }
+
+    exportDrawing(): void {
+        this.dialogCreator.open(DialogExportDrawingComponent);
     }
 
     createNewDrawing(): void {
