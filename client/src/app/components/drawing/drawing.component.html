@@ -6,7 +6,7 @@
         [attr.height]="height"
         [ngStyle]="{ cursor: cursorUsed }"
         (mousedown)="onMouseDown($event)"
-        (mousemove)="onMouseMove($event)"
+        (mousemove)="onMouseMove($event); onMouseOverMainCanvas($event)"
         (mouseup)="onMouseUp($event)"
         (mouseout)="onMouseOut($event)"
         (mouseenter)="onMouseEnter($event)"

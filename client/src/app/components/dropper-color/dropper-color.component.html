@@ -1,4 +1,12 @@
 <div class="color-container">
+    <table>
+        <mat-grid-list cols="2" rowHeight="2:1">
+            <div>Aperçu</div>
+            <div id="previewColor" [ngStyle]="{ 'background-color': this.colorService.previewColor }"></div>
+            <mat-grid-tile id="previewColorHexa">{{ this.colorService.previewColor }}</mat-grid-tile>
+        </mat-grid-list>
+    </table>
+    <br />
     <table id="table">
         <th>
             <div id="primaryColorTitle">Primaire</div>

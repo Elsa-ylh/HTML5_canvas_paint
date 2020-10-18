@@ -9,6 +9,7 @@ import {
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { ToolUsed } from '@app/classes/tool';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 
@@ -18,7 +19,12 @@ import { ToolService } from '@app/services/tool-service';
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit {
-    constructor(private drawingService: DrawingService, public toolService: ToolService, public cvsResizerService: CanvasResizerService) {}
+    constructor(
+        private drawingService: DrawingService,
+        public toolService: ToolService,
+        public cvsResizerService: CanvasResizerService,
+        public colorService: ColorService,
+    ) {}
 
     get width(): number {
         return this.cvsResizerService.canvasSize.x;
@@ -160,6 +166,13 @@ export class DrawingComponent implements AfterViewInit {
 
     onResizeOut(event: MouseEvent): void {
         this.cvsResizerService.onResizeOut(event, this.resizeCtx, this.baseCanvas.nativeElement);
+    }
+
+    onMouseOverMainCanvas(event: MouseEvent): void {
+        if (this.toolService.currentToolName === this.dropper) {
+            const position = { x: event.offsetX, y: event.offsetY };
+            this.colorService.previewColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.baseCtx));
+        }
     }
 
     @HostListener('window:keydown.shift', ['$event'])
