@@ -1,3 +1,4 @@
+// tslint:disable: no-any
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,14 +37,13 @@ describe('MainPageComponent', () => {
                 declarations: [MainPageComponent],
                 providers: [{ provide: MatDialog, useValue: {} }],
             }).compileComponents();
+            TestBed.inject(MatDialog);
+
+            fixture = TestBed.createComponent(MainPageComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
         }),
     );
-
-    beforeEach(async () => {
-        fixture = TestBed.createComponent(MainPageComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
 
     afterEach(() => {
         if (fixture.nativeElement && 'remove' in fixture.nativeElement) {
@@ -60,16 +60,14 @@ describe('MainPageComponent', () => {
     });
 
     it('should open a new drawing modal', () => {
-        fixture.whenStable().then(() => {
-            component.createNewDrawing();
-            expect(component.createNewDrawing).toHaveBeenCalled();
-        });
+        const createNewDrawingSpy = spyOn<any>(component, 'createNewDrawing');
+        component.createNewDrawing();
+        expect(createNewDrawingSpy).toHaveBeenCalled();
     });
 
     it('should open a new drawin modal user guide', () => {
-        fixture.whenStable().then(() => {
-            component.openUserGuide();
-            expect(component.openUserGuide).toHaveBeenCalled();
-        });
+        const openUserGuideSpy = spyOn<any>(component, 'openUserGuide');
+        component.openUserGuide();
+        expect(openUserGuideSpy).toHaveBeenCalled();
     });
 });
