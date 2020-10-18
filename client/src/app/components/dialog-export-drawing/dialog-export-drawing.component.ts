@@ -8,5 +8,5 @@ import { Data } from '@angular/router';
     styleUrls: ['./dialog-export-drawing.component.scss'],
 })
 export class DialogExportDrawingComponent {
-    constructor(@Inject(MAT_DIALOG_DATA) private data: Data, private dialogRef: MatDialogRef<DialogExportDrawingComponent>) {}
+    constructor(@Inject(MAT_DIALOG_DATA) public data: Data, public dialogRef: MatDialogRef<DialogExportDrawingComponent>) {}
 }

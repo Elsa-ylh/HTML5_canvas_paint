@@ -161,7 +161,7 @@ export class SidebarComponent {
         this.isColorChecked = false;
     }
 
-    CheckboxChangeToggle(args: MatCheckboxChange): void {
+    checkboxChangeToggle(args: MatCheckboxChange): void {
         this.toolService.currentTool.subToolSelect = args.checked ? SubToolselected.tool2 : SubToolselected.tool1;
     }
 

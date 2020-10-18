@@ -41,6 +41,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
 import { ColorComponent } from './components/color/color.component';
 import { DialogCreateNewDrawingComponent } from './components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DialogExportDrawingComponent } from './components/dialog-export-drawing/dialog-export-drawing.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
@@ -54,6 +55,7 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         DrawingComponent,
         MainPageComponent,
         DialogCreateNewDrawingComponent,
+        DialogExportDrawingComponent,
         WriteTextDialogUserGuideComponent,
         ColorComponent,
     ],

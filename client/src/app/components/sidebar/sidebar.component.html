@@ -38,6 +38,9 @@
             </mat-list>
             <mat-list class="miscellaneous-buttons">
                 <mat-button-toggle-group vertical="true">
+                    <mat-button-toggle (click)="openUserGuide()" matTooltip="Exportation" matTooltipPosition="right">
+                        <mat-icon>save</mat-icon>
+                    </mat-button-toggle>
                     <mat-button-toggle appearance="radio" (click)="createNewDrawing()" matTooltip="Nouveau dessin" matTooltipPosition="right">
                         <mat-icon>add</mat-icon>
                     </mat-button-toggle>
@@ -97,7 +100,7 @@
                     <mat-slider max="50" min="1" [(ngModel)]="lineService.lineWidth"> </mat-slider><samp>{{ lineService.lineWidth }}px</samp>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-checkbox [(ngModel)]="lineService.isBallOn" (change)="CheckboxChangeToggle($event)">Avec Point</mat-checkbox>
+                    <mat-checkbox [(ngModel)]="lineService.isBallOn" (change)="checkboxChangeToggle($event)">Avec Point</mat-checkbox>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6">
                     <mat-slider max="50" min="1" step="1" [(ngModel)]="lineService.secondarySizePixel"> </mat-slider>
