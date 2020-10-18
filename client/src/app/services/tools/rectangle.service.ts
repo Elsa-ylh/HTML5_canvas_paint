@@ -72,7 +72,7 @@ export class RectangleService extends Tool {
         this.mouseOut = false;
     }
 
-    OnShiftKeyDown(event: KeyboardEvent): void {
+    onShiftKeyDown(event: KeyboardEvent): void {
         this.square = true;
         if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -80,7 +80,7 @@ export class RectangleService extends Tool {
         }
     }
 
-    OnShiftKeyUp(event: KeyboardEvent): void {
+    onShiftKeyUp(event: KeyboardEvent): void {
         this.square = false;
         if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);

@@ -30,7 +30,6 @@ export class SidebarComponent {
     // tslint:disable-next-line: typedef
     toolUsed = ToolUsed;
 
-    showAttributes: boolean;
     isDialogOpen: boolean = false;
     lineWidth: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
@@ -61,7 +60,6 @@ export class SidebarComponent {
         public lineService: LineService,
         public selectionService: SelectionService,
     ) {
-        this.showAttributes = true;
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
     }
@@ -202,7 +200,7 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.1', ['$event']) onKeyDown1(event: KeyboardEvent): void {
+    @HostListener('window:keydown.1', ['$event']) changeRectnagleMode(event: KeyboardEvent): void {
         if (this.toolService.currentToolName !== ToolUsed.Color) {
             this.resetCheckedButton();
             this.isRectangleChecked = true;
@@ -210,7 +208,7 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.2', ['$event']) onKeyDown2(event: KeyboardEvent): void {
+    @HostListener('window:keydown.2', ['$event']) changleEllipseMode(event: KeyboardEvent): void {
         if (this.toolService.currentToolName !== ToolUsed.Color) {
             this.resetCheckedButton();
             this.isEllipseChecked = true;

@@ -136,7 +136,7 @@ describe('Service: Rectangle', () => {
 
     it(' pressing shift should change square value to true', () => {
         service.onMouseDown(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(service.square).toEqual(true);
     });
 
@@ -164,7 +164,7 @@ describe('Service: Rectangle', () => {
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool1;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
-        service.OnShiftKeyUp(shiftEvent);
+        service.onShiftKeyUp(shiftEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawFillRectangleSpy).toHaveBeenCalled();
     });
@@ -173,7 +173,7 @@ describe('Service: Rectangle', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
-        service.OnShiftKeyUp(shiftEvent);
+        service.onShiftKeyUp(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawFillRectangleSpy).not.toHaveBeenCalled();
     });
@@ -183,16 +183,16 @@ describe('Service: Rectangle', () => {
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool1;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawFillRectangleSpy).toHaveBeenCalled();
     });
 
-    it(' OnShiftKeyDown should not call drawFillRectangle if mouse was not already down and tool1 selected', () => {
+    it(' onShiftKeyDown should not call drawFillRectangle if mouse was not already down and tool1 selected', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawFillRectangleSpy).not.toHaveBeenCalled();
     });
@@ -202,7 +202,7 @@ describe('Service: Rectangle', () => {
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool2;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
-        service.OnShiftKeyUp(shiftEvent);
+        service.onShiftKeyUp(shiftEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawRectangleOutlineSpy).toHaveBeenCalled();
     });
@@ -211,7 +211,7 @@ describe('Service: Rectangle', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
-        service.OnShiftKeyUp(shiftEvent);
+        service.onShiftKeyUp(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawRectangleOutlineSpy).not.toHaveBeenCalled();
     });
@@ -221,16 +221,16 @@ describe('Service: Rectangle', () => {
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool2;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawRectangleOutlineSpy).toHaveBeenCalled();
     });
 
-    it(' OnShiftKeyDown should not call drawFillRectangle if mouse was not already down and tool2 selected', () => {
+    it(' onShiftKeyDown should not call drawFillRectangle if mouse was not already down and tool2 selected', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawRectangleOutlineSpy).not.toHaveBeenCalled();
     });
@@ -240,7 +240,7 @@ describe('Service: Rectangle', () => {
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool3;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
-        service.OnShiftKeyUp(shiftEvent);
+        service.onShiftKeyUp(shiftEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawFillRectangleOutlineSpy).toHaveBeenCalled();
     });
@@ -249,7 +249,7 @@ describe('Service: Rectangle', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
-        service.OnShiftKeyUp(shiftEvent);
+        service.onShiftKeyUp(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawFillRectangleOutlineSpy).not.toHaveBeenCalled();
     });
@@ -259,16 +259,16 @@ describe('Service: Rectangle', () => {
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool3;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawFillRectangleOutlineSpy).toHaveBeenCalled();
     });
 
-    it(' OnShiftKeyDown should not call drawFillRectangle if mouse was not already down and tool1 selected', () => {
+    it(' onShiftKeyDown should not call drawFillRectangle if mouse was not already down and tool1 selected', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
-        service.OnShiftKeyDown(shiftEvent);
+        service.onShiftKeyDown(shiftEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawFillRectangleOutlineSpy).not.toHaveBeenCalled();
     });
