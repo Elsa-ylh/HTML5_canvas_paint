@@ -8,7 +8,20 @@ export class UndoRedoService {
     isundoRedoDisabled: boolean = true; // to disactivate the option to redo-redo. diabled=true (cant undo-red0 when app loads)
     private listUndo: AbsUndoRedo[] = [];
     private listRedo: AbsUndoRedo[] = []; // LIFO
-    // constructor() {}
+    constructor() {}
+
+    undoRedoActif(mouseEvent: MouseEvent): void {
+        // there is one element
+        if (this.listUndo.length > 0 || this.listRedo.length > 0) {
+            this.isundoRedoDisabled = false;
+        }
+        if (mouseEvent.movementX || mouseEvent.movementY) {
+            this.isundoRedoDisabled = true;
+        } else {
+            this.isundoRedoDisabled = false;
+        }
+    }
+
     // function that redoes the latest undo.
     redo(): void {
         if (this.listRedo.length > 0) {
