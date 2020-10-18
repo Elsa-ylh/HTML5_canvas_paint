@@ -17,6 +17,6 @@
         <mat-label>Nom de fichier</mat-label>
         <input matInput [formControl]="nameFormControl" placeholder="Ex. nomDeFichierImage" />
         <mat-hint>Ex. nomDeFichierImage</mat-hint>
-        <mat-error *ngIf="nameFormControl.hasError('name')">Le nom de fichier doit être entre 1 et 255 caractères.</mat-error>
+        <mat-error *ngIf="nameFormControl.hasError('required')">Le nom de fichier doit être entre 1 et 255 caractères.</mat-error>
     </mat-form-field>
 </mat-dialog-content>

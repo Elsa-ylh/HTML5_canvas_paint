@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Data } from '@angular/router';
 
@@ -21,11 +21,9 @@ export class DialogExportDrawingComponent {
         ['filterFive', false],
     ]);
 
-    nameFormControl: FormGroup;
+    nameFormControl: FormControl;
 
     constructor(@Inject(MAT_DIALOG_DATA) private data: Data, private dialogRef: MatDialogRef<DialogExportDrawingComponent>, private fb: FormBuilder) {
-        this.nameFormControl = this.fb.group({
-            name: ['', Validators.required, Validators.minLength(1), Validators.maxLength(255)], // 255 is the max characters for certain operating system
-        });
+        this.nameFormControl = new FormControl('default', Validators.pattern('[a-zA-Z ]*'));
     }
 }
