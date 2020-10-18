@@ -1,3 +1,4 @@
+// tslint:disable: no-any
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +12,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { cursorName } from '@app/classes/cursor-name';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
 import { ColorComponent } from '@app/components/color/color.component';
@@ -42,6 +45,11 @@ describe('SidebarComponent', () => {
     let lineStub: LineService;
     let colorStub: ColorService;
     let dropperServiceStub: DropperService;
+
+    let canvas: HTMLCanvasElement;
+    let baseStub: CanvasRenderingContext2D;
+    let previewStub: CanvasRenderingContext2D;
+
     beforeEach(async () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
@@ -54,6 +62,19 @@ describe('SidebarComponent', () => {
         dropperServiceStub = new DropperService(drawingStub, colorStub);
 
         toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, dropperServiceStub);
+
+        canvas = canvasTestHelper.canvas;
+        // tslint:disable: no-magic-numbers
+        canvas.width = 100;
+        canvas.height = 100;
+        baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+
+        // Configuration du spy du service
+        // tslint:disable:no-string-literal
+        drawingStub.canvas = canvas;
+        drawingStub.baseCtx = baseStub; // Jasmine doesnt copy properties with underlying data
+        drawingStub.previewCtx = previewStub;
 
         await TestBed.configureTestingModule({
             declarations: [
@@ -89,10 +110,9 @@ describe('SidebarComponent', () => {
                 { provide: MatDialog, useValue: {} },
             ],
         }).compileComponents();
+        TestBed.inject(MatDialog);
         TestBed.inject(DomSanitizer);
-    });
 
-    beforeEach(() => {
         fixture = TestBed.createComponent(SidebarComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -126,5 +146,29 @@ describe('SidebarComponent', () => {
     it('pickDropper()', () => {
         component.pickDropper();
         expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Dropper);
+    });
+
+    it(' should clear canvas dialog', () => {
+        component.clearCanvas();
+        expect(component.isDialogOpen).toEqual(false);
+    });
+
+    it(' should create new drawing dialog', () => {
+        const createNewDrawingSpy = spyOn<any>(component, 'createNewDrawing');
+        component.createNewDrawing();
+        expect(createNewDrawingSpy).toHaveBeenCalled();
+    });
+
+    it(' should open user guide dialog', () => {
+        const openUserGuideSpy = spyOn<any>(component, 'openUserGuide');
+        component.openUserGuide();
+        expect(openUserGuideSpy).toHaveBeenCalled();
+    });
+
+    it(' should pick pencil', () => {
+        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool');
+        component.pickPencil();
+        expect(drawingStub.cursorUsed).toEqual(cursorName.pencil);
+        expect(switchToolSpy).toHaveBeenCalled();
     });
 });
