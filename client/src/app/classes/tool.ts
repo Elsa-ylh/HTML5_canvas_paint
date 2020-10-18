@@ -39,9 +39,9 @@ export abstract class Tool {
         return { x: event.offsetX, y: event.offsetY };
     }
 
-    OnShiftKeyDown(event: KeyboardEvent): void {}
+    onShiftKeyDown(event: KeyboardEvent): void {}
 
-    OnShiftKeyUp(event: KeyboardEvent): void {}
+    onShiftKeyUp(event: KeyboardEvent): void {}
 
     onDoubleClick(event: MouseEvent): void {}
 

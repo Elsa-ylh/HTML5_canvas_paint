@@ -76,12 +76,12 @@ describe('Service: CanvasResizer', () => {
         expect(numberResult).toEqual(MIN_CANVAS_SIZE);
     });
 
-    it('changeResizeY is ouverSize', () => {
+    it('changeResizeY is overSized', () => {
         const numberResult: number = changeResizeYSpy(events.mouseEventOutSate, canvasResizerService);
         expect(numberResult).toEqual(canvasResizerService.resizeHeight - WORK_AREA_PADDING_SIZE);
     });
 
-    it('changeResizeX is ouverSize', () => {
+    it('changeResizeX is overSized', () => {
         const numberResult: number = changeResizeXSpy(events.mouseEventOutSate, canvasResizerService);
         expect(numberResult).toEqual(canvasResizerService.resizeWidth - WORK_AREA_PADDING_SIZE);
     });
