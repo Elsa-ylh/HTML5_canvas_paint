@@ -169,8 +169,8 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     onMouseOverMainCanvas(event: MouseEvent): void {
+        const position = { x: event.offsetX, y: event.offsetY };
         if (this.toolService.currentToolName === this.dropper) {
-            const position = { x: event.offsetX, y: event.offsetY };
             this.colorService.previewColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.baseCtx));
         }
     }

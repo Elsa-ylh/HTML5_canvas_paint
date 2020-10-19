@@ -60,6 +60,7 @@ describe('DrawingComponent', () => {
                     { provide: DrawingService, useValue: drawingStub },
                     { provide: ToolService, useValue: toolServiceStub },
                     { provide: CanvasResizerService, useValue: canvasResizerStub },
+                    { provide: ColorService, useValue: colorStub },
                 ],
             }).compileComponents();
 
@@ -205,6 +206,18 @@ describe('DrawingComponent', () => {
         component.onResizeOut(event);
         expect(onResizeOutSpy).toHaveBeenCalled();
     });
+
+    /*
+    it('not call getColor onMouseOverMainCanvas', () => {
+        const event = { x: 15, y: 47 } as MouseEvent;
+        const spyGetColor = spyOn(colorStub, 'getColor').and.callThrough();
+        const spyNumToHex = spyOn(colorStub, 'numeralToHex').and.callThrough();
+        component.onMouseOverMainCanvas(event);
+        expect(spyGetColor).toHaveBeenCalled();
+        expect(spyNumToHex).toHaveBeenCalled();
+        expect(colorStub.previewColor).toBeDefined();
+    });
+    */
 
     it(' should onShiftKeyDown trigger tool service', () => {
         const event = {} as KeyboardEvent;
