@@ -1,4 +1,4 @@
-<div id="canvas-container" [ngStyle]="{ 'min-width.px': crs.resizeWidth, 'min-height.px': crs.resizeHeight }">
+<div id="canvas-container" [ngStyle]="{ 'min-width.px': cvsResizerService.resizeWidth, 'min-height.px': cvsResizerService.resizeHeight }">
     <canvas
         id="previewLayer"
         #previewCanvas
@@ -16,16 +16,16 @@
     <canvas
         id="canvasResizerPreview"
         #canvasResizingPreview
-        [attr.width]="crs.resizeWidth"
-        [attr.height]="crs.resizeHeight"
+        [attr.width]="cvsResizerService.resizeWidth"
+        [attr.height]="cvsResizerService.resizeHeight"
         [ngStyle]="{
-            'z-index': crs.resizerIndex,
-            cursor: crs.resizeCursor
+            'z-index': cvsResizerService.resizerIndex,
+            cursor: cvsResizerService.resizeCursor
         }"
         (mousedown)="onResizeDown($event)"
         (mousemove)="onResizeMove($event)"
         (mouseup)="onResizeUp($event)"
         (mouseout)="onResizeOut($event)"
     ></canvas>
-    <div id="greyBackground" [ngStyle]="{ 'width.px': crs.resizeWidth, 'height.px': crs.resizeHeight }"></div>
+    <div id="greyBackground" [ngStyle]="{ 'width.px': cvsResizerService.resizeWidth, 'height.px': cvsResizerService.resizeHeight }"></div>
 </div>

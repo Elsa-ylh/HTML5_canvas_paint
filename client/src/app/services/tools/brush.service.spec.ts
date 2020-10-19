@@ -33,7 +33,6 @@ describe('BrushService', () => {
         drawBrushToolSpy = spyOn<any>(service, 'drawBrushTool4').and.callThrough();
         drawLineBrushSpy = spyOn<any>(service, 'drawLineBrush5').and.callThrough();
         service.subToolSelect = SubToolselected.tool1;
-        // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;

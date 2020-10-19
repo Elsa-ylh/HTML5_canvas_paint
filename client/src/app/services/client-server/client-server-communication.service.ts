@@ -17,7 +17,7 @@ export class ClientServerCommunicationService {
         return this.http.get<CancasInformation[]>(this.HTTP_SERVE_LOCAL).pipe(catchError(this.handleError<CancasInformation[]>('basicGet')));
     }
 
-    poshData(message: Message): Observable<CancasInformation[]> {
+    selectPictureWithLabel(message: Message): Observable<CancasInformation[]> {
         return this.http
             .post<CancasInformation[]>(this.HTTP_SERVE_LOCAL + '/labels', message)
             .pipe(catchError(this.handleError<CancasInformation[]>('basicPost')));

@@ -1,6 +1,8 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { cursorName } from '@app/classes/cursor-name';
+import { RESIZE_MIDDLE_LOWER_PROPORTION } from '@app/classes/resize-canvas';
 import { Tool } from '@app/classes/tool';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
@@ -57,14 +59,12 @@ describe('DrawingComponent', () => {
                     { provide: CanvasResizerService, useValue: canvasResizerStub },
                 ],
             }).compileComponents();
+
+            fixture = TestBed.createComponent(DrawingComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
         }),
     );
-
-    beforeEach(() => {
-        fixture = TestBed.createComponent(DrawingComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
 
     afterEach(() => {
         if (fixture.nativeElement && 'remove' in fixture.nativeElement) {
@@ -108,5 +108,133 @@ describe('DrawingComponent', () => {
         component.onMouseUp(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it(' should onMouseOut trigger toolService.currentTool.onMouseOut(event)', () => {
+        const event = {} as MouseEvent;
+        const mouseEventSpy = spyOn(toolStub, 'onMouseOut').and.callThrough();
+        component.onMouseOut(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
+        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it(' should onMouseEnter trigger toolService.currentTool.onMouseEnter(event)', () => {
+        const event = {} as MouseEvent;
+        const mouseEventSpy = spyOn(toolStub, 'onMouseEnter').and.callThrough();
+        component.onMouseEnter(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
+        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it(' should onResizeDown trigger verticalAndHorizontal of resize service', () => {
+        const event = { offsetX: canvasResizerStub.canvasSize.x, offsetY: canvasResizerStub.canvasSize.y } as MouseEvent;
+        const canvasResizeSpy = spyOn(canvasResizerStub, 'onResizeDown').and.callThrough();
+        component.onResizeDown(event);
+        expect(canvasResizeSpy).toHaveBeenCalled();
+        expect(canvasResizerStub.resizeCursor).toBe(cursorName.resizeVerticalAndHorizontal);
+    });
+
+    it(' should onResizeDown trigger vertical resize service', () => {
+        const event = {
+            offsetX: canvasResizerStub.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION + 1,
+            offsetY: canvasResizerStub.canvasSize.y + 1,
+        } as MouseEvent;
+        const canvasResizeSpy = spyOn(canvasResizerStub, 'onResizeDown').and.callThrough();
+        component.onResizeDown(event);
+        expect(canvasResizeSpy).toHaveBeenCalled();
+        expect(canvasResizerStub.resizeCursor).toBe(cursorName.resizeVertical);
+    });
+
+    it(' should onResizeDown trigger horizontal resize service', () => {
+        const event = {
+            offsetX: canvasResizerStub.canvasSize.x + 1,
+            offsetY: canvasResizerStub.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION + 1,
+        } as MouseEvent;
+        const canvasResizeSpy = spyOn(canvasResizerStub, 'onResizeDown').and.callThrough();
+        component.onResizeDown(event);
+        expect(canvasResizeSpy).toHaveBeenCalled();
+        expect(canvasResizerStub.resizeCursor).toBe(cursorName.resizeHorizontal);
+    });
+
+    it(' should onResizeMove trigger verticalAndHorizontal preview resize service', () => {
+        canvasResizerStub.isResizeDown = true;
+        const event = { offsetX: canvasResizerStub.canvasSize.x, offsetY: canvasResizerStub.canvasSize.y } as MouseEvent;
+        const canvasResizeSpy = spyOn(canvasResizerStub, 'onResize').and.callThrough();
+        component.onResizeMove(event);
+        expect(canvasResizeSpy).toHaveBeenCalled();
+        expect(canvasResizerStub.resizeCursor).toBe(cursorName.resizeVerticalAndHorizontal);
+    });
+
+    it(' should onResizeMove trigger vertical preview resize service', () => {
+        canvasResizerStub.isResizeDown = true;
+        const event = {
+            offsetX: canvasResizerStub.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION + 1,
+            offsetY: canvasResizerStub.canvasSize.y + 1,
+        } as MouseEvent;
+        const canvasResizeSpy = spyOn(canvasResizerStub, 'onResize').and.callThrough();
+        component.onResizeMove(event);
+        expect(canvasResizeSpy).toHaveBeenCalled();
+        expect(canvasResizerStub.resizeCursor).toBe(cursorName.resizeVertical);
+    });
+
+    it(' should onResizeMove trigger horizontal preview resize service', () => {
+        canvasResizerStub.isResizeDown = true;
+        const event = {
+            offsetX: canvasResizerStub.canvasSize.x + 1,
+            offsetY: canvasResizerStub.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION + 1,
+        } as MouseEvent;
+        const canvasResizeSpy = spyOn(canvasResizerStub, 'onResize').and.callThrough();
+        component.onResizeMove(event);
+        expect(canvasResizeSpy).toHaveBeenCalled();
+        expect(canvasResizerStub.resizeCursor).toBe(cursorName.resizeHorizontal);
+    });
+
+    it(' should onResizeUp trigger resizer service', () => {
+        const event = {} as MouseEvent;
+        const onResizeUpSpy = spyOn(canvasResizerStub, 'onResizeUp').and.callThrough();
+        component.onResizeUp(event);
+        expect(onResizeUpSpy).toHaveBeenCalled();
+    });
+
+    it(' should onResizeOut trigger resizer service', () => {
+        const event = {} as MouseEvent;
+        const onResizeOutSpy = spyOn(canvasResizerStub, 'onResizeOut').and.callThrough();
+        component.onResizeOut(event);
+        expect(onResizeOutSpy).toHaveBeenCalled();
+    });
+
+    it(' should onShiftKeyDown trigger tool service', () => {
+        const event = {} as KeyboardEvent;
+        const onShiftKeyDownSpy = spyOn(toolStub, 'onShiftKeyDown').and.callThrough();
+        component.onKeyShiftDown(event);
+        expect(onShiftKeyDownSpy).toHaveBeenCalled();
+    });
+
+    it(' should onShiftKeyUp trigger tool service', () => {
+        const event = {} as KeyboardEvent;
+        const onShiftKeyUpSpy = spyOn(toolStub, 'onShiftKeyUp').and.callThrough();
+        component.onKeyShiftUp(event);
+        expect(onShiftKeyUpSpy).toHaveBeenCalled();
+    });
+
+    it(' should onDoubleClick trigger tool service', () => {
+        const event = {} as MouseEvent;
+        const onDoubleClickSpy = spyOn(toolStub, 'onDoubleClick').and.callThrough();
+        component.onDoubleClick(event);
+        expect(onDoubleClickSpy).toHaveBeenCalled();
+    });
+
+    it(' should onKeyEscape trigger tool service', () => {
+        const event = {} as KeyboardEvent;
+        const onKeyEscapeSpy = spyOn(toolStub, 'onKeyEscape').and.callThrough();
+        component.onKeyEscape(event);
+        expect(onKeyEscapeSpy).toHaveBeenCalled();
+    });
+
+    it(' should onKeyBackSpace trigger tool service', () => {
+        const event = {} as KeyboardEvent;
+        const onKeyBackSpaceSpy = spyOn(toolStub, 'onKeyBackSpace').and.callThrough();
+        component.onKeyBackSpace(event);
+        expect(onKeyBackSpaceSpy).toHaveBeenCalled();
     });
 });
