@@ -79,7 +79,7 @@ describe('ClientServerCommunicationService', () => {
             picture: 'test5',
         };
         // check the content of the mocked call
-        service.getAllLabel().subscribe((response: CancasInformation) => {
+        service.allLabel().subscribe((response: CancasInformation) => {
             expect(response.id).toEqual(expectedCancasInformation.id, 'id check');
             expect(response.name).toEqual(expectedCancasInformation.name, 'name check');
         }, fail);

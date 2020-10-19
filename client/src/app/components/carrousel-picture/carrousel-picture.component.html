@@ -9,3 +9,8 @@
         <img />
     </div>
 </div>
+<div>
+    <h1></h1>
+    <mat-button-toggle class="sub-button" mat-button color="primary" (click)="raffrachire()">rafraichire la lislte</mat-button-toggle>
+    <div *ngFor="let element of dataLabel">{{ element.label }} <br /></div>
+</div>
