@@ -123,10 +123,10 @@ describe('Data Controller', () => {
                 console.log('Error ' + err);
             });
     });
-    it('should get test error /all_label', async () => {
+    it('should get test error /all_labels', async () => {
         dataService.getAllLabel.rejects(new Error('error in the service mongo'));
         return supertest(app)
-            .get('/api/data/all_label')
+            .get('/api/data/all_labels')
             .send()
             .expect(HTTP_STATUS_OK)
             .then(async (reponse: any) => {
@@ -140,7 +140,7 @@ describe('Data Controller', () => {
         const Labels: Label[] = [{ label: 'label1' }, { label: 'label2' }];
         dataService.getAllLabel.resolves(Labels);
         return supertest(app)
-            .get('/api/data/all_label')
+            .get('/api/data/all_labels')
             .expect(HTTP_STATUS_OK)
             .then(async (reponse: any) => {
                 expect(reponse.body.labels).to.equal(Labels);

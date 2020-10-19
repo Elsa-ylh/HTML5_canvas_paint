@@ -26,15 +26,15 @@ describe('ClientServerCommunicationService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should return expected message (HttpClient called once)', () => {
+    it('should return expected CancasInformations (HttpClient called once)', () => {
         const expectedCancasInformation: CancasInformation[] = [
             { id: '', name: 'test5', labels: [{ label: 'label1' }], date: '2020-10-08', picture: 'test5' },
         ];
 
         // check the content of the mocked call
         service.getData().subscribe((response: CancasInformation[]) => {
-            expect(response[0].id).toEqual(expectedCancasInformation[0].id, 'Title check');
-            expect(response[0].name).toEqual(expectedCancasInformation[0].name, 'body check');
+            expect(response[0].id).toEqual(expectedCancasInformation[0].id, 'id check');
+            expect(response[0].name).toEqual(expectedCancasInformation[0].name, 'name check');
         }, fail);
 
         const req = httpMock.expectOne(baseUrl);
@@ -43,13 +43,13 @@ describe('ClientServerCommunicationService', () => {
         req.flush(expectedCancasInformation);
     });
 
-    it('should return expected message (HttpClient called once)', () => {
+    it('should message return expected CancasInformations (HttpClient called once)', () => {
         const expectedCancasInformation: CancasInformation[] = [
             { id: '', name: 'test5', labels: [{ label: 'label1' }], date: '2020-10-08', picture: 'test5' },
         ];
         const expectedMessage: Message = { body: 'label1', title: 'Labels' };
         // check the content of the mocked call
-        service.poshData(expectedMessage).subscribe((response: CancasInformation[]) => {
+        service.selectPictureWithLabel(expectedMessage).subscribe((response: CancasInformation[]) => {
             expect(response[0].id).toEqual(expectedCancasInformation[0].id, 'id check');
             expect(response[0].name).toEqual(expectedCancasInformation[0].name, 'name check');
         }, fail);
@@ -68,5 +68,25 @@ describe('ClientServerCommunicationService', () => {
         const req = httpMock.expectOne(baseUrl);
         expect(req.request.method).toBe('GET');
         req.error(new ErrorEvent('Random error occured'));
+    });
+
+    it('should return expected CancasInformation (HttpClient called once)', () => {
+        const expectedCancasInformation: CancasInformation = {
+            id: '',
+            name: 'test5',
+            labels: [{ label: 'label1' }],
+            date: '2020-10-08',
+            picture: 'test5',
+        };
+        // check the content of the mocked call
+        service.getAllLabel().subscribe((response: CancasInformation) => {
+            expect(response.id).toEqual(expectedCancasInformation.id, 'id check');
+            expect(response.name).toEqual(expectedCancasInformation.name, 'name check');
+        }, fail);
+
+        const req = httpMock.expectOne(baseUrl + '/all_labels');
+        expect(req.request.method).toBe('GET');
+        // actually send the request
+        req.flush(expectedCancasInformation);
     });
 });

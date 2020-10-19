@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CarrouselPictureComponent } from './carrousel-picture.component';
 
 describe('CarrouselPictureComponent', () => {

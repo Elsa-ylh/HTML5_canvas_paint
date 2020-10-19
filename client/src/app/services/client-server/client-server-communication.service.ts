@@ -13,7 +13,6 @@ export class ClientServerCommunicationService {
     constructor(private http: HttpClient) {}
 
     getData(): Observable<CancasInformation[]> {
-        console.log('get si go');
         return this.http.get<CancasInformation[]>(this.HTTP_SERVE_LOCAL).pipe(catchError(this.handleError<CancasInformation[]>('basicGet')));
     }
 
@@ -26,5 +25,10 @@ export class ClientServerCommunicationService {
         return (error: Error): Observable<T> => {
             return of(result as T);
         };
+    }
+    getAllLabel(): Observable<CancasInformation> {
+        return this.http
+            .get<CancasInformation>(this.HTTP_SERVE_LOCAL + '/all_labels')
+            .pipe(catchError(this.handleError<CancasInformation>('basicGet')));
     }
 }
