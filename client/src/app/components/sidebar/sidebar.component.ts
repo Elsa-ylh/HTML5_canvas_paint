@@ -6,6 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { cursorName } from '@app/classes/cursor-name';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
+import { CarrouselPictureComponent } from '@app/components/carrousel-picture/carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { ColorService } from '@app/services/color/color.service';
@@ -17,7 +18,6 @@ import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
-import { CarrouselPictureComponent } from '../carrousel-picture/carrousel-picture.component';
 
 @Component({
     selector: 'app-sidebar',

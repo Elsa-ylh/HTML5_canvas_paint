@@ -29,5 +29,4 @@ export class CarrouselPictureComponent {
     getPicture3():void{
 
     };*/
-    
 }
