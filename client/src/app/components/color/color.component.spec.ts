@@ -87,14 +87,19 @@ describe('ColorComponent', () => {
         expect(colorSpy).toHaveBeenCalled();
     });
 
-    /*
     it('should set Color', () => {
-        const event = { x: 15, y: 47 } as MouseEvent;
+        const canvas = document.createElement('canvas');
+        canvas.setAttribute('width', '100');
+        canvas.setAttribute('height', '100');
+        component.squareCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        const event = { offsetX: 15, offsetY: 47 } as MouseEvent;
         component.onMouseOverSquare(event);
-        drawingStub.baseCtx.getImageData(0, 0, 15, 38);
-        expect(colorStub.previewColor).toBeDefined();
+        const colorMatrix = component.squareCtx.getImageData(event.offsetX, event.offsetY, 1, 1);
+        expect(colorMatrix.data[0]).toEqual(0);
+        expect(colorMatrix.data[1]).toEqual(0);
+        expect(colorMatrix.data[2]).toEqual(0);
+        expect(colorMatrix.data[3]).toEqual(0);
     });
-    */
 
     it('should set primary color and should add as last color', () => {
         const event = { x: 15, y: 38 } as MouseEvent;
