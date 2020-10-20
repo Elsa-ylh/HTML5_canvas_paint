@@ -1,5 +1,5 @@
 <p>selection-picture works!</p>
-
+<button mat-raised-button (click)="resete()">réinitialise tous</button>
 <div *ngFor="let picture of getPicturesTestAll()">
     <div>
         {{ picture.name }}
@@ -10,7 +10,18 @@
     </div>
 </div>
 <div>
-    <h1></h1>
-    <mat-button-toggle class="sub-button" mat-button color="primary" (click)="raffrachire()">rafraichire la lislte</mat-button-toggle>
-    <div *ngFor="let element of dataLabel">{{ element.label }} <br /></div>
+    <h1>list d'étiquettes</h1>
+    <p *ngIf="!dataLabel.length">appuié sur le button "rafraichire la lislte" étiquettes</p>
+    <button mat-raised-button (click)="refresh()">rafraichir la lislte</button>
+    <div>
+        <mat-button-toggle
+            *ngFor="let element of dataLabel"
+            class="sub-button"
+            mat-button
+            color="primary"
+            id="{{ element.label }}"
+            (click)="selectionLabel(element.label)"
+            >{{ element.label }}</mat-button-toggle
+        >
+    </div>
 </div>
