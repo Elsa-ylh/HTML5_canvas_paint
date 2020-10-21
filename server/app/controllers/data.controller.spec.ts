@@ -18,7 +18,7 @@ describe('Data Controller', () => {
         id: '',
         name: 'test5',
         labels: [{ label: 'label1' }],
-        date: '2020-10-08',
+        date: new Date('10/08/2020'),
         picture: 'test5',
     };
     beforeEach(async () => {
@@ -38,7 +38,7 @@ describe('Data Controller', () => {
             .get('/api/data')
             .expect(HTTP_STATUS_OK)
             .then((reponse: any) => {
-                expect(reponse.body).to.deep.equal(testCancasInformationAdd);
+                expect(reponse.body.name).to.deep.equal(testCancasInformationAdd.name);
             });
     });
     it('should return rejet ', async () => {

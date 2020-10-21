@@ -11,10 +11,10 @@ describe('Database service', () => {
     let client: MongoClient;
     let testCancasInformationAdd: CancasInformation;
     const allDataTest = [
-        { name: 'test1', labels: [{ label: 'label1' }], date: '2020-10-08', picture: 'test1' },
-        { name: 'test2', labels: [{ label: 'label1' }, { label: 'label2' }], date: '2020-10-08', picture: 'test2' },
-        { name: 'test3', labels: [{}], date: '2020-10-08', picture: 'test3' },
-        { name: 'test4', labels: [{ label: 'label2' }], date: '2020-10-08', picture: 'test4' },
+        { name: 'test1', labels: [{ label: 'label1' }], date: new Date('10/08/2020'), picture: 'test1' },
+        { name: 'test2', labels: [{ label: 'label1' }, { label: 'label2' }], date: new Date('10/08/2020'), picture: 'test2' },
+        { name: 'test3', labels: [{}], date: new Date('10/08/2020'), picture: 'test3' },
+        { name: 'test4', labels: [{ label: 'label2' }], date: new Date('10/08/2020'), picture: 'test4' },
     ] as CancasInformation[];
 
     beforeEach(async () => {
@@ -26,7 +26,7 @@ describe('Database service', () => {
 
         db = client.db(await mongoServer.getDbName());
         databaseService.collection = db.collection('test');
-        testCancasInformationAdd = { id: '', name: 'test5', labels: [{ label: 'label1' }], date: '2020-10-08', picture: 'test5' };
+        testCancasInformationAdd = { id: '', name: 'test5', labels: [{ label: 'label1' }], date: new Date('10/08/2020'), picture: 'test5' };
         databaseService.collection.insertMany(allDataTest);
         await databaseService.getPictures();
     });
@@ -71,7 +71,7 @@ describe('Database service', () => {
     });
 
     it('should addPicture is not add collection', async () => {
-        const newPictError = { name: '', labels: [{ label: 'label2' }], date: '2020-10-08', picture: 'a' } as CancasInformation;
+        const newPictError = { name: '', labels: [{ label: 'label2' }], date: new Date('10/08/2020'), picture: 'a' } as CancasInformation;
         await databaseService
             .addPicture(newPictError)
             .then((resol: any) => {
@@ -85,7 +85,7 @@ describe('Database service', () => {
         await databaseService.collection.insertOne({
             name: 'test5',
             labels: [{ label: 'label3' }],
-            date: '2020-10-08',
+            date: new Date('10/08/2020'),
             picture: 'test5',
         } as CancasInformation);
         await databaseService

@@ -25,7 +25,7 @@ export class DataController {
                         id: 'Error',
                         name: reason as string,
                         labels: [],
-                        date: new Date().toString(),
+                        date: new Date(),
                         picture: '',
                     };
                     res.json(errorMessage);
@@ -39,7 +39,7 @@ export class DataController {
                         id: 'list_of_all_labals',
                         name: 'labels',
                         labels: labelsInformation,
-                        date: new Date().toString(),
+                        date: new Date(),
                         picture: '',
                     };
                     res.json(informationMessage);
@@ -49,7 +49,7 @@ export class DataController {
                         id: 'Error',
                         name: reason as string,
                         labels: [],
-                        date: new Date().toString(),
+                        date: new Date(),
                         picture: '',
                     };
                     res.json(errorMessage);
@@ -67,7 +67,7 @@ export class DataController {
                         id: 'Error',
                         name: error as string,
                         labels: [],
-                        date: new Date().toString(),
+                        date: new Date(),
                         picture: '',
                     };
                     res.status(HTTP_STATUS_BAD_REQUEST).json(errorData);
@@ -78,7 +78,7 @@ export class DataController {
                     id: 'Error',
                     name: 'Titre message non valide',
                     labels: [],
-                    date: new Date().toString(),
+                    date: new Date(),
                     picture: '',
                 };
                 res.status(HTTP_STATUS_BAD_REQUEST).json(errorData);
@@ -96,7 +96,7 @@ export class DataController {
                             id: 'Error',
                             name: reason as string,
                             labels: [],
-                            date: new Date().toString(),
+                            date: new Date(),
                             picture: '',
                         };
                         res.json(errorMessage);

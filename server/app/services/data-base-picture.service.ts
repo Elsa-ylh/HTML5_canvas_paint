@@ -29,7 +29,7 @@ export class DatabasePicureService {
 
     async getPicturesLabals(setLabels: string[]): Promise<CancasInformation[]> {
         if (setLabels[0] === 'Error') {
-            return [{ id: 'not catch the labels', name: 'Error', labels: [], date: new Date().toString(), picture: '' }];
+            return [{ id: 'not catch the labels', name: 'Error', labels: [], date: new Date(), picture: '' }];
         } else if (!setLabels.length) {
             return this.getPictures();
         } else {
@@ -42,7 +42,7 @@ export class DatabasePicureService {
                     return picture;
                 })
                 .catch((error: Error) => {
-                    return [{ id: error.message as string, name: 'Error', labels: [], date: new Date().toString(), picture: '' }];
+                    return [{ id: error.message as string, name: 'Error', labels: [], date: new Date(), picture: '' }];
                 });
         }
     }

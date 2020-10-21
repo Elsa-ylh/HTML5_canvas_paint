@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { CancasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
@@ -12,6 +13,10 @@ export class CarrouselPictureComponent {
     private dataPicture: CancasInformation[];
     dataLabel: Label[];
     private labelSelect: string[];
+    selectedType: string = 'name';
+    name: string;
+    myDate = new FormControl(new Date());
+
     // message: Message;
     constructor(private clientServerCommunicationService: ClientServerCommunicationService) {
         this.addAllData();
@@ -59,6 +64,17 @@ export class CarrouselPictureComponent {
     }
     getPicturesTestAll(): CancasInformation[] {
         return this.dataPicture;
+    }
+    setSearchCriteria(): void {
+        switch (this.selectedType) {
+            case 'name':
+                break;
+            case 'date':
+                try {
+                    console.log((this.myDate.value as Date).getMonth);
+                } catch (error) {}
+                break;
+        }
     }
 
     /*getPicture1():void{
