@@ -10,20 +10,19 @@ import { Message } from '@common/communication/message';
     styleUrls: ['./carrousel-picture.component.scss'],
 })
 export class CarrouselPictureComponent {
-    private dataPicture: CancasInformation[];
-    dataLabel: Label[];
-    private labelSelect: string[];
+    private dataPicture: CancasInformation[] = [];
+    dataLabel: Label[] = [];
+    private labelSelect: string[] = [];
     selectedType: string = 'name';
     name: string;
     myDate: FormControl = new FormControl(new Date());
 
     // message: Message;
-    constructor(private clientServerCommunicationService: ClientServerCommunicationService) {
+    constructor(private clientServerCommunicationService: ClientServerCommunicationService) {}
+    ngOnInit() {
         this.addAllData();
         this.addAllLabal();
-        this.labelSelect = [];
     }
-
     private addAllData(): void {
         this.clientServerCommunicationService.getData().subscribe((info) => (this.dataPicture = info));
     }
