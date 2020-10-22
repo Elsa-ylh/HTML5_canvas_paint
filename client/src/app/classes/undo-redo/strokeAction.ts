@@ -1,12 +1,19 @@
-import { PencilService } from '@app/services/tools/pencil-service';
+import { ColorService } from '@app/services/color/color.service';
 import { AbsUndoRedo } from './abs-undo-redo';
+
 // class that allows to redo-undo pencil-brush-eraser tool
 export class StrokeAction extends AbsUndoRedo {
-    constructor(private pencilService: PencilService, private lastMousePos: Event, private newMousePos: MouseEvent) {
+    // couleur finale = couleur du stroke
+    // couleur initiale = avant le stroke dans le canvas (dans ) // use getcolor de colorservice
+    constructor(private changes: vec2[], coleurFinale: string, colorService: ColorService) {
         super();
     }
 
-    reapply(): void {}
+    reapply(): void {
+        // couleur finale aux positions
+    }
 
-    deapply(): void {}
+    deapply(): void {
+        // couleur initiale (dans le tableau de tuple Vec2/string) aux positions
+    }
 }

@@ -15,7 +15,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class PencilService extends Tool {
     pencilSize: number = 2;
 
-    private pathData: Vec2[];
+    private pathData: Vec2[]; // tuple de vec2 et de string (couleur)
 
     constructor(drawingService: DrawingService, private colorService: ColorService) {
         super(drawingService);
@@ -32,6 +32,7 @@ export class PencilService extends Tool {
             this.drawingService.previewCtx.lineWidth = this.pencilSize;
             this.clearEffectTool();
             this.mouseDownCoord = this.getPositionFromMouse(event);
+            // TODO mettre couleur initiale // use getcolor de colorservice
             this.pathData.push(this.mouseDownCoord);
         }
         this.clearPath();
@@ -43,6 +44,7 @@ export class PencilService extends Tool {
             const diametreCir = this.pencilSize / 2;
             const angleCir = 0;
             if (this.mouseMove) {
+                // TODO couleur initiale
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -52,19 +54,22 @@ export class PencilService extends Tool {
                 this.drawingService.previewCtx.fillStyle = '#000000';
                 this.clearPath();
                 this.drawingService.baseCtx.arc(mousePosition.x, mousePosition.y, diametreCir, angleCir, Math.PI * 2);
+                // TODO couleur initiale
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
             }
         }
         this.mouseDown = false;
+        // TODO mettre pathData + couleur finale dans l'objet d'action // coinstucor(action) d=styje action
+        //addUndo(action) dans service
         this.clearPath();
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
+            this.pathData.push(mousePosition); // nmettre avec this.pathdata/
             this.mouseMove = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.previewCtx, this.pathData);
@@ -87,6 +92,12 @@ export class PencilService extends Tool {
         this.drawingService.baseCtx.setLineDash([0, 0]); // reset
         this.drawingService.previewCtx.setLineDash([0, 0]);
     }
+
+    // todo getColor position
+    // PUSH POSITION + COULEUR INITIALE
+    // pushData(): void {
+    //     this.pathData.push();
+    // }
 
     clearPath(): void {
         this.pathData = [];
