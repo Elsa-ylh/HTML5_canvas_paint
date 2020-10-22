@@ -11,9 +11,9 @@ describe('Database service', () => {
     let client: MongoClient;
     let testCancasInformationAdd: CancasInformation;
     const allDataTest = [
-        { name: 'test1', labels: [{ label: 'label1' }], date: new Date('10/08/2020'), picture: 'test1' },
-        { name: 'test2', labels: [{ label: 'label1' }, { label: 'label2' }], date: new Date('10/08/2020'), picture: 'test2' },
-        { name: 'test3', labels: [{}], date: new Date('10/08/2020'), picture: 'test3' },
+        { name: 'test1', labels: [{ label: 'label1' }], date: new Date('10/04/2020'), picture: 'test1' },
+        { name: 'test2', labels: [{ label: 'label1' }, { label: 'label2' }], date: new Date('10/05/2020'), picture: 'test2' },
+        { name: 'test3', labels: [{}], date: new Date('10/08/2020 15:15:15'), picture: 'test3' },
         { name: 'test4', labels: [{ label: 'label2' }], date: new Date('10/08/2020'), picture: 'test4' },
     ] as CancasInformation[];
 
@@ -171,6 +171,69 @@ describe('Database service', () => {
             .getAllLabel()
             .then((value: any) => {
                 expect(value.name).to.equal('Error');
+            })
+            .catch((error: unknown) => {
+                return error;
+            });
+    });
+    it('test error find getPicturesDate', async () => {
+        client.close();
+        await databaseService
+            .getPicturesDate('')
+            .then((value: any) => {
+                expect(value.name).to.equal('Error');
+            })
+            .catch((error: unknown) => {
+                return error;
+            });
+    });
+    it('test error find getPicturesName', async () => {
+        client.close();
+        await databaseService
+            .getPicturesName('')
+            .then((value: any) => {
+                expect(value.name).to.equal('Error');
+            })
+            .catch((error: unknown) => {
+                return error;
+            });
+    });
+    it('test find getPicturesDate return []', async () => {
+        await databaseService
+            .getPicturesDate('')
+            .then((value: any) => {
+                expect(value).to.equal([]);
+            })
+            .catch((error: unknown) => {
+                return error;
+            });
+    });
+    it('test find getPicturesName return []', async () => {
+        await databaseService
+            .getPicturesName('')
+            .then((value: any) => {
+                expect(value).to.equal([]);
+            })
+            .catch((error: unknown) => {
+                return error;
+            });
+    });
+    it('test find getPicturesDate', async () => {
+        await databaseService
+            .getPicturesDate('10/08/2020')
+            .then((value: any) => {
+                expect(value[0]).to.equal('test3');
+                expect(value[1]).to.equal('test4');
+            })
+            .catch((error: unknown) => {
+                return error;
+            });
+    });
+    it('test find getPicturesName ', async () => {
+        await databaseService
+            .getPicturesName('test1')
+            .then((value: any) => {
+                expect(value[0].name).to.equal('test1');
             })
             .catch((error: unknown) => {
                 return error;
