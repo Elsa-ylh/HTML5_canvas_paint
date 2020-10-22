@@ -103,6 +103,71 @@ export class DataController {
                     });
             }
         });
+        this.router.post('/research', (req: Request, res: Response, next: NextFunction) => {
+            let typeResearch: string;
+            let research: string = '';
+            try {
+                typeResearch = req.body.titre;
+                research = req.body.body;
+            } catch (error) {
+                const errorData: CancasInformation = {
+                    id: 'Error',
+                    name: error as string,
+                    labels: [],
+                    date: new Date(),
+                    picture: '',
+                };
+                res.status(HTTP_STATUS_BAD_REQUEST).json(errorData);
+                typeResearch = 'Error';
+            }
+            switch (typeResearch) {
+                case 'name':
+                    this.databaseService
+                        .getPicturesName(research)
+                        .then((cancasInformation: CancasInformation[]) => {
+                            res.json(cancasInformation);
+                        })
+                        .catch((reason: unknown) => {
+                            const errorMessage: CancasInformation = {
+                                id: 'Error',
+                                name: reason as string,
+                                labels: [],
+                                date: new Date(),
+                                picture: '',
+                            };
+                            res.json(errorMessage);
+                        });
+                    break;
+                case 'date':
+                    this.databaseService
+                        .getPicturesDate(research)
+                        .then((cancasInformation: CancasInformation[]) => {
+                            res.json(cancasInformation);
+                        })
+                        .catch((reason: unknown) => {
+                            const errorMessage: CancasInformation = {
+                                id: 'Error',
+                                name: reason as string,
+                                labels: [],
+                                date: new Date(),
+                                picture: '',
+                            };
+                            res.json(errorMessage);
+                        });
+                    break;
+                default:
+                    const errorData: CancasInformation = {
+                        id: 'Error',
+                        name: 'not good research',
+                        labels: [],
+                        date: new Date(),
+                        picture: '',
+                    };
+                    res.status(HTTP_STATUS_BAD_REQUEST).json(errorData);
+                    typeResearch = 'Error';
+                    break;
+            }
+        });
     }
     private textToTable(theTest: string): string[] {
         return theTest.split(',');

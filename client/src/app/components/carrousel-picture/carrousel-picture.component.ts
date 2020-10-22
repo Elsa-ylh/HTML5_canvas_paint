@@ -71,7 +71,8 @@ export class CarrouselPictureComponent {
                 break;
             case 'date':
                 try {
-                    console.log((this.myDate.value as Date).getMonth);
+                    //(this.myDate.value  as Date).getDate
+                    console.log(this.myDate.value as Date);
                 } catch (error) {}
                 break;
         }

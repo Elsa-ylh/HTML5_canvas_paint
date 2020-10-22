@@ -99,7 +99,36 @@ export class DatabasePicureService {
                 throw error;
             });
     }
-
+    async getPicturesName(namePicture: string): Promise<CancasInformation[]> {
+        return this.collection
+            .find({ name: namePicture })
+            .toArray()
+            .then((picture: CancasInformation[]) => {
+                return picture;
+            })
+            .catch((error: Error) => {
+                throw error;
+            });
+    }
+    async getPicturesDate(datePicture: string): Promise<CancasInformation[]> {
+        let stratDate = new Date(datePicture);
+        stratDate.setHours(0);
+        stratDate.setMinutes(0);
+        stratDate.setSeconds(0);
+        let endDate = new Date(stratDate);
+        endDate.setHours(23);
+        endDate.setMinutes(59);
+        endDate.setSeconds(59);
+        return this.collection
+            .find({ date: { $gte: stratDate, $lte: endDate } })
+            .toArray()
+            .then((picture: CancasInformation[]) => {
+                return picture;
+            })
+            .catch((error: Error) => {
+                throw error;
+            });
+    }
     async addPicture(picture: CancasInformation): Promise<void> {
         const bool = await this.validatePicture(picture);
         if (bool === true) {
