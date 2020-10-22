@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { AfterViewInit, Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { CanvasResizerService } from '../canvas/canvas-resizer.service';
 
 // https://github.com/williammalone/HTML5-Paint-Bucket-Tool/blob/master/html5-canvas-paint-bucket.js => paint bucket in js
 
@@ -26,14 +26,14 @@ import { CanvasResizerService } from '../canvas/canvas-resizer.service';
 @Injectable({
     providedIn: 'root',
 })
-export class PaintBucketService extends Tool {
+export class PaintBucketService extends Tool implements AfterViewInit {
     fillColor: string;
     mousePosition: Vec2;
     mouseEnter: boolean = false;
     mouseOut: boolean = false;
-    //DEFAULT_WIDTH: number = (window.innerWidth - SIDEBAR_WIDTH - ICON_WIDTH) / 2;
-    //DEFAULT_HEIGHT: number = window.innerHeight / 2;
-    //canvasSize: Vec2 = { x: this.DEFAULT_WIDTH, y: this.DEFAULT_HEIGHT };
+    // DEFAULT_WIDTH: number = (window.innerWidth - SIDEBAR_WIDTH - ICON_WIDTH) / 2;
+    // DEFAULT_HEIGHT: number = window.innerHeight / 2;
+    // canvasSize: Vec2 = { x: this.DEFAULT_WIDTH, y: this.DEFAULT_HEIGHT };
     targetColor: RGBA;
     // tslint:disable-next-line: no-any
     fillStack: any = [];
@@ -41,12 +41,17 @@ export class PaintBucketService extends Tool {
     // visited: Number = new Array(1)[1000];
     colorAttributs: number = 4;
 
-    imageData: Uint8ClampedArray
-    ngAfterViewInit() {
-    this.imageData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasResizerService.canvasSize.x, this.canvasResizerService.canvasSize.y).data;
+    imageData: Uint8ClampedArray;
+    ngAfterViewInit(): void {
+        this.imageData = this.drawingService.baseCtx.getImageData(
+            0,
+            0,
+            this.canvasResizerService.canvasSize.x,
+            this.canvasResizerService.canvasSize.y,
+        ).data;
     }
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private canvasResizerService : CanvasResizerService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private canvasResizerService: CanvasResizerService) {
         super(drawingService);
     }
 
