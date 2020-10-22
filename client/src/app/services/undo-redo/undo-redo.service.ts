@@ -6,20 +6,18 @@ import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
 })
 export class UndoRedoService {
     isundoRedoDisabled: boolean = true; // to disactivate the option to redo-redo. diabled=true (cant undo-red0 when app loads)
-    private listUndo: AbsUndoRedo[] = [];
+    private listUndo: AbsUndoRedo[] = []; // FIFo
     private listRedo: AbsUndoRedo[] = []; // LIFO
     constructor() {}
 
-    undoRedoActif(mouseEvent: MouseEvent): void {
+    onMouseUpActivate(mouseEvent: MouseEvent): void {
         // there is one element
         if (this.listUndo.length > 0 || this.listRedo.length > 0) {
             this.isundoRedoDisabled = false;
         }
-        if (mouseEvent.movementX || mouseEvent.movementY) {
-            this.isundoRedoDisabled = true;
-        } else {
-            this.isundoRedoDisabled = false;
-        }
+    }
+    onMouseDownActivate(mouseEvent: MouseEvent): void {
+        this.isundoRedoDisabled = true;
     }
 
     // function that redoes the latest undo.
@@ -46,6 +44,7 @@ export class UndoRedoService {
     addUndo(action: AbsUndoRedo): void {
         this.listUndo.push(action);
     }
+
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
     undo(): void {
         if (this.listUndo.length > 0) {

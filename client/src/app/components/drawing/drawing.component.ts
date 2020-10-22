@@ -10,6 +10,7 @@ import { ResizeDirection } from '@app/classes/resize-direction';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Component({
     selector: 'app-drawing',
@@ -17,7 +18,12 @@ import { ToolService } from '@app/services/tool-service';
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit {
-    constructor(private drawingService: DrawingService, private toolService: ToolService, public crs: CanvasResizerService) {}
+    constructor(
+        private drawingService: DrawingService,
+        private toolService: ToolService,
+        public crs: CanvasResizerService,
+        private undoRedo: UndoRedoService,
+    ) {}
 
     get width(): number {
         return this.crs.canvasSize.x;
@@ -52,6 +58,7 @@ export class DrawingComponent implements AfterViewInit {
 
     onMouseDown(event: MouseEvent): void {
         this.toolService.currentTool.onMouseDown(event);
+        this.undoRedo.onMouseDownActivate(event); // activate or not undo redo
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -60,6 +67,7 @@ export class DrawingComponent implements AfterViewInit {
 
     onMouseUp(event: MouseEvent): void {
         this.toolService.currentTool.onMouseUp(event);
+        this.undoRedo.onMouseUpActivate(event);
     }
 
     onMouseOut(event: MouseEvent): void {

@@ -3,15 +3,15 @@
 export abstract class AbsUndoRedo {
     // constructor() {}
     // list of data =>contains
-    private dataList: AbsUndoRedo[] = [];
+    //private absAction: AbsUndoRedo[] = [];
 
-    setdataList(dataTab: AbsUndoRedo[]): void {
-        this.dataList = dataTab;
-    }
+  //  setdataList(dataTab: AbsUndoRedo[]): void {
+     //   this.absAction = dataTab;
+   // }
 
-    getdataList(): AbsUndoRedo[] {
-        return this.dataList;
-    }
+  //  getdataList(): AbsUndoRedo[] {
+     //   return this.absAction;
+  //  }
 
     // apply element
     reapply(): void {

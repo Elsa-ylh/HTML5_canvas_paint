@@ -43,16 +43,18 @@
                     aria-label="text align justify"
                     matTooltip="Annuler"
                     matTooltipPosition="right"
+                    (click)="undoRedoService.undo()"
                     [disabled]="undoRedoService.isundoRedoDisabled"
                 >
                     <mat-icon> undo</mat-icon>
                 </mat-button-toggle>
                 <mat-button-toggle
                     value="justify"
-                    disable
+                    disabled
                     aria-label="text align justify"
                     matTooltip="Refaire"
                     matTooltipPosition="right"
+                    (click)="undoRedoService.redo()"
                     [disabled]="undoRedoService.isundoRedoDisabled"
                 >
                     <mat-icon> redo</mat-icon>

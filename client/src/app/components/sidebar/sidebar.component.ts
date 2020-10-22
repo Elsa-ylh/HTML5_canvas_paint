@@ -74,6 +74,9 @@ export class SidebarComponent {
 
     createNewDrawing(): void {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
+        this.undoRedoService.clearRedo();
+        this.undoRedoService.clearUndo();
+        this.undoRedoService.isundoRedoDisabled = true;
     }
 
     openUserGuide(): void {
@@ -231,22 +234,18 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.control.z', ['$event'])
-    callUndo(event: KeyboardEvent): void {
+    callUndo(eventK: KeyboardEvent): void {
         if (!this.undoRedoService.isundoRedoDisabled) {
-            // ITS DISABLED
-            // this.undoRedoService.addUndo()
             this.undoRedoService.undo();
-            // console.log('ctrl z works : undo called');
+            console.log('ctrl z works : undo called');
         }
     }
 
     @HostListener('window:keydown.control.shift.z', ['$event'])
-    callRedo(event: KeyboardEvent): void {
+    callRedo(eventK: KeyboardEvent): void {
         if (!this.undoRedoService.isundoRedoDisabled) {
-            // ITS DISABLED
-            // this.undoRedoService.addUndo()
             this.undoRedoService.redo();
-            // console.log('ctrl shift z works : redo called');
+            console.log('ctrl shift z works : redo called');
         }
     }
 }

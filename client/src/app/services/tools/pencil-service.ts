@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
+import { StrokeAction } from '@app/classes/undo-redo/strokeAction';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
 // Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
 // L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
@@ -15,10 +17,14 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class PencilService extends Tool {
     pencilSize: number = 2;
 
-    private pathData: Vec2[]; // tuple de vec2 et de string (couleur)
+    //private pathData: [Vec2[], string[]]; // tuple de vec2 et de string (couleur)
+    private pathData: Vec2[];
+    // private intiColor: string[];
 
-    constructor(drawingService: DrawingService, private colorService: ColorService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
+        // this.pathData[0] = [];
+        //this.pathData[1] = [];
         this.clearPath();
     }
     onMouseDown(event: MouseEvent): void {
@@ -33,6 +39,7 @@ export class PencilService extends Tool {
             this.clearEffectTool();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             // TODO mettre couleur initiale // use getcolor de colorservice
+            // this.pushData(this.mouseDownCoord, this.getInitColor(event));
             this.pathData.push(this.mouseDownCoord);
         }
         this.clearPath();
@@ -45,6 +52,7 @@ export class PencilService extends Tool {
             const angleCir = 0;
             if (this.mouseMove) {
                 // TODO couleur initiale
+                // this.pushData(mousePosition, this.getInitColor(event)); // for the undo-redo action
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -56,6 +64,7 @@ export class PencilService extends Tool {
                 this.drawingService.baseCtx.arc(mousePosition.x, mousePosition.y, diametreCir, angleCir, Math.PI * 2);
                 // TODO couleur initiale
                 this.pathData.push(mousePosition);
+                // this.pushData(mousePosition, this.getInitColor(event));
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
             }
@@ -63,6 +72,10 @@ export class PencilService extends Tool {
         this.mouseDown = false;
         // TODO mettre pathData + couleur finale dans l'objet d'action // coinstucor(action) d=styje action
         //addUndo(action) dans service
+        // this.intiColor.push(this.getInitColor(event));
+        let action = new StrokeAction(this.pathData, this.getInitColor(event), this.colorService.primaryColor, this, this.drawingService);
+        this.undoRedoService.addUndo(action);
+        console.log('pushed action');
         this.clearPath();
     }
 
@@ -70,13 +83,15 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition); // nmettre avec this.pathdata/
+            // this.pushData(mousePosition, this.getInitColor(event));
+
             this.mouseMove = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
@@ -94,12 +109,21 @@ export class PencilService extends Tool {
     }
 
     // todo getColor position
+    // get the initial color
+    getInitColor(event: MouseEvent): string {
+        const position = { x: event.offsetX, y: event.offsetY };
+        const initialColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.drawingService.baseCtx));
+        return initialColor;
+    }
+
     // PUSH POSITION + COULEUR INITIALE
-    // pushData(): void {
-    //     this.pathData.push();
-    // }
+    //  pushData(mousePosition: Vec2, initColor: string): void {
+    //  this.pathData[0].push(mousePosition);
+    // this.pathData[1].push(initColor);
+    //   }
 
     clearPath(): void {
+        // this.pathData[0].splice(0, 10); // clears all elements of pathdata
         this.pathData = [];
     }
 }
