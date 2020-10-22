@@ -6,7 +6,9 @@ import 'reflect-metadata';
 const DATABASE_URL = 'mongodb+srv://Admin:LOG2990gr103@saved-canvas-images.2ticq.mongodb.net/project2?retryWrites=true&w=majority';
 const DATABASE_NAME = 'project2';
 const DATABASE_COLLECTION = 'saved_canvas_pictures';
-
+const HOURS_MIDNIGHT = 23;
+const MINUTE_MIDNIGHT = 59;
+const SECOND_MIDNIGHT = 59;
 @injectable()
 export class DatabasePicureService {
     collection: Collection<CancasInformation>;
@@ -111,14 +113,14 @@ export class DatabasePicureService {
             });
     }
     async getPicturesDate(datePicture: string): Promise<CancasInformation[]> {
-        let stratDate = new Date(datePicture);
+        const stratDate = new Date(datePicture);
         stratDate.setHours(0);
         stratDate.setMinutes(0);
         stratDate.setSeconds(0);
-        let endDate = new Date(stratDate);
-        endDate.setHours(23);
-        endDate.setMinutes(59);
-        endDate.setSeconds(59);
+        const endDate = new Date(stratDate);
+        endDate.setHours(HOURS_MIDNIGHT);
+        endDate.setMinutes(MINUTE_MIDNIGHT);
+        endDate.setSeconds(SECOND_MIDNIGHT);
         return this.collection
             .find({ date: { $gte: stratDate, $lte: endDate } })
             .toArray()

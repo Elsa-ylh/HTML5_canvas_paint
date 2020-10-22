@@ -15,7 +15,7 @@ export class CarrouselPictureComponent {
     private labelSelect: string[];
     selectedType: string = 'name';
     name: string;
-    myDate = new FormControl(new Date());
+    myDate: FormControl = new FormControl(new Date());
 
     // message: Message;
     constructor(private clientServerCommunicationService: ClientServerCommunicationService) {
@@ -37,11 +37,11 @@ export class CarrouselPictureComponent {
         this.addAllData();
         this.labelSelect = [];
     }
-    refresh() {
+    refresh(): void {
         this.addAllLabal();
     }
-    selectionLabel(label: string) {
-        let itList: boolean = true;
+    selectionLabel(label: string): void {
+        let itList = true;
         for (let index = 0; index < this.labelSelect.length; index++) {
             if (this.labelSelect[index] === label) {
                 this.labelSelect.splice(index, 1);
@@ -55,7 +55,7 @@ export class CarrouselPictureComponent {
         this.labelSelect.length === 0 ? this.addAllData() : this.setMessageLabel(this.labelSelect);
     }
     private setMessageLabel(labels: string[]): void {
-        let textLabel: string = '';
+        let textLabel = '';
         for (let index = 0; index < labels.length; index++) {
             textLabel += index === labels.length - 1 ? labels[index] : labels[index] + ',';
         }
@@ -71,14 +71,16 @@ export class CarrouselPictureComponent {
                 break;
             case 'date':
                 try {
-                    //(this.myDate.value  as Date).getDate
+                    // (this.myDate.value  as Date).getDate
                     console.log(this.myDate.value as Date);
-                } catch (error) {}
+                } catch (error) {
+                    alert('La date est correttre elle doit être de forme mm/jj/aaaa');
+                }
                 break;
         }
     }
 
-    /*getPicture1():void{
+    /* getPicture1():void{
 
     };
     getPicture2():void{
