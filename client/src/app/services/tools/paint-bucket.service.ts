@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
-import { ICON_WIDTH, SIDEBAR_WIDTH } from '@app/classes/resize-canvas';
 import { RGBA } from '@app/classes/rgba';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { CanvasResizerService } from '../canvas/canvas-resizer.service';
 
 // https://github.com/williammalone/HTML5-Paint-Bucket-Tool/blob/master/html5-canvas-paint-bucket.js => paint bucket in js
 
@@ -31,17 +31,22 @@ export class PaintBucketService extends Tool {
     mousePosition: Vec2;
     mouseEnter: boolean = false;
     mouseOut: boolean = false;
-    DEFAULT_WIDTH: number = (window.innerWidth - SIDEBAR_WIDTH - ICON_WIDTH) / 2;
-    DEFAULT_HEIGHT: number = window.innerHeight / 2;
-    canvasSize: Vec2 = { x: this.DEFAULT_WIDTH, y: this.DEFAULT_HEIGHT };
+    //DEFAULT_WIDTH: number = (window.innerWidth - SIDEBAR_WIDTH - ICON_WIDTH) / 2;
+    //DEFAULT_HEIGHT: number = window.innerHeight / 2;
+    //canvasSize: Vec2 = { x: this.DEFAULT_WIDTH, y: this.DEFAULT_HEIGHT };
     targetColor: RGBA;
     // tslint:disable-next-line: no-any
     fillStack: any = [];
     colorAttribut: number = 4; // r, g, b, a => lint
     // visited: Number = new Array(1)[1000];
     colorAttributs: number = 4;
-    imageData: Uint8ClampedArray = this.drawingService.baseCtx.getImageData(0, 0, this.canvasSize.x, this.canvasSize.y).data;
-    constructor(drawingService: DrawingService, private colorService: ColorService) {
+
+    imageData: Uint8ClampedArray
+    ngAfterViewInit() {
+    this.imageData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasResizerService.canvasSize.x, this.canvasResizerService.canvasSize.y).data;
+    }
+
+    constructor(drawingService: DrawingService, private colorService: ColorService, private canvasResizerService : CanvasResizerService) {
         super(drawingService);
     }
 
@@ -167,7 +172,7 @@ export class PaintBucketService extends Tool {
             // return;
         }
         const currentColor = this.getPixel(point, this.drawingService.baseCtx);
-        if (this.colorMatch(this.numeralToHex(currentColor), targetColor)) {
+        if (this.colorMatch(this.colorService.numeralToHex(currentColor), targetColor)) {
             this.setPixel(point, fillColor);
             this.fillStack.push([point.x + 1, point.y], targetColor, fillColor); // right side pixel
             this.fillStack.push([point.x - 1, point.y], targetColor, fillColor); // left side pixel
@@ -204,11 +209,11 @@ export class PaintBucketService extends Tool {
 
     // Get current pixel position
     getPixel(position: Vec2, ctx: CanvasRenderingContext2D): RGBA {
-        if (position.x < 0 || position.y < 0 || this.canvasSize.x > 0 || this.canvasSize.y > 0) {
+        if (position.x < 0 || position.y < 0 || this.canvasResizerService.canvasSize.x > 0 || this.canvasResizerService.canvasSize.y > 0) {
             // tslint:disable-next-line:no-magic-numbers
             return { red: this.imageData[-1], green: this.imageData[-1], blue: this.imageData[-1], alpha: 0 }; // impossible color
         } else {
-            const offset = (position.y * this.canvasSize.x + position.x) * this.colorAttributs;
+            const offset = (position.y * this.canvasResizerService.canvasSize.x + position.x) * this.colorAttributs;
             return {
                 red: this.imageData[offset],
                 green: this.imageData[offset + 1],
@@ -220,20 +225,9 @@ export class PaintBucketService extends Tool {
     }
 
     setPixel(point: Vec2, fillColor: string): void {
-        const offset = (point.y * this.canvasSize.x + point.x) * this.colorAttributs;
+        const offset = (point.y * this.canvasResizerService.canvasSize.x + point.x) * this.colorAttributs;
         for (let i = 0; i < this.colorAttribut; i++) {
             ((this.imageData[offset + i] as unknown) as string) = fillColor[i]; // for rgba
         }
-    }
-
-    // We suppose that each number of the rgb space is between 0 to 255
-    // Shameless copy paste of this link
-    // https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-    numeralToHex(rgb: RGBA): string {
-        const converter = (zeroTo256: number) => {
-            const hex = zeroTo256.toString(16);
-            return hex.length === 1 ? '0' + hex : hex;
-        };
-        return '#' + converter(rgb.red) + converter(rgb.green) + converter(rgb.blue);
     }
 }
