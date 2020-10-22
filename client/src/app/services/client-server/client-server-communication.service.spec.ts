@@ -28,7 +28,7 @@ describe('ClientServerCommunicationService', () => {
 
     it('should return expected CancasInformations (HttpClient called once)', () => {
         const expectedCancasInformation: CancasInformation[] = [
-            { id: '', name: 'test5', labels: [{ label: 'label1' }], date: '2020-10-08', picture: 'test5' },
+            { id: '', name: 'test5', labels: [{ label: 'label1' }], date: new Date('2020-10-08'), picture: 'test5' },
         ];
 
         // check the content of the mocked call
@@ -45,7 +45,7 @@ describe('ClientServerCommunicationService', () => {
 
     it('should message return expected CancasInformations (HttpClient called once)', () => {
         const expectedCancasInformation: CancasInformation[] = [
-            { id: '', name: 'test5', labels: [{ label: 'label1' }], date: '2020-10-08', picture: 'test5' },
+            { id: '', name: 'test5', labels: [{ label: 'label1' }], date: new Date('2020-10-08'), picture: 'test5' },
         ];
         const expectedMessage: Message = { body: 'label1', title: 'Labels' };
         // check the content of the mocked call
@@ -75,7 +75,7 @@ describe('ClientServerCommunicationService', () => {
             id: '',
             name: 'test5',
             labels: [{ label: 'label1' }],
-            date: '2020-10-08',
+            date: new Date('2020-10-08'),
             picture: 'test5',
         };
         // check the content of the mocked call
