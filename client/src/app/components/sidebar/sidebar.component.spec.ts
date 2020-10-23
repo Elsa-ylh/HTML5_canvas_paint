@@ -27,6 +27,7 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection-service';
 import { SidebarComponent } from './sidebar.component';
 
 describe('SidebarComponent', () => {
@@ -41,6 +42,7 @@ describe('SidebarComponent', () => {
     let eraserStub: EraserService;
     let lineStub: LineService;
     let colorStub: ColorService;
+    let selectionStub: SelectionService;
     let polygonStub: PolygonService;
 
     let canvas: HTMLCanvasElement;
@@ -56,8 +58,9 @@ describe('SidebarComponent', () => {
         pencilStub = new PencilService(drawingStub, colorStub);
         eraserStub = new EraserService(drawingStub);
         lineStub = new LineService(drawingStub, colorStub);
+        selectionStub = new SelectionService(drawingStub);
+        toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, selectionStub, polygonStub);
         polygonStub = new PolygonService(drawingStub, colorStub);
-        toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, polygonStub);
 
         canvas = canvasTestHelper.canvas;
         // tslint:disable: no-magic-numbers
@@ -95,6 +98,7 @@ describe('SidebarComponent', () => {
                 { provide: PencilService, useValue: pencilStub },
                 { provide: EraserService, useValue: eraserStub },
                 { provide: LineService, useValue: lineStub },
+                { provide: SelectionService, useValue: selectionStub },
                 { provide: ToolService, useValue: toolServiceStub },
                 { provide: MatDialog, useValue: {} },
                 { provide: PolygonService, useValue: polygonStub },
@@ -141,6 +145,4 @@ describe('SidebarComponent', () => {
         expect(drawingStub.cursorUsed).toEqual(cursorName.pencil);
         expect(switchToolSpy).toHaveBeenCalled();
     });
-
-    it(' should ');
 });

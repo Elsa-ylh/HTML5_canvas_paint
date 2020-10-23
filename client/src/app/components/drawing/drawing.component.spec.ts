@@ -15,6 +15,7 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection-service';
 import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
@@ -34,6 +35,7 @@ describe('DrawingComponent', () => {
     let rectangleStub: RectangleService;
     let ellipseStub: EllipseService;
     let colorStub: ColorService;
+    let selectionStub: SelectionService;
     let polygonStub: PolygonService;
 
     beforeEach(
@@ -47,9 +49,10 @@ describe('DrawingComponent', () => {
             lineStub = new LineService(drawingStub, colorStub);
             rectangleStub = new RectangleService(drawingStub, colorStub);
             ellipseStub = new EllipseService(drawingStub, colorStub);
-            polygonStub = new PolygonService(drawingStub, colorStub);
+            selectionStub = new SelectionService(drawingStub);
 
-            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, polygonStub);
+            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, selectionStub, polygonStub);
+            polygonStub = new PolygonService(drawingStub, colorStub);
 
             toolStub = toolServiceStub.currentTool;
 

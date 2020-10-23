@@ -7,6 +7,7 @@ import { BrushService } from './tools/brush.service';
 import { EllipseService } from './tools/ellipse.service';
 import { LineService } from './tools/line.service';
 import { PolygonService } from './tools/polygon.service';
+import { SelectionService } from './tools/selection-service';
 @Injectable({
     providedIn: 'root',
 })
@@ -22,6 +23,7 @@ export class ToolService {
         private lineService: LineService,
         private rectangleService: RectangleService,
         private ellipseService: EllipseService,
+        private selectionService: SelectionService,
         private polygonService: PolygonService,
     ) {
         this.tableTool[ToolUsed.NONE] = this.pencilService;
@@ -31,6 +33,7 @@ export class ToolService {
         this.tableTool[ToolUsed.Line] = this.lineService;
         this.tableTool[ToolUsed.Rectangle] = this.rectangleService;
         this.tableTool[ToolUsed.Ellipse] = this.ellipseService;
+        this.tableTool[ToolUsed.Selection] = this.selectionService;
         this.tableTool[ToolUsed.Polygon] = this.polygonService;
 
         this.switchTool(ToolUsed.NONE); // default tools if all else fail in the sidebar usually
