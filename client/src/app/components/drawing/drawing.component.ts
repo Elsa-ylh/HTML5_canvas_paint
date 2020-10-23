@@ -7,7 +7,9 @@ import {
     RESIZE_MIDDLE_UPPER_PROPORTION,
 } from '@app/classes/resize-canvas';
 import { ResizeDirection } from '@app/classes/resize-direction';
+import { ToolUsed } from '@app/classes/tool';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -20,9 +22,10 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 export class DrawingComponent implements AfterViewInit {
     constructor(
         private drawingService: DrawingService,
-        private toolService: ToolService,
+        public toolService: ToolService,
         public cvsResizerService: CanvasResizerService,
-        private undoRedoService: UndoRedoService,
+        public colorService: ColorService,
+        public undoRedoService: UndoRedoService,
     ) {}
 
     get width(): number {
@@ -37,13 +40,22 @@ export class DrawingComponent implements AfterViewInit {
         return this.drawingService.cursorUsed;
     }
 
+    get dropper(): ToolUsed.Dropper {
+        return ToolUsed.Dropper;
+    }
+
+    // On utilise ce canvas pour dessiner sans affecter le dessin final, aussi utilisé pour sauvegarder
+    // une version du dessin avant de l'appliquer au final.
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizingPreview', { static: false }) canvasResizingPreview: ElementRef<HTMLCanvasElement>;
+    @ViewChild('dropperLayer', { static: false }) dropperLayer: ElementRef<HTMLCanvasElement>;
 
-    private baseCtx: CanvasRenderingContext2D;
-    private previewCtx: CanvasRenderingContext2D;
+    baseCtx: CanvasRenderingContext2D;
+    previewCtx: CanvasRenderingContext2D;
     private resizeCtx: CanvasRenderingContext2D;
+
+    private dropperCtx: CanvasRenderingContext2D;
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -52,6 +64,14 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.dropperCtx = this.dropperLayer.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.drawingService.dropperCtx = this.dropperCtx;
+        this.setCanvasBackgroundColor();
+    }
+
+    setCanvasBackgroundColor(): void {
+        this.baseCtx.fillStyle = 'white';
+        this.baseCtx.fillRect(0, 0, this.baseCanvas.nativeElement.width, this.baseCanvas.nativeElement.height);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -151,6 +171,11 @@ export class DrawingComponent implements AfterViewInit {
 
     onResizeOut(event: MouseEvent): void {
         this.cvsResizerService.onResizeOut(event, this.resizeCtx, this.baseCanvas.nativeElement);
+    }
+
+    onMouseOverMainCanvas(event: MouseEvent): void {
+        const position = { x: event.offsetX, y: event.offsetY };
+        this.colorService.previewColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.baseCtx));
     }
 
     @HostListener('window:keydown.shift', ['$event'])

@@ -9,15 +9,19 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
+import { DropperService } from '@app/services/tools/dropper.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection-service';
 import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
 // tslint:disable:no-any
+// tslint:disable:no-magic-numbers
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
@@ -33,6 +37,9 @@ describe('DrawingComponent', () => {
     let rectangleStub: RectangleService;
     let ellipseStub: EllipseService;
     let colorStub: ColorService;
+    let dropperStub: DropperService;
+    let selectionStub: SelectionService;
+    let polygonStub: PolygonService;
 
     beforeEach(
         waitForAsync(() => {
@@ -45,8 +52,21 @@ describe('DrawingComponent', () => {
             lineStub = new LineService(drawingStub, colorStub);
             rectangleStub = new RectangleService(drawingStub, colorStub);
             ellipseStub = new EllipseService(drawingStub, colorStub);
+            dropperStub = new DropperService(drawingStub, colorStub);
+            selectionStub = new SelectionService(drawingStub);
+            polygonStub = new PolygonService(drawingStub, colorStub);
 
-            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub);
+            toolServiceStub = new ToolService(
+                pencilStub,
+                eraserStub,
+                brushStub,
+                lineStub,
+                rectangleStub,
+                ellipseStub,
+                dropperStub,
+                selectionStub,
+                polygonStub,
+            );
 
             toolStub = toolServiceStub.currentTool;
 
@@ -57,6 +77,7 @@ describe('DrawingComponent', () => {
                     { provide: DrawingService, useValue: drawingStub },
                     { provide: ToolService, useValue: toolServiceStub },
                     { provide: CanvasResizerService, useValue: canvasResizerStub },
+                    { provide: ColorService, useValue: colorStub },
                 ],
             }).compileComponents();
 
@@ -201,6 +222,24 @@ describe('DrawingComponent', () => {
         const onResizeOutSpy = spyOn(canvasResizerStub, 'onResizeOut').and.callThrough();
         component.onResizeOut(event);
         expect(onResizeOutSpy).toHaveBeenCalled();
+    });
+
+    it('not call getColor onMouseOverMainCanvas', () => {
+        const canvas = document.createElement('canvas');
+        canvas.setAttribute('width', '100');
+        canvas.setAttribute('height', '100');
+        component.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        const event = { offsetX: 15, offsetY: 37 } as MouseEvent;
+        // const getColorSpy = spyOn(colorStub, 'getColor').and.callThrough();
+
+        component.onMouseOverMainCanvas(event);
+
+        const colorMatrix = component.previewCtx.getImageData(event.offsetX, event.offsetY, 1, 1);
+        expect(colorMatrix.data[0]).toEqual(0);
+        expect(colorMatrix.data[1]).toEqual(0);
+        expect(colorMatrix.data[2]).toEqual(0);
+        expect(colorMatrix.data[3]).toEqual(0);
+        // expect(colorStub.previewColor).toBeDefined();
     });
 
     it(' should onShiftKeyDown trigger tool service', () => {

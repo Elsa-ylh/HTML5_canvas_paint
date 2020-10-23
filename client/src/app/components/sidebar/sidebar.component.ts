@@ -6,6 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { cursorName } from '@app/classes/cursor-name';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
+import { CarrouselPictureComponent } from '@app/components/carrousel-picture/carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { ColorService } from '@app/services/color/color.service';
@@ -16,7 +17,9 @@ import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Component({
@@ -34,6 +37,7 @@ export class SidebarComponent {
     lineWidth: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
+    newCarrouselRef: MatDialogRef<CarrouselPictureComponent>;
     private isPencilChecked: boolean = false;
     private isEraserChecked: boolean = false;
     private isBrushChecked: boolean = false;
@@ -41,6 +45,11 @@ export class SidebarComponent {
     private isRectangleChecked: boolean = false;
     private isEllipseChecked: boolean = false;
     private isColorChecked: boolean = false;
+    private isDropperChecked: boolean = false;
+    private isSelectionChecked: boolean = false;
+    private isSelectionEllipseChecked: boolean = false;
+    private isSelectionRectangleChecked: boolean = false;
+    private isPolygonChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -55,10 +64,13 @@ export class SidebarComponent {
         public eraserService: EraserService,
         public colorService: ColorService,
         public lineService: LineService,
+        public selectionService: SelectionService,
+        public polygonService: PolygonService,
         public undoRedoService: UndoRedoService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
+        this.iconRegistry.addSvgIcon('polygon', this.sanitizer.bypassSecurityTrustResourceUrl('assets/polygon.svg'));
     }
 
     clearCanvas(): void {
@@ -75,6 +87,13 @@ export class SidebarComponent {
         this.undoRedoService.clearRedo();
         this.undoRedoService.clearUndo();
         this.undoRedoService.undoRedoDisabled();
+    }
+
+    openCarrouse(): void {
+        this.newCarrouselRef = this.dialogCreator.open(CarrouselPictureComponent, {
+            width: '90%',
+            height: '90%',
+        });
     }
 
     openUserGuide(): void {
@@ -147,6 +166,16 @@ export class SidebarComponent {
         return this.isEllipseChecked;
     }
 
+    pickPolygon(subTool3: number): void {
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.Polygon);
+        this.toolService.currentTool.subToolSelect = subTool3;
+    }
+
+    get polygonChecked(): boolean {
+        return this.isPolygonChecked;
+    }
+
     pickColor(): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Color);
@@ -154,6 +183,34 @@ export class SidebarComponent {
 
     get colorChecked(): boolean {
         return this.isColorChecked;
+    }
+
+    pickDropper(): void {
+        this.drawingService.cursorUsed = 'pointer';
+        this.toolService.switchTool(ToolUsed.Dropper);
+    }
+
+    get dropperChecked(): boolean {
+        return this.isDropperChecked;
+    }
+
+    pickSelection(subTool: number): void {
+        // debugger;
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.Selection);
+        this.toolService.currentTool.subToolSelect = subTool;
+    }
+
+    get selectionChecked(): boolean {
+        return this.isSelectionChecked;
+    }
+
+    get selectionEllipseChecked(): boolean {
+        return this.isSelectionEllipseChecked;
+    }
+
+    get selectionRectangleChecked(): boolean {
+        return this.isSelectionRectangleChecked;
     }
 
     resetCheckedButton(): void {
@@ -164,6 +221,10 @@ export class SidebarComponent {
         this.isRectangleChecked = false;
         this.isEllipseChecked = false;
         this.isColorChecked = false;
+        this.isDropperChecked = false;
+        this.isSelectionChecked = false;
+        this.isSelectionEllipseChecked = false;
+        this.isSelectionRectangleChecked = false;
     }
 
     CheckboxChangeToggle(args: MatCheckboxChange): void {
@@ -192,6 +253,15 @@ export class SidebarComponent {
             this.resetCheckedButton();
             this.isEllipseChecked = true;
             this.pickEllipse(SubToolselected.tool1);
+        }
+    }
+
+    @HostListener('window:keydown.3', ['$event'])
+    changePolygonMode(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isPolygonChecked = true;
+            this.pickPolygon(SubToolselected.tool3);
         }
     }
 
@@ -231,6 +301,35 @@ export class SidebarComponent {
         }
     }
 
+    @HostListener('window:keydown.i', ['$event'])
+    changeDropperMode(event: KeyboardEvent): void {
+        this.resetCheckedButton();
+        this.isDropperChecked = true;
+        this.pickDropper();
+    }
+
+    @HostListener('window:keydown.r', ['$event'])
+    changeSelectionRectangleMode(event: KeyboardEvent): void {
+        this.resetCheckedButton();
+        this.isSelectionChecked = true;
+        this.isSelectionRectangleChecked = true;
+        this.pickSelection(1);
+    }
+
+    @HostListener('window:keydown.s', ['$event']) changeSelectionEllipseMode(event: KeyboardEvent): void {
+        this.resetCheckedButton();
+        this.isSelectionChecked = true;
+        this.isSelectionEllipseChecked = true;
+        this.pickSelection(2);
+    }
+
+    @HostListener('window:keydown.control.a', ['$event']) selectAllCanvas(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Selection) {
+            event.preventDefault();
+            this.selectionService.selectAll();
+            console.log('test');
+        }
+    }
     @HostListener('window:keydown.control.z', ['$event'])
     callUndo(eventK: KeyboardEvent): void {
         if (!this.undoRedoService.isundoDisabled) {
