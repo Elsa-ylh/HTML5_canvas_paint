@@ -26,6 +26,9 @@
                     <mat-button-toggle (click)="pickEllipse(1)" [checked]="ellipseChecked" matTooltip="Outil ellipse" matTooltipPosition="right">
                         <mat-icon>panorama_fish_eye</mat-icon>
                     </mat-button-toggle>
+                    <mat-button-toggle (click)="pickSelection(1)" [checked]="selectionChecked" matTooltip="Selectionner les couleurs" matTooltipPosition="right">
+                      <mat-icon>crop_free</mat-icon>
+                    </mat-button-toggle>
                     <mat-button-toggle
                         (click)="pickColor()"
                         [checked]="colorChecked"
@@ -35,9 +38,7 @@
                         <mat-icon>color_lens</mat-icon>
                     </mat-button-toggle>
 
-                    <mat-button-toggle (click)="pickSelection(1)" [checked]="selectionChecked" matTooltip="Selectionner les couleurs" matTooltipPosition="right">
-                      <mat-icon>crop_free</mat-icon>
-                    </mat-button-toggle>
+
                 </mat-button-toggle-group>
             </mat-list>
             <mat-list class="miscellaneous-buttons">
