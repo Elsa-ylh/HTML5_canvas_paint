@@ -15,6 +15,7 @@ export class PencilService extends Tool {
 
     private pathData: Vec2[];
     private intiColor: string;
+    private alpha: number = this.colorService.primaryColorTransparency;
 
     constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
@@ -49,7 +50,8 @@ export class PencilService extends Tool {
                 // TODO couleur initiale
                 // this.pushDataUndoRedo(mousePosition, this.getInitColor(event)); // for the undo-redo action
                 this.pathData.push(mousePosition); // to call drawline
-                this.intiColor = this.getInitColor(event);
+                // this.intiColor = this.getInitColor(event);
+                this.intiColor = this.colorService.primaryColor;
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
             } else {
@@ -59,16 +61,15 @@ export class PencilService extends Tool {
                 // TODO couleur initiale
                 //this.pushDataUndoRedo(mousePosition, this.getInitColor(event));
                 this.pathData.push(mousePosition);
+                //this.intiColor = this.getInitColor(event);
+                this.intiColor = this.colorService.primaryColor;
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
-                this.intiColor = this.getInitColor(event);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
             }
         }
         this.mouseDown = false;
         // TODO mettre pathData + couleur finale dans l'objet d'action // coinstucor(action) d=styje action
-        //addUndo(action) dans service
-        // this.intiColor.push(this.getInitColor(event));
-        let action = new StrokeAction(this.pathData, this.intiColor, this, this.drawingService);
+        let action = new StrokeAction(this.pathData, this.intiColor, this.pencilSize, this.alpha, this, this.drawingService, this.colorService);
         this.undoRedoService.addUndo(action);
         this.undoRedoService.clearRedo();
         this.clearPath();
@@ -77,10 +78,9 @@ export class PencilService extends Tool {
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition); // nmettre avec this.pathdata/
-            this.intiColor = this.getInitColor(event);
-            // this.pushDataUndoRedo(mousePosition, this.getInitColor(event));
-
+            this.pathData.push(mousePosition);
+            //this.intiColor = this.getInitColor(event);
+            this.intiColor = this.colorService.primaryColor;
             this.mouseMove = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.previewCtx, this.pathData);
@@ -106,19 +106,11 @@ export class PencilService extends Tool {
 
     // todo getColor position
     // get the initial color
-    getInitColor(event: MouseEvent): string {
-        const position = { x: event.offsetX, y: event.offsetY };
-        const initialColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.drawingService.previewCtx));
-        return initialColor;
-    }
-
-    // PUSH POSITION + COULEUR INITIALE
-    //  pushDataUndoRedo(mousePosition: Vec2, initColor: string): void {
-    // this.pathData[0].push(mousePosition);
-    // this.pathData[1].push(initColor);
-    // this.pathDataUndoRedo.push([mousePosition, initColor]);
-    //this.pathData.push(this.mouseDownCoord);
-    // }
+    // getInitColor(event: MouseEvent): string {
+    // const position = { x: event.offsetX, y: event.offsetY };
+    //  const initialColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.drawingService.previewCtx));
+    //  return initialColor;
+    //  }
 
     clearPath(): void {
         this.pathData = [];

@@ -74,7 +74,7 @@ export class SidebarComponent {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
         this.undoRedoService.clearRedo();
         this.undoRedoService.clearUndo();
-        this.undoRedoService.isundoRedoDisabled = true;
+        this.undoRedoService.undoRedoDisabled();
     }
 
     openUserGuide(): void {
@@ -233,14 +233,14 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.control.z', ['$event'])
     callUndo(eventK: KeyboardEvent): void {
-        if (!this.undoRedoService.isundoRedoDisabled) {
+        if (!this.undoRedoService.isundoDisabled) {
             this.undoRedoService.undo();
         }
     }
 
     @HostListener('window:keydown.control.shift.z', ['$event'])
     callRedo(eventK: KeyboardEvent): void {
-        if (!this.undoRedoService.isundoRedoDisabled) {
+        if (!this.undoRedoService.isRedoDisabled) {
             this.undoRedoService.redo();
         }
     }
