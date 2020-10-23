@@ -177,8 +177,4 @@ fdescribe('Service: Polygon', () => {
         service.onMouseEnter(mouseEvent);
         expect(service.mouseEnter).toEqual(false);
     });
-
-    it(' should draw on previewCanvas with tool2', () => {
-        const expectedResult: Vec2 = { x: 25, y: 10 };
-    });
 });
