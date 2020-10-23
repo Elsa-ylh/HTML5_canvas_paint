@@ -6,6 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { cursorName } from '@app/classes/cursor-name';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
+import { CarrouselPictureComponent } from '@app/components/carrousel-picture/carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { ColorService } from '@app/services/color/color.service';
@@ -35,6 +36,7 @@ export class SidebarComponent {
     lineWidth: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
+    newCarrouselRef: MatDialogRef<CarrouselPictureComponent>;
     private isPencilChecked: boolean = false;
     private isEraserChecked: boolean = false;
     private isBrushChecked: boolean = false;
@@ -80,6 +82,13 @@ export class SidebarComponent {
 
     createNewDrawing(): void {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
+    }
+
+    openCarrouse(): void {
+        this.newCarrouselRef = this.dialogCreator.open(CarrouselPictureComponent, {
+            width: '90%',
+            height: '90%',
+        });
     }
 
     openUserGuide(): void {
