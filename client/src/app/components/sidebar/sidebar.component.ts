@@ -181,7 +181,7 @@ export class SidebarComponent {
     }
 
     pickSelection(subTool: number): void {
-        debugger;
+        // debugger;
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Selection);
         this.toolService.currentTool.subToolSelect = subTool;
