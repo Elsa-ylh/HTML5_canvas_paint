@@ -42,6 +42,7 @@ export class SidebarComponent {
     private isRectangleChecked: boolean = false;
     private isEllipseChecked: boolean = false;
     private isColorChecked: boolean = false;
+    private isDropperChecked: boolean = false;
     private isSelectionChecked: boolean = false;
     private isSelectionEllipseChecked: boolean = false;
     private isSelectionRectangleChecked: boolean = false;
@@ -170,7 +171,17 @@ export class SidebarComponent {
         return this.isColorChecked;
     }
 
+    pickDropper(): void {
+        this.drawingService.cursorUsed = 'pointer';
+        this.toolService.switchTool(ToolUsed.Dropper);
+    }
+
+    get dropperChecked(): boolean {
+        return this.isDropperChecked;
+    }
+
     pickSelection(subTool: number): void {
+        // debugger;
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Selection);
         this.toolService.currentTool.subToolSelect = subTool;
@@ -196,6 +207,7 @@ export class SidebarComponent {
         this.isRectangleChecked = false;
         this.isEllipseChecked = false;
         this.isColorChecked = false;
+        this.isDropperChecked = false;
         this.isSelectionChecked = false;
         this.isSelectionEllipseChecked = false;
         this.isSelectionRectangleChecked = false;
@@ -275,7 +287,15 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.r', ['$event']) changeSelectionRectangleMode(event: KeyboardEvent): void {
+    @HostListener('window:keydown.i', ['$event'])
+    changeDropperMode(event: KeyboardEvent): void {
+        this.resetCheckedButton();
+        this.isDropperChecked = true;
+        this.pickDropper();
+    }
+
+    @HostListener('window:keydown.r', ['$event'])
+    changeSelectionRectangleMode(event: KeyboardEvent): void {
         this.resetCheckedButton();
         this.isSelectionChecked = true;
         this.isSelectionRectangleChecked = true;

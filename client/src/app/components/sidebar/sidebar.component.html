@@ -29,7 +29,7 @@
                     <mat-button-toggle
                         (click)="pickSelection(1)"
                         [checked]="selectionChecked"
-                        matTooltip="Selectionner les couleurs"
+                        matTooltip="Sélection et déplacer un rectangle"
                         matTooltipPosition="right"
                     >
                         <mat-icon>crop_free</mat-icon>
@@ -44,6 +44,9 @@
                         matTooltipPosition="right"
                     >
                         <mat-icon>color_lens</mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle (click)="pickDropper()" [checked]="dropperChecked" matTooltip="Outil pipette" matTooltipPosition="right">
+                        <mat-icon>colorize</mat-icon>
                     </mat-button-toggle>
                 </mat-button-toggle-group>
             </mat-list>
@@ -186,10 +189,6 @@
                 >
             </mat-grid-list>
 
-            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Color">
-                <app-color></app-color>
-            </mat-grid-list>
-
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Selection">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
                 <mat-grid-tile colspan="6"> Choisissez une forme de sélection</mat-grid-tile>
@@ -216,6 +215,14 @@
                 <mat-grid-tile colspan="6">
                     <button mat-raised-button (click)="selectionService.selectAll()">Selectionner tout le dessin</button>
                 </mat-grid-tile>
+            </mat-grid-list>
+
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Color">
+                <app-color></app-color>
+            </mat-grid-list>
+
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Dropper">
+                <app-dropper-color></app-dropper-color>
             </mat-grid-list>
         </div>
     </div>

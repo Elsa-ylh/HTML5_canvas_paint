@@ -13,6 +13,7 @@ export enum ToolUsed {
     Polygon = 7,
     Selection = 8,
     Color = 1000,
+    Dropper = 1003,
 }
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
