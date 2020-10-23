@@ -34,6 +34,8 @@ export class CarrouselPictureComponent {
         this.addAllLabal();
         this.addAllData();
         this.labelSelect = [];
+        this.name = '';
+        this.myDate = new FormControl(new Date());
     }
     refresh(): void {
         this.addAllLabal();
@@ -66,11 +68,13 @@ export class CarrouselPictureComponent {
     setSearchCriteria(): void {
         switch (this.selectedType) {
             case 'name':
+                const message: Message = { title: 'name', body: this.name };
+                this.clientServerCommunicationService.ElementResearch(message).subscribe((info) => (this.dataPicture = info));
                 break;
             case 'date':
                 try {
-                    // (this.myDate.value  as Date).getDate
-                    console.log(this.myDate.value as Date);
+                    const messageDate: Message = { title: 'date', body: (this.myDate.value as Date).toString() };
+                    this.clientServerCommunicationService.ElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
                 } catch (error) {
                     alert('La date est correttre elle doit être de forme mm/jj/aaaa');
                 }

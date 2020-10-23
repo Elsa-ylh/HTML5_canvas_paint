@@ -103,7 +103,7 @@ export class DatabasePicureService {
     }
     async getPicturesName(namePicture: string): Promise<CancasInformation[]> {
         return this.collection
-            .find({ name: namePicture })
+            .find({ name: { $regex: namePicture } })
             .toArray()
             .then((picture: CancasInformation[]) => {
                 return picture;
