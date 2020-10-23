@@ -13,12 +13,15 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorComponent } from './color.component';
 
+// tslint:disable:no-magic-numbers
+
 describe('ColorComponent', () => {
     let component: ColorComponent;
     let fixture: ComponentFixture<ColorComponent>;
 
     let drawingStub: DrawingService;
     let colorStub: ColorService;
+
     beforeEach(
         waitForAsync(() => {
             drawingStub = new DrawingService();
