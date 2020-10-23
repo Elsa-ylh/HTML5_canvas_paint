@@ -7,12 +7,9 @@ export class ResizeCanvasAction extends AbsUndoRedo {
         super();
     }
 
-    reapply(): void {
+    apply(): void {
         // save the canvas size
         this.canvasResize.canvasSize = this.resizeCanvasAfter;
-    }
-
-    deapply(): void {
         this.canvasResize.canvasSize = this.resizeCanvasBefore;
     }
 }

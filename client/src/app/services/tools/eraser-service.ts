@@ -1,16 +1,19 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
+import { EraseAction } from '@app/classes/undo-redo/eraseAction';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
+    private color: string = '#FFF';
     eraserWidth: number = 5;
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService) {
         super(drawingService);
         this.clearPath();
     }
@@ -19,8 +22,8 @@ export class EraserService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.mouseMove = false;
-            this.drawingService.baseCtx.strokeStyle = '#FFF'; // draw in white
-            this.drawingService.previewCtx.strokeStyle = '#FFF'; // when changecolor is implemented call pencil with white.
+            this.drawingService.baseCtx.strokeStyle = this.color; // draw in white
+            this.drawingService.previewCtx.strokeStyle = this.color; // when changecolor is implemented call pencil with white.
             this.clearEffectTool();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
@@ -32,16 +35,20 @@ export class EraserService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             if (this.mouseMove) {
                 this.pathData.push(mousePosition);
-                this.RemoveLine(this.drawingService.baseCtx, this.pathData);
+                this.removeLine(this.drawingService.baseCtx, this.pathData);
             } else {
                 // code to draw dot
                 this.drawingService.baseCtx.fillStyle = '#FFF';
+                this.pathData.push(mousePosition);
                 this.drawingService.baseCtx.fillRect(mousePosition.x, mousePosition.y, this.eraserWidth, this.eraserWidth);
                 this.drawingService.previewCtx.fillStyle = '#FFF';
                 this.drawingService.previewCtx.fillRect(mousePosition.x, mousePosition.y, this.eraserWidth, this.eraserWidth);
             }
         }
         this.mouseDown = false;
+        let action = new EraseAction(this.pathData, this.color, this.eraserWidth, this, this.drawingService);
+        this.undoRedoService.addUndo(action);
+        this.undoRedoService.clearRedo();
         this.clearPath();
     }
 
@@ -52,7 +59,7 @@ export class EraserService extends Tool {
             this.pathData.push(mousePosition);
 
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.RemoveLine(this.drawingService.previewCtx, this.pathData);
+            this.removeLine(this.drawingService.previewCtx, this.pathData);
         }
     }
 
@@ -67,7 +74,7 @@ export class EraserService extends Tool {
         this.drawingService.previewCtx.lineJoin = 'bevel';
     }
 
-    private RemoveLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    removeLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);

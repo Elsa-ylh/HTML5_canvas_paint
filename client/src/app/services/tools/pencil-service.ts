@@ -69,7 +69,7 @@ export class PencilService extends Tool {
         }
         this.mouseDown = false;
         // TODO mettre pathData + couleur finale dans l'objet d'action // coinstucor(action) d=styje action
-        let action = new StrokeAction(this.pathData, this.intiColor, this.pencilSize, this.alpha, this, this.drawingService, this.colorService);
+        let action = new StrokeAction(this.pathData, this.intiColor, this.pencilSize, this.alpha, this, this.drawingService);
         this.undoRedoService.addUndo(action);
         this.undoRedoService.clearRedo();
         this.clearPath();
