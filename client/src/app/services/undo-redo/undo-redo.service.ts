@@ -8,6 +8,7 @@ export class UndoRedoService {
     isundoRedoDisabled: boolean = true; // to disactivate the option to redo-redo. diabled=true (cant undo-red0 when app loads)
     private listUndo: AbsUndoRedo[] = []; // FIFo
     private listRedo: AbsUndoRedo[] = []; // LIFO
+    protected listDataComplete: AbsUndoRedo[] = [];
     constructor() {}
 
     onMouseUpActivate(mouseEvent: MouseEvent): void {
@@ -42,7 +43,8 @@ export class UndoRedoService {
 
     // adds the latest  action to the undo stack.
     addUndo(action: AbsUndoRedo): void {
-        this.listUndo.push(action);
+        this.listUndo.unshift(action); // push at pos 0 the newest element
+        // this.listUndo.push(action);
     }
 
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
@@ -50,6 +52,7 @@ export class UndoRedoService {
         if (this.listUndo.length > 0) {
             // list has an element
             const action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
+
             if (action) {
                 this.listRedo.push(action); // save into redo to be able to cancel the undo.
                 action.deapply(); // deapplies the action

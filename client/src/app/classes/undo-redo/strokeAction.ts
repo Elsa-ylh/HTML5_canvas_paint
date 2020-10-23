@@ -1,5 +1,6 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Vec2 } from '../vec2';
 import { AbsUndoRedo } from './abs-undo-redo';
 
@@ -13,6 +14,7 @@ export class StrokeAction extends AbsUndoRedo {
         private finalColor: string,
         private pencilService: PencilService,
         private drawingService: DrawingService,
+        private undoRedo: UndoRedoService,
     ) {
         super();
     }
@@ -23,10 +25,11 @@ export class StrokeAction extends AbsUndoRedo {
         this.drawingService.baseCtx.strokeStyle = this.finalColor;
         this.pencilService.drawLine(this.drawingService.baseCtx, this.changes);
         this.pencilService.clearEffectTool();
+        this.undoRedo;
     }
 
     deapply(): void {
-        // after a redo
+        // after a undo
         // couleur initiale (dans le tableau de tuple Vec2/string) aux positions
         this.drawingService.clearCanvas(this.drawingService.baseCtx);
         this.drawingService.baseCtx.strokeStyle = this.initColor;

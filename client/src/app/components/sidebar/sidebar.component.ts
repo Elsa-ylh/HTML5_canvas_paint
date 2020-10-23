@@ -237,7 +237,6 @@ export class SidebarComponent {
     callUndo(eventK: KeyboardEvent): void {
         if (!this.undoRedoService.isundoRedoDisabled) {
             this.undoRedoService.undo();
-            console.log('ctrl z works : undo called');
         }
     }
 
@@ -245,7 +244,6 @@ export class SidebarComponent {
     callRedo(eventK: KeyboardEvent): void {
         if (!this.undoRedoService.isundoRedoDisabled) {
             this.undoRedoService.redo();
-            console.log('ctrl shift z works : redo called');
         }
     }
 }
