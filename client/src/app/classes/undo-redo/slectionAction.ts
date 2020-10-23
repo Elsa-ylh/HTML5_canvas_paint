@@ -1,7 +1,6 @@
 import { AbsUndoRedo } from './abs-undo-redo';
 
-export class EllipseAction implements AbsUndoRedo {
+export class SlectionAction implements AbsUndoRedo {
     constructor() {}
-
     apply() {}
 }

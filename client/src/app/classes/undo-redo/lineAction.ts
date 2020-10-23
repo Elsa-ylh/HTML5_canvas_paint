@@ -1,11 +1,7 @@
 import { AbsUndoRedo } from './abs-undo-redo';
 
-export class LineAction extends AbsUndoRedo{
-    constructor(){
-        super();
-    }
+export class LineAction implements AbsUndoRedo {
+    constructor() {}
 
-    apply(){
-        
-    }
+    apply() {}
 }

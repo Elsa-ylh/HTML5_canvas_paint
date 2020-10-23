@@ -70,7 +70,7 @@ export class UndoRedoService {
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
             // reapply the currents elements (without the removed one)
             for (let element of this.listUndo) {
-                element.apply();
+                element.apply() ;
             }
             // allows to return to the previous "live" state on the canvas
             this.drawingService.baseCtx.strokeStyle = tempColor;

@@ -4,7 +4,7 @@ import { Vec2 } from '../vec2';
 import { AbsUndoRedo } from './abs-undo-redo';
 
 // class that allows to redo-undo pencil-brush-eraser tool
-export class StrokeAction extends AbsUndoRedo {
+export class StrokeAction implements AbsUndoRedo {
     // couleur finale = couleur du stroke
     // couleur initiale = avant le stroke dans le canvas (dans ) // use getcolor de colorservice
     constructor(
@@ -14,9 +14,7 @@ export class StrokeAction extends AbsUndoRedo {
         private alpha: number,
         private pencilService: PencilService,
         private drawingService: DrawingService,
-    ) {
-        super();
-    }
+    ) {}
 
     // applies on the canvas the current elements
     apply(): void {
