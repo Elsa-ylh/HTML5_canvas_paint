@@ -21,19 +21,23 @@ export class ClientServerCommunicationService {
             .post<CancasInformation[]>(this.HTTP_SERVE_LOCAL + '/labels', message)
             .pipe(catchError(this.handleError<CancasInformation[]>('basicPost')));
     }
+
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return (error: Error): Observable<T> => {
             return of(result as T);
         };
     }
+
     allLabel(): Observable<CancasInformation> {
         return this.http
             .get<CancasInformation>(this.HTTP_SERVE_LOCAL + '/all_labels')
             .pipe(catchError(this.handleError<CancasInformation>('basicGet')));
     }
+
     private catchInformation(): void {
         this.allLabel().subscribe((info) => (this.information = info));
     }
+
     getAllLabel(): Label[] {
         this.catchInformation();
         if (this.information == undefined) return [];
@@ -41,5 +45,11 @@ export class ClientServerCommunicationService {
             return this.information.labels;
         }
         return [];
+    }
+
+    ElementResearch(message: Message): Observable<CancasInformation[]> {
+        return this.http
+            .post<CancasInformation[]>(this.HTTP_SERVE_LOCAL + '/research', message)
+            .pipe(catchError(this.handleError<CancasInformation[]>('basicPost')));
     }
 }

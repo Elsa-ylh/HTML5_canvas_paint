@@ -17,9 +17,8 @@ export class CarrouselPictureComponent {
     name: string;
     myDate: FormControl = new FormControl(new Date());
 
-    // message: Message;
     constructor(private clientServerCommunicationService: ClientServerCommunicationService) {}
-    ngOnInit() {
+    OnInit(): void {
         this.addAllData();
         this.addAllLabal();
     }
@@ -31,7 +30,7 @@ export class CarrouselPictureComponent {
         this.dataLabel = this.clientServerCommunicationService.getAllLabel();
     }
 
-    resete(): void {
+    reset(): void {
         this.addAllLabal();
         this.addAllData();
         this.labelSelect = [];

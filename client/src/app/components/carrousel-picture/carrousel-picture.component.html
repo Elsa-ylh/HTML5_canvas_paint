@@ -1,5 +1,5 @@
 <p>selection-picture works!</p>
-<button mat-raised-button (click)="resete()">réinitialise tous</button>
+<button mat-raised-button (click)="reset()">réinitialise tout</button>
 <div *ngFor="let picture of getPicturesTestAll()">
     <div>
         {{ picture.name }}
@@ -19,11 +19,11 @@
         </mat-select>
     </mat-form-field>
     <mat-form-field *ngIf="selectedType === 'name'">
-        <mat-label>Entré le nom de image qui commence par :</mat-label>
+        <mat-label>Entrer le nom de l'image qui commence par :</mat-label>
         <input matInput [(ngModel)]="name" />
     </mat-form-field>
     <mat-form-field *ngIf="selectedType === 'date'">
-        <mat-label>Entré le date :</mat-label>
+        <mat-label>Entrer la date :</mat-label>
         <input matInput [matDatepicker]="picker" [formControl]="myDate" />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
@@ -31,9 +31,9 @@
     <button mat-raised-button (click)="setSearchCriteria()">Soumettre</button>
 </div>
 <div>
-    <h1>list d'étiquettes</h1>
-    <p *ngIf="!dataLabel.length">appuié sur le button "rafraichire la lislte" étiquettes</p>
-    <button mat-raised-button (click)="refresh()">rafraichir la lislte</button>
+    <h1>liste d'étiquettes</h1>
+    <p *ngIf="!dataLabel.length">appuyer sur le button "rafraichir la liste" étiquettes</p>
+    <button mat-raised-button (click)="refresh()">rafraichir la liste</button>
     <div>
         <mat-button-toggle
             *ngFor="let element of dataLabel"
