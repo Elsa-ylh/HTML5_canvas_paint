@@ -73,8 +73,8 @@ export class CarrouselPictureComponent {
                 break;
             case 'date':
                 try {
-                    const message: Message = { title: 'date', body: (this.myDate.value as Date).toString() };
-                    this.clientServerCommunicationService.ElementResearch(message).subscribe((info) => (this.dataPicture = info));
+                    const messageDate: Message = { title: 'date', body: (this.myDate.value as Date).toString() };
+                    this.clientServerCommunicationService.ElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
                 } catch (error) {
                     alert('La date est correttre elle doit être de forme mm/jj/aaaa');
                 }
