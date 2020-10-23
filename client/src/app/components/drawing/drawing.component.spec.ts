@@ -51,10 +51,8 @@ describe('DrawingComponent', () => {
             ellipseStub = new EllipseService(drawingStub, colorStub);
             selectionStub = new SelectionService(drawingStub);
 
-            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, selectionStub);
+            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, selectionStub, polygonStub);
             polygonStub = new PolygonService(drawingStub, colorStub);
-
-            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, polygonStub);
 
             toolStub = toolServiceStub.currentTool;
 

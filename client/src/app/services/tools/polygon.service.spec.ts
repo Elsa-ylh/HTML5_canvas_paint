@@ -9,7 +9,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 
 // tslint:disable:no-any
-fdescribe('Service: Polygon', () => {
+describe('Service: Polygon', () => {
     let service: PolygonService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
