@@ -23,8 +23,9 @@ export class StrokeAction extends AbsUndoRedo {
     // applies on the canvas the current elements
     apply(): void {
         this.drawingService.baseCtx.strokeStyle = this.initColor;
+        //this.colorService.changeColorOpacity(this.alpha);
         this.drawingService.baseCtx.globalAlpha = this.alpha;
-        this.colorService.changeColorOpacity(this.thickness);
+        this.drawingService.baseCtx.lineWidth = this.thickness;
         this.pencilService.drawLine(this.drawingService.baseCtx, this.changes);
         this.pencilService.clearEffectTool();
     }
