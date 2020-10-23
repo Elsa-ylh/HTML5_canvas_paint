@@ -33,8 +33,8 @@ export class EllipseService extends Tool {
         this.drawingService.baseCtx.lineWidth = this.dottedLineWidth;
         this.drawingService.previewCtx.lineWidth = this.dottedLineWidth;
         this.clearEffectTool();
-        this.strokeColor = this.colorService.primaryColor;
-        this.fillColor = this.colorService.secondaryColor;
+        this.strokeColor = this.colorService.secondaryColor;
+        this.fillColor = this.colorService.primaryColor;
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
         this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
         if (this.mouseEnter) {

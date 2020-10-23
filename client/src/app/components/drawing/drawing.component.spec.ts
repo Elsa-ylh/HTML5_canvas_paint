@@ -13,6 +13,7 @@ import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service';
 import { DrawingComponent } from './drawing.component';
@@ -35,6 +36,7 @@ describe('DrawingComponent', () => {
     let ellipseStub: EllipseService;
     let colorStub: ColorService;
     let selectionStub: SelectionService;
+    let polygonStub: PolygonService;
 
     beforeEach(
         waitForAsync(() => {
@@ -50,6 +52,9 @@ describe('DrawingComponent', () => {
             selectionStub = new SelectionService(drawingStub);
 
             toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, selectionStub);
+            polygonStub = new PolygonService(drawingStub, colorStub);
+
+            toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, polygonStub);
 
             toolStub = toolServiceStub.currentTool;
 

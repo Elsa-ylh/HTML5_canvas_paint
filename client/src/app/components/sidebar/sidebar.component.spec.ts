@@ -25,6 +25,7 @@ import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service';
 import { SidebarComponent } from './sidebar.component';
@@ -42,6 +43,7 @@ describe('SidebarComponent', () => {
     let lineStub: LineService;
     let colorStub: ColorService;
     let selectionStub: SelectionService;
+    let polygonStub: PolygonService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -57,7 +59,8 @@ describe('SidebarComponent', () => {
         eraserStub = new EraserService(drawingStub);
         lineStub = new LineService(drawingStub, colorStub);
         selectionStub = new SelectionService(drawingStub);
-        toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, selectionStub);
+        toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, selectionStub, polygonStub);
+        polygonStub = new PolygonService(drawingStub, colorStub);
 
         canvas = canvasTestHelper.canvas;
         // tslint:disable: no-magic-numbers
@@ -98,6 +101,7 @@ describe('SidebarComponent', () => {
                 { provide: SelectionService, useValue: selectionStub },
                 { provide: ToolService, useValue: toolServiceStub },
                 { provide: MatDialog, useValue: {} },
+                { provide: PolygonService, useValue: polygonStub },
             ],
         }).compileComponents();
         TestBed.inject(MatDialog);
