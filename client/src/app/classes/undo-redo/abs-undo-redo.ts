@@ -5,21 +5,16 @@ export abstract class AbsUndoRedo {
     // list of data =>contains
     //private absAction: AbsUndoRedo[] = [];
 
-  //  setdataList(dataTab: AbsUndoRedo[]): void {
-     //   this.absAction = dataTab;
-   // }
+    //  setdataList(dataTab: AbsUndoRedo[]): void {
+    //   this.absAction = dataTab;
+    // }
 
-  //  getdataList(): AbsUndoRedo[] {
-     //   return this.absAction;
-  //  }
+    //  getdataList(): AbsUndoRedo[] {
+    //   return this.absAction;
+    //  }
 
     // apply element
-    reapply(): void {
-        //
-    }
-
-    // removes element
-    deapply(): void {
+    apply(): void {
         //
     }
 }
