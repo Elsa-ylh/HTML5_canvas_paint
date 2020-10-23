@@ -10,7 +10,7 @@ export enum ToolUsed {
     Line = 4,
     Rectangle = 5,
     Ellipse = 6,
-    Selection = 7,
+    Selection = 8,
     Color = 1000,
 }
 

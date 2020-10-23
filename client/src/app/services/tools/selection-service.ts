@@ -131,7 +131,7 @@ export class SelectionService extends Tool {
 
     // onMouseEnter(event: MouseEvent): void {}
 
-    OnShiftKeyDown(event: KeyboardEvent): void {
+    onShiftKeyDown(event: KeyboardEvent): void {
         this.shiftPressed = true;
         if (this.mouseDown && !this.inSelection) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -139,7 +139,7 @@ export class SelectionService extends Tool {
         }
     }
 
-    OnShiftKeyUp(event: KeyboardEvent): void {
+    onShiftKeyUp(event: KeyboardEvent): void {
         this.shiftPressed = false;
         if (this.mouseDown && !this.inSelection) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
