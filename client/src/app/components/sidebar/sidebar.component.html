@@ -26,10 +26,13 @@
                     <mat-button-toggle (click)="pickEllipse(1)" [checked]="ellipseChecked" matTooltip="Outil ellipse" matTooltipPosition="right">
                         <mat-icon>panorama_fish_eye</mat-icon>
                     </mat-button-toggle>
+                    <mat-button-toggle (click)="pickPolygon(1)" [checked]="polygonChecked" matTooltip="Outil polygone" matTooltipPosition="right">
+                        <mat-icon svgIcon="polygon"></mat-icon>
+                    </mat-button-toggle>
                     <mat-button-toggle
                         (click)="pickColor()"
                         [checked]="colorChecked"
-                        matTooltip="Selectionner les couleurs"
+                        matTooltip="Sélectionner les couleurs"
                         matTooltipPosition="right"
                     >
                         <mat-icon>color_lens</mat-icon>
@@ -145,6 +148,36 @@
                     ><samp>épaisseur du contour: {{ ellipseService.lineWidth }}px</samp></mat-grid-tile
                 >
             </mat-grid-list>
+
+            <mat-grid-list class="select" cols="6" *ngSwitchCase="toolUsed.Polygon">
+                <mat-grid-tile colspan="6"></mat-grid-tile>
+                <mat-form-field colspan="6" appearance="fill">
+                    <mat-label>Nombre de côté</mat-label>
+                    <mat-select [(ngModel)]="polygonService.numberOfSides">
+                        <mat-option *ngFor="let side of polygonService.possibleNbSides" [value]="side">
+                            {{ side }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-grid-tile colspan="6"> Choisissez un type de polygone</mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">
+                    <mat-button-toggle-group vertical="true">
+                        <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickPolygon(1)">Plein</mat-button-toggle>
+                        <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickPolygon(2)">Contour</mat-button-toggle>
+                        <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickPolygon(3)"
+                            >Plein avec contour</mat-button-toggle
+                        >
+                    </mat-button-toggle-group>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="3"> Ce slider permet de modifier l'épaisseur des lignes des coutours du polygone</mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider min="1" max="50" step="1" [(ngModel)]="polygonService.lineWidth"></mat-slider>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6"
+                    ><samp>épaisseur du contour: {{ polygonService.lineWidth }}px</samp></mat-grid-tile
+                >
+            </mat-grid-list>
+
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Color">
                 <app-color></app-color>
             </mat-grid-list>
