@@ -53,6 +53,8 @@ describe('DrawingComponent', () => {
             rectangleStub = new RectangleService(drawingStub, colorStub);
             ellipseStub = new EllipseService(drawingStub, colorStub);
             dropperStub = new DropperService(drawingStub, colorStub);
+            selectionStub = new SelectionService(drawingStub);
+            polygonStub = new PolygonService(drawingStub, colorStub);
 
             toolServiceStub = new ToolService(
                 pencilStub,
@@ -65,8 +67,6 @@ describe('DrawingComponent', () => {
                 selectionStub,
                 polygonStub,
             );
-            selectionStub = new SelectionService(drawingStub);
-            polygonStub = new PolygonService(drawingStub, colorStub);
 
             toolStub = toolServiceStub.currentTool;
 
@@ -228,7 +228,7 @@ describe('DrawingComponent', () => {
         const canvas = document.createElement('canvas');
         canvas.setAttribute('width', '100');
         canvas.setAttribute('height', '100');
-        component.previewCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        component.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
         const event = { offsetX: 15, offsetY: 37 } as MouseEvent;
         // const getColorSpy = spyOn(colorStub, 'getColor').and.callThrough();
 
