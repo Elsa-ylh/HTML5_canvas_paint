@@ -14,18 +14,24 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { cursorName } from '@app/classes/cursor-name';
+import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { ToolUsed } from '@app/classes/tool';
 import { ColorComponent } from '@app/components/color/color.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DropperColorComponent } from '@app/components/dropper-color/dropper-color.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
+import { DropperService } from '@app/services/tools/dropper.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection-service';
 import { SidebarComponent } from './sidebar.component';
 
 describe('SidebarComponent', () => {
@@ -40,6 +46,9 @@ describe('SidebarComponent', () => {
     let eraserStub: EraserService;
     let lineStub: LineService;
     let colorStub: ColorService;
+    let dropperServiceStub: DropperService;
+    let selectionStub: SelectionService;
+    let polygonStub: PolygonService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -54,7 +63,21 @@ describe('SidebarComponent', () => {
         pencilStub = new PencilService(drawingStub, colorStub);
         eraserStub = new EraserService(drawingStub);
         lineStub = new LineService(drawingStub, colorStub);
-        toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub);
+        dropperServiceStub = new DropperService(drawingStub, colorStub);
+
+        toolServiceStub = new ToolService(
+            pencilStub,
+            eraserStub,
+            brushStub,
+            lineStub,
+            rectangleStub,
+            ellipseStub,
+            dropperServiceStub,
+            selectionStub,
+            polygonStub,
+        );
+        selectionStub = new SelectionService(drawingStub);
+        polygonStub = new PolygonService(drawingStub, colorStub);
 
         canvas = canvasTestHelper.canvas;
         // tslint:disable: no-magic-numbers
@@ -70,7 +93,13 @@ describe('SidebarComponent', () => {
         drawingStub.previewCtx = previewStub;
 
         await TestBed.configureTestingModule({
-            declarations: [SidebarComponent, ColorComponent, WriteTextDialogUserGuideComponent, DialogCreateNewDrawingComponent],
+            declarations: [
+                SidebarComponent,
+                ColorComponent,
+                WriteTextDialogUserGuideComponent,
+                DialogCreateNewDrawingComponent,
+                DropperColorComponent,
+            ],
             imports: [
                 MatIconModule,
                 MatGridListModule,
@@ -92,8 +121,11 @@ describe('SidebarComponent', () => {
                 { provide: PencilService, useValue: pencilStub },
                 { provide: EraserService, useValue: eraserStub },
                 { provide: LineService, useValue: lineStub },
+                { provide: SelectionService, useValue: selectionStub },
                 { provide: ToolService, useValue: toolServiceStub },
+                { provide: DropperService, useValue: dropperServiceStub },
                 { provide: MatDialog, useValue: {} },
+                { provide: PolygonService, useValue: polygonStub },
             ],
         }).compileComponents();
         TestBed.inject(MatDialog);
@@ -112,6 +144,26 @@ describe('SidebarComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+    it('pickPencil', () => {
+        component.pickPencil();
+        expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Pencil);
+    });
+    it('pickEraser()', () => {
+        component.pickEraser();
+        expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Eraser);
+    });
+    it('pickRectangle()', () => {
+        component.pickRectangle(SubToolselected.tool1);
+        expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Rectangle);
+    });
+    it('pickEllipse()', () => {
+        component.pickEllipse(SubToolselected.tool1);
+        expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Ellipse);
+    });
+    it('pickDropper()', () => {
+        component.pickDropper();
+        expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Dropper);
     });
 
     it(' should clear canvas dialog', () => {
@@ -137,6 +189,4 @@ describe('SidebarComponent', () => {
         expect(drawingStub.cursorUsed).toEqual(cursorName.pencil);
         expect(switchToolSpy).toHaveBeenCalled();
     });
-
-    it(' should ');
 });

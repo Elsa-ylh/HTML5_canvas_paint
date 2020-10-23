@@ -128,10 +128,11 @@ export class CanvasResizerService {
                     break;
             }
             const ctx = baseCanvas.getContext('2d') as CanvasRenderingContext2D;
-
             // onload because drawing an image depends on the condition that the originalImage is loaded.
             // Being asynchronous is keypart of web developement
             originalImage.onload = () => {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 ctx.drawImage(originalImage, 0, 0);
             };
         }
