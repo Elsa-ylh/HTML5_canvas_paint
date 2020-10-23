@@ -31,6 +31,7 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection-service';
 import { SidebarComponent } from './sidebar.component';
 
 describe('SidebarComponent', () => {
@@ -46,6 +47,7 @@ describe('SidebarComponent', () => {
     let lineStub: LineService;
     let colorStub: ColorService;
     let dropperServiceStub: DropperService;
+    let selectionStub: SelectionService;
     let polygonStub: PolygonService;
 
     let canvas: HTMLCanvasElement;
@@ -63,7 +65,18 @@ describe('SidebarComponent', () => {
         lineStub = new LineService(drawingStub, colorStub);
         dropperServiceStub = new DropperService(drawingStub, colorStub);
 
-        toolServiceStub = new ToolService(pencilStub, eraserStub, brushStub, lineStub, rectangleStub, ellipseStub, dropperServiceStub, polygonStub);
+        toolServiceStub = new ToolService(
+            pencilStub,
+            eraserStub,
+            brushStub,
+            lineStub,
+            rectangleStub,
+            ellipseStub,
+            dropperServiceStub,
+            selectionStub,
+            polygonStub,
+        );
+        selectionStub = new SelectionService(drawingStub);
         polygonStub = new PolygonService(drawingStub, colorStub);
 
         canvas = canvasTestHelper.canvas;
@@ -108,6 +121,7 @@ describe('SidebarComponent', () => {
                 { provide: PencilService, useValue: pencilStub },
                 { provide: EraserService, useValue: eraserStub },
                 { provide: LineService, useValue: lineStub },
+                { provide: SelectionService, useValue: selectionStub },
                 { provide: ToolService, useValue: toolServiceStub },
                 { provide: DropperService, useValue: dropperServiceStub },
                 { provide: MatDialog, useValue: {} },
