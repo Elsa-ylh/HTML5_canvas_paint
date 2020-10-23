@@ -13,15 +13,19 @@ export class UndoRedoService {
     private listRedo: AbsUndoRedo[] = []; // LIFO
     constructor(private drawingService: DrawingService, private colorService: ColorService) {}
     //Controls the buttons of redo-undo
-    onMouseUpActivate(mouseEvent: MouseEvent): void {
+    onMouseUpActivateUndo(mouseEvent: MouseEvent): void {
         // there is one element
-        if (this.listUndo.length > 0) {
+        if (this.listUndo.length > 0 && this.listRedo.length >= 0) {
             this.isundoDisabled = false;
-        } else if (this.listRedo.length > 0) {
-            this.isRedoDisabled = false;
-        }
+        } 
     }
-    onMouseDownActivate(mouseEvent: MouseEvent): void {
+    onMouseUpActivateRedo(mouseEvent: MouseEvent): void {
+        if (this.listRedo.length > 0 && this.listUndo.length >= 0) {
+            this.isRedoDisabled = false;
+            console.log("d");
+        } 
+    }
+    onMouseDownDisactivate(mouseEvent: MouseEvent): void {
         this.isundoDisabled = true;
         this.isRedoDisabled = true;
     }

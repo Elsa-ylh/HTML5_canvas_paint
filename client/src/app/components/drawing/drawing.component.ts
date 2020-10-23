@@ -22,7 +22,7 @@ export class DrawingComponent implements AfterViewInit {
         private drawingService: DrawingService,
         private toolService: ToolService,
         public cvsResizerService: CanvasResizerService,
-        private undoRedo: UndoRedoService,
+        private undoRedoService: UndoRedoService,
     ) {}
 
     get width(): number {
@@ -56,7 +56,7 @@ export class DrawingComponent implements AfterViewInit {
 
     onMouseDown(event: MouseEvent): void {
         this.toolService.currentTool.onMouseDown(event);
-        this.undoRedo.onMouseDownActivate(event); // activate or not undo redo
+        this.undoRedoService.onMouseDownDisactivate(event); // activate or not undo redo
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -65,7 +65,8 @@ export class DrawingComponent implements AfterViewInit {
 
     onMouseUp(event: MouseEvent): void {
         this.toolService.currentTool.onMouseUp(event);
-        this.undoRedo.onMouseUpActivate(event);
+        this.undoRedoService.onMouseUpActivateUndo(event);
+        this.undoRedoService.onMouseUpActivateRedo(event);
     }
 
     onMouseOut(event: MouseEvent): void {
