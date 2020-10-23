@@ -49,8 +49,8 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('canvasResizingPreview', { static: false }) canvasResizingPreview: ElementRef<HTMLCanvasElement>;
     @ViewChild('dropperLayer', { static: false }) dropperLayer: ElementRef<HTMLCanvasElement>;
 
-    private baseCtx: CanvasRenderingContext2D;
-    private previewCtx: CanvasRenderingContext2D;
+    baseCtx: CanvasRenderingContext2D;
+    previewCtx: CanvasRenderingContext2D;
     private resizeCtx: CanvasRenderingContext2D;
 
     private dropperCtx: CanvasRenderingContext2D;
@@ -170,9 +170,7 @@ export class DrawingComponent implements AfterViewInit {
 
     onMouseOverMainCanvas(event: MouseEvent): void {
         const position = { x: event.offsetX, y: event.offsetY };
-        if (this.toolService.currentToolName === this.dropper) {
-            this.colorService.previewColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.baseCtx));
-        }
+        this.colorService.previewColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.previewCtx));
     }
 
     @HostListener('window:keydown.shift', ['$event'])

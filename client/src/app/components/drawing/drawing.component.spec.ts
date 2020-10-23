@@ -21,6 +21,7 @@ import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
 // tslint:disable:no-any
+// tslint:disable:no-magic-numbers
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
@@ -223,20 +224,23 @@ describe('DrawingComponent', () => {
         expect(onResizeOutSpy).toHaveBeenCalled();
     });
 
-    /*it('not call getColor onMouseOverMainCanvas', () => {
-      const canvas = document.createElement('canvas');
+    it('not call getColor onMouseOverMainCanvas', () => {
+        const canvas = document.createElement('canvas');
         canvas.setAttribute('width', '100');
         canvas.setAttribute('height', '100');
-        component = canvas.getContext('2d') as CanvasRenderingContext2D;
-        const event = { offsetX: 15, offsetY: 47 } as MouseEvent;
+        component.previewCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        const event = { offsetX: 15, offsetY: 37 } as MouseEvent;
+        // const getColorSpy = spyOn(colorStub, 'getColor').and.callThrough();
+
         component.onMouseOverMainCanvas(event);
-        const colorMatrix = component.squareCtx.getImageData(event.offsetX, event.offsetY, 1, 1);
+
+        const colorMatrix = component.previewCtx.getImageData(event.offsetX, event.offsetY, 1, 1);
         expect(colorMatrix.data[0]).toEqual(0);
         expect(colorMatrix.data[1]).toEqual(0);
         expect(colorMatrix.data[2]).toEqual(0);
         expect(colorMatrix.data[3]).toEqual(0);
+        // expect(colorStub.previewColor).toBeDefined();
     });
-    */
 
     it(' should onShiftKeyDown trigger tool service', () => {
         const event = {} as KeyboardEvent;
