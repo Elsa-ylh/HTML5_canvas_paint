@@ -116,7 +116,7 @@ describe('ClientServerCommunicationService', () => {
     it('getAllLabel return 2 label is good id', () => {
         service['information'] = { id: 'list_of_all_labals', name: '', labels: [{ label: '' }, { label: '' }], date: new Date(), picture: '' };
         const labels: Label[] = service.getAllLabel();
-        expect(labels.length).toEqual(0);
+        expect(labels.length).toEqual(2);
         const req = httpMock.expectOne(baseUrl + '/all_labels');
         expect(req.request.method).toBe('GET');
         // actually send the request
