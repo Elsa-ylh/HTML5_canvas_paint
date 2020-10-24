@@ -2,35 +2,40 @@ import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
+import { ToolGeneralInfo } from '@app/classes/toolGeneralInfo';
+import { RectangleAction } from '@app/classes/undo-redo/rectangleAction';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class RectangleService extends Tool {
-    lineWidth: number = 1;
-    fillColor: string;
-    strokeColor: string;
-    square: boolean = false;
-    height: number;
-    width: number;
-    mousePosition: Vec2;
-    distanceX: number;
-    distanceY: number;
+    lineWidth: number = 1; //
+    fillColor: string; //
+    strokeColor: string; //
+    square: boolean = false; // shift
+    height: number; //
+    width: number; //
+    mousePosition: Vec2; //
+    base: boolean; // quel canvas
+    distanceX: number; //
+    distanceY: number; //
     mouseEnter: boolean = false;
     mouseOut: boolean = false;
+    generalInfo: ToolGeneralInfo;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         this.clearEffectTool();
-        this.strokeColor = this.colorService.primaryColor;
-        this.fillColor = this.colorService.secondaryColor;
+        this.generalInfo.secondaryColor = this.strokeColor = this.colorService.primaryColor;
+        this.generalInfo.primaryColor = this.fillColor = this.colorService.secondaryColor;
         if (this.mouseEnter) {
             this.onMouseUp(event);
         }
@@ -44,10 +49,16 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.mousePosition = mousePosition;
-            this.selectRectangle(mousePosition, true);
+            this.generalInfo.canvasSeclected = true;
+            this.selectRectangle(mousePosition, this.mouseDownCoord, this.generalInfo);
         }
         this.mouseDown = false;
         this.mouseEnter = false;
+
+        // undo redo
+
+        const rectAction = new RectangleAction(this.mousePosition, this.base, this, this.drawingService);
+        this.undoRedoService.addUndo(rectAction);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -55,7 +66,8 @@ export class RectangleService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.mousePosition = mousePosition;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.selectRectangle(mousePosition, false);
+            this.generalInfo.canvasSeclected = false;
+            this.selectRectangle(mousePosition, this.mouseDownCoord, this.generalInfo);
         }
     }
 
@@ -76,7 +88,8 @@ export class RectangleService extends Tool {
         this.square = true;
         if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.selectRectangle(this.mousePosition, false);
+            this.generalInfo.canvasSeclected = false;
+            this.selectRectangle(this.mousePosition, this.mouseDownCoord, this.generalInfo);
         }
     }
 
@@ -84,7 +97,8 @@ export class RectangleService extends Tool {
         this.square = false;
         if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.selectRectangle(this.mousePosition, false);
+            this.generalInfo.canvasSeclected = false;
+            this.selectRectangle(this.mousePosition, this.mouseDownCoord, this.generalInfo);
         }
     }
 
@@ -101,7 +115,7 @@ export class RectangleService extends Tool {
         this.drawingService.previewCtx.setLineDash([0, 0]);
     }
 
-    drawFillRectangle(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
+    drawFillRectangle(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2): void {
         ctx.fillStyle = this.colorService.primaryColor;
 
         if (this.square) {
@@ -111,7 +125,7 @@ export class RectangleService extends Tool {
         }
     }
 
-    drawRectangleOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
+    drawRectangleOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2): void {
         ctx.strokeStyle = this.colorService.secondaryColor;
         ctx.lineWidth = this.lineWidth;
 
@@ -136,24 +150,24 @@ export class RectangleService extends Tool {
             ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, this.distanceX, this.distanceY);
         }
     }
-    selectRectangle(mousePosition: Vec2, base: boolean): void {
-        this.distanceX = mousePosition.x - this.mouseDownCoord.x;
-        this.distanceY = mousePosition.y - this.mouseDownCoord.y;
+    selectRectangle(mousePosition: Vec2, mouseDownCoord: Vec2, generalInfo: ToolGeneralInfo): void {
+        this.distanceX = mousePosition.x - mouseDownCoord.x;
+        this.distanceY = mousePosition.y - mouseDownCoord.y;
         // width an height calcul while keeping position sign
         this.height = Math.sign(this.distanceY) * Math.abs(Math.min(this.distanceX, this.distanceY));
         this.width = Math.sign(this.distanceX) * Math.abs(Math.min(this.distanceX, this.distanceY));
 
-        if (base) {
+        if (generalInfo.canvasSeclected) {
             switch (this.subToolSelect) {
                 case SubToolselected.tool1: {
                     this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                    this.drawFillRectangle(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition);
+                    this.drawFillRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
                     break;
                 }
 
                 case SubToolselected.tool2: {
                     this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                    this.drawRectangleOutline(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition);
+                    this.drawRectangleOutline(this.drawingService.baseCtx, this.mouseDownCoord);
                     break;
                 }
 
@@ -166,11 +180,11 @@ export class RectangleService extends Tool {
         } else {
             switch (this.subToolSelect) {
                 case SubToolselected.tool1:
-                    this.drawFillRectangle(this.drawingService.previewCtx, this.mouseDownCoord, mousePosition);
+                    this.drawFillRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
                     break;
 
                 case SubToolselected.tool2:
-                    this.drawRectangleOutline(this.drawingService.previewCtx, this.mouseDownCoord, mousePosition);
+                    this.drawRectangleOutline(this.drawingService.previewCtx, this.mouseDownCoord);
                     break;
 
                 case SubToolselected.tool3:
