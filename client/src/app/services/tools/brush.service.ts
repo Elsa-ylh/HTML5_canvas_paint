@@ -54,6 +54,8 @@ export class BrushService extends Tool {
             }
         }
         this.mouseDown = false;
+        // undo redo 
+        
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
@@ -105,7 +107,7 @@ export class BrushService extends Tool {
         this.mouseOut = false;
     }
 
-    private drawBrushTool4(ctx: CanvasRenderingContext2D, path: PointArc[]): void {
+    drawBrushTool4(ctx: CanvasRenderingContext2D, path: PointArc[]): void {
         for (const point of path) {
             ctx.beginPath();
             ctx.globalAlpha = point.opacity;
@@ -115,7 +117,7 @@ export class BrushService extends Tool {
         }
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         switch (this.subToolSelect) {
             case SubToolselected.tool1:
                 this.drawLinePattern(ctx, path);
@@ -155,7 +157,7 @@ export class BrushService extends Tool {
                 break;
         }
     }
-    private drawLinePattern(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawLinePattern(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const px2 = 2;
         const dividerRadius = 3;
         const sizePx = ctx.lineWidth;
@@ -202,7 +204,7 @@ export class BrushService extends Tool {
         ctx.lineWidth = sizePx;
     }
 
-    private witchBrush(select: number): void {
+    witchBrush(select: number): void {
         this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.lineWidth;
 
         this.clearEffectTool();

@@ -22,9 +22,9 @@ export class LineAction extends AbsUndoRedo {
         console.log('apply line');
         this.drawingService.baseCtx.strokeStyle = this.colorLine;
         this.drawingService.baseCtx.lineWidth = this.thickness;
-        this.lineService.drawLine(this.drawingService.baseCtx, this.changesLine, this.thickness);
+        this.lineService.drawLine(this.drawingService.baseCtx,  {data:this.changesLine,selectedLineTool:this.subToolselected}, this.thickness);
         this.lineService.drawPoint(this.drawingService.baseCtx, this.changesLine, this.secondaryTickness);
-        this.lineService.drawLineLastPoint(this.drawingService.baseCtx, this.changesLine, this.pointMouse);
+        this.lineService.drawLineLastPoint(this.drawingService.baseCtx, {data:this.changesLine,selectedLineTool:this.subToolselected}, this.pointMouse);
         this.lineService.clearEffectTool();
     }
 }
