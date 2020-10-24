@@ -11,7 +11,7 @@ import { UndoRedoService } from '../undo-redo/undo-redo.service';
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
-    private color: string = '#FFF';
+    private color: string = '#01ff43';
     eraserWidth: number = 5;
     constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService) {
         super(drawingService);
@@ -28,6 +28,7 @@ export class EraserService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
+        this.clearPath();
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -38,11 +39,12 @@ export class EraserService extends Tool {
                 this.removeLine(this.drawingService.baseCtx, this.pathData);
             } else {
                 // code to draw dot
-                this.drawingService.baseCtx.fillStyle = '#FFF';
-                this.pathData.push(mousePosition);
+                this.clearPath();
+                this.drawingService.baseCtx.fillStyle = this.color;
                 this.drawingService.baseCtx.fillRect(mousePosition.x, mousePosition.y, this.eraserWidth, this.eraserWidth);
-                this.drawingService.previewCtx.fillStyle = '#FFF';
+                this.drawingService.previewCtx.fillStyle = this.color;
                 this.drawingService.previewCtx.fillRect(mousePosition.x, mousePosition.y, this.eraserWidth, this.eraserWidth);
+                this.pathData.push(mousePosition);
             }
         }
         this.mouseDown = false;

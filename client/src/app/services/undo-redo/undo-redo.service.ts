@@ -15,19 +15,21 @@ export class UndoRedoService {
     //Controls the buttons of redo-undo
     onMouseUpActivateUndo(mouseEvent: MouseEvent): void {
         // there is one element
-        if (this.listUndo.length > 0 && this.listRedo.length >= 0) {
+        if (this.listUndo.length > 0) {
             this.isundoDisabled = false;
-        } 
+            console.log('undo actif but');
+        } else if ((this.listUndo.length = 0)) {
+            console.log('disabled');
+            this.isundoDisabled = true;
+        }
     }
     onMouseUpActivateRedo(mouseEvent: MouseEvent): void {
-        if (this.listRedo.length > 0 && this.listUndo.length >= 0) {
+        //console.log(this.listRedo.length);
+        console.log(this.listRedo.length);
+        if (this.listRedo.length > 0) {
             this.isRedoDisabled = false;
-            console.log("d");
-        } 
-    }
-    onMouseDownDisactivate(mouseEvent: MouseEvent): void {
-        this.isundoDisabled = true;
-        this.isRedoDisabled = true;
+            console.log('redo actif but');
+        }
     }
     undoRedoDisabled(): void {
         this.isundoDisabled = true;
@@ -70,7 +72,7 @@ export class UndoRedoService {
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
             // reapply the currents elements (without the removed one)
             for (let element of this.listUndo) {
-                element.apply() ;
+                element.apply();
             }
             // allows to return to the previous "live" state on the canvas
             this.drawingService.baseCtx.strokeStyle = tempColor;

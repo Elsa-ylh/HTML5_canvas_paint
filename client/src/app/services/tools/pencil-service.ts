@@ -79,7 +79,6 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            //this.intiColor = this.getInitColor(event);
             this.intiColor = this.colorService.primaryColor;
             this.mouseMove = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
