@@ -1,7 +1,9 @@
 import { AbsUndoRedo } from './abs-undo-redo';
 
-export class PipetteAction implements AbsUndoRedo {
-    constructor() {}
+export class PipetteAction extends AbsUndoRedo {
+    constructor() {
+        super();
+    }
 
     apply() {}
 }

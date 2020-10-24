@@ -11,7 +11,7 @@ import { UndoRedoService } from '../undo-redo/undo-redo.service';
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
-    private color: string = '#01ff43';
+    private color: string = '#fff';
     eraserWidth: number = 5;
     constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService) {
         super(drawingService);
@@ -48,8 +48,8 @@ export class EraserService extends Tool {
             }
         }
         this.mouseDown = false;
-        let action = new EraseAction(this.pathData, this.color, this.eraserWidth, this, this.drawingService);
-        this.undoRedoService.addUndo(action);
+        let actionEraser = new EraseAction(this.pathData, this.color, this.eraserWidth, this, this.drawingService);
+        this.undoRedoService.addUndo(actionEraser);
         this.undoRedoService.clearRedo();
         this.clearPath();
     }

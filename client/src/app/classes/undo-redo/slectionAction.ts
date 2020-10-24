@@ -1,6 +1,8 @@
 import { AbsUndoRedo } from './abs-undo-redo';
 
-export class SlectionAction implements AbsUndoRedo {
-    constructor() {}
+export class SlectionAction extends AbsUndoRedo {
+    constructor() {
+        super();
+    }
     apply() {}
 }

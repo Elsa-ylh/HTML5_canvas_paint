@@ -1,7 +1,9 @@
 import { AbsUndoRedo } from './abs-undo-redo';
 
-export class PolygoneAction implements AbsUndoRedo {
-    constructor() {}
+export class PolygoneAction extends AbsUndoRedo {
+    constructor() {
+        super();
+    }
 
     apply() {}
 }

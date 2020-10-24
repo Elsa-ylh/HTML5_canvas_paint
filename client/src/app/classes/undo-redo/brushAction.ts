@@ -1,7 +1,9 @@
 import { AbsUndoRedo } from './abs-undo-redo';
 
-export class BrushAction implements AbsUndoRedo {
-    constructor() {}
+export class BrushAction extends AbsUndoRedo {
+    constructor() {
+        super();
+    }
 
     apply() {}
 }

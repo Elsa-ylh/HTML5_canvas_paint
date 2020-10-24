@@ -69,8 +69,8 @@ export class PencilService extends Tool {
         }
         this.mouseDown = false;
         // TODO mettre pathData + couleur finale dans l'objet d'action // coinstucor(action) d=styje action
-        let action = new StrokeAction(this.pathData, this.intiColor, this.pencilSize, this.alpha, this, this.drawingService);
-        this.undoRedoService.addUndo(action);
+        let actionPencil = new StrokeAction(this.pathData, this.intiColor, this.pencilSize, this.alpha, this, this.drawingService);
+        this.undoRedoService.addUndo(actionPencil);
         this.undoRedoService.clearRedo();
         this.clearPath();
     }
@@ -102,15 +102,6 @@ export class PencilService extends Tool {
         this.drawingService.baseCtx.setLineDash([0, 0]); // reset
         this.drawingService.previewCtx.setLineDash([0, 0]);
     }
-
-    // todo getColor position
-    // get the initial color
-    // getInitColor(event: MouseEvent): string {
-    // const position = { x: event.offsetX, y: event.offsetY };
-    //  const initialColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.drawingService.previewCtx));
-    //  return initialColor;
-    //  }
-
     clearPath(): void {
         this.pathData = [];
     }
