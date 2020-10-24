@@ -1,4 +1,4 @@
-/*
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { CancasInformation, Label } from '@common/communication/canvas-information';
@@ -9,8 +9,8 @@ describe('CarrouselPictureComponent', () => {
     let fixture: ComponentFixture<CarrouselPictureComponent>;
     const informationsService: CancasInformation[] = [];
     const isDate: Date = new Date();
-    // let clientServerServiceStub: ClientServerCommunicationService;
-
+    let addAllDataSpy: jasmine.Spy<any>;
+    let addAllLabalSpy: jasmine.Spy<any>;
     const testCancasInformationAdd: CancasInformation = {
         id: '',
         name: 'test5',
@@ -21,13 +21,13 @@ describe('CarrouselPictureComponent', () => {
     const labels: Label[] = [];
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [ClientServerCommunicationService],
+            imports: [HttpClientModule],
             declarations: [CarrouselPictureComponent],
             providers: [
                 {
                     provide: ClientServerCommunicationService,
                     useValue: {
-                        getData: () => informationsService,
+                        getData: () => [informationsService],
                         selectPictureWithLabel: (message: Message) => informationsService,
                         allLabel: () => testCancasInformationAdd,
                         getAllLabel: () => labels,
@@ -40,6 +40,9 @@ describe('CarrouselPictureComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(CarrouselPictureComponent);
         component = fixture.componentInstance;
+        addAllDataSpy = spyOn<any>(component, 'addAllData').and.callThrough();
+        addAllLabalSpy = spyOn<any>(component, 'addAllLabal').and.callThrough();
+        component['dataPicture'];
         fixture.detectChanges();
     });
     afterEach(() => {
@@ -49,6 +52,8 @@ describe('CarrouselPictureComponent', () => {
     });
     it('should create', () => {
         expect(component).toBeTruthy();
+        expect(addAllDataSpy).toHaveBeenCalled();
+        expect(addAllLabalSpy).toHaveBeenCalled();
     });
+    // it('', () => {});
 });
-*/
