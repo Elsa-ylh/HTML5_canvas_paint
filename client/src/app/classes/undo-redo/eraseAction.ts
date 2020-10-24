@@ -15,7 +15,7 @@ export class EraseAction extends AbsUndoRedo {
     }
 
     apply() {
-        console.log(' apply eraser');
+        // console.log(' apply eraser');
         this.drawingService.baseCtx.strokeStyle = this.color;
         this.drawingService.baseCtx.lineWidth = this.thickness;
         this.eraserService.removeLine(this.drawingService.baseCtx, this.changesER);

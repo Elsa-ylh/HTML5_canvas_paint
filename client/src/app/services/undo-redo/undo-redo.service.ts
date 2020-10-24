@@ -66,22 +66,22 @@ export class UndoRedoService {
         if (action) {
             this.listRedo.push(action); // save into redo to be able to cancel the undo.
             // allows to return to the previous "live" state on the canvas
-            const tempColor = this.drawingService.baseCtx.strokeStyle;
+            const tempPrimaryColor = this.drawingService.baseCtx.strokeStyle;
+            const tempSecondaryColor = this.drawingService.baseCtx.shadowColor;
             const tempAlpha = this.colorService.primaryColorTransparency;
             const tempThickness = this.drawingService.baseCtx.lineWidth;
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
             // reapply the currents elements (without the removed one)
-            console.log('before the for');
             // BUG: rentre jamais dans le for avec eraserelement
             for (let element of this.listUndo) {
                 console.log('element');
                 element.apply();
             }
             // allows to return to the previous "live" state on the canvas
-            this.drawingService.baseCtx.strokeStyle = tempColor;
+            this.drawingService.baseCtx.strokeStyle = tempPrimaryColor;
+            this.drawingService.baseCtx.shadowColor = tempSecondaryColor;
             this.colorService.changeColorOpacity(tempAlpha);
             this.drawingService.baseCtx.lineWidth = tempThickness;
-            console.log('thai express');
         }
     }
 }

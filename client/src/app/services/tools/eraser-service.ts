@@ -47,11 +47,12 @@ export class EraserService extends Tool {
                 this.pathData.push(mousePosition);
             }
         }
-        this.mouseDown = false;
         let actionEraser = new EraseAction(this.pathData, this.color, this.eraserWidth, this, this.drawingService);
         this.undoRedoService.addUndo(actionEraser);
         this.undoRedoService.clearRedo();
+        this.clearEffectTool();
         this.clearPath();
+        this.mouseDown = false;
     }
 
     onMouseMove(event: MouseEvent): void {

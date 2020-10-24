@@ -3,9 +3,11 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { PointArc } from '@app/classes/point-arc';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
+import { BrushAction } from '@app/classes/undo-redo/brushAction';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
 const motionDifference = 4;
 const citcle = Math.PI * 2;
@@ -14,13 +16,15 @@ const citcle = Math.PI * 2;
 })
 export class BrushService extends Tool {
     pixelMinBrush: number = 6;
-    lineWidth: number = this.pixelMinBrush;
-    pixelThickness: number = 4;
+    lineWidth: number = this.pixelMinBrush; //
+    pixelThickness: number = 4; //
     private lastPoint: Vec2;
-    private pathData: Vec2[];
-    private brush4Data: PointArc[];
+    private pathData: Vec2[]; //
+    private brush4Data: PointArc[]; //
+    private primaryColorBrush: string;
+    private secondaryColorBrush: string;
     private mouseOut: boolean = false;
-    constructor(drawingService: DrawingService, private colorService: ColorService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
         this.clearPath();
     }
@@ -50,12 +54,25 @@ export class BrushService extends Tool {
                 this.drawBrushTool4(this.drawingService.baseCtx, this.brush4Data);
             } else {
                 this.pathData.push(mousePosition);
-                this.drawLine(this.drawingService.baseCtx, this.pathData);
+                this.drawLine(this.drawingService.baseCtx, this.pathData, this.subToolSelect);
             }
         }
+        //undo-redo
+        this.primaryColorBrush = this.colorService.primaryColor;
+        this.secondaryColorBrush = this.colorService.secondaryColor;
+        const brushAction = new BrushAction(
+            this.pathData,
+            // this.brush4Data,
+            this.primaryColorBrush,
+            this.secondaryColorBrush,
+            this.lineWidth,
+            this.subToolSelect,
+            this,
+            this.drawingService,
+        );
+        this.undoRedoService.addUndo(brushAction);
+        this.undoRedoService.clearRedo();
         this.mouseDown = false;
-        // undo redo 
-        
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
@@ -70,7 +87,7 @@ export class BrushService extends Tool {
                 this.drawBrushTool4(this.drawingService.previewCtx, this.brush4Data);
             } else {
                 this.pathData.push(mousePosition);
-                this.drawLine(this.drawingService.previewCtx, this.pathData);
+                this.drawLine(this.drawingService.previewCtx, this.pathData, this.subToolSelect);
             }
         } else if (this.mouseOut) {
             this.lastPoint = mousePosition;
@@ -86,7 +103,7 @@ export class BrushService extends Tool {
                 this.drawBrushTool4(this.drawingService.baseCtx, this.brush4Data);
             } else {
                 this.pathData.push(mousePosition);
-                this.drawLine(this.drawingService.baseCtx, this.pathData);
+                this.drawLine(this.drawingService.baseCtx, this.pathData, this.subToolSelect);
             }
             this.clearPath();
             this.clearPreviewCtx();
@@ -117,8 +134,8 @@ export class BrushService extends Tool {
         }
     }
 
-    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        switch (this.subToolSelect) {
+    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], subBrushTool: SubToolselected): void {
+        switch (subBrushTool) {
             case SubToolselected.tool1:
                 this.drawLinePattern(ctx, path);
                 break;
