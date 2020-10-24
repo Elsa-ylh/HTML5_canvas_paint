@@ -32,6 +32,7 @@ export class SelectionService extends Tool {
     distanceX: number;
     distanceY: number;
     ellipseRad: Vec2 = { x: 0, y: 0 };
+    // image:any = new Image();
 
     onMouseDown(event: MouseEvent): void {
         // initialisation of effects
@@ -156,8 +157,8 @@ export class SelectionService extends Tool {
         this.drawingService.baseCtx.lineCap = 'square';
         this.drawingService.previewCtx.lineJoin = 'miter';
         this.drawingService.previewCtx.lineCap = 'square';
-        this.drawingService.baseCtx.setLineDash([0, 0]); // reset
-        this.drawingService.previewCtx.setLineDash([0, 0]);
+        // this.drawingService.baseCtx.setLineDash([0, 0]); // reset
+        // this.drawingService.previewCtx.setLineDash([0, 0]);
     }
 
     selectAll(): void {
@@ -219,9 +220,10 @@ export class SelectionService extends Tool {
     drawSelectionRect(ctx: CanvasRenderingContext2D, mouseDownCoord: Vec2, shiftPressed: boolean): void {
         // this.height = this.mousePosition.y - this.mouseDownCoord.y;
         // this.width = this.mousePosition.x - this.mouseDownCoord.x;
-
-        ctx.setLineDash([]);
+       //  this.image = this.drawingService.previewCtx.canvas.toDataURL();
+        // ctx.setLineDash([]);
         ctx.strokeRect(mouseDownCoord.x, mouseDownCoord.y, this.width, this.height);
+        ctx.setLineDash([]);
         ctx.fillRect(
             mouseDownCoord.x + this.width / 2 - this.modifSelectSquare / 2,
             mouseDownCoord.y - this.modifSelectSquare / 2,
@@ -270,6 +272,7 @@ export class SelectionService extends Tool {
             this.modifSelectSquare,
             this.modifSelectSquare,
         );
+        ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
     }
 
     copySelection(): Vec2 {
@@ -331,15 +334,29 @@ export class SelectionService extends Tool {
                 break;
 
             case SubToolselected.tool2:
-                this.drawSelectionRect(this.drawingService.previewCtx, mouseCoord, false);
+                // this.drawSelectionRect(this.drawingService.previewCtx, mouseCoord, false);
                 // Have to find a way to paste image only in ellipse, use clip maybe
-
+                // this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
+                // this.image.src = this.drawingService.previewCtx.canvas.toDataURL();
                 // ctx.save();
                 // ctx.beginPath();
                 // // ctx.arc(mouseCoord.x,mouseCoord.y, )
                 // this.drawEllipse(ctx, mouseCoord, this.width / 2, this.height / 2);
                 // ctx.clip();
-                this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
+                // this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
+                this.drawingService.clearCanvas(ctx);
+                ctx.beginPath();
+                this.drawEllipse(ctx, mouseCoord, this.width / 2, this.height / 2);
+                ctx.stroke();
+                // ctx.clip();
+                ctx.globalCompositeOperation='destination-in';  // picture clipped inside oval
+                this.drawingService.previewCtx.fillRect(mouseCoord.x,mouseCoord.y,this.width,this.height);
+                // createImageBitmap(this.imageData).then(function(imgBitmap) {
+                //   ctx.drawImage(imgBitmap,mouseCoord.x,mouseCoord.y);
+                // });
+                // this.drawingService.previewCtx.drawImage(createImageBitmap(this.imageData),mouseCoord.x,mouseCoord.y);
+                // ctx.restore();
+
                 // ctx.restore();
                 break;
         }
