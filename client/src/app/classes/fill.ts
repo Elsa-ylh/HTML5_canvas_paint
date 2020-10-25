@@ -4,6 +4,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Point2d } from './point2d';
 import { Vec2 } from './vec2';
 
+// https://www.youtube.com/watch?v=HRZG_vsB4ZE&ab_channel=AjayBadgujar
+
 export class Fill {
     constructor(
         ctx: CanvasRenderingContext2D,
@@ -22,13 +24,14 @@ export class Fill {
             this.canvasResizerService.canvasSize.x,
             this.canvasResizerService.canvasSize.y,
         );
-        // const fillColor: string = this.hexToRgbA(color);
-        // const targetColor: number[] = this.getPixel(point as Vec2, drawingService.baseCtx);
+        // const fillColor: number[] = this.hexToRgbA(color);
+        const targetColor: number[] = this.getPixel(point as Vec2, drawingService.baseCtx);
+        console.log(targetColor);
     }
 
     ctx: CanvasRenderingContext2D;
     point: Point2d;
-    color: string;
+    color: string = '#000000';
     drawingService: DrawingService;
     colorService: ColorService;
     canvasResizerService: CanvasResizerService;
@@ -82,16 +85,6 @@ export class Fill {
     }
 
     hexToRgbA(hex: string): number[] {
-        // let c: any;
-        // if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-        //     c = hex.substring(1).split('');
-        //     if (c.length == 3) {
-        //         c = [c[0], c[0], c[1], c[1], c[2], c[2]];
-        //     }
-        //     c = '0x' + c.join('');
-        //     return 'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ',1)';
-        // }
-        // throw new Error('Bad Hex');
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         if (result !== null) {
             return [
