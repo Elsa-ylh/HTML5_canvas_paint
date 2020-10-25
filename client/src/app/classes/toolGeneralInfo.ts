@@ -1,6 +1,6 @@
 import { SubToolselected } from './sub-tool-selected';
 
-export class ToolGeneralInfo {
+export interface ToolGeneralInfo {
     primaryColor: string;
     secondaryColor: string;
     lineWidth: number;

@@ -24,7 +24,7 @@ export class UndoRedoService {
     }
     onMouseUpActivateRedo(mouseEvent: MouseEvent): void {
         // console.log(this.listRedo.length);
-        console.log(this.listRedo.length);
+        // console.log(this.listRedo.length);
         if (this.listRedo.length > 0) {
             this.isRedoDisabled = false;
             // console.log('redo actif but');
@@ -74,7 +74,7 @@ export class UndoRedoService {
             // reapply the currents elements (without the removed one)
             // BUG: rentre jamais dans le for avec eraserelement
             for (const element of this.listUndo) {
-                console.log('element');
+                // console.log('element');
                 element.apply();
             }
             // allows to return to the previous "live" state on the canvas

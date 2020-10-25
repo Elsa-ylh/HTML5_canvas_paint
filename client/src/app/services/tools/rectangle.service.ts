@@ -3,19 +3,19 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { ToolGeneralInfo } from '@app/classes/toolGeneralInfo';
-// import { RectangleAction } from '@app/classes/undo-redo/rectangleAction';
+import { RectangleAction } from '@app/classes/undo-redo/rectangleAction';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-// import { UndoRedoService } from '../undo-redo/undo-redo.service';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class RectangleService extends Tool {
-    lineWidth: number = 1; //
-    fillColor: string; //
-    strokeColor: string; //
+    //  lineWidth: number = 1; //
+    fillColor: string;
+    strokeColor: string;
     // square: boolean = false; // shift
     height: number; //
     width: number; //
@@ -25,26 +25,25 @@ export class RectangleService extends Tool {
     distanceY: number; //
     mouseEnter: boolean = false;
     mouseOut: boolean = false;
-    generalInfo: ToolGeneralInfo = {
-        primaryColor: 'black',
-        secondaryColor: 'black',
-        lineWidth: 1,
-        shiftPressed: false,
-        selectSubTool: SubToolselected.tool1,
-        canvasSelected: false,
-    };
+    generalInfo: ToolGeneralInfo;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService) {
-        // rajoute private undoRedoService: UndoRedoService
+    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
+        this.generalInfo = {
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            lineWidth: 1,
+            shiftPressed: false,
+            selectSubTool: SubToolselected.tool1,
+            canvasSelected: false,
+        };
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         this.clearEffectTool();
-        this.generalInfo.secondaryColor = this.colorService.secondaryColor;
-        this.generalInfo.primaryColor = this.colorService.primaryColor;
-
+        //  this.generalInfo.secondaryColor = this.colorService.secondaryColor;
+        //this.generalInfo.primaryColor = this.colorService.primaryColor;
         if (this.mouseEnter) {
             this.onMouseUp(event);
         }
@@ -60,14 +59,18 @@ export class RectangleService extends Tool {
             this.mousePosition = mousePosition;
             this.generalInfo.canvasSelected = true;
             this.selectRectangle(mousePosition, this.mouseDownCoord, this.generalInfo);
+            console.log(this.generalInfo);
         }
         this.mouseDown = false;
         this.mouseEnter = false;
 
         // undo redo
+        this.generalInfo.secondaryColor = this.colorService.secondaryColor;
+        this.generalInfo.primaryColor = this.colorService.primaryColor;
 
-        // const rectAction = new RectangleAction(this.mousePosition, this.base, this, this.drawingService);
-        // this.undoRedoService.addUndo(rectAction);
+        const rectAction = new RectangleAction(this.mousePosition, this.mouseDownCoord, this.generalInfo, this, this.drawingService);
+        this.undoRedoService.addUndo(rectAction);
+        this.undoRedoService.clearRedo();
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -126,7 +129,7 @@ export class RectangleService extends Tool {
 
     drawFillRectangle(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2): void {
         ctx.fillStyle = this.fillColor;
-
+        ctx.lineWidth = this.generalInfo.lineWidth;
         if (this.generalInfo.shiftPressed) {
             ctx.fillRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
         } else {
@@ -148,6 +151,7 @@ export class RectangleService extends Tool {
     drawFillRectangleOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2): void {
         ctx.strokeStyle = this.strokeColor;
         ctx.fillStyle = this.fillColor;
+        ctx.lineWidth = this.generalInfo.lineWidth;
 
         ctx.lineWidth = this.generalInfo.lineWidth;
 
@@ -160,8 +164,8 @@ export class RectangleService extends Tool {
         }
     }
     selectRectangle(mousePosition: Vec2, mouseDownCoord: Vec2, generalInfo: ToolGeneralInfo): void {
-        this.strokeColor = generalInfo.secondaryColor;
-        this.fillColor = generalInfo.primaryColor;
+        generalInfo.primaryColor = this.strokeColor = this.colorService.secondaryColor;
+        generalInfo.secondaryColor = this.fillColor = this.colorService.primaryColor;
         this.distanceX = mousePosition.x - mouseDownCoord.x;
         this.distanceY = mousePosition.y - mouseDownCoord.y;
         // width an height calcul while keeping position sign
