@@ -12,7 +12,7 @@ export class UndoRedoService {
     private listUndo: AbsUndoRedo[] = [];
     private listRedo: AbsUndoRedo[] = [];
     constructor(private drawingService: DrawingService, private colorService: ColorService) {}
-    //Controls the buttons of redo-undo
+    // Controls the buttons of redo-undo
     onMouseUpActivateUndo(mouseEvent: MouseEvent): void {
         // there is one element
         if (this.listUndo.length > 0) {
@@ -23,7 +23,7 @@ export class UndoRedoService {
         }
     }
     onMouseUpActivateRedo(mouseEvent: MouseEvent): void {
-        //console.log(this.listRedo.length);
+        // console.log(this.listRedo.length);
         console.log(this.listRedo.length);
         if (this.listRedo.length > 0) {
             this.isRedoDisabled = false;
@@ -73,7 +73,7 @@ export class UndoRedoService {
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
             // reapply the currents elements (without the removed one)
             // BUG: rentre jamais dans le for avec eraserelement
-            for (let element of this.listUndo) {
+            for (const element of this.listUndo) {
                 console.log('element');
                 element.apply();
             }

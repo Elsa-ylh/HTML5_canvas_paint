@@ -57,7 +57,7 @@ export class BrushService extends Tool {
                 this.drawLine(this.drawingService.baseCtx, this.pathData, this.subToolSelect);
             }
         }
-        //undo-redo
+        // undo-redo
         this.primaryColorBrush = this.colorService.primaryColor;
         this.secondaryColorBrush = this.colorService.secondaryColor;
         const brushAction = new BrushAction(

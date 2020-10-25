@@ -47,7 +47,7 @@ export class EraserService extends Tool {
                 this.pathData.push(mousePosition);
             }
         }
-        let actionEraser = new EraseAction(this.pathData, this.color, this.eraserWidth, this, this.drawingService);
+        const actionEraser = new EraseAction(this.pathData, this.color, this.eraserWidth, this, this.drawingService);
         this.undoRedoService.addUndo(actionEraser);
         this.undoRedoService.clearRedo();
         this.clearEffectTool();
