@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
-import { ColorService } from '../color/color.service';
-import { DrawingService } from '../drawing/drawing.service';
+import { ColorService } from '@app/services/color/color.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
     providedIn: 'root',
@@ -18,8 +18,6 @@ export class UndoRedoService {
         if (this.listUndo.length > 0) {
             this.isundoDisabled = false;
             //   console.log('undo actif but');
-        } else if ((this.listUndo.length = 0)) {
-            this.isundoDisabled = true;
         }
     }
     onMouseUpActivateRedo(mouseEvent: MouseEvent): void {
@@ -62,7 +60,7 @@ export class UndoRedoService {
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
     undo(): void {
         const action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
-        console.log(action);
+        //  console.log(action);
         if (action) {
             this.listRedo.push(action); // save into redo to be able to cancel the undo.
             // allows to return to the previous "live" state on the canvas

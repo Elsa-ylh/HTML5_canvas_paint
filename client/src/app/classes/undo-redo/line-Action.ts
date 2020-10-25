@@ -1,8 +1,8 @@
+import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from '@app/services/tools/line.service';
-import { SubToolselected } from '../sub-tool-selected';
-import { Vec2 } from '../vec2';
-import { AbsUndoRedo } from './abs-undo-redo';
 
 export class LineAction extends AbsUndoRedo {
     constructor(
@@ -18,7 +18,7 @@ export class LineAction extends AbsUndoRedo {
         super();
     }
 
-    apply() {
+    apply(): void {
         this.drawingService.baseCtx.strokeStyle = this.colorLine;
         this.drawingService.baseCtx.lineWidth = this.thickness;
         this.lineService.drawLine(this.drawingService.baseCtx, { data: this.changesLine, selectedLineTool: this.subToolselected }, this.thickness);

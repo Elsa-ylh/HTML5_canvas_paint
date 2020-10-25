@@ -1,8 +1,8 @@
+import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
-import { SubToolselected } from '../sub-tool-selected';
-import { Vec2 } from '../vec2';
-import { AbsUndoRedo } from './abs-undo-redo';
 
 export class RectangleAction extends AbsUndoRedo {
     constructor(
@@ -20,7 +20,7 @@ export class RectangleAction extends AbsUndoRedo {
         super();
     }
 
-    apply() {
+    apply(): void {
         this.drawingService.baseCtx.strokeStyle = this.primaryColor;
         this.drawingService.baseCtx.shadowColor = this.secondaryColor;
         this.drawingService.baseCtx.lineWidth = this.lineWidth;

@@ -1,7 +1,7 @@
+import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from '@app/services/tools/eraser-service';
-import { Vec2 } from '../vec2';
-import { AbsUndoRedo } from './abs-undo-redo';
 
 export class EraseAction extends AbsUndoRedo {
     constructor(
@@ -14,7 +14,7 @@ export class EraseAction extends AbsUndoRedo {
         super();
     }
 
-    apply() {
+    apply(): void {
         // console.log(' apply eraser');
         this.drawingService.baseCtx.strokeStyle = this.color;
         this.drawingService.baseCtx.lineWidth = this.thickness;

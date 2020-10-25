@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
-import { StrokeAction } from '@app/classes/undo-redo/strokeAction';
+import { StrokeAction } from '@app/classes/undo-redo/stroke-Action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoService } from '../undo-redo/undo-redo.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',

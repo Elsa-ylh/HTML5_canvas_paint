@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
-import { ToolGeneralInfo } from '@app/classes/toolGeneralInfo';
-import { RectangleAction } from '@app/classes/undo-redo/rectangleAction';
+import { ToolGeneralInfo } from '@app/classes/tool-General-Info';
+import { RectangleAction } from '@app/classes/undo-redo/rectangle-Action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoService } from '../undo-redo/undo-redo.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
@@ -154,8 +154,9 @@ export class RectangleService extends Tool {
     }
 
     drawFillRectangle(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2): void {
-        ctx.fillStyle = this.colorService.primaryColor;
-
+        ctx.strokeStyle = this.strokeColor;
+        ctx.fillStyle = this.fillColor;
+        ctx.lineWidth = this.lineWidth;
         if (this.square) {
             ctx.fillRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
         } else {
@@ -164,7 +165,8 @@ export class RectangleService extends Tool {
     }
 
     drawRectangleOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2): void {
-        ctx.strokeStyle = this.colorService.secondaryColor;
+        ctx.strokeStyle = this.strokeColor;
+        ctx.fillStyle = this.fillColor;
         ctx.lineWidth = this.lineWidth;
 
         if (this.square) {
@@ -220,7 +222,7 @@ export class RectangleService extends Tool {
                 }
             }
         } else {
-            switch (this.subToolSelect) {
+            switch (generalInfo.selectSubTool) {
                 case SubToolselected.tool1:
                     this.drawFillRectangle(this.drawingService.previewCtx, mouseDownCoord);
                     break;

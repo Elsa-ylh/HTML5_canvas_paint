@@ -3,11 +3,11 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { PointArc } from '@app/classes/point-arc';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
-import { BrushAction } from '@app/classes/undo-redo/brushAction';
+import { BrushAction } from '@app/classes/undo-redo/brush-Action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoService } from '../undo-redo/undo-redo.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 const motionDifference = 4;
 const citcle = Math.PI * 2;

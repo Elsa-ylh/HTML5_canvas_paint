@@ -1,7 +1,7 @@
+import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil-service';
-import { Vec2 } from '../vec2';
-import { AbsUndoRedo } from './abs-undo-redo';
 
 // class that allows to redo-undo pencil-brush-eraser tool
 export class StrokeAction extends AbsUndoRedo {
@@ -19,7 +19,7 @@ export class StrokeAction extends AbsUndoRedo {
     }
 
     // applies on the canvas the current elements
-    apply() {
+    apply(): void {
         // console.log('apply pencil');
         this.drawingService.baseCtx.strokeStyle = this.color;
         // this.colorService.changeColorOpacity(this.alpha);
