@@ -2,7 +2,7 @@ export interface CancasInformation {
     id: string;
     name: string;
     labels: Label[];
-    date: string;
+    date: Date;
     picture: string; // base64
 }
 export interface Label {

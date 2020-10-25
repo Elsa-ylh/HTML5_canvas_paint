@@ -28,3 +28,9 @@ canvas {
     z-index: 2;
     background-color: grey;
 }
+
+#dropperLayer {
+    z-index: 4;
+    position: absolute;
+    box-shadow: 0 1px 5px -3px white;
+}
