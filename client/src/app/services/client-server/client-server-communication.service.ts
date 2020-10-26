@@ -10,16 +10,33 @@ import { catchError } from 'rxjs/operators';
 export class ClientServerCommunicationService {
     private readonly HTTP_SERVE_LOCAL: string = 'http://localhost:3000/api/data';
     private information: CancasInformation;
+    private informations: CancasInformation[];
     constructor(private http: HttpClient) {}
 
     getData(): Observable<CancasInformation[]> {
         return this.http.get<CancasInformation[]>(this.HTTP_SERVE_LOCAL).pipe(catchError(this.handleError<CancasInformation[]>('basicGet')));
     }
-
+    private getDatas(): void {
+        this.getData().subscribe((info) => (this.informations = info));
+    }
+    resetDatas(): void {
+        this.getDatas();
+        this.catchInformation();
+    }
+    getInformation(): CancasInformation[] {
+        return this.informations;
+    }
     selectPictureWithLabel(message: Message): Observable<CancasInformation[]> {
         return this.http
             .post<CancasInformation[]>(this.HTTP_SERVE_LOCAL + '/labels', message)
             .pipe(catchError(this.handleError<CancasInformation[]>('basicPost')));
+    }
+    private selectPicturesWithLabel(message: Message): void {
+        this.selectPictureWithLabel(message).subscribe((info) => (this.informations = info));
+    }
+    getPicturesWithLabel(message: Message): CancasInformation[] {
+        this.selectPicturesWithLabel(message);
+        return this.informations;
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
@@ -46,8 +63,11 @@ export class ClientServerCommunicationService {
         }
         return [];
     }
+    research(message: Message): void {
+        this.getElementResearch(message).subscribe((info) => (this.informations = info));
+    }
 
-    ElementResearch(message: Message): Observable<CancasInformation[]> {
+    getElementResearch(message: Message): Observable<CancasInformation[]> {
         return this.http
             .post<CancasInformation[]>(this.HTTP_SERVE_LOCAL + '/research', message)
             .pipe(catchError(this.handleError<CancasInformation[]>('basicPost')));

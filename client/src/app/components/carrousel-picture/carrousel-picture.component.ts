@@ -20,11 +20,12 @@ export class CarrouselPictureComponent implements OnInit {
     constructor(private clientServerCommunicationService: ClientServerCommunicationService) {}
 
     ngOnInit(): void {
-        this.addAllLabal();
+        this.clientServerCommunicationService.resetDatas();
         this.addAllData();
+        this.addAllLabal();
     }
     private addAllData(): void {
-        this.clientServerCommunicationService.getData().subscribe((info) => (this.dataPicture = info));
+        this.dataPicture = this.clientServerCommunicationService.getInformation();
     }
 
     private addAllLabal(): void {
@@ -61,26 +62,32 @@ export class CarrouselPictureComponent implements OnInit {
             textLabel += index === labels.length - 1 ? labels[index] : labels[index] + ',';
         }
         const message: Message = { title: 'labels', body: textLabel };
+        //this.clientServerCommunicationService.selectPictureWithLabel(message);
+        this.callServiceMessage(message);
+    }
+
+    private callServiceMessage(message: Message): void {
         this.clientServerCommunicationService.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
-    getPicturesTestAll(): CancasInformation[] {
+    getPicturesAll(): CancasInformation[] {
         return this.dataPicture;
     }
     setSearchCriteria(): void {
         switch (this.selectedType) {
             case 'name':
                 const message: Message = { title: 'name', body: this.name };
-                this.clientServerCommunicationService.ElementResearch(message).subscribe((info) => (this.dataPicture = info));
+                this.clientServerCommunicationService.research(message);
                 break;
             case 'date':
                 try {
                     const messageDate: Message = { title: 'date', body: (this.myDate.value as Date).toString() };
-                    this.clientServerCommunicationService.ElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
+                    this.clientServerCommunicationService.research(messageDate);
                 } catch (error) {
                     alert('La date est correttre elle doit être de forme mm/jj/aaaa');
                 }
                 break;
         }
+        this.clientServerCommunicationService.getInformation();
     }
 
     /* getPicture1():void{
