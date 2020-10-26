@@ -24,7 +24,8 @@ export class Fill {
             this.canvasResizerService.canvasSize.x,
             this.canvasResizerService.canvasSize.y,
         );
-        // const fillColor: number[] = this.hexToRgbA(color);
+        const fillColor: number[] = this.hexToRgbA(color);
+        console.log(fillColor);
         const targetColor: number[] = this.getPixel(point as Vec2, drawingService.baseCtx);
         console.log(targetColor);
     }

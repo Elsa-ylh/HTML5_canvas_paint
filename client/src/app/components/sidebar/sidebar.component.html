@@ -26,14 +26,6 @@
                     <mat-button-toggle (click)="pickEllipse(1)" [checked]="ellipseChecked" matTooltip="Outil ellipse" matTooltipPosition="right">
                         <mat-icon>panorama_fish_eye</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle
-                        (click)="pickSelection(1)"
-                        [checked]="selectionChecked"
-                        matTooltip="Sélection et déplacer un rectangle"
-                        matTooltipPosition="right"
-                    >
-                        <mat-icon>crop_free</mat-icon>
-                    </mat-button-toggle>
                     <mat-button-toggle (click)="pickPolygon(1)" [checked]="polygonChecked" matTooltip="Outil polygone" matTooltipPosition="right">
                         <mat-icon svgIcon="polygon"></mat-icon>
                     </mat-button-toggle>
@@ -50,6 +42,14 @@
                     </mat-button-toggle>
                     <mat-button-toggle (click)="pickDropper()" [checked]="dropperChecked" matTooltip="Outil pipette" matTooltipPosition="right">
                         <mat-icon>colorize</mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle
+                        (click)="pickSelection(1)"
+                        [checked]="selectionChecked"
+                        matTooltip="Sélection et déplacer un rectangle"
+                        matTooltipPosition="right"
+                    >
+                        <mat-icon>crop_free</mat-icon>
                     </mat-button-toggle>
                 </mat-button-toggle-group>
             </mat-list>
@@ -112,7 +112,7 @@
             </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Line">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
-                <mat-grid-tile colspan="6" rowspan="2"> Pour quiter l'outil Ligne effectuez un double clique gauche avec votre souris</mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2"> Pour quiter l'outil Ligne effectuez un double clic gauche avec votre souris</mat-grid-tile>
                 <mat-grid-tile colspan="6">
                     <mat-slider max="50" min="1" [(ngModel)]="lineService.lineWidth"> </mat-slider><samp>{{ lineService.lineWidth }}px</samp>
                 </mat-grid-tile>
