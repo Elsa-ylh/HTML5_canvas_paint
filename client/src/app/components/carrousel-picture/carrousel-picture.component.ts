@@ -131,11 +131,13 @@ export class CarrouselPictureComponent implements OnInit {
 
                 break;
         }
-        /*
-        threePictures.push(this.dataPicture[this.possition]);
-        threePictures.push(this.dataPicture[this.possition + 1]);
-        threePictures.push(this.dataPicture[0]);
-*/
+        this.createImage(threePictures);
         return threePictures;
+    }
+    private createImage(listCard: CancasInformation[]): void {
+        listCard.forEach((element) => {
+            //let canvas = document.getElementById(element.id);
+            //let ctx = canvas.getContext('2d');
+        });
     }
 }

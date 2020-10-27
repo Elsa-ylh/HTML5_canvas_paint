@@ -3,7 +3,7 @@
     <div *ngIf="!getPicturesAll().length"><p>Aucune image trouver changée le critère de recherche ou réinitialise</p></div>
 </div>
 <div *ngIf="getPicturesAll().length">
-    <mat-grid-list cols="3" rowHeight="1:1" class="git-list">
+    <mat-grid-list cols="3" rowHeight="1:1">
         <mat-grid-tile *ngFor="let pictureCarte of getPictures()">
             <mat-card class="card-picture">
                 <mat-card-header>
@@ -13,7 +13,7 @@
                 {{ pictureCarte.date.getHours() }}h{{ pictureCarte.date.getMinutes() }}-->{{ pictureCarte.date }}
                     </mat-card-subtitle>
                 </mat-card-header>
-                <img />
+                <canvas id="{{ pictureCarte.id }}"></canvas>
                 <mat-card-content>
                     <div *ngFor="let element of pictureCarte.labels"># {{ element.label }}</div>
                 </mat-card-content>
@@ -24,8 +24,8 @@
             </mat-card>
         </mat-grid-tile>
     </mat-grid-list>
-    <mat-button-toggle class="sub-button-cart" mat-button color="primary" (click)="prior()">antérieur</mat-button-toggle>
-    <mat-button-toggle class="sub-button-cart" mat-button color="primary" (click)="next()">suivant</mat-button-toggle>
+    <button mat-raised-button class="sub-button-cart" (click)="prior()">antérieur</button>
+    <button mat-raised-button class="sub-button-cart" (click)="next()">suivant</button>
 </div>
 <div>
     <h2>recherche</h2>
