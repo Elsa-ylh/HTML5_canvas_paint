@@ -20,12 +20,13 @@ export class CarrouselPictureComponent implements OnInit {
     constructor(private clientServerCommunicationService: ClientServerCommunicationService) {}
 
     ngOnInit(): void {
-        this.clientServerCommunicationService.resetDatas();
+        // this.clientServerCommunicationService.resetDatas();
         this.addAllData();
         this.addAllLabal();
     }
     private addAllData(): void {
-        this.dataPicture = this.clientServerCommunicationService.getInformation();
+        //this.dataPicture = this.clientServerCommunicationService.getInformation();
+        this.clientServerCommunicationService.getData().subscribe((info) => (this.dataPicture = info));
     }
 
     private addAllLabal(): void {
@@ -53,7 +54,6 @@ export class CarrouselPictureComponent implements OnInit {
         if (itList) {
             this.labelSelect.push(label);
         }
-        console.log(this.labelSelect.length);
         this.labelSelect.length === 0 ? this.addAllData() : this.setMessageLabel(this.labelSelect);
     }
     private setMessageLabel(labels: string[]): void {
@@ -63,10 +63,6 @@ export class CarrouselPictureComponent implements OnInit {
         }
         const message: Message = { title: 'labels', body: textLabel };
         //this.clientServerCommunicationService.selectPictureWithLabel(message);
-        this.callServiceMessage(message);
-    }
-
-    private callServiceMessage(message: Message): void {
         this.clientServerCommunicationService.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
     getPicturesAll(): CancasInformation[] {
@@ -76,18 +72,13 @@ export class CarrouselPictureComponent implements OnInit {
         switch (this.selectedType) {
             case 'name':
                 const message: Message = { title: 'name', body: this.name };
-                this.clientServerCommunicationService.research(message);
+                this.clientServerCommunicationService.getElementResearch(message).subscribe((info) => (this.dataPicture = info));
                 break;
             case 'date':
-                try {
-                    const messageDate: Message = { title: 'date', body: (this.myDate.value as Date).toString() };
-                    this.clientServerCommunicationService.research(messageDate);
-                } catch (error) {
-                    alert('La date est correttre elle doit être de forme mm/jj/aaaa');
-                }
+                const messageDate: Message = { title: 'date', body: (this.myDate.value as Date).toString() };
+                this.clientServerCommunicationService.getElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
                 break;
         }
-        this.clientServerCommunicationService.getInformation();
     }
 
     /* getPicture1():void{
