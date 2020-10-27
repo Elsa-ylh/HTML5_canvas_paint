@@ -224,13 +224,12 @@ describe('DrawingComponent', () => {
         expect(onResizeOutSpy).toHaveBeenCalled();
     });
 
-    it('not call getColor onMouseOverMainCanvas', () => {
+    it('not set previewColor onMouseOverMainCanvas', () => {
         const canvas = document.createElement('canvas');
         canvas.setAttribute('width', '100');
         canvas.setAttribute('height', '100');
         component.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
         const event = { offsetX: 15, offsetY: 37 } as MouseEvent;
-        // const getColorSpy = spyOn(colorStub, 'getColor').and.callThrough();
 
         component.onMouseOverMainCanvas(event);
 
@@ -239,7 +238,18 @@ describe('DrawingComponent', () => {
         expect(colorMatrix.data[1]).toEqual(0);
         expect(colorMatrix.data[2]).toEqual(0);
         expect(colorMatrix.data[3]).toEqual(0);
-        // expect(colorStub.previewColor).toBeDefined();
+    });
+
+    it('should set Color', () => {
+        const getColorSpy = spyOn(colorStub, 'getColor').and.stub();
+        const numToHexSpy = spyOn(colorStub, 'numeralToHex').and.stub();
+
+        const event = { offsetX: 15, offsetY: 47 } as MouseEvent;
+
+        component.onMouseOverMainCanvas(event);
+
+        expect(getColorSpy).toHaveBeenCalled();
+        expect(numToHexSpy).toHaveBeenCalled();
     });
 
     it(' should onShiftKeyDown trigger tool service', () => {
