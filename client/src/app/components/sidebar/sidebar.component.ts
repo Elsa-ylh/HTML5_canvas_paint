@@ -19,7 +19,8 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
-import { SelectionService } from '@app/services/tools/selection-service';
+import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
+// import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 
 @Component({
     selector: 'app-sidebar',
@@ -63,8 +64,9 @@ export class SidebarComponent {
         public eraserService: EraserService,
         public colorService: ColorService,
         public lineService: LineService,
-        public selectionService: SelectionService,
+        // public selectionService: SelectionService,
         public polygonService: PolygonService,
+        public selectionRectangleService: SelectionRectangleService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
@@ -321,7 +323,7 @@ export class SidebarComponent {
     @HostListener('window:keydown.control.a', ['$event']) selectAllCanvas(event: KeyboardEvent): void {
         if (this.toolService.currentToolName === ToolUsed.Selection) {
             event.preventDefault();
-            this.selectionService.selectAll();
+            this.selectionRectangleService.selectAll();
             console.log('test');
         }
     }

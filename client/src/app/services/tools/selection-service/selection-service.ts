@@ -32,7 +32,7 @@ export class SelectionService extends Tool {
     distanceX: number;
     distanceY: number;
     ellipseRad: Vec2 = { x: 0, y: 0 };
-    // image:any = new Image();
+    image:any = new Image();
 
     onMouseDown(event: MouseEvent): void {
         // initialisation of effects
@@ -70,11 +70,24 @@ export class SelectionService extends Tool {
                 this.drawSelection(this.drawingService.previewCtx, this.mouseDownCoord, this.copyImageInitialPos);
                 // this.drawingService.previewCtx.putImageData(this.imageData, this.copyImageInitialPos.x, this.copyImageInitialPos.y);
             } else if (this.inSelection) {
+              if(this.subToolSelect === SubToolselected.tool1){
                 this.drawingService.baseCtx.putImageData(
-                    this.imageData,
-                    this.copyImageInitialPos.x + this.mouseMouvement.x,
-                    this.copyImageInitialPos.y + this.mouseMouvement.y,
-                );
+                  this.imageData,
+                  this.copyImageInitialPos.x + this.mouseMouvement.x,
+                  this.copyImageInitialPos.y + this.mouseMouvement.y,
+              );
+              }else{
+                this.drawingService.baseCtx.save();
+                // this.drawingService.baseCtx.globalAlpha = 0;
+                this.drawingService.baseCtx.beginPath();
+                this.drawEllipse(this.drawingService.baseCtx, {x:this.copyImageInitialPos.x + this.mouseMouvement.x,y:this.copyImageInitialPos.y + this.mouseMouvement.y}, this.width / 2, this.height / 2);
+                this.drawingService.baseCtx.stroke();
+                this.drawingService.baseCtx.clip();
+                // this.drawingService.baseCtx.globalAlpha = 1;
+                this.drawingService.clearCanvas(this.drawingService.baseCtx);
+                this.drawingService.baseCtx.drawImage(this.image,this.copyImageInitialPos.x + this.mouseMouvement.x,this.copyImageInitialPos.y + this.mouseMouvement.y);
+                this.drawingService.baseCtx.restore();              }
+
             }
         }
 
@@ -87,7 +100,6 @@ export class SelectionService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            console.log(this.inSelection);
             if (this.inSelection) {
                 // console.log(this.selectRectInitialPos);
                 this.mouseMouvement.x = mousePosition.x - this.mouseDownCoord.x;
@@ -281,6 +293,8 @@ export class SelectionService extends Tool {
         this.xSign = Math.sign(this.mousePosition.x - this.mouseDownCoord.x);
         this.ySign = Math.sign(this.mousePosition.y - this.mouseDownCoord.y);
 
+        this.image.src = this.getImageURL(this.imageData,this.width,this.height);
+
         if (this.xSign > 0 && this.ySign > 0) {
             return { x: this.mouseDownCoord.x, y: this.mouseDownCoord.y };
         } else if (this.xSign > 0 && this.ySign < 0) {
@@ -290,6 +304,8 @@ export class SelectionService extends Tool {
         } else {
             return { x: this.mousePosition.x, y: this.mouseDownCoord.y };
         }
+
+
     }
 
     isInsideSelection(mouse: Vec2): boolean {
@@ -338,27 +354,36 @@ export class SelectionService extends Tool {
                 // Have to find a way to paste image only in ellipse, use clip maybe
                 // this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
                 // this.image.src = this.drawingService.previewCtx.canvas.toDataURL();
-                // ctx.save();
+                ctx.save();
                 // ctx.beginPath();
                 // // ctx.arc(mouseCoord.x,mouseCoord.y, )
                 // this.drawEllipse(ctx, mouseCoord, this.width / 2, this.height / 2);
                 // ctx.clip();
                 // this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
-                this.drawingService.clearCanvas(ctx);
+                // this.drawingService.clearCanvas(ctx);
                 ctx.beginPath();
                 this.drawEllipse(ctx, mouseCoord, this.width / 2, this.height / 2);
                 ctx.stroke();
-                // ctx.clip();
-                ctx.globalCompositeOperation='destination-in';  // picture clipped inside oval
-                this.drawingService.previewCtx.fillRect(mouseCoord.x,mouseCoord.y,this.width,this.height);
+                ctx.clip();
+                // ctx.globalCompositeOperation='destination-in';  // picture clipped inside oval
+                // this.drawingService.previewCtx.fillRect(mouseCoord.x,mouseCoord.y,this.width,this.height);
                 // createImageBitmap(this.imageData).then(function(imgBitmap) {
                 //   ctx.drawImage(imgBitmap,mouseCoord.x,mouseCoord.y);
                 // });
                 // this.drawingService.previewCtx.drawImage(createImageBitmap(this.imageData),mouseCoord.x,mouseCoord.y);
                 // ctx.restore();
-
-                // ctx.restore();
+                this.drawingService.previewCtx.drawImage(this.image,mouseCoord.x,mouseCoord.y);
+                ctx.restore();
                 break;
         }
     }
+
+    getImageURL(imgData: ImageData, width: number, height:number) {
+      var canvas = document.createElement('canvas') as HTMLCanvasElement;
+      var ctx = <CanvasRenderingContext2D> canvas.getContext('2d') as CanvasRenderingContext2D;
+      canvas.width = width;
+      canvas.height = height;
+      ctx.putImageData(imgData, 0, 0);
+      return canvas.toDataURL(); //image URL
+   }
 }
