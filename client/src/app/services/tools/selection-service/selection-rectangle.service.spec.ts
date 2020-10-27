@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 
-import { async, inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { SelectionRectangleService } from './selection-rectangle.service';
 
 describe('Service: SelectionRectangle', () => {
