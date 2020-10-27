@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -32,7 +31,7 @@ export class SelectionService extends Tool {
     distanceX: number;
     distanceY: number;
     ellipseRad: Vec2 = { x: 0, y: 0 };
-    image:any = new Image();
+    image: HTMLImageElement = new Image();
 
     onMouseDown(event: MouseEvent): void {
         // initialisation of effects
@@ -70,24 +69,11 @@ export class SelectionService extends Tool {
                 this.drawSelection(this.drawingService.previewCtx, this.mouseDownCoord, this.copyImageInitialPos);
                 // this.drawingService.previewCtx.putImageData(this.imageData, this.copyImageInitialPos.x, this.copyImageInitialPos.y);
             } else if (this.inSelection) {
-              if(this.subToolSelect === SubToolselected.tool1){
-                this.drawingService.baseCtx.putImageData(
-                  this.imageData,
-                  this.copyImageInitialPos.x + this.mouseMouvement.x,
-                  this.copyImageInitialPos.y + this.mouseMouvement.y,
-              );
-              }else{
-                this.drawingService.baseCtx.save();
-                // this.drawingService.baseCtx.globalAlpha = 0;
-                this.drawingService.baseCtx.beginPath();
-                this.drawEllipse(this.drawingService.baseCtx, {x:this.copyImageInitialPos.x + this.mouseMouvement.x,y:this.copyImageInitialPos.y + this.mouseMouvement.y}, this.width / 2, this.height / 2);
-                this.drawingService.baseCtx.stroke();
-                this.drawingService.baseCtx.clip();
-                // this.drawingService.baseCtx.globalAlpha = 1;
-                this.drawingService.clearCanvas(this.drawingService.baseCtx);
-                this.drawingService.baseCtx.drawImage(this.image,this.copyImageInitialPos.x + this.mouseMouvement.x,this.copyImageInitialPos.y + this.mouseMouvement.y);
-                this.drawingService.baseCtx.restore();              }
-
+                this.pasteSelection(
+                    { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
+                    this.image,
+                    this.imageData,
+                );
             }
         }
 
@@ -125,7 +111,7 @@ export class SelectionService extends Tool {
                 // );
             } else {
                 this.mousePosition = mousePosition;
-                this.drawPreview(this.drawingService.previewCtx);
+                this.drawPreview();
             }
         }
         // console.log(this.mouseDown);
@@ -148,7 +134,7 @@ export class SelectionService extends Tool {
         this.shiftPressed = true;
         if (this.mouseDown && !this.inSelection) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawPreview(this.drawingService.previewCtx);
+            this.drawPreview();
         }
     }
 
@@ -156,7 +142,7 @@ export class SelectionService extends Tool {
         this.shiftPressed = false;
         if (this.mouseDown && !this.inSelection) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawPreview(this.drawingService.previewCtx);
+            this.drawPreview();
         }
     }
 
@@ -201,38 +187,10 @@ export class SelectionService extends Tool {
         }
     }
 
-    drawPreviewEllipse(ctx: CanvasRenderingContext2D): void {
-        if (this.mouseDownCoord !== this.mousePosition) {
-            ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
-            this.drawPreviewRect(ctx, false);
-            ctx.beginPath();
-            this.drawEllipse(ctx, this.mouseDownCoord, this.width / 2, this.height / 2);
-            ctx.stroke();
-        }
-    }
-
-    private drawEllipse(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, radiusX: number, radiusY: number): void {
-        let centerX = 0;
-        let centerY = 0;
-        centerX = mouseCoord.x + radiusX;
-        centerY = mouseCoord.y + radiusY;
-        if (!this.inSelection) {
-            if (this.shiftPressed) {
-                this.ellipseRad.x = Math.min(Math.abs(radiusX), Math.abs(radiusY));
-                this.ellipseRad.y = Math.min(Math.abs(radiusX), Math.abs(radiusY));
-            } else {
-                this.ellipseRad.x = Math.abs(radiusX);
-                this.ellipseRad.y = Math.abs(radiusY);
-            }
-        }
-
-        ctx.ellipse(centerX, centerY, this.ellipseRad.x, this.ellipseRad.y, 0, 0, 2 * Math.PI);
-    }
-
-    drawSelectionRect(ctx: CanvasRenderingContext2D, mouseDownCoord: Vec2, shiftPressed: boolean): void {
+    drawSelectionRect(ctx: CanvasRenderingContext2D, mouseDownCoord: Vec2): void {
         // this.height = this.mousePosition.y - this.mouseDownCoord.y;
         // this.width = this.mousePosition.x - this.mouseDownCoord.x;
-       //  this.image = this.drawingService.previewCtx.canvas.toDataURL();
+        //  this.image = this.drawingService.previewCtx.canvas.toDataURL();
         // ctx.setLineDash([]);
         ctx.strokeRect(mouseDownCoord.x, mouseDownCoord.y, this.width, this.height);
         ctx.setLineDash([]);
@@ -293,7 +251,7 @@ export class SelectionService extends Tool {
         this.xSign = Math.sign(this.mousePosition.x - this.mouseDownCoord.x);
         this.ySign = Math.sign(this.mousePosition.y - this.mouseDownCoord.y);
 
-        this.image.src = this.getImageURL(this.imageData,this.width,this.height);
+        this.image.src = this.getImageURL(this.imageData, this.width, this.height);
 
         if (this.xSign > 0 && this.ySign > 0) {
             return { x: this.mouseDownCoord.x, y: this.mouseDownCoord.y };
@@ -304,8 +262,6 @@ export class SelectionService extends Tool {
         } else {
             return { x: this.mousePosition.x, y: this.mouseDownCoord.y };
         }
-
-
     }
 
     isInsideSelection(mouse: Vec2): boolean {
@@ -330,60 +286,18 @@ export class SelectionService extends Tool {
         return false;
     }
 
-    drawPreview(ctx: CanvasRenderingContext2D): void {
-        switch (this.subToolSelect) {
-            case SubToolselected.tool1:
-                this.drawPreviewRect(this.drawingService.previewCtx, this.shiftPressed);
-                break;
+    drawPreview(): void {}
 
-            case SubToolselected.tool2:
-                this.drawPreviewEllipse(this.drawingService.previewCtx);
-                break;
-        }
+    drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void { }
+
+    pasteSelection(position: Vec2, image: HTMLImageElement, imageData: ImageData): void {}
+
+    getImageURL(imgData: ImageData, width: number, height: number) {
+        let canvas = document.createElement('canvas') as HTMLCanvasElement;
+        let ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
+        canvas.width = width;
+        canvas.height = height;
+        ctx.putImageData(imgData, 0, 0);
+        return canvas.toDataURL(); // image URL
     }
-
-    drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {
-        switch (this.subToolSelect) {
-            case SubToolselected.tool1:
-                this.drawSelectionRect(this.drawingService.previewCtx, mouseCoord, this.shiftPressed);
-                this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
-                break;
-
-            case SubToolselected.tool2:
-                // this.drawSelectionRect(this.drawingService.previewCtx, mouseCoord, false);
-                // Have to find a way to paste image only in ellipse, use clip maybe
-                // this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
-                // this.image.src = this.drawingService.previewCtx.canvas.toDataURL();
-                ctx.save();
-                // ctx.beginPath();
-                // // ctx.arc(mouseCoord.x,mouseCoord.y, )
-                // this.drawEllipse(ctx, mouseCoord, this.width / 2, this.height / 2);
-                // ctx.clip();
-                // this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
-                // this.drawingService.clearCanvas(ctx);
-                ctx.beginPath();
-                this.drawEllipse(ctx, mouseCoord, this.width / 2, this.height / 2);
-                ctx.stroke();
-                ctx.clip();
-                // ctx.globalCompositeOperation='destination-in';  // picture clipped inside oval
-                // this.drawingService.previewCtx.fillRect(mouseCoord.x,mouseCoord.y,this.width,this.height);
-                // createImageBitmap(this.imageData).then(function(imgBitmap) {
-                //   ctx.drawImage(imgBitmap,mouseCoord.x,mouseCoord.y);
-                // });
-                // this.drawingService.previewCtx.drawImage(createImageBitmap(this.imageData),mouseCoord.x,mouseCoord.y);
-                // ctx.restore();
-                this.drawingService.previewCtx.drawImage(this.image,mouseCoord.x,mouseCoord.y);
-                ctx.restore();
-                break;
-        }
-    }
-
-    getImageURL(imgData: ImageData, width: number, height:number) {
-      var canvas = document.createElement('canvas') as HTMLCanvasElement;
-      var ctx = <CanvasRenderingContext2D> canvas.getContext('2d') as CanvasRenderingContext2D;
-      canvas.width = width;
-      canvas.height = height;
-      ctx.putImageData(imgData, 0, 0);
-      return canvas.toDataURL(); //image URL
-   }
 }
