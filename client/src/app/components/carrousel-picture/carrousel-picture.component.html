@@ -1,6 +1,7 @@
 <p>selection-picture works!</p>
 <button mat-raised-button (click)="reset()">réinitialise tout</button>
-<div *ngFor="let picture of getPicturesAll()">
+
+<!--<div *ngFor="let picture of getPicturesAll()">
     <div>
         {{ picture.name }}
         <div *ngFor="let indix of picture.labels">
@@ -8,8 +9,26 @@
         </div>
         <img />
     </div>
-</div>
+</div>-->
 <div *ngIf="!getPicturesAll().length"><p>Aucune image trouver changée le critère de recherche ou réinitialise</p></div>
+<div *ngIf="getPicturesAll().length">
+    <mat-button-toggle class="sub-button-cart" mat-button color="primary" (click)="prior()">antérieur</mat-button-toggle>
+    <div *ngFor="let pictureCarte of getPictures()">
+        <mat-card class="card-picture"
+            ><mat-card-header>
+                <mat-card-title>{{ pictureCarte.name }}</mat-card-title>
+                <mat-card-subtitle>
+                    <!--  {{ pictureCarte.date.getDay() }}/{{ pictureCarte.date.getMonth() }}/{{ pictureCarte.date.getFullYear() }} -
+                {{ pictureCarte.date.getHours() }}h{{ pictureCarte.date.getMinutes() }}-->{{ pictureCarte.date }}
+                </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div *ngFor="let element of pictureCarte.labels"># {{ element.label }}</div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    <mat-button-toggle class="sub-button-cart" mat-button color="primary" (click)="next()">suivant</mat-button-toggle>
+</div>
 <div>
     <mat-form-field>
         <mat-label>critère de recherche</mat-label>

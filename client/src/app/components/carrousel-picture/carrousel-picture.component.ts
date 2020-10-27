@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { CancasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
-
+const THREE_FILES_AT_A_TIME: number = 3;
 @Component({
     selector: 'app-carrousel-picture',
     templateUrl: './carrousel-picture.component.html',
@@ -11,6 +11,7 @@ import { Message } from '@common/communication/message';
 })
 export class CarrouselPictureComponent implements OnInit {
     private dataPicture: CancasInformation[] = [];
+    private possition: number = 0;
     dataLabel: Label[] = [];
     private labelSelect: string[] = [];
     selectedType: string = 'name';
@@ -77,14 +78,55 @@ export class CarrouselPictureComponent implements OnInit {
                 break;
         }
     }
+    prior(): void {
+        switch (this.possition) {
+            case -1:
+                this.possition = -1;
+                break;
+            case 0:
+                this.possition = this.dataPicture.length - 1;
+                break;
+            default:
+                this.possition--;
+                break;
+        }
+    }
+    next(): void {
+        switch (this.possition) {
+            case -1:
+                this.possition = -1;
+                break;
+            case this.dataPicture.length - 1:
+                this.possition = 0;
+                break;
+            default:
+                this.possition++;
+                break;
+        }
+    }
 
-    /* getPicture1():void{
-
-    };
-    getPicture2():void{
-
-    };
-    getPicture3():void{
-
-    };*/
+    getPictures(): CancasInformation[] {
+        let threePictures: CancasInformation[] = [];
+        if (this.dataPicture.length <= THREE_FILES_AT_A_TIME) {
+            threePictures = this.dataPicture;
+            this.possition = -1;
+        }
+        if (this.possition >= 0 && this.possition <= this.dataPicture.length - THREE_FILES_AT_A_TIME) {
+            for (let index = this.possition; index < this.possition + THREE_FILES_AT_A_TIME; index++) {
+                threePictures.push(this.dataPicture[index]);
+            }
+        }
+        if (this.possition > this.dataPicture.length - THREE_FILES_AT_A_TIME) {
+            if (this.possition === this.dataPicture.length - 1) {
+                threePictures.push(this.dataPicture[this.possition]);
+                threePictures.push(this.dataPicture[0]);
+                threePictures.push(this.dataPicture[1]);
+            } else {
+                threePictures.push(this.dataPicture[this.possition]);
+                threePictures.push(this.dataPicture[this.possition + 1]);
+                threePictures.push(this.dataPicture[0]);
+            }
+        }
+        return threePictures;
+    }
 }
