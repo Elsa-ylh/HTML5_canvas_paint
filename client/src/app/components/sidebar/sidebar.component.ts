@@ -86,8 +86,8 @@ export class SidebarComponent {
 
     openCarrouse(): void {
         this.newCarrouselRef = this.dialogCreator.open(CarrouselPictureComponent, {
-            width: '90%',
-            height: '90%',
+            width: '99%',
+            height: '99%',
         });
     }
 

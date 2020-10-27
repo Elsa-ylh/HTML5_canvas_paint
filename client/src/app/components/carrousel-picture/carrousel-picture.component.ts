@@ -53,6 +53,7 @@ export class CarrouselPictureComponent implements OnInit {
         if (itList) {
             this.labelSelect.push(label);
         }
+        console.log(this.labelSelect.length);
         this.labelSelect.length === 0 ? this.addAllData() : this.setMessageLabel(this.labelSelect);
     }
     private setMessageLabel(labels: string[]): void {
@@ -77,6 +78,7 @@ export class CarrouselPictureComponent implements OnInit {
                 this.clientServerCommunicationService.getElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
                 break;
         }
+        this.possition = 0;
     }
     prior(): void {
         switch (this.possition) {
@@ -111,22 +113,29 @@ export class CarrouselPictureComponent implements OnInit {
             threePictures = this.dataPicture;
             this.possition = -1;
         }
-        if (this.possition >= 0 && this.possition <= this.dataPicture.length - THREE_FILES_AT_A_TIME) {
-            for (let index = this.possition; index < this.possition + THREE_FILES_AT_A_TIME; index++) {
+        if (this.possition > 0 && this.possition <= this.dataPicture.length + 1 - THREE_FILES_AT_A_TIME) {
+            for (let index = this.possition - 1; index < this.possition - 1 + THREE_FILES_AT_A_TIME; index++) {
                 threePictures.push(this.dataPicture[index]);
             }
         }
-        if (this.possition > this.dataPicture.length - THREE_FILES_AT_A_TIME) {
-            if (this.possition === this.dataPicture.length - 1) {
+        switch (this.possition) {
+            case 0:
+                threePictures.push(this.dataPicture[this.dataPicture.length - 1]);
                 threePictures.push(this.dataPicture[this.possition]);
-                threePictures.push(this.dataPicture[0]);
                 threePictures.push(this.dataPicture[1]);
-            } else {
+                break;
+            case this.dataPicture.length - 1:
+                threePictures.push(this.dataPicture[this.possition - 1]);
                 threePictures.push(this.dataPicture[this.possition]);
-                threePictures.push(this.dataPicture[this.possition + 1]);
                 threePictures.push(this.dataPicture[0]);
-            }
+
+                break;
         }
+        /*
+        threePictures.push(this.dataPicture[this.possition]);
+        threePictures.push(this.dataPicture[this.possition + 1]);
+        threePictures.push(this.dataPicture[0]);
+*/
         return threePictures;
     }
 }
