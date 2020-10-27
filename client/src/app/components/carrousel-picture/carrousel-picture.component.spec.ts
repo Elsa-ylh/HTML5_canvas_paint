@@ -12,7 +12,9 @@ import { ClientServerCommunicationService } from '@app/services/client-server/cl
 import { CancasInformation, Label } from '@common/communication/canvas-information';
 import { of } from 'rxjs';
 import { CarrouselPictureComponent } from './carrousel-picture.component';
-
+// tslint:disable:no-any
+// tslint:disable:no-string-literal
+// tslint:disable:no-unused-expression
 describe('CarrouselPictureComponent', () => {
     let component: CarrouselPictureComponent;
     let fixture: ComponentFixture<CarrouselPictureComponent>;
@@ -21,8 +23,6 @@ describe('CarrouselPictureComponent', () => {
     const isDate: Date = new Date();
     let addAllDataSpy: jasmine.Spy<any>;
     let addAllLabalSpy: jasmine.Spy<any>;
-    // let  commoSpy: jasmine.Spy<any>;
-    // let communicationService: ClientServerCommunicationService;
     const testCancasInformationAdd: CancasInformation = {
         id: '',
         name: 'test5',
@@ -30,6 +30,7 @@ describe('CarrouselPictureComponent', () => {
         date: isDate,
         picture: 'test5',
     };
+    const testCancasInformationAdds = [testCancasInformationAdd];
     const labels: Label[] = [{ label: 'lable1' }, { label: 'label2' }];
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -52,12 +53,10 @@ describe('CarrouselPictureComponent', () => {
                         selectPictureWithLabel: () => informationsService,
                         allLabel: () => testCancasInformationAdd,
                         getAllLabel: () => labels,
-                        subscribe: (info: any) => {
-                            [testCancasInformationAdd];
-                        },
-                        resetDatas: () => {},
-                        getInformation: () => [testCancasInformationAdd],
-                        getElementResearch: () => [testCancasInformationAdd],
+                        subscribe: (info: any) => testCancasInformationAdds,
+                        resetDatas: () => '',
+                        getInformation: () => testCancasInformationAdds,
+                        getElementResearch: () => testCancasInformationAdds,
                     },
                 },
             ],
@@ -68,7 +67,7 @@ describe('CarrouselPictureComponent', () => {
         fixture = TestBed.createComponent(CarrouselPictureComponent);
         component = fixture.componentInstance;
         spyOn(component['clientServerCommunicationService'], 'getData').and.returnValue(of([testCancasInformationAdd]));
-        //spyOn(component['clientServerCommunicationService'], 'getElementResearch').and.returnValue(of([testCancasInformationAdd]));
+        // spyOn(component['clientServerCommunicationService'], 'getElementResearch').and.returnValue(of([testCancasInformationAdd]));
         httpMock = TestBed.inject(HttpTestingController);
 
         addAllDataSpy = spyOn<any>(component, 'addAllData').and.callThrough();
@@ -131,7 +130,7 @@ describe('CarrouselPictureComponent', () => {
     });
     it('check if the refresh function call addAllLabel', () => {
         component.refresh();
-        expect(component['addAllLabal']).toHaveBeenCalledTimes;
+        expect(component['addAllLabal']).toHaveBeenCalled;
     });
     it('', () => {
         spyOn(component['clientServerCommunicationService'], 'getElementResearch').and.returnValue(of([testCancasInformationAdd]));

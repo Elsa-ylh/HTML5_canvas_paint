@@ -20,12 +20,10 @@ export class CarrouselPictureComponent implements OnInit {
     constructor(private clientServerCommunicationService: ClientServerCommunicationService) {}
 
     ngOnInit(): void {
-        // this.clientServerCommunicationService.resetDatas();
         this.addAllData();
         this.addAllLabal();
     }
     private addAllData(): void {
-        //this.dataPicture = this.clientServerCommunicationService.getInformation();
         this.clientServerCommunicationService.getData().subscribe((info) => (this.dataPicture = info));
     }
 
@@ -62,7 +60,6 @@ export class CarrouselPictureComponent implements OnInit {
             textLabel += index === labels.length - 1 ? labels[index] : labels[index] + ',';
         }
         const message: Message = { title: 'labels', body: textLabel };
-        //this.clientServerCommunicationService.selectPictureWithLabel(message);
         this.clientServerCommunicationService.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
     getPicturesAll(): CancasInformation[] {
