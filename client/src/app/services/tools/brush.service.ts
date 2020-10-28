@@ -62,7 +62,7 @@ export class BrushService extends Tool {
         this.secondaryColorBrush = this.colorService.secondaryColor;
         const brushAction = new BrushAction(
             this.pathData,
-            // this.brush4Data,
+            this.brush4Data,
             this.primaryColorBrush,
             this.secondaryColorBrush,
             this.lineWidth,
