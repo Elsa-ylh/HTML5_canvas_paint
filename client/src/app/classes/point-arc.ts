@@ -11,6 +11,6 @@ export class PointArc {
 }
 
 export interface ColorBrush {
-    primaryColor?: string;
-    secondaryColor?: string;
+    primaryColor: string;
+    secondaryColor: string;
 }

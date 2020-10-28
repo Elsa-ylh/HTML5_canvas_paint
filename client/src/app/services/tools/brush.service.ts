@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
-import { PointArc } from '@app/classes/point-arc';
+import { ColorBrush, PointArc } from '@app/classes/point-arc';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { BrushAction } from '@app/classes/undo-redo/brush-action';
@@ -21,8 +21,6 @@ export class BrushService extends Tool {
     private lastPoint: Vec2;
     private pathData: Vec2[]; //
     private brush4Data: PointArc[]; //
-    private primaryColorBrush: string;
-    private secondaryColorBrush: string;
     private mouseOut: boolean = false;
     constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
@@ -30,7 +28,10 @@ export class BrushService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.switchBrush(this.subToolSelect, this.lineWidth);
+        this.switchBrush(this.subToolSelect, this.lineWidth, {
+            primaryColor: this.colorService.primaryColor,
+            secondaryColor: this.colorService.secondaryColor,
+        });
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
@@ -58,18 +59,17 @@ export class BrushService extends Tool {
             }
         }
         // undo-redo
-        this.primaryColorBrush = this.colorService.primaryColor;
-        this.secondaryColorBrush = this.colorService.secondaryColor;
+        const primaryColorBrush = this.colorService.primaryColor;
+        const secondaryColorBrush = this.colorService.secondaryColor;
         const brushAction = new BrushAction(
             this.pathData,
             this.brush4Data,
-            this.primaryColorBrush,
-            this.secondaryColorBrush,
+            primaryColorBrush,
+            secondaryColorBrush,
             this.lineWidth,
             this.subToolSelect,
             this,
             this.drawingService,
-            this.colorService,
         );
         this.undoRedoService.addUndo(brushAction);
         this.undoRedoService.clearRedo();
@@ -221,9 +221,10 @@ export class BrushService extends Tool {
         ctx.lineWidth = sizePx;
     }
 
-    switchBrush(select: number, lineWidth: number): void {
+    switchBrush(select: number, lineWidth: number, color: ColorBrush): void {
         this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = lineWidth;
-
+        this.colorService.primaryColor = color.primaryColor;
+        this.colorService.secondaryColor = color.secondaryColor;
         this.clearEffectTool();
         switch (select) {
             case SubToolselected.tool1:
@@ -233,8 +234,8 @@ export class BrushService extends Tool {
             case SubToolselected.tool2:
                 this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
                 this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
-                this.drawingService.baseCtx.shadowColor = this.colorService.secondaryColor;
-                this.drawingService.previewCtx.shadowColor = this.colorService.secondaryColor;
+                this.drawingService.baseCtx.shadowColor = color.secondaryColor;
+                this.drawingService.previewCtx.shadowColor = color.secondaryColor;
                 this.drawingService.baseCtx.shadowBlur = this.drawingService.baseCtx.lineWidth;
                 this.drawingService.previewCtx.shadowBlur = this.drawingService.baseCtx.lineWidth;
                 break;
