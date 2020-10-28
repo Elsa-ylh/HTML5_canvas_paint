@@ -20,6 +20,7 @@ export class DropperService extends Tool {
     private angleBegin: number = 0;
     private endAngle: number = 2 * Math.PI;
     private currentColor: string;
+    circleCtx: CanvasRenderingContext2D;
 
     constructor(drawingService: DrawingService, private colorService: ColorService) {
         super(drawingService);
@@ -51,6 +52,7 @@ export class DropperService extends Tool {
         const position = { x: event.offsetX, y: event.offsetY };
         this.currentColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.drawingService.baseCtx));
         this.shapeCircle(this.currentColor);
+        this.shapePreview(this.currentColor);
     }
     shapeCircle(color: string): void {
         this.circlePositionX = this.circleWidth;
@@ -60,6 +62,14 @@ export class DropperService extends Tool {
         this.drawingService.dropperCtx.fillStyle = color;
         this.drawingService.dropperCtx.fill();
         this.drawingService.dropperCtx.stroke();
+    }
+
+    shapePreview(color: string): void {
+        this.circleCtx.beginPath();
+        this.circleCtx.arc(this.circlePositionX, this.circlePositionY, this.circleRadius, this.angleBegin, this.endAngle);
+        this.circleCtx.fillStyle = color;
+        this.circleCtx.fill();
+        this.circleCtx.stroke();
     }
 
     onMouseOut(event: MouseEvent): void {

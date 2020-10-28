@@ -9,11 +9,13 @@ describe('DropperService', () => {
     let dropperService: DropperService;
     let colorServiceMock: jasmine.SpyObj<ColorService>;
     let dropperStubCtx: CanvasRenderingContext2D;
+    let circleCtxStub: CanvasRenderingContext2D;
 
     beforeEach(() => {
         const colorSpy = jasmine.createSpyObj('ColorService', ['numeralToHex', 'getColor']);
         const drawingSpy = jasmine.createSpyObj('DrawingService', ['baseCtx', 'previewCtx']);
         dropperStubCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        circleCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         TestBed.configureTestingModule({
             providers: [
                 { provide: ColorService, useValue: colorSpy },
@@ -24,6 +26,7 @@ describe('DropperService', () => {
         colorServiceMock = TestBed.inject(ColorService) as jasmine.SpyObj<ColorService>;
         // tslint:disable:no-string-literal
         dropperService['drawingService'].dropperCtx = dropperStubCtx;
+        dropperService.circleCtx = circleCtxStub;
     });
 
     it('should be created', () => {
@@ -61,6 +64,7 @@ describe('DropperService', () => {
         dropperService.onMouseMove(mouseEvent);
         expect(colorServiceMock.numeralToHex).toHaveBeenCalled();
     });
+
     it('should set display to none onMouseOut', () => {
         const mouseEvent = { offsetX: 15, offsetY: 6 } as MouseEvent;
         dropperService.onMouseOut(mouseEvent);
