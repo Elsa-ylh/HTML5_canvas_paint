@@ -32,13 +32,14 @@ export class CanvasResizerService {
     readonly PRIORITY_INDEX: number = 10;
     readonly NORMAL_INDEX: number = 1;
     resizerIndex: number = 1;
-
+    // constructor(private undoRedoService: UndoRedoService) {}
     private clearCanvas(context: CanvasRenderingContext2D, dimension: Vec2): void {
         context.clearRect(0, 0, dimension.x, dimension.y);
     }
 
     onResizeDown(event: MouseEvent, resizeDirection: ResizeDirection): void {
         this.isResizeDown = event.button === MouseButton.Left;
+        this.resizeDirection = resizeDirection;
         if (this.isResizeDown) {
             this.resizerIndex = this.PRIORITY_INDEX; // We now put the whole surface in the foregound.
             this.resizeDirection = resizeDirection;
@@ -135,6 +136,14 @@ export class CanvasResizerService {
                 ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 ctx.drawImage(originalImage, 0, 0);
             };
+            // undo-redo
+            // debugger;
+            // const resizeDirectiontemp = this.resizeDirection;
+            // const resizeCanvasAction = new ResizeCanvasAction(event, resizeCtx, baseCanvas, resizeDirectiontemp, this);
+            // console.log(resizeCanvasAction);
+            // debugger;
+            // this.undoRedoService.addUndo(resizeCanvasAction);
+            // this.undoRedoService.clearRedo();
         }
         this.clearCanvas(resizeCtx, { x: this.resizeWidth, y: this.resizeHeight });
         this.resizerIndex = this.NORMAL_INDEX;
