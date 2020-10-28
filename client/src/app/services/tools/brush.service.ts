@@ -3,7 +3,7 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { PointArc } from '@app/classes/point-arc';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
-import { BrushAction } from '@app/classes/undo-redo/brush-Action';
+import { BrushAction } from '@app/classes/undo-redo/brush-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -30,7 +30,7 @@ export class BrushService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.witchBrush(this.subToolSelect);
+        this.switchBrush(this.subToolSelect, this.lineWidth);
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
@@ -69,6 +69,7 @@ export class BrushService extends Tool {
             this.subToolSelect,
             this,
             this.drawingService,
+            this.colorService,
         );
         this.undoRedoService.addUndo(brushAction);
         this.undoRedoService.clearRedo();
@@ -125,6 +126,7 @@ export class BrushService extends Tool {
     }
 
     drawBrushTool4(ctx: CanvasRenderingContext2D, path: PointArc[]): void {
+        const tempAlpha = ctx.globalAlpha;
         for (const point of path) {
             ctx.beginPath();
             ctx.globalAlpha = point.opacity;
@@ -132,6 +134,7 @@ export class BrushService extends Tool {
             ctx.fill();
             ctx.stroke();
         }
+        ctx.globalAlpha = tempAlpha;
     }
 
     drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], subBrushTool: SubToolselected): void {
@@ -168,9 +171,6 @@ export class BrushService extends Tool {
                 break;
             case SubToolselected.tool5:
                 this.drawLineBrush5(ctx, path);
-                break;
-            default:
-                window.alert('un problèment au niveau du fonctionnement du pinceau 4 produit ou ne pas un outil de pinceau');
                 break;
         }
     }
@@ -221,8 +221,8 @@ export class BrushService extends Tool {
         ctx.lineWidth = sizePx;
     }
 
-    witchBrush(select: number): void {
-        this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.lineWidth;
+    switchBrush(select: number, lineWidth: number): void {
+        this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = lineWidth;
 
         this.clearEffectTool();
         switch (select) {
