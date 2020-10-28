@@ -5,6 +5,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToolUsed } from '@app/classes/tool';
 import { ColorService } from '@app/services/color/color.service';
 import { DropperColorComponent } from './dropper-color.component';
 
@@ -28,5 +29,9 @@ describe('DropperColorComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should return dropper', () => {
+        expect(component.dropper).toEqual(ToolUsed.Dropper);
     });
 });

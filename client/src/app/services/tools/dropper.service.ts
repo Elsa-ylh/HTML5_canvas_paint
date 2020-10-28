@@ -74,9 +74,11 @@ export class DropperService extends Tool {
 
     onMouseOut(event: MouseEvent): void {
         this.drawingService.dropperCtx.canvas.style.display = 'none';
+        this.circleCtx.canvas.style.display = 'none';
     }
 
     onMouseEnter(event: MouseEvent): void {
         this.drawingService.dropperCtx.canvas.style.display = 'inline-block';
+        this.circleCtx.canvas.style.display = 'inline-block';
     }
 }

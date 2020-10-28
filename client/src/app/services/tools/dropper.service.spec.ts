@@ -69,10 +69,12 @@ describe('DropperService', () => {
         const mouseEvent = { offsetX: 15, offsetY: 6 } as MouseEvent;
         dropperService.onMouseOut(mouseEvent);
         expect(dropperStubCtx.canvas.style.display).toEqual('none');
+        expect(dropperStubCtx.canvas.style.display).toEqual('none');
     });
     it('should set display to none onMouseOut', () => {
         const mouseEvent = { offsetX: 15, offsetY: 6 } as MouseEvent;
         dropperService.onMouseEnter(mouseEvent);
+        expect(dropperStubCtx.canvas.style.display).toEqual('inline-block');
         expect(dropperStubCtx.canvas.style.display).toEqual('inline-block');
     });
 });
