@@ -8,6 +8,7 @@ import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
 import { CarrouselPictureComponent } from '@app/components/carrousel-picture/carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { SaveDialogComponent } from '@app/components/save-dialog/save-dialog.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -36,7 +37,8 @@ export class SidebarComponent {
     lineWidth: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
-    newCarrouselRef: MatDialogRef<CarrouselPictureComponent>;
+    dialogLoadRef: MatDialogRef<CarrouselPictureComponent>;
+    dialogSaveRef: MatDialogRef<SaveDialogComponent>;
     private isPencilChecked: boolean = false;
     private isEraserChecked: boolean = false;
     private isBrushChecked: boolean = false;
@@ -84,8 +86,14 @@ export class SidebarComponent {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
     }
 
-    openCarrouse(): void {
-        this.newCarrouselRef = this.dialogCreator.open(CarrouselPictureComponent, {
+    openCarrousel(): void {
+        this.dialogLoadRef = this.dialogCreator.open(CarrouselPictureComponent, {
+            width: '90%',
+            height: '90%',
+        });
+    }
+    openSave(): void {
+        this.dialogSaveRef = this.dialogCreator.open(SaveDialogComponent, {
             width: '90%',
             height: '90%',
         });
