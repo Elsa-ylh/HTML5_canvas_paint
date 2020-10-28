@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
-import { StrokeAction } from '@app/classes/undo-redo/stroke-Action';
+import { StrokeAction } from '@app/classes/undo-redo/stroke-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';

@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
-import { LineAction } from '@app/classes/undo-redo/line-Action';
+import { LineAction } from '@app/classes/undo-redo/line-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-export interface lineParameters {
+export interface LineParameters {
     data: Vec2[];
     selectedLineTool: SubToolselected;
 }
@@ -149,7 +149,7 @@ export class LineService extends Tool {
             this.drawLineLastPoint(this.drawingService.previewCtx, { data: this.pathData, selectedLineTool: this.subToolSelect }, this.pointMouse);
         }
     }
-    drawLine(ctx: CanvasRenderingContext2D, path: lineParameters, lineWidth: number): void {
+    drawLine(ctx: CanvasRenderingContext2D, path: LineParameters, lineWidth: number): void {
         ctx.lineWidth = lineWidth;
         this.clearPreviewCtx();
         ctx.beginPath();
@@ -161,7 +161,7 @@ export class LineService extends Tool {
         if (path.selectedLineTool === SubToolselected.tool2) this.drawPoint(ctx, path.data, this.secondarySizePixel);
     }
 
-    drawLineLastPoint(ctx: CanvasRenderingContext2D, path: lineParameters, lastPoint: Vec2): void {
+    drawLineLastPoint(ctx: CanvasRenderingContext2D, path: LineParameters, lastPoint: Vec2): void {
         this.clearPreviewCtx();
         ctx.lineCap = 'butt';
         ctx.lineJoin = 'bevel';

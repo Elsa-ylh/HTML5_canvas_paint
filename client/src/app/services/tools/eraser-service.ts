@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
-import { EraseAction } from '@app/classes/undo-redo/erase-Action';
+import { EraseAction } from '@app/classes/undo-redo/erase-action';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -49,8 +49,8 @@ export class EraserService extends Tool {
         }
         const actionEraser = new EraseAction(this.pathData, this.color, this.eraserWidth, this, this.drawingService);
         this.undoRedoService.addUndo(actionEraser);
-        console.log('erase action in eraser service', actionEraser);
-        console.log('stack inside eraser service', this.undoRedoService['listUndo']);
+        // console.log('erase action in eraser service', actionEraser);
+        // console.log('stack inside eraser service', this.undoRedoService['listUndo']);
         this.undoRedoService.clearRedo();
         this.clearEffectTool();
         this.clearPath();
@@ -78,7 +78,6 @@ export class EraserService extends Tool {
         this.drawingService.previewCtx.lineCap = 'butt';
         this.drawingService.previewCtx.lineJoin = 'bevel';
     }
-    
     removeLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         console.log('path eraser service', path);
