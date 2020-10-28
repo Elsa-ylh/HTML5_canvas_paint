@@ -9,7 +9,7 @@ export class StrokeAction extends AbsUndoRedo {
     // couleur initiale = avant le stroke dans le canvas (dans ) // use getcolor de colorservice
     constructor(
         private changes: Vec2[],
-        private color: string,
+        private colorPencil: string,
         private thickness: number,
         private alpha: number,
         private pencilService: PencilService,
@@ -20,8 +20,11 @@ export class StrokeAction extends AbsUndoRedo {
 
     // applies on the canvas the current elements
     apply(): void {
-        // console.log('apply pencil');
-        this.drawingService.baseCtx.strokeStyle = this.color;
+        //  console.log('apply pencil');
+        //  console.log(this.changes);
+        this.drawingService.baseCtx.lineCap = 'round';
+        this.drawingService.baseCtx.lineJoin = 'round';
+        this.drawingService.baseCtx.strokeStyle = this.colorPencil;
         // this.colorService.changeColorOpacity(this.alpha);
         this.drawingService.baseCtx.globalAlpha = this.alpha;
         this.drawingService.baseCtx.lineWidth = this.thickness;

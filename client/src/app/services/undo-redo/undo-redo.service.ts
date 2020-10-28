@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
-import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
@@ -11,7 +10,7 @@ export class UndoRedoService {
     isRedoDisabled: boolean = true;
     private listUndo: AbsUndoRedo[] = [];
     private listRedo: AbsUndoRedo[] = [];
-    constructor(private drawingService: DrawingService, private colorService: ColorService) {}
+    constructor(private drawingService: DrawingService) {}
     // Controls the buttons of redo-undo
     onMouseUpActivateUndo(mouseEvent: MouseEvent): void {
         // there is one element
@@ -59,27 +58,33 @@ export class UndoRedoService {
     }
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
     undo(): void {
+        //  console.log('stack undo redo service', this.listUndo);
         const action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
-        //  console.log(action);
+        // console.log(action);
+        // console.log(action instanceof EraseAction, 'eraserAction');
+        // console.log(action instanceof StrokeAction, 'strokeAction');
+
         if (action) {
             this.listRedo.push(action); // save into redo to be able to cancel the undo.
             // allows to return to the previous "live" state on the canvas
-            const tempPrimaryColor = this.drawingService.baseCtx.strokeStyle;
-            const tempSecondaryColor = this.drawingService.baseCtx.shadowColor;
-            const tempAlpha = this.colorService.primaryColorTransparency;
-            const tempThickness = this.drawingService.baseCtx.lineWidth;
+            // const tempPrimaryColor = this.drawingService.baseCtx.strokeStyle;
+            // const tempSecondaryColor = this.drawingService.baseCtx.shadowColor;
+            // const tempAlpha = this.colorService.primaryColorTransparency;
+            // const tempThickness = this.drawingService.baseCtx.lineWidth;
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
             // reapply the currents elements (without the removed one)
             // BUG: rentre jamais dans le for avec eraserelement
+            // action.apply();
+
             for (const element of this.listUndo) {
-                // console.log('element');
                 element.apply();
             }
+
             // allows to return to the previous "live" state on the canvas
-            this.drawingService.baseCtx.strokeStyle = tempPrimaryColor;
-            this.drawingService.baseCtx.shadowColor = tempSecondaryColor;
-            this.colorService.changeColorOpacity(tempAlpha);
-            this.drawingService.baseCtx.lineWidth = tempThickness;
+            // this.drawingService.baseCtx.strokeStyle = tempPrimaryColor;
+            // this.drawingService.baseCtx.shadowColor = tempSecondaryColor;
+            // this.colorService.changeColorOpacity(tempAlpha);
+            // this.drawingService.baseCtx.lineWidth = tempThickness;
         }
     }
 }
