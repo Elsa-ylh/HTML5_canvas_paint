@@ -1,5 +1,6 @@
-import { DatabasePicureService } from '@app/services/data-base-picture.service';
+import { DatabasePicureService } from '@app/services/database-picture.service';
 import { CancasInformation, Label } from '@common/communication/canvas-information';
+import { Message } from '@common/communication/message';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
@@ -25,6 +26,8 @@ export class DataController {
                         id: 'Error',
                         name: reason as string,
                         labels: [],
+                        width: 0,
+                        height: 0,
                         date: new Date(),
                         picture: '',
                     };
@@ -39,6 +42,8 @@ export class DataController {
                         id: 'list_of_all_labals',
                         name: 'labels',
                         labels: labelsInformation,
+                        width: 0,
+                        height: 0,
                         date: new Date(),
                         picture: '',
                     };
@@ -49,6 +54,8 @@ export class DataController {
                         id: 'Error',
                         name: reason as string,
                         labels: [],
+                        width: 0,
+                        height: 0,
                         date: new Date(),
                         picture: '',
                     };
@@ -67,6 +74,8 @@ export class DataController {
                         id: 'Error',
                         name: error as string,
                         labels: [],
+                        width: 0,
+                        height: 0,
                         date: new Date(),
                         picture: '',
                     };
@@ -78,6 +87,8 @@ export class DataController {
                     id: 'Error',
                     name: 'Titre message non valide',
                     labels: [],
+                    width: 0,
+                    height: 0,
                     date: new Date(),
                     picture: '',
                 };
@@ -96,6 +107,8 @@ export class DataController {
                             id: 'Error',
                             name: reason as string,
                             labels: [],
+                            width: 0,
+                            height: 0,
                             date: new Date(),
                             picture: '',
                         };
@@ -120,6 +133,8 @@ export class DataController {
                                     id: 'Error',
                                     name: reason as string,
                                     labels: [],
+                                    width: 0,
+                                    height: 0,
                                     date: new Date(),
                                     picture: '',
                                 };
@@ -137,6 +152,8 @@ export class DataController {
                                     id: 'Error',
                                     name: reason as string,
                                     labels: [],
+                                    width: 0,
+                                    height: 0,
                                     date: new Date(),
                                     picture: '',
                                 };
@@ -148,6 +165,8 @@ export class DataController {
                             id: 'Error',
                             name: 'not good research : ' + req.body.title,
                             labels: [],
+                            width: 0,
+                            height: 0,
                             date: new Date(),
                             picture: '',
                         };
@@ -159,14 +178,60 @@ export class DataController {
                     id: 'Error',
                     name: 'not request in post',
                     labels: [],
+                    width: 0,
+                    height: 0,
                     date: new Date(),
                     picture: '',
                 };
                 res.status(HTTP_STATUS_BAD_REQUEST).json(errorData);
             }
         });
+        this.router.post('/savePicture', (req: Request, res: Response, next: NextFunction) => {
+            if (this.testBodyCancasInformation(req)) {
+                if (req.body.id !== '') {
+                    let newPicture: CancasInformation = {
+                        id: '',
+                        name: req.body.name,
+                        labels: req.body.labels,
+                        date: req.body.date,
+                        picture: req.body.picture,
+                        height: req.body.height,
+                        width: req.body.width,
+                    };
+                    this.databaseService
+                        .addPicture(newPicture)
+                        .then(() => {
+                            const successMessage: Message = {
+                                title: 'success',
+                                body: 'success',
+                            };
+                            res.json(successMessage);
+                        })
+                        .catch((reason: unknown) => {
+                            const errorMessage: Message = {
+                                title: 'Errer',
+                                body: reason as string,
+                            };
+                            res.json(errorMessage);
+                        });
+                } else {
+                    // modiffier
+                }
+            }
+        });
     }
     private textToTable(theTest: string): string[] {
         return theTest.split(',');
+    }
+    private testBodyCancasInformation(req: Request): boolean {
+        return (
+            req.body.id !== undefined &&
+            req.body.name !== undefined &&
+            req.body.labels !== undefined &&
+            req.body.date !== undefined &&
+            req.body.width !== undefined &&
+            req.body.height !== undefined &&
+            req.body.picture !== undefined
+        );
     }
 }

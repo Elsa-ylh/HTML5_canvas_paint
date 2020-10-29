@@ -1,5 +1,5 @@
 import { Application } from '@app/app';
-import { DatabasePicureService } from '@app/services/data-base-picture.service';
+import { DatabasePicureService } from '@app/services/database-picture.service';
 import { TYPES } from '@app/types';
 import { CancasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
@@ -15,13 +15,15 @@ describe('Data Controller', () => {
     let dataService: Stubbed<DatabasePicureService>;
     let app: Express.Application;
     let isDate: Date = new Date('10/08/2020');
-    const testCancasInformationAdd: CancasInformation = {
+    const testCancasInformationAdd = {
         id: '',
         name: 'test5',
         labels: [{ label: 'label1' }],
+        width: 0,
+        height: 0,
         date: isDate,
         picture: 'test5',
-    };
+    } as CancasInformation;
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
         container.rebind(TYPES.DatabasePicureService).toConstantValue({
