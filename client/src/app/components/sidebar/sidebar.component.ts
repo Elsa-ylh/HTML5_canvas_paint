@@ -324,9 +324,11 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.control.a', ['$event']) selectAllCanvas(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle || this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
-            event.preventDefault();
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
             this.selectionRectangleService.selectAll();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.selectAll();
         }
     }
 }

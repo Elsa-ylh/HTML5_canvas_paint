@@ -11,26 +11,72 @@ export class SelectionEllipseService extends SelectionService {
         super(drawingService);
     }
 
-    drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {
-        ctx.save();
-        ctx.beginPath();
-        this.drawEllipse(ctx, mouseCoord, this.width / 2, this.height / 2);
-        ctx.stroke();
-        ctx.clip();
-        ctx.drawImage(this.image, imagePosition.x, imagePosition.y);
-        ctx.restore();
+    onMouseUp(event: MouseEvent): void {
+        if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.mousePosition = mousePosition;
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            if (this.mouseDownCoord.x !== this.mousePosition.x && this.mouseDownCoord.y !== this.mousePosition.y && !this.inSelection) {
+                if (!this.shiftPressed) {
+                    this.height = this.mousePosition.y - this.mouseDownCoord.y;
+                    this.width = this.mousePosition.x - this.mouseDownCoord.x;
+                }
+                // this.drawSelectionRect(this.drawingService.previewCtx, this.mouseDownCoord, this.shiftPressed);
+
+                this.selectRectInitialPos = this.mouseDownCoord;
+                // console.log(" initial pos = " + this.selectRectInitialPos.x + this.selectRectInitialPos.y);
+                this.copyImageInitialPos = this.copySelection();
+                this.drawSelection(this.drawingService.previewCtx, this.mouseDownCoord, this.copyImageInitialPos);
+                // this.drawingService.previewCtx.putImageData(this.imageData, this.copyImageInitialPos.x, this.copyImageInitialPos.y);
+            } else if (this.inSelection) {
+                this.pasteSelection(
+                    { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
+                    { x: this.selectRectInitialPos.x + this.mouseMouvement.x, y: this.selectRectInitialPos.y + this.mouseMouvement.y },
+                    this.image,
+                );
+                this.isAllSelect = false;
+            }
+        }
+
+        this.mouseDown = false;
+        this.inSelection = false;
+        // this.mouseEnter = false;
     }
 
-    pasteSelection(position: Vec2, image: HTMLImageElement, imageData: ImageData): void {
-        this.drawingService.baseCtx.save();
-        this.drawingService.baseCtx.globalAlpha = 0;
-        this.drawingService.baseCtx.beginPath();
-        this.drawEllipse(this.drawingService.baseCtx, position, this.width / 2, this.height / 2);
-        this.drawingService.baseCtx.stroke();
-        this.drawingService.baseCtx.clip();
-        this.drawingService.baseCtx.globalAlpha = 1;
-        this.drawingService.baseCtx.drawImage(image, position.x, position.y);
-        this.drawingService.baseCtx.restore();
+    drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {
+        if (this.isAllSelect) {
+            this.drawSelectionRect(ctx, mouseCoord);
+            ctx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
+        } else {
+            ctx.save();
+            ctx.beginPath();
+            this.drawEllipse(ctx, mouseCoord, this.width / 2, this.height / 2);
+            ctx.stroke();
+            ctx.clip();
+            ctx.drawImage(this.image, imagePosition.x, imagePosition.y);
+            ctx.restore();
+            this.drawSelectionRect(ctx, mouseCoord);
+        }
+    }
+
+    pasteSelection(imageposition: Vec2, selectRectInitialPos: Vec2, image: HTMLImageElement): void {
+        if (this.isAllSelect) {
+            this.drawingService.baseCtx.putImageData(
+                this.imageData,
+                this.copyImageInitialPos.x + this.mouseMouvement.x,
+                this.copyImageInitialPos.y + this.mouseMouvement.y,
+            );
+        } else {
+            this.drawingService.baseCtx.save();
+            this.drawingService.baseCtx.globalAlpha = 0;
+            this.drawingService.baseCtx.beginPath();
+            this.drawEllipse(this.drawingService.baseCtx, selectRectInitialPos, this.width / 2, this.height / 2);
+            this.drawingService.baseCtx.stroke();
+            this.drawingService.baseCtx.clip();
+            this.drawingService.baseCtx.globalAlpha = 1;
+            this.drawingService.baseCtx.drawImage(image, imageposition.x, imageposition.y);
+            this.drawingService.baseCtx.restore();
+        }
     }
 
     drawPreview(): void {
@@ -63,5 +109,16 @@ export class SelectionEllipseService extends SelectionService {
         }
 
         ctx.ellipse(centerX, centerY, this.ellipseRad.x, this.ellipseRad.y, 0, 0, 2 * Math.PI);
+    }
+
+    clearSelection(position: Vec2, width: number, height: number): void {
+        this.drawingService.baseCtx.fillStyle = 'white';
+        if (this.isAllSelect) {
+            this.drawingService.baseCtx.fillRect(position.x, position.y, width, height);
+        } else {
+            this.drawingService.baseCtx.beginPath();
+            this.drawEllipse(this.drawingService.baseCtx, position, width / 2, height / 2);
+            this.drawingService.baseCtx.fill();
+        }
     }
 }

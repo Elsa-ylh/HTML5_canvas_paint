@@ -7,6 +7,9 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 @Injectable({
     providedIn: 'root',
 })
+
+// Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
+// tslint:disable:no-empty
 export class SelectionService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -32,6 +35,7 @@ export class SelectionService extends Tool {
     distanceY: number;
     ellipseRad: Vec2 = { x: 0, y: 0 };
     image: HTMLImageElement = new Image();
+    isAllSelect: boolean = false;
 
     onMouseDown(event: MouseEvent): void {
         // initialisation of effects
@@ -51,36 +55,7 @@ export class SelectionService extends Tool {
         this.mousePosition = this.mouseDownCoord;
     }
 
-    onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.mousePosition = mousePosition;
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            if (this.mouseDownCoord.x !== this.mousePosition.x && this.mouseDownCoord.y !== this.mousePosition.y && !this.inSelection) {
-                if (!this.shiftPressed) {
-                    this.height = this.mousePosition.y - this.mouseDownCoord.y;
-                    this.width = this.mousePosition.x - this.mouseDownCoord.x;
-                }
-                // this.drawSelectionRect(this.drawingService.previewCtx, this.mouseDownCoord, this.shiftPressed);
-
-                this.selectRectInitialPos = this.mouseDownCoord;
-                // console.log(" initial pos = " + this.selectRectInitialPos.x + this.selectRectInitialPos.y);
-                this.copyImageInitialPos = this.copySelection();
-                this.drawSelection(this.drawingService.previewCtx, this.mouseDownCoord, this.copyImageInitialPos);
-                // this.drawingService.previewCtx.putImageData(this.imageData, this.copyImageInitialPos.x, this.copyImageInitialPos.y);
-            } else if (this.inSelection) {
-                this.pasteSelection(
-                    { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                    this.image,
-                    this.imageData,
-                );
-            }
-        }
-
-        this.mouseDown = false;
-        this.inSelection = false;
-        // this.mouseEnter = false;
-    }
+    onMouseUp(event: MouseEvent): void {}
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
@@ -90,8 +65,10 @@ export class SelectionService extends Tool {
                 // console.log(this.selectRectInitialPos);
                 this.mouseMouvement.x = mousePosition.x - this.mouseDownCoord.x;
                 this.mouseMouvement.y = mousePosition.y - this.mouseDownCoord.y;
-                this.drawingService.baseCtx.fillStyle = 'white';
-                this.drawingService.baseCtx.fillRect(this.selectRectInitialPos.x, this.selectRectInitialPos.y, this.width, this.height);
+
+                // this.drawingService.baseCtx.fillStyle = 'white';
+                // this.drawingService.baseCtx.fillRect(this.selectRectInitialPos.x, this.selectRectInitialPos.y, this.width, this.height);
+                this.clearSelection(this.selectRectInitialPos, this.width, this.height);
                 // this.drawSelectionRect(this.drawingService.previewCtx, {
                 //     x: this.selectRectInitialPos.x + this.mouseMouvement.x,
                 //     y: this.selectRectInitialPos.y + this.mouseMouvement.y,
@@ -104,6 +81,7 @@ export class SelectionService extends Tool {
                     },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
+
                 // this.drawingService.previewCtx.putImageData(
                 //     this.imageData,
                 //     this.copyImageInitialPos.x + this.mouseMouvement.x,
@@ -126,7 +104,16 @@ export class SelectionService extends Tool {
         }
     }
 
-    // onMouseOut(event: MouseEvent): void {}
+    onMouseOut(event: MouseEvent): void {
+        if (this.mouseDown && this.inSelection) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.baseCtx.putImageData(this.imageData, this.copyImageInitialPos.x, this.copyImageInitialPos.y);
+        } else {
+            this.onMouseUp(event);
+        }
+
+        this.mouseDown = false;
+    }
 
     // onMouseEnter(event: MouseEvent): void {}
 
@@ -160,6 +147,7 @@ export class SelectionService extends Tool {
     }
 
     selectAll(): void {
+        this.isAllSelect = true;
         this.width = this.drawingService.canvas.width;
         this.height = this.drawingService.canvas.height;
         this.mouseDownCoord = { x: 1, y: 1 };
@@ -288,16 +276,25 @@ export class SelectionService extends Tool {
 
     drawPreview(): void {}
 
-    drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void { }
+    drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {}
 
-    pasteSelection(position: Vec2, image: HTMLImageElement, imageData: ImageData): void {}
-
-    getImageURL(imgData: ImageData, width: number, height: number) {
-        let canvas = document.createElement('canvas') as HTMLCanvasElement;
-        let ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
-        canvas.width = width;
-        canvas.height = height;
+    getImageURL(imgData: ImageData, width: number, height: number): string {
+        const canvas = document.createElement('canvas') as HTMLCanvasElement;
+        const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
+        canvas.width = Math.abs(width);
+        canvas.height = Math.abs(height);
         ctx.putImageData(imgData, 0, 0);
         return canvas.toDataURL(); // image URL
+    }
+
+    clearSelection(position: Vec2, width: number, height: number): void {}
+
+    drawSelectionAll(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {
+        this.drawSelectionRect(ctx, mouseCoord);
+        ctx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
+    }
+
+    pasteSelectionAll(position: Vec2, image: HTMLImageElement, imageData: ImageData): void {
+        this.drawingService.baseCtx.putImageData(imageData, position.x, position.y);
     }
 }
