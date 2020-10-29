@@ -16,7 +16,8 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
-import { SelectionService } from '@app/services/tools/selection-service';
+import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
+import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
@@ -38,8 +39,9 @@ describe('DrawingComponent', () => {
     let ellipseStub: EllipseService;
     let colorStub: ColorService;
     let dropperStub: DropperService;
-    let selectionStub: SelectionService;
     let polygonStub: PolygonService;
+    let selectionRectangleStub: SelectionRectangleService;
+    let selectionEllipseStub: SelectionEllipseService;
 
     beforeEach(
         waitForAsync(() => {
@@ -53,8 +55,9 @@ describe('DrawingComponent', () => {
             rectangleStub = new RectangleService(drawingStub, colorStub);
             ellipseStub = new EllipseService(drawingStub, colorStub);
             dropperStub = new DropperService(drawingStub, colorStub);
-            selectionStub = new SelectionService(drawingStub);
             polygonStub = new PolygonService(drawingStub, colorStub);
+            selectionRectangleStub = new SelectionRectangleService(drawingStub);
+            selectionEllipseStub = new SelectionEllipseService(drawingStub);
 
             toolServiceStub = new ToolService(
                 pencilStub,
@@ -64,8 +67,9 @@ describe('DrawingComponent', () => {
                 rectangleStub,
                 ellipseStub,
                 dropperStub,
-                selectionStub,
                 polygonStub,
+                selectionRectangleStub,
+                selectionEllipseStub,
             );
 
             toolStub = toolServiceStub.currentTool;
