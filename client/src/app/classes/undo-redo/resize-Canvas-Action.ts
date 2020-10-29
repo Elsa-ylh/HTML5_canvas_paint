@@ -2,8 +2,7 @@ import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
 //import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 // class that allows to undo and redo resize of the canvas
 export class ResizeCanvasAction extends AbsUndoRedo {
-    constructor() //   private resizeCanvasEvent: MouseEvent,
-    //   private sizeCtx: CanvasRenderingContext2D,
+    constructor() //   private sizeCtx: CanvasRenderingContext2D, //   private resizeCanvasEvent: MouseEvent,
     //   private baseCanvas: HTMLCanvasElement,
     //   private resizeDirection: ResizeDirection,
     //   private canvasResizerService: CanvasResizerService,
