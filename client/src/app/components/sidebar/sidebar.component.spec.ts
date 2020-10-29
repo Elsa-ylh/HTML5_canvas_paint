@@ -20,6 +20,7 @@ import { ColorComponent } from '@app/components/color/color.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DropperColorComponent } from '@app/components/dropper-color/dropper-color.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
@@ -28,6 +29,7 @@ import { DropperService } from '@app/services/tools/dropper.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
+import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
@@ -49,6 +51,8 @@ describe('SidebarComponent', () => {
     let dropperServiceStub: DropperService;
     let selectionStub: SelectionService;
     let polygonStub: PolygonService;
+    let paintBucketStub: PaintBucketService;
+    let canvasResizerStub: CanvasResizerService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -57,6 +61,7 @@ describe('SidebarComponent', () => {
     beforeEach(async () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
+        canvasResizerStub = new CanvasResizerService();
         rectangleStub = new RectangleService(drawingStub, colorStub);
         ellipseStub = new EllipseService(drawingStub, colorStub);
         brushStub = new BrushService(drawingStub, colorStub);
@@ -64,6 +69,7 @@ describe('SidebarComponent', () => {
         eraserStub = new EraserService(drawingStub);
         lineStub = new LineService(drawingStub, colorStub);
         dropperServiceStub = new DropperService(drawingStub, colorStub);
+        paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub);
 
         toolServiceStub = new ToolService(
             pencilStub,
@@ -75,6 +81,7 @@ describe('SidebarComponent', () => {
             dropperServiceStub,
             selectionStub,
             polygonStub,
+            paintBucketStub,
         );
         selectionStub = new SelectionService(drawingStub);
         polygonStub = new PolygonService(drawingStub, colorStub);
