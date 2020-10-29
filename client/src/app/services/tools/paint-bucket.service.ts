@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-//import { Fill } from '@app/classes/fill';
+// import { Fill } from '@app/classes/fill';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
@@ -21,7 +21,7 @@ export class PaintBucketService extends Tool {
     private tmpVecUp: Vec2;
     mouseEnter: boolean = false;
     mouseOut: boolean = false;
-    //paintBucketTool: number = 8;
+    // paintBucketTool: number = 8;
     canvasWidth: number;
     canvasHeigth: number;
     currentColor: string = '#000000';
@@ -55,7 +55,7 @@ export class PaintBucketService extends Tool {
             //     this.colorService,
             //     this.canvasResizerService,
             // );
-            console.log("1");
+            console.log('1');
             this.paintAt(this.mouseDownCoord);
         }
         this.mousePosition = this.mouseDownCoord;
@@ -204,7 +204,7 @@ export class PaintBucketService extends Tool {
             while (pos.y >= drawingBoundTop && this.matchStartColor(pixelPos, startColor)) {
                 pos.y -= 1;
                 pixelPos -= this.canvasWidth * this.colorAttributs;
-                console.log("2");
+                console.log('2');
             }
 
             pixelPos += this.canvasWidth * this.colorAttributs;
@@ -216,7 +216,7 @@ export class PaintBucketService extends Tool {
             while (pos.y <= drawingBoundBottom && this.matchStartColor(pixelPos, startColor)) {
                 pos.y += 1;
                 this.colorPixel(pixelPos, this.hexToRgbA(this.currentColor));
-                console.log("3");
+                console.log('3');
                 if (pos.x > drawingBoundLeft) {
                     if (this.matchStartColor(pixelPos - this.colorAttributs, startColor)) {
                         if (!reachLeft) {
@@ -251,13 +251,12 @@ export class PaintBucketService extends Tool {
         this.canvasWidth = this.canvasResizerService.canvasSize.x;
         this.canvasHeigth = this.canvasResizerService.canvasSize.y;
 
-        const pixelPos : number = (startPos.y * this.canvasWidth + startPos.x) * this.colorAttributs;
-        const red : number = this.colorLayerData.data[pixelPos];
-        const green : number = this.colorLayerData.data[pixelPos + 1];
-        const blue : number = this.colorLayerData.data[pixelPos + 2];
+        const pixelPos: number = (startPos.y * this.canvasWidth + startPos.x) * this.colorAttributs;
+        const red: number = this.colorLayerData.data[pixelPos];
+        const green: number = this.colorLayerData.data[pixelPos + 1];
+        const blue: number = this.colorLayerData.data[pixelPos + 2];
         // tslint:disable-next-line:no-magic-numbers
-        const alpha : number = this.colorLayerData.data[pixelPos + 3];
-
+        const alpha: number = this.colorLayerData.data[pixelPos + 3];
 
         // if (
         //     this.hexToRgbA(this.currentColor)[0] === this.hexToRgbA(this.fillColor)[0] &&
@@ -265,22 +264,23 @@ export class PaintBucketService extends Tool {
         //     this.hexToRgbA(this.currentColor)[2] === this.hexToRgbA(this.fillColor)[2]
         // )
         if (
-          this.hexToRgbA(this.currentColor)[0] === red &&
-          this.hexToRgbA(this.currentColor)[1] === green &&
-          this.hexToRgbA(this.currentColor)[2] === blue
-      ){
+            this.hexToRgbA(this.currentColor)[0] === red &&
+            this.hexToRgbA(this.currentColor)[1] === green &&
+            this.hexToRgbA(this.currentColor)[2] === blue
+        ) {
             // Return because trying to fill with the same color
             return;
         }
-        if (this.matchOultineColor([red, green, blue, alpha])
-        // if (
-        //     this.matchOultineColor([
-        //         this.hexToRgbA(this.fillColor)[0],
-        //         this.hexToRgbA(this.fillColor)[1],
-        //         this.hexToRgbA(this.fillColor)[2],
-        //         // tslint:disable-next-line:no-magic-numbers
-        //         this.hexToRgbA(this.fillColor)[3],
-        //     ])
+        if (
+            this.matchOultineColor([red, green, blue, alpha])
+            // if (
+            //     this.matchOultineColor([
+            //         this.hexToRgbA(this.fillColor)[0],
+            //         this.hexToRgbA(this.fillColor)[1],
+            //         this.hexToRgbA(this.fillColor)[2],
+            //         // tslint:disable-next-line:no-magic-numbers
+            //         this.hexToRgbA(this.fillColor)[3],
+            //     ])
         ) {
             // Return because clicked outline
             return;

@@ -185,7 +185,7 @@ export class SidebarComponent {
     }
 
     pickPaintBucket(): void {
-        debugger;
+        // debugger;
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.PaintBucket);
     }
