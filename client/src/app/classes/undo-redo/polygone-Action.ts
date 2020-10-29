@@ -14,7 +14,7 @@ export class PolygoneAction extends AbsUndoRedo {
         private nbsides: number,
         private isRenderingBase: boolean,
         private selectSubTool: SubToolselected,
-        private PolygoneService: PolygonService,
+        private polygoneService: PolygonService,
         private drawingService: DrawingService,
     ) {
         super();
@@ -24,7 +24,7 @@ export class PolygoneAction extends AbsUndoRedo {
         this.drawingService.baseCtx.strokeStyle = this.primaryColor;
         this.drawingService.baseCtx.shadowColor = this.secondaryColor;
         this.drawingService.baseCtx.lineWidth = this.lineWidth;
-        this.PolygoneService.selectPolygon(this.mousePosition, this.mouseDownCord, {
+        this.polygoneService.selectPolygon(this.mousePosition, this.mouseDownCord, {
             primaryColor: this.primaryColor,
             secondaryColor: this.secondaryColor,
             lineWidth: this.lineWidth,
@@ -32,6 +32,6 @@ export class PolygoneAction extends AbsUndoRedo {
             selectSubTool: this.selectSubTool,
             isRenderingBase: this.isRenderingBase,
         });
-        this.PolygoneService.clearEffectTool();
+        this.polygoneService.clearEffectTool();
     }
 }

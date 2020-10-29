@@ -3,7 +3,7 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { ToolInfoPolygone } from '@app/classes/tool-info-polygone';
-import { PolygoneAction } from '@app/classes/undo-redo/polygone-Action';
+import { PolygoneAction } from '@app/classes/undo-redo/polygone-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -59,7 +59,6 @@ export class PolygonService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.mousePosition = mousePosition;
-            //true
             this.isRenderingBase = true;
             this.selectPolygon(mousePosition, this.mouseDownCoord, {
                 primaryColor: this.strokeColor,
@@ -79,7 +78,7 @@ export class PolygonService extends Tool {
             this.fillColor,
             this.lineWidth,
             this.numberOfSides,
-            //this.isRenderingBase,
+            // this.isRenderingBase,
             false,
             this.subToolSelect,
             this,
