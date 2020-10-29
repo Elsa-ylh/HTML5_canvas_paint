@@ -181,8 +181,6 @@ export class RectangleService extends Tool {
         ctx.fillStyle = this.fillColor;
         ctx.lineWidth = this.lineWidth;
 
-        ctx.lineWidth = this.lineWidth;
-
         if (this.square) {
             ctx.fillRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);
             ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, this.width, this.height);

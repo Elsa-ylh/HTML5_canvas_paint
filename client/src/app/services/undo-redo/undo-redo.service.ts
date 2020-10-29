@@ -55,11 +55,13 @@ export class UndoRedoService {
     // adds the latest  action to the undo stack.
     addUndo(action: AbsUndoRedo): void {
         this.listUndo.push(action);
+        console.log('stack undo redo', this.listUndo);
     }
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
     undo(): void {
         //  console.log('stack undo redo service', this.listUndo);
         const action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
+
         // console.log(action);
         // console.log(action instanceof EraseAction, 'eraserAction');
         // console.log(action instanceof StrokeAction, 'strokeAction');

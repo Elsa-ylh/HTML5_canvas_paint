@@ -21,7 +21,6 @@ export class RectangleAction extends AbsUndoRedo {
     }
 
     apply(): void {
-        console.log('rect apply');
         this.drawingService.baseCtx.strokeStyle = this.primaryColor;
         this.drawingService.baseCtx.shadowColor = this.secondaryColor;
         this.drawingService.baseCtx.lineWidth = this.lineWidth;
