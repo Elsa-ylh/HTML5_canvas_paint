@@ -110,6 +110,7 @@
                     <mat-slider max="50" min="1" [(ngModel)]="brushService.lineWidth"> </mat-slider><samp>{{ brushService.lineWidth }}px</samp>
                 </mat-grid-tile>
             </mat-grid-list>
+
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Line">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="2"> Pour quiter l'outil Ligne effectuez un double clic gauche avec votre souris</mat-grid-tile>
@@ -124,6 +125,7 @@
                     <samp>{{ lineService.secondarySizePixel }}px</samp>
                 </mat-grid-tile>
             </mat-grid-list>
+
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Rectangle">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
                 <mat-grid-tile colspan="6"> Choisissez un type de rectangle</mat-grid-tile>
@@ -223,9 +225,13 @@
                 </mat-grid-tile>
             </mat-grid-list>
 
-            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Color">
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.PaintBucket">
                 <app-color></app-color>
             </mat-grid-list>
+
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Color">
+              <app-color></app-color>
+          </mat-grid-list>
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Dropper">
                 <app-dropper-color></app-dropper-color>
