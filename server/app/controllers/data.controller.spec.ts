@@ -33,6 +33,7 @@ describe('Data Controller', () => {
             getPicturesName: sandbox.stub().resolves(testCancasInformationAdd),
             getPicturesDate: sandbox.stub().resolves(testCancasInformationAdd),
             addPicture: sandbox.stub().resolves(undefined),
+            modifyPicture: sandbox.stub().resolves(undefined),
         });
         dataService = container.get(TYPES.DatabasePicureService);
         app = container.get<Application>(TYPES.Application).app;
@@ -273,7 +274,7 @@ describe('Data Controller', () => {
                 console.log('Error ' + err);
             });
     });
-    it('post in good savePicture', async () => {
+    it('post in good savePicture update', async () => {
         const newCancasInformationAdd = {
             _id: '1234',
             name: 'test5',
@@ -289,6 +290,71 @@ describe('Data Controller', () => {
             .send(newCancasInformationAdd)
             .then(async (reponse: any) => {
                 expect(reponse.body.title).to.equal('success');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in good savePicture save', async () => {
+        const newCancasInformationAdd = {
+            _id: '',
+            name: 'test5',
+            labels: [{ label: 'label1' }],
+            width: 0,
+            height: 0,
+            date: isDate,
+            picture: 'test5',
+        } as CancasInformation;
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_OK)
+            .send(newCancasInformationAdd)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('success');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in not good savePicture update', async () => {
+        dataService.modifyPicture.rejects(new Error('error in the service mongo'));
+        const newCancasInformationAdd = {
+            _id: '1234',
+            name: 'test5',
+            labels: [{ label: 'label1' }],
+            width: 0,
+            height: 0,
+            date: isDate,
+            picture: 'test5',
+        } as CancasInformation;
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_OK)
+            .send(newCancasInformationAdd)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Errer');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in not good savePicture save', async () => {
+        dataService.addPicture.rejects(new Error('error in the service mongo'));
+        const newCancasInformationAdd = {
+            _id: '',
+            name: 'test5',
+            labels: [{ label: 'label1' }],
+            width: 0,
+            height: 0,
+            date: isDate,
+            picture: 'test5',
+        } as CancasInformation;
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_OK)
+            .send(newCancasInformationAdd)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Errer');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);

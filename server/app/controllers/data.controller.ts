@@ -188,16 +188,16 @@ export class DataController {
         });
         this.router.post('/savePicture', (req: Request, res: Response, next: NextFunction) => {
             if (this.testBodyCancasInformation(req)) {
-                if (req.body._id !== '') {
-                    const newPicture: CancasInformation = {
-                        _id: '',
-                        name: req.body.name,
-                        labels: req.body.labels,
-                        date: req.body.date,
-                        picture: req.body.picture,
-                        height: req.body.height,
-                        width: req.body.width,
-                    };
+                const newPicture: CancasInformation = {
+                    _id: req.body._id,
+                    name: req.body.name,
+                    labels: req.body.labels,
+                    date: req.body.date,
+                    picture: req.body.picture,
+                    height: req.body.height,
+                    width: req.body.width,
+                };
+                if (newPicture._id === '') {
                     this.databaseService
                         .addPicture(newPicture)
                         .then((good: boolean) => {
@@ -215,8 +215,22 @@ export class DataController {
                             res.json(errorMessage);
                         });
                 } else {
-                    // modiffier
-                    res.status(HTTP_STATUS_BAD_REQUEST).json([]);
+                    this.databaseService
+                        .modifyPicture(newPicture)
+                        .then((good: boolean) => {
+                            const successMessage: Message = {
+                                title: 'success',
+                                body: 'success' + good,
+                            };
+                            res.json(successMessage);
+                        })
+                        .catch((reason: unknown) => {
+                            const errorMessage: Message = {
+                                title: 'Errer',
+                                body: reason as string,
+                            };
+                            res.json(errorMessage);
+                        });
                 }
             } else {
                 const errorMessage: Message = {
