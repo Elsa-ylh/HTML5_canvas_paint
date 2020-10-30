@@ -118,8 +118,7 @@ export class CanvasResizerService {
     // https://stackoverflow.com/questions/8977369/drawing-png-to-a-canvas-element-not-showing-transparency
     onResizeUp(event: MouseEvent, resizeCtx: CanvasRenderingContext2D, baseCanvas: HTMLCanvasElement): void {
         if (this.isResizeDown) {
-            const undoRedoEvent = { offsetX: this.canvasSize.x, offsetY: this.canvasSize.y } as MouseEvent;
-            const resizeCanvasAction = new ResizeCanvasAction(undoRedoEvent, resizeCtx, baseCanvas, this.resizeDirection, this);
+            const resizeCanvasAction = new ResizeCanvasAction(event, resizeCtx, baseCanvas, this.resizeDirection, this);
             this.undoRedoService.addUndo(resizeCanvasAction);
 
             const originalImage = new Image();

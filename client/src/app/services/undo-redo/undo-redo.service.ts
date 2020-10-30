@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
 import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-Canvas-Action';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { CanvasResizerService } from '../canvas/canvas-resizer.service';
 
 @Injectable({
     providedIn: 'root',
@@ -13,7 +12,7 @@ export class UndoRedoService {
     isDefaultCanvasResizeInStack: boolean = false;
     private listUndo: AbsUndoRedo[] = [];
     private listRedo: AbsUndoRedo[] = [];
-    constructor(private drawingService: DrawingService, private cvsResizerService: CanvasResizerService) {}
+    constructor(private drawingService: DrawingService) {}
     // Controls the buttons of redo-undo
     onMouseUpActivateUndo(mouseEvent: MouseEvent): void {
         // there is one element
@@ -61,46 +60,24 @@ export class UndoRedoService {
         console.log('stack undo redo', this.listUndo);
     }
 
-    addUndo(resizeAction: ResizeCanvasAction): void {
+    addUndoResizeCanvas(resizeAction: ResizeCanvasAction): void {
         if (!this.isDefaultCanvasResizeInStack) {
-            const undoRedoEvent = { offsetX: this.cvsResizerService.canvasSize.x, offsetY: this.cvsResizerService.canvasSize.y } as MouseEvent;
-            const resizeCanvasAction = new ResizeCanvasAction(undoRedoEvent, resizeCtx, baseCanvas, this.resizeDirection, this);
-            this.undoRedoService.addUndo(resizeCanvasAction);
         }
     }
 
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
-    undo(): void {
-        //  console.log('stack undo redo service', this.listUndo);
+    async undo(): Promise<void> {
         const action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
 
-        // console.log(action);
-        // console.log(action instanceof EraseAction, 'eraserAction');
-        // console.log(action instanceof StrokeAction, 'strokeAction');
-
         if (action) {
-            this.listRedo.push(action); // save into redo to be able to cancel the undo.
-            // allows to return to the previous "live" state on the canvas
-            // const tempPrimaryColor = this.drawingService.baseCtx.strokeStyle;
-            // const tempSecondaryColor = this.drawingService.baseCtx.shadowColor;
-            // const tempAlpha = this.colorService.primaryColorTransparency;
-            // const tempThickness = this.drawingService.baseCtx.lineWidth;
+            this.listRedo.push(action);
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
-            // reapply the currents elements (without the removed one)
-            // BUG: rentre jamais dans le for avec eraserelement
-            // action.apply();
 
             console.log(this.listUndo);
 
             for (const element of this.listUndo) {
                 element.apply();
             }
-
-            // allows to return to the previous "live" state on the canvas
-            // this.drawingService.baseCtx.strokeStyle = tempPrimaryColor;
-            // this.drawingService.baseCtx.shadowColor = tempSecondaryColor;
-            // this.colorService.changeColorOpacity(tempAlpha);
-            // this.drawingService.baseCtx.lineWidth = tempThickness;
         }
     }
 }
