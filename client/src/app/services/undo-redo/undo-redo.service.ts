@@ -2,10 +2,7 @@ import { Injectable } from '@angular/core';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
 // import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-Canvas-Action';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-<<<<<<< HEAD
-=======
 // import { CanvasResizerService } from '../canvas/canvas-resizer.service';
->>>>>>> 12-annuler-refaire-2
 
 @Injectable({
     providedIn: 'root',
