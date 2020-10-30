@@ -65,7 +65,7 @@ export class RectangleService extends Tool {
             this.strokeColor,
             this.fillColor,
             this.lineWidth,
-            false,
+            this.square,
             this.subToolSelect,
             this.canvasSelected,
             this,

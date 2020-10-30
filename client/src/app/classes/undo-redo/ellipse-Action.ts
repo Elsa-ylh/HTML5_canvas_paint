@@ -21,7 +21,6 @@ export class EllipseAction extends AbsUndoRedo {
     }
 
     apply(): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawingService.baseCtx.strokeStyle = this.primaryColor;
         this.drawingService.baseCtx.shadowColor = this.secondaryColor;
         this.drawingService.baseCtx.lineWidth = this.lineWidth;

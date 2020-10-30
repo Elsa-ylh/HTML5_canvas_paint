@@ -72,12 +72,13 @@ export class EllipseService extends Tool {
             this.strokeColor,
             this.fillColor,
             this.lineWidth,
-            false,
+            this.circle,
             this.subToolSelect,
             this.canvasSelected,
             this,
             this.drawingService,
         );
+        console.log('action ellipse', ellipeAction);
         this.undoRedoService.addUndo(ellipeAction);
         this.undoRedoService.clearRedo();
 
@@ -158,7 +159,7 @@ export class EllipseService extends Tool {
             switch (generalInfo.selectSubTool) {
                 case SubToolselected.tool1: {
                     this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                    this.drawFillEllipse(this.drawingService.baseCtx, mouseDownCoord, mousePosition);
+                    this.drawFillEllipse(this.drawingService.baseCtx, mouseDownCoord);
                     break;
                 }
 
@@ -177,7 +178,7 @@ export class EllipseService extends Tool {
         } else {
             switch (generalInfo.selectSubTool) {
                 case SubToolselected.tool1:
-                    this.drawFillEllipse(this.drawingService.previewCtx, mouseDownCoord, mousePosition);
+                    this.drawFillEllipse(this.drawingService.previewCtx, mouseDownCoord);
                     break;
 
                 case SubToolselected.tool2:
@@ -225,7 +226,7 @@ export class EllipseService extends Tool {
         }
     }
 
-    drawFillEllipse(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
+    drawFillEllipse(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2): void {
         this.drawingService.previewCtx.beginPath();
         this.drawingService.baseCtx.beginPath();
 
