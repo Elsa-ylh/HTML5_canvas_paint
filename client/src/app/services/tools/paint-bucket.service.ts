@@ -1,4 +1,4 @@
-import { AfterViewInit, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 // import { Fill } from '@app/classes/fill';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Point2d } from '@app/classes/point2d';
@@ -19,7 +19,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 @Injectable({
     providedIn: 'root',
 })
-export class PaintBucketService extends Tool implements AfterViewInit {
+export class PaintBucketService extends Tool {
     constructor(drawingService: DrawingService, private colorService: ColorService, private canvasResizerService: CanvasResizerService) {
         super(drawingService);
     }
@@ -42,19 +42,14 @@ export class PaintBucketService extends Tool implements AfterViewInit {
     colorAttributs: number = 4; // rgba
     pixelStack: Vec2[] = [];
 
-    ngAfterViewInit(): void {
-        this.colorLayerData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
-        this.outlineLayerData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
-        this.imageData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
-    }
-
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         this.clearEffectTool();
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.fillColor = this.colorService.primaryColor;
         this.pixelStack.push(new Point2d(event.offsetX, event.offsetY));
-        this.targetColor = this.colorService.getColor(new Point2d(event.offsetX, event.offsetY) as Vec2, this.drawingService.baseCtx);
+        this.currentColor = this.colorService.getColor(new Point2d(event.offsetX, event.offsetY) as Vec2, this.drawingService.baseCtx);
+        console.log(this.currentColor);
         if (this.mouseEnter) {
             this.onMouseUp(event);
             // this.tmpVecDown = this.mouseDownCoord;
@@ -74,6 +69,10 @@ export class PaintBucketService extends Tool implements AfterViewInit {
             // console.log(this.tmpVecDown);
 
             // this.paintAt(this.mouseDownCoord);
+            // this.colorLayerData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
+            // this.outlineLayerData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
+            this.imageData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
+            console.log('imageData :', this.imageData);
             this.floodFill2(this.imageData, this.hexToRgbA(this.fillColor), { x: this.mouseDownCoord.x, y: this.mouseDownCoord.y });
         }
         this.mousePosition = this.mouseDownCoord;
@@ -329,16 +328,16 @@ export class PaintBucketService extends Tool implements AfterViewInit {
     //     // this.floodFill(startPos, [red, green, blue]);
     // }
 
-    getColorAtPixel(imageData: ImageData, pos: Vec2): RGBA {
-        imageData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasWidth);
-        return {
-            red: imageData.data[this.colorAttributs * (this.canvasWidth * pos.y + pos.x) + 0],
-            green: imageData.data[this.colorAttributs * (this.canvasWidth * pos.y + pos.x) + 1],
-            blue: imageData.data[this.colorAttributs * (this.canvasWidth * pos.y + pos.x) + 2],
-            // tslint:disable-next-line:no-magic-numbers
-            alpha: imageData.data[this.colorAttributs * (this.canvasWidth * pos.y + pos.x) + 3],
-        };
-    }
+    // getColorAtPixel(imageData: ImageData, pos: Vec2): RGBA {
+    //     imageData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasWidth);
+    //     return {
+    //         red: imageData.data[this.colorAttributs * (this.canvasWidth * pos.y + pos.x) + 0],
+    //         green: imageData.data[this.colorAttributs * (this.canvasWidth * pos.y + pos.x) + 1],
+    //         blue: imageData.data[this.colorAttributs * (this.canvasWidth * pos.y + pos.x) + 2],
+    //         // tslint:disable-next-line:no-magic-numbers
+    //         alpha: imageData.data[this.colorAttributs * (this.canvasWidth * pos.y + pos.x) + 3],
+    //     };
+    // }
 
     setColorAtPixel(imageData: ImageData, pos: Vec2, color: RGBA): void {
         imageData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasWidth);
@@ -365,13 +364,11 @@ export class PaintBucketService extends Tool implements AfterViewInit {
     }
 
     floodFill2(imageData: ImageData, newColor: RGBA, pos: Vec2): void {
-        imageData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasWidth);
         const stack = [];
-        const baseColor: RGBA = this.getColorAtPixel(imageData, { x: pos.x, y: pos.y });
         let operator: Vec2 = { x: pos.x, y: pos.y };
 
         // Check if base color and new color are the same
-        if (this.colorMatch(baseColor, newColor)) {
+        if (this.colorMatch(this.targetColor, newColor)) {
             return;
         }
 
@@ -388,7 +385,7 @@ export class PaintBucketService extends Tool implements AfterViewInit {
             // Move to top most contiguousDown pixel
             while (contiguousUp && operator.y >= 0) {
                 operator.y--;
-                contiguousUp = this.colorMatch(this.getColorAtPixel(imageData, { x: operator.x, y: operator.y }), baseColor);
+                contiguousUp = this.colorMatch(this.currentColor, newColor);
             }
 
             // Move downward
@@ -396,7 +393,7 @@ export class PaintBucketService extends Tool implements AfterViewInit {
                 this.setColorAtPixel(imageData, { x: operator.x, y: operator.y }, newColor);
 
                 // Check left
-                if (operator.x - 1 >= 0 && this.colorMatch(this.getColorAtPixel(imageData, { x: operator.x - 1, y: operator.y }), baseColor)) {
+                if (operator.x - 1 >= 0 && this.colorMatch(this.currentColor, newColor)) {
                     if (!contiguousLeft) {
                         contiguousLeft = true;
                         stack.push({ x: operator.x - 1, y: operator.y });
@@ -406,10 +403,7 @@ export class PaintBucketService extends Tool implements AfterViewInit {
                 }
 
                 // Check right
-                if (
-                    operator.x + 1 < this.canvasWidth &&
-                    this.colorMatch(this.getColorAtPixel(imageData, { x: operator.x + 1, y: operator.y }), baseColor)
-                ) {
+                if (operator.x + 1 < this.canvasWidth && this.colorMatch(this.currentColor, newColor)) {
                     if (!contiguousRight) {
                         stack.push({ x: operator.x + 1, y: operator.y });
                         contiguousRight = true;
@@ -419,7 +413,7 @@ export class PaintBucketService extends Tool implements AfterViewInit {
                 }
 
                 operator.y++;
-                this.mouseDown = this.colorMatch(this.getColorAtPixel(imageData, { x: operator.x, y: operator.y }), baseColor);
+                this.mouseDown = this.colorMatch(this.currentColor, newColor);
             }
         }
 
