@@ -31,7 +31,7 @@ import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { SidebarComponent } from './sidebar.component';
 
 // tslint:disable:no-any
@@ -56,6 +56,7 @@ describe('SidebarComponent', () => {
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
+    let dialogMock: jasmine.SpyObj<MatDialog>;
     beforeEach(
         waitForAsync(() => {
             drawingStub = new DrawingService();
@@ -90,6 +91,9 @@ describe('SidebarComponent', () => {
             drawingStub.canvas = canvas;
             drawingStub.baseCtx = baseStub; // Jasmine doesnt copy properties with underlying data
             drawingStub.previewCtx = previewStub;
+
+            dialogMock = jasmine.createSpyObj('dialogCreator', ['open']);
+
             TestBed.configureTestingModule({
                 declarations: [
                     SidebarComponent,
@@ -122,7 +126,7 @@ describe('SidebarComponent', () => {
                     { provide: SelectionService, useValue: selectionStub },
                     { provide: ToolService, useValue: toolServiceStub },
                     { provide: DropperService, useValue: dropperServiceStub },
-                    { provide: MatDialog, useValue: {} },
+                    { provide: MatDialog, useValue: dialogMock },
                     { provide: MatDialogRef, useValue: {} },
                     { provide: PolygonService, useValue: polygonStub },
                     { provide: Observable, useValue: {} },
@@ -166,28 +170,25 @@ describe('SidebarComponent', () => {
         component.pickDropper();
         expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Dropper);
     });
-    /*it(' should clear canvas dialog', () => {
+
+    it(' should clear canvas dialog', () => {
         drawingStub.baseCtx.fillStyle = 'green';
         drawingStub.baseCtx.fillRect(10, 10, drawingStub.canvas.width, drawingStub.canvas.height);
-        const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
-        const observable = jasmine.createSpyObj('Observable', ['subscribe']);
-        component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
-        component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
-            return matdialogRef;
-        });
-        component.newDrawingRef = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
-        component.newDrawingRef.afterClosed = jasmine.createSpy().and.callFake(() => {
-            return observable;
-        });
-        component.newDrawingRef.afterClosed = jasmine.createSpyObj('Observable<any>', ['subscribe']);
-        component.newDrawingRef.afterClosed().subscribe = jasmine.createSpyObj('Subscription', ['add']).and.callFake(() => {
-            component.isDialogOpen = false;
-        });
+
+        const closedSubject = new Subject<any>();
+
+        const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
+        dialogRefMock.afterClosed.and.returnValue(closedSubject.asObservable());
+        dialogMock.open.and.returnValue(dialogRefMock);
+
         component.clearCanvas();
-        expect(component.newDrawingRef.afterOpened).toHaveBeenCalled();
+        expect(component.isDialogOpen).toEqual(true);
+
+        closedSubject.next();
+
         expect(component.isDialogOpen).toEqual(false);
     });
-    */
+
     it(' should create new drawing dialog', () => {
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
         component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
@@ -319,7 +320,7 @@ describe('SidebarComponent', () => {
         component.CheckboxChangeToggle(event);
         expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool1);
     });
-    /*it('should call preventDefault clearCanvas and set isDialogOpen to true', () => {
+    it('should call preventDefault clearCanvas and set isDialogOpen to true', () => {
         component.isDialogOpen = false;
         drawingStub.baseCtx.beginPath();
         drawingStub.baseCtx.moveTo(50, 50);
@@ -327,14 +328,13 @@ describe('SidebarComponent', () => {
         drawingStub.baseCtx.stroke();
         const event = new KeyboardEvent('window:keydown.control.o', {});
         const preventDefaultSpy = spyOn(event, 'preventDefault').and.callThrough();
-        const clearCanvasSpy = spyOn(component, 'clearCanvas').and.callThrough();
+        const clearCanvasSpy = spyOn(component, 'clearCanvas').and.stub();
         window.dispatchEvent(event);
         component.onKeyDown(event);
         expect(preventDefaultSpy);
         expect(clearCanvasSpy).toHaveBeenCalled();
-        expect(component.isDialogOpen).toEqual(true);
     });
-    */
+
     it('should call resetCheckedButton set isRectangleChecked to true should call pickRectangle', () => {
         toolServiceStub.currentToolName = ToolUsed.Pencil;
         const event = new KeyboardEvent('window:keydown.1', {});

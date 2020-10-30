@@ -74,6 +74,7 @@ export class SidebarComponent {
     clearCanvas(): void {
         if (!this.drawingService.isCanvasBlank()) {
             this.newDrawingRef = this.dialogCreator.open(DialogCreateNewDrawingComponent);
+            this.isDialogOpen = true;
             this.newDrawingRef.afterClosed().subscribe(() => {
                 this.isDialogOpen = false;
             });
@@ -233,7 +234,6 @@ export class SidebarComponent {
         if (!this.isDialogOpen && !this.drawingService.isCanvasBlank()) {
             event.preventDefault();
             this.clearCanvas();
-            this.isDialogOpen = true;
         }
     }
 
