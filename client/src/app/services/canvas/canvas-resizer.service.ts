@@ -30,6 +30,8 @@ export class CanvasResizerService {
     resizeWidth: number = window.innerWidth - SIDEBAR_WIDTH - ICON_WIDTH;
     resizeHeight: number = window.innerHeight;
 
+    addToUndoRedo: boolean = false;
+
     // Resizer canvas index
     readonly PRIORITY_INDEX: number = 10;
     readonly NORMAL_INDEX: number = 1;
@@ -47,6 +49,7 @@ export class CanvasResizerService {
         if (this.isResizeDown) {
             this.resizerIndex = this.PRIORITY_INDEX; // We now put the whole surface in the foregound.
             this.resizeDirection = resizeDirection;
+            this.addToUndoRedo = true;
         }
     }
 
@@ -118,9 +121,6 @@ export class CanvasResizerService {
     // https://stackoverflow.com/questions/8977369/drawing-png-to-a-canvas-element-not-showing-transparency
     onResizeUp(event: MouseEvent, resizeCtx: CanvasRenderingContext2D, baseCanvas: HTMLCanvasElement): void {
         if (this.isResizeDown) {
-            const resizeCanvasAction = new ResizeCanvasAction(event, resizeCtx, baseCanvas, this.resizeDirection, this);
-            this.undoRedoService.addUndo(resizeCanvasAction);
-
             const originalImage = new Image();
             originalImage.src = baseCanvas.toDataURL('image/png', 1);
             switch (this.resizeDirection) {
@@ -149,6 +149,12 @@ export class CanvasResizerService {
 
         this.isResizeDown = false;
         this.resizeCursor = cursorName.default;
+
+        if (this.addToUndoRedo) {
+            const resizeAction = new ResizeCanvasAction(event, resizeCtx, baseCanvas, this.resizeDirection, this);
+            this.undoRedoService.addUndo(resizeAction);
+        }
+        this.addToUndoRedo = false;
     }
 
     onResizeOut(event: MouseEvent, resizeCtx: CanvasRenderingContext2D, baseCanvas: HTMLCanvasElement): void {
