@@ -15,12 +15,10 @@ export class EraseAction extends AbsUndoRedo {
     }
 
     apply(): void {
-        // console.log(' apply eraser');
         this.drawingService.baseCtx.lineCap = 'butt';
         this.drawingService.baseCtx.lineJoin = 'bevel';
         this.drawingService.baseCtx.strokeStyle = this.color;
         this.drawingService.baseCtx.lineWidth = this.thickness;
-        // console.log('BEFORE APPLY');
         this.eraserService.removeLine(this.drawingService.baseCtx, this.changesER);
         this.eraserService.clearEffectTool();
     }

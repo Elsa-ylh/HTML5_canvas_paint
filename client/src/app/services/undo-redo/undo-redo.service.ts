@@ -59,7 +59,6 @@ export class UndoRedoService {
     // adds the latest  action to the undo stack.
     addUndo(action: AbsUndoRedo): void {
         this.listUndo.push(action);
-        console.log('stack undo redo', this.listUndo);
     }
 
     // addUndo(resizeAction: ResizeCanvasAction): void {
@@ -86,17 +85,14 @@ export class UndoRedoService {
             // const tempSecondaryColor = this.drawingService.baseCtx.shadowColor;
             // const tempAlpha = this.colorService.primaryColorTransparency;
             // const tempThickness = this.drawingService.baseCtx.lineWidth;
+
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
             // reapply the currents elements (without the removed one)
-            // BUG: rentre jamais dans le for avec eraserelement
-            // action.apply();
-
-            console.log(this.listUndo);
-
+            console.log('pile undo : undo fct', this.listUndo);
+            console.log('pile redo : undo fct', this.listRedo);
             for (const element of this.listUndo) {
                 element.apply();
             }
-
             // allows to return to the previous "live" state on the canvas
             // this.drawingService.baseCtx.strokeStyle = tempPrimaryColor;
             // this.drawingService.baseCtx.shadowColor = tempSecondaryColor;

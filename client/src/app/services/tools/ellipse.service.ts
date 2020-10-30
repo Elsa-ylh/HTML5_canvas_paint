@@ -66,7 +66,7 @@ export class EllipseService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         // undo-redo
-        const ellipeAction = new EllipseAction(
+        const ellipseAction = new EllipseAction(
             this.mousePosition,
             this.mouseDownCoord,
             this.strokeColor,
@@ -78,8 +78,8 @@ export class EllipseService extends Tool {
             this,
             this.drawingService,
         );
-        console.log('action ellipse', ellipeAction);
-        this.undoRedoService.addUndo(ellipeAction);
+        // console.log('action ellipse', ellipeAction);
+        this.undoRedoService.addUndo(ellipseAction);
         this.undoRedoService.clearRedo();
 
         this.mouseDown = false;
