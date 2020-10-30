@@ -10,7 +10,9 @@ import {
     WORK_AREA_PADDING_SIZE,
 } from '@app/classes/resize-canvas';
 import { ResizeDirection } from '@app/classes/resize-direction';
+import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-Canvas-Action';
 import { Vec2 } from '@app/classes/vec2';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
@@ -32,7 +34,9 @@ export class CanvasResizerService {
     readonly PRIORITY_INDEX: number = 10;
     readonly NORMAL_INDEX: number = 1;
     resizerIndex: number = 1;
-    // constructor(private undoRedoService: UndoRedoService) {}
+
+    constructor(private undoRedoService: UndoRedoService) {}
+
     private clearCanvas(context: CanvasRenderingContext2D, dimension: Vec2): void {
         context.clearRect(0, 0, dimension.x, dimension.y);
     }
@@ -114,6 +118,10 @@ export class CanvasResizerService {
     // https://stackoverflow.com/questions/8977369/drawing-png-to-a-canvas-element-not-showing-transparency
     onResizeUp(event: MouseEvent, resizeCtx: CanvasRenderingContext2D, baseCanvas: HTMLCanvasElement): void {
         if (this.isResizeDown) {
+            const undoRedoEvent = { offsetX: this.canvasSize.x, offsetY: this.canvasSize.y } as MouseEvent;
+            const resizeCanvasAction = new ResizeCanvasAction(undoRedoEvent, resizeCtx, baseCanvas, this.resizeDirection, this);
+            this.undoRedoService.addUndo(resizeCanvasAction);
+
             const originalImage = new Image();
             originalImage.src = baseCanvas.toDataURL('image/png', 1);
             switch (this.resizeDirection) {
@@ -136,17 +144,10 @@ export class CanvasResizerService {
                 ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 ctx.drawImage(originalImage, 0, 0);
             };
-            // undo-redo
-            // debugger;
-            // const resizeDirectiontemp = this.resizeDirection;
-            // const resizeCanvasAction = new ResizeCanvasAction(event, resizeCtx, baseCanvas, resizeDirectiontemp, this);
-            // console.log(resizeCanvasAction);
-            // debugger;
-            // this.undoRedoService.addUndo(resizeCanvasAction);
-            // this.undoRedoService.clearRedo();
         }
         this.clearCanvas(resizeCtx, { x: this.resizeWidth, y: this.resizeHeight });
         this.resizerIndex = this.NORMAL_INDEX;
+
         this.isResizeDown = false;
         this.resizeCursor = cursorName.default;
     }
