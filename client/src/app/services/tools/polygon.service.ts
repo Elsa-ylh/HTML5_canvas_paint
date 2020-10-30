@@ -91,10 +91,15 @@ export class PolygonService extends Tool {
         this.drawingService.previewCtx.beginPath();
 
         ctx.fillStyle = this.fillColor;
-        ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
+        ctx.setLineDash([0, 0]);
         this.drawPolygon(ctx, this.numberOfSides);
         ctx.fill();
-        this.drawPreviewCircle(ctx, mouseDownPos, mouseUpPos);
+        if (this.drawingService.previewCtx === ctx) {
+            ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
+            ctx.lineWidth = this.lineCirclewidth;
+            ctx.arc(this.mouseDownCoord.x, this.mouseDownCoord.y, this.radius, 0, 2 * Math.PI, false);
+            ctx.stroke();
+        }
     }
 
     drawPolygonOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
