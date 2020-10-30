@@ -33,8 +33,8 @@ export class RectangleService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         this.clearEffectTool();
-        this.strokeColor = this.colorService.primaryColor;
-        this.fillColor = this.colorService.secondaryColor;
+        this.strokeColor = this.colorService.secondaryColor;
+        this.fillColor = this.colorService.primaryColor;
         if (this.mouseEnter) {
             this.onMouseUp(event);
         }
