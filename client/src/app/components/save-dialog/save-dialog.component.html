@@ -1,25 +1,21 @@
 <p>save-dialog works!</p>
 <div class="example-container">
     <mat-form-field appearance="legacy">
-        <mat-label>Input</mat-label>
-        <input matInput />
+        <mat-label>Nom de image</mat-label>
+        <input matInput [(ngModel)]="textName" />
     </mat-form-field>
     <br />
+    <h6>consigne pour creer une étiquette</h6>
     <mat-form-field appearance="legacy">
-        <mat-label>Select</mat-label>
-        <mat-select>
-            <mat-option value="option">Option</mat-option>
-        </mat-select>
+        <mat-label>créer des étiquettes</mat-label>
+        <textarea matInput [(ngModel)]="textLabel"></textarea>
     </mat-form-field>
-    <br />
-    <mat-form-field appearance="legacy">
-        <mat-label>créer filtrage</mat-label>
-        <textarea matInput [(value)]="textLabel"></textarea>
-    </mat-form-field>
-    <button mat-raised-button (click)="saveServer()">Sauvegarder sur le serveur</button>
+    <button mat-raised-button (click)="saveServer()" [disabled]="verifierName(textName) || verifierLabel(textLabel)">
+        Sauvegarder sur le serveur
+    </button>
 </div>
 <div>
-    <h1>liste d'étiquettes</h1>
+    <h1>liste d'étiquettes existent</h1>
     <p *ngIf="!dataLabel.length">appuyer sur le button "rafraichir la liste" étiquettes</p>
     <button mat-raised-button (click)="refresh()">rafraichir la liste</button>
     <div>
