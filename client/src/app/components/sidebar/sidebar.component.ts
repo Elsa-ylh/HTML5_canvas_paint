@@ -52,7 +52,7 @@ export class SidebarComponent {
 
     constructor(
         public drawingService: DrawingService,
-        private dialogCreator: MatDialog,
+        public dialogCreator: MatDialog,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
         public toolService: ToolService,
@@ -95,6 +95,7 @@ export class SidebarComponent {
         this.checkDocumentationRef = this.dialogCreator.open(WriteTextDialogUserGuideComponent, {
             width: '90%',
             height: '100%',
+            disableClose: true,
         });
     }
 
@@ -228,6 +229,7 @@ export class SidebarComponent {
 
     // keybind control o for new drawing
     @HostListener('window:keydown.control.o', ['$event']) onKeyDown(event: KeyboardEvent): void {
+        console.log(this.isDialogOpen);
         if (!this.isDialogOpen && !this.drawingService.isCanvasBlank()) {
             event.preventDefault();
             this.clearCanvas();
@@ -235,7 +237,7 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.1', ['$event']) changeRectnagleMode(event: KeyboardEvent): void {
+    @HostListener('window:keydown.1', ['$event']) changeRectangleMode(event: KeyboardEvent): void {
         if (this.toolService.currentToolName !== ToolUsed.Color) {
             this.resetCheckedButton();
             this.isRectangleChecked = true;
