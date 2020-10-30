@@ -16,7 +16,7 @@ describe('Data Controller', () => {
     let app: Express.Application;
     let isDate: Date = new Date('10/08/2020');
     const testCancasInformationAdd = {
-        id: '',
+        _id: '',
         name: 'test5',
         labels: [{ label: 'label1' }],
         width: 0,
@@ -32,6 +32,7 @@ describe('Data Controller', () => {
             getAllLabel: sandbox.stub().resolves(testCancasInformationAdd),
             getPicturesName: sandbox.stub().resolves(testCancasInformationAdd),
             getPicturesDate: sandbox.stub().resolves(testCancasInformationAdd),
+            addPicture: sandbox.stub().resolves(undefined),
         });
         dataService = container.get(TYPES.DatabasePicureService);
         app = container.get<Application>(TYPES.Application).app;
@@ -52,7 +53,7 @@ describe('Data Controller', () => {
             .get('/api/data')
             .expect(HTTP_STATUS_OK)
             .then((reponse: any) => {
-                expect(reponse.body.id).to.deep.equal('Error');
+                expect(reponse.body._id).to.deep.equal('Error');
             });
     });
     it('should post test labels', async () => {
@@ -69,7 +70,7 @@ describe('Data Controller', () => {
             .then(async (reponse: any) => {
                 expect(reponse.body.name).to.deep.equal(testCancasInformationAdd.name);
                 expect(reponse.body.labels[0]).to.deep.equal(testCancasInformationAdd.labels[0]);
-                expect(reponse.body.id).to.deep.equal(testCancasInformationAdd.id);
+                expect(reponse.body._id).to.deep.equal(testCancasInformationAdd._id);
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
@@ -87,7 +88,7 @@ describe('Data Controller', () => {
             .send(service)
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .then((reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err.message);
@@ -106,7 +107,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .then((reponse: any) => {
                 console.log(reponse.body);
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err.message);
@@ -124,7 +125,7 @@ describe('Data Controller', () => {
             .send(service)
             .expect(HTTP_STATUS_OK)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
@@ -137,7 +138,7 @@ describe('Data Controller', () => {
             .send()
             .expect(HTTP_STATUS_OK)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
@@ -163,7 +164,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .send()
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
                 expect(reponse.body.name).to.equal('not request in post');
             })
             .catch((err: Error) => {
@@ -180,7 +181,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
                 expect(reponse.body.name).to.equal('not good research : ' + service.title);
             })
             .catch((err: Error) => {
@@ -197,7 +198,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
                 expect(reponse.body.name).to.equal('not good research : ' + service.title);
             })
             .catch((err: Error) => {
@@ -215,7 +216,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
@@ -231,7 +232,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal(testCancasInformationAdd.id);
+                expect(reponse.body._id).to.equal(testCancasInformationAdd._id);
                 expect(reponse.body.name).to.equal(service.body);
             })
             .catch((err: Error) => {
@@ -248,7 +249,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal(testCancasInformationAdd.id);
+                expect(reponse.body._id).to.equal(testCancasInformationAdd._id);
                 expect(reponse.body.date).to.equal('2020-10-08T04:00:00.000Z');
             })
             .catch((err: Error) => {
@@ -266,7 +267,39 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in good savePicture', async () => {
+        const newCancasInformationAdd = {
+            _id: '1234',
+            name: 'test5',
+            labels: [{ label: 'label1' }],
+            width: 0,
+            height: 0,
+            date: isDate,
+            picture: 'test5',
+        } as CancasInformation;
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_OK)
+            .send(newCancasInformationAdd)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('success');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in not good savePicture ', async () => {
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_BAD_REQUEST_OK)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Errer');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);

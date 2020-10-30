@@ -21,7 +21,7 @@ import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service';
-
+// tslint:disable:max-file-line-count
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
@@ -34,6 +34,7 @@ export class SidebarComponent {
     toolUsed = ToolUsed;
 
     isDialogOpen: boolean = false;
+    isDialogOpenSaveEport: boolean = false;
     lineWidth: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
@@ -87,16 +88,26 @@ export class SidebarComponent {
     }
 
     openCarrousel(): void {
-        this.dialogLoadRef = this.dialogCreator.open(CarrouselPictureComponent, {
-            width: '90%',
-            height: '90%',
-        });
+        if (!this.isDialogOpenSaveEport) {
+            this.dialogLoadRef = this.dialogCreator.open(CarrouselPictureComponent, {
+                width: '90%',
+                height: '90%',
+            });
+            this.dialogLoadRef.afterClosed().subscribe(() => {
+                this.isDialogOpen = false;
+            });
+        }
     }
     openSave(): void {
-        this.dialogSaveRef = this.dialogCreator.open(SaveDialogComponent, {
-            width: '90%',
-            height: '90%',
-        });
+        if (!this.isDialogOpenSaveEport) {
+            this.dialogSaveRef = this.dialogCreator.open(SaveDialogComponent, {
+                width: '90%',
+                height: '90%',
+            });
+            this.dialogLoadRef.afterClosed().subscribe(() => {
+                this.isDialogOpen = false;
+            });
+        }
     }
 
     openUserGuide(): void {
@@ -330,7 +341,17 @@ export class SidebarComponent {
         if (this.toolService.currentToolName === ToolUsed.Selection) {
             event.preventDefault();
             this.selectionService.selectAll();
-            console.log('test');
+        }
+    }
+    @HostListener('window:keydown.control.g', ['$event']) openCarrouselKey(event: KeyboardEvent): void {
+        this.openCarrousel();
+    }
+    @HostListener('window:keydown.control.s', ['$event']) openSaveKey(event: KeyboardEvent): void {
+        this.openSave();
+    }
+    @HostListener('window:keydown.control.E', ['$event']) openExportKey(event: KeyboardEvent): void {
+        if (this.isDialogOpenSaveEport) {
+            this.openSave();
         }
     }
 }

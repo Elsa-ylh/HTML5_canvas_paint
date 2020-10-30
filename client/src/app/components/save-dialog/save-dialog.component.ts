@@ -1,15 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-save-dialog',
-  templateUrl: './save-dialog.component.html',
-  styleUrls: ['./save-dialog.component.scss']
+    selector: 'app-save-dialog',
+    templateUrl: './save-dialog.component.html',
+    styleUrls: ['./save-dialog.component.scss'],
 })
-export class SaveDialogComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+export class SaveDialogComponent {
+    // constructor() {}
 }

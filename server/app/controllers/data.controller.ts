@@ -23,7 +23,7 @@ export class DataController {
                 })
                 .catch((reason: unknown) => {
                     const errorMessage: CancasInformation = {
-                        id: 'Error',
+                        _id: 'Error',
                         name: reason as string,
                         labels: [],
                         width: 0,
@@ -39,7 +39,7 @@ export class DataController {
                 .getAllLabel()
                 .then((labelsInformation: Label[]) => {
                     const informationMessage: CancasInformation = {
-                        id: 'list_of_all_labals',
+                        _id: 'list_of_all_labals',
                         name: 'labels',
                         labels: labelsInformation,
                         width: 0,
@@ -51,7 +51,7 @@ export class DataController {
                 })
                 .catch((reason: unknown) => {
                     const errorMessage: CancasInformation = {
-                        id: 'Error',
+                        _id: 'Error',
                         name: reason as string,
                         labels: [],
                         width: 0,
@@ -71,7 +71,7 @@ export class DataController {
                     labels = this.textToTable(sbody);
                 } catch (error) {
                     const errorData: CancasInformation = {
-                        id: 'Error',
+                        _id: 'Error',
                         name: error as string,
                         labels: [],
                         width: 0,
@@ -84,7 +84,7 @@ export class DataController {
                 }
             } else {
                 const errorData: CancasInformation = {
-                    id: 'Error',
+                    _id: 'Error',
                     name: 'Titre message non valide',
                     labels: [],
                     width: 0,
@@ -104,7 +104,7 @@ export class DataController {
                     })
                     .catch((reason: unknown) => {
                         const errorMessage: CancasInformation = {
-                            id: 'Error',
+                            _id: 'Error',
                             name: reason as string,
                             labels: [],
                             width: 0,
@@ -130,7 +130,7 @@ export class DataController {
                             })
                             .catch((reason: unknown) => {
                                 const errorMessage: CancasInformation = {
-                                    id: 'Error',
+                                    _id: 'Error',
                                     name: reason as string,
                                     labels: [],
                                     width: 0,
@@ -149,7 +149,7 @@ export class DataController {
                             })
                             .catch((reason: unknown) => {
                                 const errorMessage: CancasInformation = {
-                                    id: 'Error',
+                                    _id: 'Error',
                                     name: reason as string,
                                     labels: [],
                                     width: 0,
@@ -162,7 +162,7 @@ export class DataController {
                         break;
                     default:
                         const errorData: CancasInformation = {
-                            id: 'Error',
+                            _id: 'Error',
                             name: 'not good research : ' + req.body.title,
                             labels: [],
                             width: 0,
@@ -175,7 +175,7 @@ export class DataController {
                 }
             } else {
                 const errorData: CancasInformation = {
-                    id: 'Error',
+                    _id: 'Error',
                     name: 'not request in post',
                     labels: [],
                     width: 0,
@@ -188,9 +188,9 @@ export class DataController {
         });
         this.router.post('/savePicture', (req: Request, res: Response, next: NextFunction) => {
             if (this.testBodyCancasInformation(req)) {
-                if (req.body.id !== '') {
-                    let newPicture: CancasInformation = {
-                        id: '',
+                if (req.body._id !== '') {
+                    const newPicture: CancasInformation = {
+                        _id: '',
                         name: req.body.name,
                         labels: req.body.labels,
                         date: req.body.date,
@@ -200,10 +200,10 @@ export class DataController {
                     };
                     this.databaseService
                         .addPicture(newPicture)
-                        .then(() => {
+                        .then((good: boolean) => {
                             const successMessage: Message = {
                                 title: 'success',
-                                body: 'success',
+                                body: 'success' + good,
                             };
                             res.json(successMessage);
                         })
@@ -216,7 +216,14 @@ export class DataController {
                         });
                 } else {
                     // modiffier
+                    res.status(HTTP_STATUS_BAD_REQUEST).json([]);
                 }
+            } else {
+                const errorMessage: Message = {
+                    title: 'Errer',
+                    body: 'it is not picture',
+                };
+                res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
             }
         });
     }
@@ -225,7 +232,7 @@ export class DataController {
     }
     private testBodyCancasInformation(req: Request): boolean {
         return (
-            req.body.id !== undefined &&
+            req.body._id !== undefined &&
             req.body.name !== undefined &&
             req.body.labels !== undefined &&
             req.body.date !== undefined &&
