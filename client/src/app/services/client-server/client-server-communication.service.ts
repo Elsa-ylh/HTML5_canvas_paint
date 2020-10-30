@@ -41,7 +41,7 @@ export class ClientServerCommunicationService {
     getAllLabel(): Label[] {
         this.catchInformation();
         if (this.information == undefined) return [];
-        if (this.information.id === 'list_of_all_labals') {
+        if (this.information._id === 'list_of_all_labals') {
             return this.information.labels;
         }
         return [];

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { CancasInformation, Label } from '@common/communication/canvas-information';
@@ -9,7 +9,7 @@ import { Message } from '@common/communication/message';
     templateUrl: './carrousel-picture.component.html',
     styleUrls: ['./carrousel-picture.component.scss'],
 })
-export class CarrouselPictureComponent {
+export class CarrouselPictureComponent implements OnInit {
     private dataPicture: CancasInformation[] = [];
     dataLabel: Label[] = [];
     private labelSelect: string[] = [];
@@ -18,7 +18,7 @@ export class CarrouselPictureComponent {
     myDate: FormControl = new FormControl(new Date());
 
     constructor(private clientServerCommunicationService: ClientServerCommunicationService) {}
-    OnInit(): void {
+    ngOnInit(): void {
         this.addAllData();
         this.addAllLabal();
     }

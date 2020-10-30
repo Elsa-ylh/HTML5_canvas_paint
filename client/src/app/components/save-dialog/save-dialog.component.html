@@ -1,1 +1,36 @@
 <p>save-dialog works!</p>
+<div class="example-container">
+    <mat-form-field appearance="legacy">
+        <mat-label>Input</mat-label>
+        <input matInput />
+    </mat-form-field>
+    <br />
+    <mat-form-field appearance="legacy">
+        <mat-label>Select</mat-label>
+        <mat-select>
+            <mat-option value="option">Option</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br />
+    <mat-form-field appearance="legacy">
+        <mat-label>créer filtrage</mat-label>
+        <textarea matInput [(value)]="textLabel"></textarea>
+    </mat-form-field>
+    <button mat-raised-button (click)="saveServer()">Sauvegarder sur le serveur</button>
+</div>
+<div>
+    <h1>liste d'étiquettes</h1>
+    <p *ngIf="!dataLabel.length">appuyer sur le button "rafraichir la liste" étiquettes</p>
+    <button mat-raised-button (click)="refresh()">rafraichir la liste</button>
+    <div>
+        <mat-button-toggle
+            *ngFor="let element of dataLabel"
+            class="sub-button"
+            mat-button
+            color="primary"
+            id="{{ element.label }}"
+            (click)="selectionLabel(element.label)"
+            >{{ element.label }}
+        </mat-button-toggle>
+    </div>
+</div>

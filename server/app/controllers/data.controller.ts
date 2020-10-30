@@ -191,7 +191,7 @@ export class DataController {
                 const newPicture: CancasInformation = {
                     _id: req.body._id,
                     name: req.body.name,
-                    labels: req.body.labels,
+                    labels: req.body.labels === undefined ? req.body.labels : [],
                     date: req.body.date,
                     picture: req.body.picture,
                     height: req.body.height,
@@ -203,7 +203,7 @@ export class DataController {
                         .then((good: boolean) => {
                             const successMessage: Message = {
                                 title: 'success',
-                                body: 'success' + good,
+                                body: 'addPicture : ' + good,
                             };
                             res.json(successMessage);
                         })
@@ -220,7 +220,7 @@ export class DataController {
                         .then((good: boolean) => {
                             const successMessage: Message = {
                                 title: 'success',
-                                body: 'success' + good,
+                                body: 'modifyPicture : ' + good,
                             };
                             res.json(successMessage);
                         })
@@ -248,7 +248,6 @@ export class DataController {
         return (
             req.body._id !== undefined &&
             req.body.name !== undefined &&
-            req.body.labels !== undefined &&
             req.body.date !== undefined &&
             req.body.width !== undefined &&
             req.body.height !== undefined &&

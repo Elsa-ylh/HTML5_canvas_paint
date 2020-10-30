@@ -9,7 +9,7 @@ describe('ClientServerCommunicationService', () => {
     let httpMock: HttpTestingController;
     let baseUrl: string;
     const expectedCancasInformations: CancasInformation[] = [
-        { id: '', name: 'test5', labels: [{ label: 'label1' }], date: new Date('2020-10-08'), picture: 'test5' },
+        { _id: '', name: 'test5', labels: [{ label: 'label1' }], width: 0, height: 0, date: new Date('2020-10-08'), picture: 'test5' },
     ];
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -32,7 +32,7 @@ describe('ClientServerCommunicationService', () => {
     it('should return expected CancasInformations (HttpClient called once)', () => {
         // check the content of the mocked call
         service.getData().subscribe((response: CancasInformation[]) => {
-            expect(response[0].id).toEqual(expectedCancasInformations[0].id, 'id check');
+            expect(response[0]._id).toEqual(expectedCancasInformations[0]._id, 'id check');
             expect(response[0].name).toEqual(expectedCancasInformations[0].name, 'name check');
         }, fail);
 
@@ -46,7 +46,7 @@ describe('ClientServerCommunicationService', () => {
         const expectedMessage: Message = { body: 'label1', title: 'Labels' };
         // check the content of the mocked call
         service.selectPictureWithLabel(expectedMessage).subscribe((response: CancasInformation[]) => {
-            expect(response[0].id).toEqual(expectedCancasInformations[0].id, 'id check');
+            expect(response[0]._id).toEqual(expectedCancasInformations[0]._id, 'id check');
             expect(response[0].name).toEqual(expectedCancasInformations[0].name, 'name check');
         }, fail);
 
@@ -68,15 +68,17 @@ describe('ClientServerCommunicationService', () => {
 
     it('should return expected CancasInformation (HttpClient called once)', () => {
         const expectedCancasInformation: CancasInformation = {
-            id: '',
+            _id: '',
             name: 'test5',
             labels: [{ label: 'label1' }],
+            width: 0,
+            height: 0,
             date: new Date('2020-10-08'),
             picture: 'test5',
         };
         // check the content of the mocked call
         service.allLabel().subscribe((response: CancasInformation) => {
-            expect(response.id).toEqual(expectedCancasInformation.id, 'id check');
+            expect(response._id).toEqual(expectedCancasInformation._id, 'id check');
             expect(response.name).toEqual(expectedCancasInformation.name, 'name check');
         }, fail);
 
@@ -89,7 +91,7 @@ describe('ClientServerCommunicationService', () => {
         const expectedMessage: Message = { body: 'name', title: 'test' };
         // check the content of the mocked call
         service.ElementResearch(expectedMessage).subscribe((response: CancasInformation[]) => {
-            expect(response[0].id).toEqual(expectedCancasInformations[0].id, 'id check');
+            expect(response[0]._id).toEqual(expectedCancasInformations[0]._id, 'id check');
             expect(response[0].name).toEqual(expectedCancasInformations[0].name, 'name check');
         }, fail);
 
@@ -114,7 +116,15 @@ describe('ClientServerCommunicationService', () => {
         // actually send the request
     });
     it('getAllLabel return 2 label is good id', () => {
-        service['information'] = { id: 'list_of_all_labals', name: '', labels: [{ label: '' }, { label: '' }], date: new Date(), picture: '' };
+        service['information'] = {
+            _id: 'list_of_all_labals',
+            name: '',
+            labels: [{ label: '' }, { label: '' }],
+            width: 0,
+            height: 0,
+            date: new Date(),
+            picture: '',
+        };
         const labels: Label[] = service.getAllLabel();
         expect(labels.length).toEqual(2);
         const req = httpMock.expectOne(baseUrl + '/all_labels');
