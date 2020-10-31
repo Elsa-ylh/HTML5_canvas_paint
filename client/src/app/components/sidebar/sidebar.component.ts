@@ -19,8 +19,10 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
-import { SelectionService } from '@app/services/tools/selection-service';
+import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
+import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+// import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 
 @Component({
     selector: 'app-sidebar',
@@ -28,6 +30,8 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
+    // This file is longer than 350 lines because of all the hostlistener, but we have no over choice than to put them in this componant
+    // tslint:disable:max-file-line-count
     // We need this alias for the enum so ngSwitchCase look way better than just numbers.
     // I can't stand reading numbers anymore.
     // tslint:disable-next-line: typedef
@@ -46,7 +50,7 @@ export class SidebarComponent {
     private isEllipseChecked: boolean = false;
     private isColorChecked: boolean = false;
     private isDropperChecked: boolean = false;
-    private isSelectionChecked: boolean = false;
+    // private isSelectionChecked: boolean = false;
     private isSelectionEllipseChecked: boolean = false;
     private isSelectionRectangleChecked: boolean = false;
     private isPolygonChecked: boolean = false;
@@ -64,9 +68,11 @@ export class SidebarComponent {
         public eraserService: EraserService,
         public colorService: ColorService,
         public lineService: LineService,
-        public selectionService: SelectionService,
+        // public selectionService: SelectionService,
         public polygonService: PolygonService,
         public undoRedoService: UndoRedoService,
+        public selectionRectangleService: SelectionRectangleService,
+        public selectionEllipseService: SelectionEllipseService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
@@ -194,23 +200,24 @@ export class SidebarComponent {
         return this.isDropperChecked;
     }
 
-    pickSelection(subTool: number): void {
+    pickSelectionRectangle(): void {
         // debugger;
         this.drawingService.cursorUsed = cursorName.default;
-        this.toolService.switchTool(ToolUsed.Selection);
-        this.toolService.currentTool.subToolSelect = subTool;
-    }
-
-    get selectionChecked(): boolean {
-        return this.isSelectionChecked;
-    }
-
-    get selectionEllipseChecked(): boolean {
-        return this.isSelectionEllipseChecked;
+        this.toolService.switchTool(ToolUsed.SelectionRectangle);
     }
 
     get selectionRectangleChecked(): boolean {
         return this.isSelectionRectangleChecked;
+    }
+
+    pickSelectionEllipse(): void {
+        // debugger;
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.SelectionEllipse);
+    }
+
+    get selectionEllipseChecked(): boolean {
+        return this.isSelectionEllipseChecked;
     }
 
     resetCheckedButton(): void {
@@ -222,7 +229,7 @@ export class SidebarComponent {
         this.isEllipseChecked = false;
         this.isColorChecked = false;
         this.isDropperChecked = false;
-        this.isSelectionChecked = false;
+        // this.isSelectionChecked = false;
         this.isSelectionEllipseChecked = false;
         this.isSelectionRectangleChecked = false;
     }
@@ -311,23 +318,95 @@ export class SidebarComponent {
     @HostListener('window:keydown.r', ['$event'])
     changeSelectionRectangleMode(event: KeyboardEvent): void {
         this.resetCheckedButton();
-        this.isSelectionChecked = true;
+        // this.isSelectionChecked = true;
         this.isSelectionRectangleChecked = true;
-        this.pickSelection(1);
+        this.pickSelectionRectangle();
     }
 
     @HostListener('window:keydown.s', ['$event']) changeSelectionEllipseMode(event: KeyboardEvent): void {
         this.resetCheckedButton();
-        this.isSelectionChecked = true;
+        // this.isSelectionChecked = true;
         this.isSelectionEllipseChecked = true;
-        this.pickSelection(2);
+        this.pickSelectionRectangle();
     }
 
     @HostListener('window:keydown.control.a', ['$event']) selectAllCanvas(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName === ToolUsed.Selection) {
-            event.preventDefault();
-            this.selectionService.selectAll();
-            console.log('test');
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.selectAll();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.selectAll();
+        }
+    }
+
+    @HostListener('window:keydown.ArrowLeft', ['$event']) onLeftArrow(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onLeftArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onLeftArrow();
+        }
+    }
+
+    @HostListener('window:keydown.ArrowRight', ['$event']) onRightArrow(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onRightArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onRightArrow();
+        }
+    }
+
+    @HostListener('window:keydown.ArrowDown', ['$event']) onDownArrow(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onDownArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onDownArrow();
+        }
+    }
+
+    @HostListener('window:keydown.ArrowUp', ['$event']) onUpArrow(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onUpArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onUpArrow();
+        }
+    }
+    @HostListener('window:keyup.ArrowLeft', ['$event']) onLeftArrowUp(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onLeftArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onLeftArrowUp();
+        }
+    }
+
+    @HostListener('window:keyup.ArrowRight', ['$event']) onRightArrowUp(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onRightArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onRightArrowUp();
+        }
+    }
+
+    @HostListener('window:keyup.ArrowDown', ['$event']) onDownArrowUp(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onDownArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onDownArrowUp();
+        }
+    }
+
+    @HostListener('window:keyup.ArrowUp', ['$event']) onUpArrowUp(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onUpArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onUpArrowUp();
         }
     }
     @HostListener('window:keydown.control.z', ['$event'])
