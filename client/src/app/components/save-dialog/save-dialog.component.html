@@ -1,19 +1,31 @@
 <p>save-dialog works!</p>
-<div class="example-container">
-    <mat-form-field appearance="legacy">
-        <mat-label>Nom de image</mat-label>
-        <input matInput [(ngModel)]="textName" />
-    </mat-form-field>
-    <br />
-    <h6>consigne pour creer une étiquette</h6>
-    <mat-form-field appearance="legacy">
-        <mat-label>créer des étiquettes</mat-label>
-        <textarea matInput [(ngModel)]="textLabel"></textarea>
-    </mat-form-field>
-    <button mat-raised-button (click)="saveServer()" [disabled]="verifierName(textName) || verifierLabel(textLabel)">
-        Sauvegarder sur le serveur
-    </button>
-</div>
+<mat-grid-list cols="3" rowHeight="2:1">
+    <mat-grid-tile>
+        <mat-label>
+            consigne pour le nom <br />
+            Les car non autoriser sont : / ! " ' % ? & * # |
+        </mat-label>
+        <mat-form-field appearance="legacy">
+            <mat-label>Nom de image</mat-label>
+            <input matInput [(ngModel)]="textName" />
+        </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <mat-label>
+            consigne pour creer une étiquette <br />Chaque nouvelle étiquette doive être séparé par un espace.<br />
+            Les car non autoriser sont : / ! " ' % ? & * # |
+        </mat-label>
+        <mat-form-field appearance="legacy">
+            <mat-label>créer des étiquettes</mat-label>
+            <textarea matInput [(ngModel)]="textLabel"></textarea>
+        </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <button mat-raised-button (click)="saveServer()" [disabled]="verifierName(textName) || verifierLabel(textLabel)">
+            Sauvegarder sur le serveur
+        </button>
+    </mat-grid-tile>
+</mat-grid-list>
 <div>
     <h1>liste d'étiquettes existent</h1>
     <p *ngIf="!dataLabel.length">appuyer sur le button "rafraichir la liste" étiquettes</p>

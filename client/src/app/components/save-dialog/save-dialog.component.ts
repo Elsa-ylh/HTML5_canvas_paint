@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { Label } from '@common/communication/canvas-information';
-
+const MIN_CHARACTER = 6;
+const MAX_CHARACTER = 10;
 @Component({
     selector: 'app-save-dialog',
     templateUrl: './save-dialog.component.html',
@@ -43,19 +44,19 @@ export class SaveDialogComponent implements OnInit {
     }
     // retour inverser
     verifierName(name: string): boolean {
-        return name == '' || name == undefined || this.notGoodCharacter(name);
+        return name === '' || name === undefined || this.notGoodCharacter(name);
     }
     verifierLabel(label: string): boolean {
         if (this.notGoodCharacter(label)) {
             return true;
         }
-        if (label != '') {
+        if (label !== '') {
             return false;
         }
         const arrayText = label.split(' ');
         for (let index = 0; index < arrayText.length; index++) {
             const element = arrayText[index];
-            if (element.length < 6 || element.length > 20) return true;
+            if (element.length < MIN_CHARACTER || element.length > MAX_CHARACTER) return true;
         }
         return false;
     }
@@ -70,7 +71,8 @@ export class SaveDialogComponent implements OnInit {
             text.split('*').length !== 0 ||
             text.split('!').length !== 0 ||
             text.split('$').length !== 0 ||
-            text.split('?').length !== 0
+            text.split('?').length !== 0 ||
+            text.split('|').length !== 0
         );
     }
 }
