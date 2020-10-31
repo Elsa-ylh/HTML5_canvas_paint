@@ -33,8 +33,6 @@ export class PencilService extends Tool {
             this.clearEffectTool();
             this.mouseDownCoord = this.getPositionFromMouse(event);
 
-            // TODO mettre couleur initiale // use getcolor de colorservice
-            // this.pushDataUndoRedo(this.mouseDownCoord, this.getInitColor(event));
             this.intiColor = this.colorService.primaryColor;
             this.pathData.push(this.mouseDownCoord);
         }
@@ -47,10 +45,7 @@ export class PencilService extends Tool {
             const diametreCir = this.pencilSize / 2;
             const angleCir = 0;
             if (this.mouseMove) {
-                // TODO couleur initiale
-                // this.pushDataUndoRedo(mousePosition, this.getInitColor(event)); // for the undo-redo action
                 this.pathData.push(mousePosition); // to call drawline
-                // this.intiColor = this.getInitColor(event);
                 this.intiColor = this.colorService.primaryColor;
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -58,17 +53,14 @@ export class PencilService extends Tool {
                 // draw circle
                 this.clearPath();
                 this.drawingService.baseCtx.arc(mousePosition.x, mousePosition.y, diametreCir, angleCir, Math.PI * 2);
-                // TODO couleur initiale
-                // this.pushDataUndoRedo(mousePosition, this.getInitColor(event));
                 this.pathData.push(mousePosition);
-                // this.intiColor = this.getInitColor(event);
                 this.intiColor = this.colorService.primaryColor;
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
             }
         }
         this.mouseDown = false;
-        // TODO mettre pathData + couleur finale dans l'objet d'action // coinstucor(action) d=styje action
+        // undo-redo
         const actionPencil = new StrokeAction(this.pathData, this.intiColor, this.pencilSize, this.alpha, this, this.drawingService);
         this.undoRedoService.addUndo(actionPencil);
         this.undoRedoService.clearRedo();
