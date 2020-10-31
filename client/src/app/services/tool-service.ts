@@ -8,7 +8,9 @@ import { BrushService } from './tools/brush.service';
 import { EllipseService } from './tools/ellipse.service';
 import { LineService } from './tools/line.service';
 import { PolygonService } from './tools/polygon.service';
-import { SelectionService } from './tools/selection-service';
+import { SelectionEllipseService } from './tools/selection-service/selection-ellipse.service';
+import { SelectionRectangleService } from './tools/selection-service/selection-rectangle.service';
+// import { SelectionService } from './tools/selection-service/selection-service';
 @Injectable({
     providedIn: 'root',
 })
@@ -25,8 +27,10 @@ export class ToolService {
         private rectangleService: RectangleService,
         private ellipseService: EllipseService,
         private dropperService: DropperService,
-        private selectionService: SelectionService,
+        // private selectionService: SelectionService,
         private polygonService: PolygonService,
+        private selectionRectangleService: SelectionRectangleService,
+        private selectionEllipseService: SelectionEllipseService,
     ) {
         this.tableTool[ToolUsed.NONE] = this.pencilService;
         this.tableTool[ToolUsed.Pencil] = this.pencilService;
@@ -36,7 +40,9 @@ export class ToolService {
         this.tableTool[ToolUsed.Rectangle] = this.rectangleService;
         this.tableTool[ToolUsed.Ellipse] = this.ellipseService;
         this.tableTool[ToolUsed.Dropper] = this.dropperService;
-        this.tableTool[ToolUsed.Selection] = this.selectionService;
+        // this.tableTool[ToolUsed.Selection] = this.selectionService;
+        this.tableTool[ToolUsed.SelectionRectangle] = this.selectionRectangleService;
+        this.tableTool[ToolUsed.SelectionEllipse] = this.selectionEllipseService;
         this.tableTool[ToolUsed.Polygon] = this.polygonService;
 
         this.switchTool(ToolUsed.NONE); // default tools if all else fail in the sidebar usually
