@@ -95,25 +95,25 @@ export class SidebarComponent {
 
     openCarrousel(): void {
         if (this.isDialogOpenSaveEport) {
-            this.isDialogOpen = false;
+            this.isDialogOpenSaveEport = false;
             this.dialogLoadRef = this.dialogCreator.open(CarrouselPictureComponent, {
                 width: '90%',
                 height: '90%',
             });
             this.dialogLoadRef.afterClosed().subscribe(() => {
-                this.isDialogOpen = true;
+                this.isDialogOpenSaveEport = true;
             });
         }
     }
     openSave(): void {
         if (this.isDialogOpenSaveEport) {
-            this.isDialogOpen = false;
+            this.isDialogOpenSaveEport = false;
             this.dialogSaveRef = this.dialogCreator.open(SaveDialogComponent, {
                 width: '90%',
                 height: '90%',
             });
             this.dialogLoadRef.afterClosed().subscribe(() => {
-                this.isDialogOpen = true;
+                this.isDialogOpenSaveEport = true;
             });
         }
     }
@@ -352,13 +352,13 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.control.g', ['$event']) openCarrouselKey(event: KeyboardEvent): void {
+    @HostListener('window:keydown.control.shift.g', ['$event']) openCarrouselKey(event: KeyboardEvent): void {
         this.openCarrousel();
     }
-    @HostListener('window:keydown.control.s', ['$event']) openSaveKey(event: KeyboardEvent): void {
+    @HostListener('window:keydown.control.shift.s', ['$event']) openSaveKey(event: KeyboardEvent): void {
         this.openSave();
     }
-    @HostListener('window:keydown.control.E', ['$event']) openExportKey(event: KeyboardEvent): void {
+    @HostListener('window:keydown.control.shift.e', ['$event']) openExportKey(event: KeyboardEvent): void {
         if (!this.isDialogOpenSaveEport) {
             this.openSave();
         }

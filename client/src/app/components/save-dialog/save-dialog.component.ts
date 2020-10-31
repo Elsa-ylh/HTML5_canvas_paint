@@ -39,21 +39,21 @@ export class SaveDialogComponent implements OnInit {
         this.addAllLabal();
     }
     saveServer(): boolean {
-        const nameResult = !this.verifierName(this.textName);
-        const labelResult = !this.verifierLabel(this.textLabel);
+        const nameResult = !this.checkName(this.textName);
+        const labelResult = !this.checkLabel(this.textLabel);
         if (nameResult && labelResult) {
         }
         return false;
     }
     // retour inverser
-    verifierName(name: string): boolean {
-        return name === '' || name === undefined || this.notGoodCharacter(name);
+    checkName(name: string): boolean {
+        return name === '' || name === undefined || this.notGoodCharacter(name) || name.split(' ').length !== 1;
     }
-    verifierLabel(label: string): boolean {
+    checkLabel(label: string): boolean {
         if (this.notGoodCharacter(label)) {
             return true;
         }
-        if (label !== '') {
+        if (label === '') {
             return false;
         }
         const arrayText = label.split(' ');
@@ -66,17 +66,18 @@ export class SaveDialogComponent implements OnInit {
 
     notGoodCharacter(text: string): boolean {
         return (
-            text.split('#').length !== 0 ||
-            text.split("'").length !== 0 ||
-            text.split('/').length !== 0 ||
-            text.split('"').length !== 0 ||
-            text.split('-').length !== 0 ||
-            text.split('&').length !== 0 ||
-            text.split('*').length !== 0 ||
-            text.split('!').length !== 0 ||
-            text.split('$').length !== 0 ||
-            text.split('?').length !== 0 ||
-            text.split('|').length !== 0
+            text.split('#').length !== 1 ||
+            text.split("'").length !== 1 ||
+            text.split('/').length !== 1 ||
+            text.split('"').length !== 1 ||
+            text.split('-').length !== 1 ||
+            text.split('&').length !== 1 ||
+            text.split('*').length !== 1 ||
+            text.split('!').length !== 1 ||
+            text.split('$').length !== 1 ||
+            text.split('?').length !== 1 ||
+            text.split('|').length !== 1 ||
+            text.split('%').length !== 1
         );
     }
 }

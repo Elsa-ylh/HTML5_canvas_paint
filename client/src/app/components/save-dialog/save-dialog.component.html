@@ -1,8 +1,8 @@
 <p>save-dialog works!</p>
-<mat-grid-list cols="3" rowHeight="2:1">
+<mat-grid-list cols="3" rowHeight="1:1">
     <mat-grid-tile>
         <mat-label>
-            Consigne pour le nom :<br />espace ne doit pas être vide<br />
+            Consigne pour le nom :<br />Il ne doit pas être vide et d'avoir espace,<br />
             Les caractère non autoriser sont : / ! " ' % ? & * # |
         </mat-label>
         <mat-form-field appearance="legacy">
@@ -12,8 +12,8 @@
     </mat-grid-tile>
     <mat-grid-tile>
         <mat-label>
-            consigne pour creer une étiquette <br />Chaque nouvelle étiquette doive être séparé par un espace. Un minimome de caractère 6 et le max
-            est de 20<br />
+            Consigne pour creer une étiquette <br />Chaque nouvelle étiquette doive être séparé par un espace. Un minimome de caractère 6 et le max
+            est de 20.<br />
             Les caractère non autoriser sont : / ! " ' % ? & * # |
         </mat-label>
         <mat-form-field appearance="legacy">
@@ -22,7 +22,7 @@
         </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile>
-        <button mat-raised-button (click)="saveServer()">Sauvegarder sur le serveur</button>
+        <button mat-raised-button (click)="saveServer()" [disabled]="checkLabel(textLabel) || checkName(textName)">Sauvegarder sur le serveur</button>
     </mat-grid-tile>
 </mat-grid-list>
 <div>
