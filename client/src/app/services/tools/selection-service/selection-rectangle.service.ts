@@ -21,26 +21,22 @@ export class SelectionRectangleService extends SelectionService {
                     this.height = this.mousePosition.y - this.mouseDownCoord.y;
                     this.width = this.mousePosition.x - this.mouseDownCoord.x;
                 }
-                // this.drawSelectionRect(this.drawingService.previewCtx, this.mouseDownCoord, this.shiftPressed);
 
                 this.selectRectInitialPos = this.mouseDownCoord;
-                // console.log(" initial pos = " + this.selectRectInitialPos.x + this.selectRectInitialPos.y);
                 this.copyImageInitialPos = this.copySelection();
                 this.drawSelection(this.drawingService.previewCtx, this.mouseDownCoord, this.copyImageInitialPos);
-                // this.drawingService.previewCtx.putImageData(this.imageData, this.copyImageInitialPos.x, this.copyImageInitialPos.y);
             } else if (this.inSelection) {
                 this.pasteSelection(
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                    this.image,
                     this.imageData,
                 );
+                this.mouseMouvement = { x: 0, y: 0 };
                 this.isAllSelect = false;
             }
         }
 
         this.mouseDown = false;
         this.inSelection = false;
-        // this.mouseEnter = false;
     }
 
     drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {
@@ -48,7 +44,7 @@ export class SelectionRectangleService extends SelectionService {
         ctx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
     }
 
-    pasteSelection(position: Vec2, image: HTMLImageElement, imageData: ImageData): void {
+    pasteSelection(position: Vec2, imageData: ImageData): void {
         this.drawingService.baseCtx.putImageData(imageData, position.x, position.y);
     }
 
@@ -59,5 +55,65 @@ export class SelectionRectangleService extends SelectionService {
     clearSelection(position: Vec2, width: number, height: number): void {
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fillRect(position.x, position.y, width, height);
+    }
+
+    pasteArrowSelection(): void {
+        if (!this.timerStarted) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.clearSelection(this.selectRectInitialPos, this.width, this.height);
+            this.pasteSelection(
+                { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
+                this.imageData,
+            );
+            this.mouseMouvement = { x: 0, y: 0 };
+        }
+    }
+
+    onLeftArrowUp(): void {
+        if (!this.drawingService.isPreviewCanvasBlank()) {
+            this.leftArrow = false;
+            this.resetTimer();
+            if (this.timerLeft) {
+                this.subscriptionMoveLeft.unsubscribe();
+            }
+            this.pasteArrowSelection();
+            this.timerLeft = false;
+        }
+    }
+
+    onRightArrowUp(): void {
+        if (!this.drawingService.isPreviewCanvasBlank()) {
+            this.rightArrow = false;
+            this.resetTimer();
+            if (this.timerRight) {
+                this.subscriptionMoveRight.unsubscribe();
+            }
+            this.pasteArrowSelection();
+            this.timerRight = false;
+        }
+    }
+
+    onUpArrowUp(): void {
+        if (!this.drawingService.isPreviewCanvasBlank()) {
+            this.upArrow = false;
+            this.resetTimer();
+            if (this.timerUp) {
+                this.subscriptionMoveUp.unsubscribe();
+            }
+            this.pasteArrowSelection();
+            this.timerUp = false;
+        }
+    }
+
+    onDownArrowUp(): void {
+        if (!this.drawingService.isPreviewCanvasBlank()) {
+            this.downArrow = false;
+            this.resetTimer();
+            if (this.timerDown) {
+                this.subscriptionMoveDown.unsubscribe();
+            }
+            this.pasteArrowSelection();
+            this.timerDown = false;
+        }
     }
 }
