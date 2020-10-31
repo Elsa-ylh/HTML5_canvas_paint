@@ -58,6 +58,7 @@ export class UndoRedoService {
     // adds the latest  action to the undo stack.
     addUndo(action: AbsUndoRedo): void {
         this.listUndo.push(action);
+        console.log('pile', this.listUndo);
     }
 
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
@@ -68,11 +69,12 @@ export class UndoRedoService {
             this.listRedo.push(action);
             const listOfResize: AbsUndoRedo[] = [];
 
-            // console.log('pile undo : undo fct', this.listUndo);
-            // console.log('pile redo : undo fct', this.listRedo);
-            console.log('redo', this.nbelementsRedo);
+            console.log('pile undo : undo fct', this.listUndo);
+            console.log('pile redo : undo fct', this.listRedo);
+            // console.log('redo', this.nbelementsRedo);
 
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             // reapply the currents elements (without the removed one)
             for (const element of this.listUndo) {
                 if (element instanceof ResizeCanvasAction) {

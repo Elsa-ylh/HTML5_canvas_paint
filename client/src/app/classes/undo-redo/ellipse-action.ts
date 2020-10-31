@@ -24,6 +24,7 @@ export class EllipseAction extends AbsUndoRedo {
         this.drawingService.baseCtx.strokeStyle = this.primaryColor;
         this.drawingService.baseCtx.shadowColor = this.secondaryColor;
         this.drawingService.baseCtx.lineWidth = this.lineWidth;
+        this.drawingService.baseCtx.lineCap = 'round';
         this.ellipseService.selectEllipse(this.mousePosition, this.mouseDownCord, {
             primaryColor: this.primaryColor,
             secondaryColor: this.secondaryColor,

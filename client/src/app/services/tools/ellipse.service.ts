@@ -78,7 +78,6 @@ export class EllipseService extends Tool {
             this,
             this.drawingService,
         );
-        // console.log('action ellipse', ellipeAction);
         this.undoRedoService.addUndo(ellipseAction);
         this.undoRedoService.clearRedo();
 
@@ -151,6 +150,7 @@ export class EllipseService extends Tool {
     selectEllipse(mousePosition: Vec2, mouseDownCoord: Vec2, generalInfo: ToolGeneralInfo): void {
         this.height = mousePosition.y - mouseDownCoord.y;
         this.width = mousePosition.x - mouseDownCoord.x;
+        this.mouseDownCoord = mouseDownCoord;
         this.strokeColor = generalInfo.primaryColor;
         this.fillColor = generalInfo.secondaryColor;
         this.lineWidth = generalInfo.lineWidth;
@@ -229,10 +229,8 @@ export class EllipseService extends Tool {
     drawFillEllipse(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2): void {
         this.drawingService.previewCtx.beginPath();
         this.drawingService.baseCtx.beginPath();
-
         ctx.fillStyle = this.fillColor;
         ctx.strokeStyle = this.strokeRectColor;
-        ctx.lineWidth = this.lineWidth;
         ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
         this.drawEllipse(ctx, this.width / 2, this.height / 2);
         ctx.fill();
@@ -259,11 +257,11 @@ export class EllipseService extends Tool {
     }
 
     drawFillEllipseOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
+        this.drawingService.previewCtx.beginPath();
+        this.drawingService.baseCtx.beginPath();
         ctx.fillStyle = this.fillColor;
         ctx.strokeStyle = this.strokeColor;
         ctx.lineWidth = this.lineWidth;
-        this.drawingService.previewCtx.beginPath();
-        this.drawingService.baseCtx.beginPath();
         ctx.setLineDash([0, 0]);
 
         this.drawEllipse(ctx, this.width / 2, this.height / 2);

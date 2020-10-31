@@ -78,15 +78,12 @@ export class PolygonService extends Tool {
             this.fillColor,
             this.lineWidth,
             this.numberOfSides,
-            // this.isRenderingBase,
-            false,
+            this.isRenderingBase,
             this.subToolSelect,
             this,
             this.drawingService,
         );
-        console.log('action polygone', polygoneAction);
-        console.log('stack mosPoS', this.mousePosition);
-        console.log('STACK mousDown', this.mouseDownCoord);
+
         this.undoRedoService.addUndo(polygoneAction);
         this.undoRedoService.clearRedo();
 
@@ -101,7 +98,6 @@ export class PolygonService extends Tool {
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            // false
             this.isRenderingBase = false;
             this.selectPolygon(mousePosition, this.mouseDownCoord, {
                 primaryColor: this.strokeColor,
@@ -173,29 +169,32 @@ export class PolygonService extends Tool {
 
         this.drawPreviewCircle(ctx, mouseDownPos, mouseUpPos);
     }
-    // isRenderingBase: boolean
     selectPolygon(mousePosition: Vec2, mouseDownCoord: Vec2, infoPolygone: ToolInfoPolygone): void {
         this.distanceX = mousePosition.x - mouseDownCoord.x;
         this.distanceY = mousePosition.y - mouseDownCoord.y;
 
+        this.mouseDownCoord = mouseDownCoord;
         this.fillColor = infoPolygone.secondaryColor;
         this.strokeColor = infoPolygone.primaryColor;
         this.lineWidth = infoPolygone.lineWidth;
-
+        this.numberOfSides = infoPolygone.nbsides;
         this.radius = Math.sqrt(Math.pow(mousePosition.x - mouseDownCoord.x, 2) + Math.pow(mousePosition.y - this.mouseDownCoord.y, 2));
         if (infoPolygone.isRenderingBase) {
             switch (infoPolygone.selectSubTool) {
                 case SubToolselected.tool1: {
+                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
                     this.drawFillPolygon(this.drawingService.baseCtx, mouseDownCoord, mousePosition);
                     break;
                 }
 
                 case SubToolselected.tool2: {
+                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
                     this.drawPolygonOutline(this.drawingService.baseCtx, mouseDownCoord, mousePosition);
                     break;
                 }
 
                 case SubToolselected.tool3: {
+                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
                     this.drawFillPolygonOutline(this.drawingService.baseCtx, mouseDownCoord, mousePosition);
                     break;
                 }
