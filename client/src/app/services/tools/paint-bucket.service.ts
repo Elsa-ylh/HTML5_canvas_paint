@@ -13,6 +13,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 // is some form of paraphrasing and recoding to make it adapted to our use cases
 // https://github.com/williammalone/HTML5-Paint-Bucket-Tool/blob/master/html5-canvas-paint-bucket.js
 // https://codepen.io/Geeyoam/pen/vLGZzG
+// https://github.com/binarymax/floodfill.js/blob/master/floodfill.js
 
 /* tslint:disable:max-file-line-count*/
 
@@ -33,7 +34,6 @@ export class PaintBucketService extends Tool {
     canvasWidth: number = this.canvasResizerService.canvasSize.x;
     canvasHeight: number = this.canvasResizerService.canvasSize.y;
     currentColor: RGBA;
-    targetColor: RGBA;
     colorLayerData: ImageData;
     outlineLayerData: ImageData;
     imageData: ImageData;
@@ -73,7 +73,7 @@ export class PaintBucketService extends Tool {
             // this.outlineLayerData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
             this.imageData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
             console.log('imageData :', this.imageData);
-            this.floodFill2(this.imageData, this.hexToRgbA(this.fillColor), { x: this.mouseDownCoord.x, y: this.mouseDownCoord.y });
+            this.floodFill2(this.imageData, this.hexToRgbA(this.fillColor), { x: this.mouseDownCoord.x, y: this.mouseDownCoord.y }, 0);
         }
         this.mousePosition = this.mouseDownCoord;
     }
@@ -339,20 +339,60 @@ export class PaintBucketService extends Tool {
     //     };
     // }
 
-    setColorAtPixel(imageData: ImageData, pos: Vec2, color: RGBA): void {
-        imageData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasWidth);
-        // & 0xff is ised to have a signed value
-        /* tslint:disable:no-bitwise */
+    /*tslint:disable:cyclomatic-complexity*/
+    pixelCompare(i: number, targetcolor: number[], fillcolor: RGBA, data: Uint8ClampedArray, length: number, tolerance: number): boolean {
+        if (i < 0 || i >= length) return false; // out of bounds
         // tslint:disable-next-line:no-magic-numbers
-        imageData.data[this.colorAttributs * (this.canvasWidth * pos.y + pos.x) + 0] = color.red & 0xff;
+        if (data[i + 3] === 0 && fillcolor.alpha > 0) {
+            return true; // surface is invisible and fill is visible
+        }
+
+        if (
+            // tslint:disable-next-line:no-magic-numbers
+            Math.abs(targetcolor[3] - fillcolor.alpha) <= tolerance &&
+            Math.abs(targetcolor[0] - fillcolor.red) <= tolerance &&
+            Math.abs(targetcolor[1] - fillcolor.green) <= tolerance &&
+            Math.abs(targetcolor[2] - fillcolor.blue) <= tolerance
+        ) {
+            return false; // target is same as fill
+        }
         // tslint:disable-next-line:no-magic-numbers
-        imageData.data[this.colorAttributs * (this.canvasWidth * pos.y + pos.x) + 1] = color.green & 0xff;
-        // tslint:disable-next-line:no-magic-numbers
-        imageData.data[this.colorAttributs * (this.canvasWidth * pos.y + pos.x) + 2] = color.blue & 0xff;
-        // tslint:disable-next-line:no-magic-numbers
-        imageData.data[this.colorAttributs * (this.canvasWidth * pos.y + pos.x) + 3] = color.alpha & 0xff;
-        /* tslint:enable:no-bitwise */
+        if (targetcolor[3] === data[i + 3] && targetcolor[0] === data[i] && targetcolor[1] === data[i + 1] && targetcolor[2] === data[i + 2])
+            return true; // target matches surface
+
+        if (
+            // tslint:disable-next-line:no-magic-numbers
+            Math.abs(targetcolor[3] - data[i + 3]) <= 255 - tolerance &&
+            Math.abs(targetcolor[0] - data[i]) <= tolerance &&
+            Math.abs(targetcolor[1] - data[i + 1]) <= tolerance &&
+            Math.abs(targetcolor[2] - data[i + 2]) <= tolerance
+        )
+            return true; // target to surface within tolerance
+
+        return false; // no match
     }
+
+    setColorAtPixel(imageData: ImageData, pos: Vec2, fillColor: RGBA, targetColor: number[], tolerance: number): void {
+        const i: number = (pos.x + pos.y * this.canvasWidth) * this.colorAttributs;
+        // Maximum tolerance of 254, Default to 0
+        const maxTolerance = 254;
+        tolerance = !isNaN(tolerance) ? Math.min(Math.abs(Math.round(tolerance)), maxTolerance) : 0;
+
+        if (this.pixelCompare(i, targetColor, fillColor, imageData.data, length, tolerance)) {
+            // & 0xff is ised to have a signed value
+            /* tslint:disable:no-bitwise */
+            // tslint:disable-next-line:no-magic-numbers
+            imageData.data[this.colorAttributs * i + 0] = fillColor.red & 0xff;
+            // tslint:disable-next-line:no-magic-numbers
+            imageData.data[this.colorAttributs * i + 1] = fillColor.green & 0xff;
+            // tslint:disable-next-line:no-magic-numbers
+            imageData.data[this.colorAttributs * i + 2] = fillColor.blue & 0xff;
+            // tslint:disable-next-line:no-magic-numbers
+            imageData.data[this.colorAttributs * i + 3] = fillColor.alpha & 0xff;
+            /* tslint:enable:no-bitwise */
+        }
+    }
+    /*tslint:enable:cyclomatic-complexity*/
 
     colorMatch(currentColor: RGBA, targetColor: RGBA): boolean {
         return (
@@ -363,12 +403,12 @@ export class PaintBucketService extends Tool {
         );
     }
 
-    floodFill2(imageData: ImageData, newColor: RGBA, pos: Vec2): void {
+    floodFill2(imageData: ImageData, fillColor: RGBA, pos: Vec2, tolerance: number): void {
         const stack = [];
         let operator: Vec2 = { x: pos.x, y: pos.y };
 
         // Check if base color and new color are the same
-        if (this.colorMatch(this.targetColor, newColor)) {
+        if (this.colorMatch(this.currentColor, fillColor)) {
             return;
         }
 
@@ -377,7 +417,7 @@ export class PaintBucketService extends Tool {
 
         while (stack.length) {
             operator = stack.pop() as Vec2;
-            // let contiguousDown = true // Vertical is assumed to be true
+            let contiguousDown = true; // Vertical is assumed to be true
             let contiguousUp = true; // Vertical is assumed to be true
             let contiguousLeft = false;
             let contiguousRight = false;
@@ -385,15 +425,21 @@ export class PaintBucketService extends Tool {
             // Move to top most contiguousDown pixel
             while (contiguousUp && operator.y >= 0) {
                 operator.y--;
-                contiguousUp = this.colorMatch(this.currentColor, newColor);
+                contiguousUp = this.colorMatch(this.currentColor, fillColor);
             }
 
             // Move downward
-            while (this.mouseDown && operator.y < this.canvasHeight) {
-                this.setColorAtPixel(imageData, { x: operator.x, y: operator.y }, newColor);
+            while (contiguousDown && operator.y < this.canvasHeight) {
+                this.setColorAtPixel(
+                    imageData,
+                    { x: operator.x, y: operator.y },
+                    fillColor,
+                    [this.currentColor.red, this.currentColor.green, this.currentColor.blue, this.currentColor.alpha],
+                    tolerance,
+                );
 
                 // Check left
-                if (operator.x - 1 >= 0 && this.colorMatch(this.currentColor, newColor)) {
+                if (operator.x - 1 >= 0 && this.colorMatch(this.currentColor, fillColor)) {
                     if (!contiguousLeft) {
                         contiguousLeft = true;
                         stack.push({ x: operator.x - 1, y: operator.y });
@@ -403,7 +449,7 @@ export class PaintBucketService extends Tool {
                 }
 
                 // Check right
-                if (operator.x + 1 < this.canvasWidth && this.colorMatch(this.currentColor, newColor)) {
+                if (operator.x + 1 < this.canvasWidth && this.colorMatch(this.currentColor, fillColor)) {
                     if (!contiguousRight) {
                         stack.push({ x: operator.x + 1, y: operator.y });
                         contiguousRight = true;
@@ -413,20 +459,8 @@ export class PaintBucketService extends Tool {
                 }
 
                 operator.y++;
-                this.mouseDown = this.colorMatch(this.currentColor, newColor);
+                contiguousDown = this.colorMatch(this.currentColor, fillColor);
             }
         }
-
-        // const imageData = this.drawingService.baseCtx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
-
-        // const col = {red: 0xff, green: 0xff, blue: 0x0, alpha: 0xff};
-
-        //   this.drawingService.baseCtx.addEventListener('click', (event: { clientX: number; clientY: number; }) => {
-        //   const rect = this.drawingService.baseCtx.getBoundingClientRect()
-        //   const x = Math.round(event.clientX - rect.left)
-        //   const y = Math.round(event.clientY - rect.top)
-
-        //  this.drawingService.baseCtx.putImageData(imageData, 0, 0)
-        // })
     }
 }
