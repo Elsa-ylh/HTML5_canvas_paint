@@ -16,9 +16,7 @@ export class ResizeCanvasAction extends AbsUndoRedo {
     apply(): void {
         this.cvsResizerService.isResizeDown = true;
         this.cvsResizerService.resizeDirection = this.resizeDirection;
-
         this.cvsResizerService.addToUndoRedo = false;
-
         this.cvsResizerService.onResizeUp(this.event, this.resizeCtx, this.baseCanvas);
     }
 }

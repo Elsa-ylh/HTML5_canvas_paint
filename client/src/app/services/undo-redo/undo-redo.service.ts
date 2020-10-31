@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
+import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-Canvas-Action';
 // import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-Canvas-Action';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 // import { CanvasResizerService } from '../canvas/canvas-resizer.service';
@@ -10,25 +11,20 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class UndoRedoService {
     isundoDisabled: boolean = true; // to disactivate the option to redo-redo. diabled=true (cant undo-red0 when app loads)
     isRedoDisabled: boolean = true;
-    isDefaultCanvasResizeInStack: boolean = false;
+    defaultCanvasAction: ResizeCanvasAction; // will be instanciated when canvas is ngAfterViewInit
     private listUndo: AbsUndoRedo[] = [];
     private listRedo: AbsUndoRedo[] = [];
     constructor(private drawingService: DrawingService) {}
-    // private cvsResizerService: CanvasResizerService
     // Controls the buttons of redo-undo
     onMouseUpActivateUndo(mouseEvent: MouseEvent): void {
         // there is one element
         if (this.listUndo.length > 0) {
             this.isundoDisabled = false;
-            //   console.log('undo actif but');
         }
     }
     onMouseUpActivateRedo(mouseEvent: MouseEvent): void {
-        // console.log(this.listRedo.length);
-        // console.log(this.listRedo.length);
         if (this.listRedo.length > 0) {
             this.isRedoDisabled = false;
-            // console.log('redo actif but');
         }
     }
     undoRedoDisabled(): void {
@@ -62,16 +58,8 @@ export class UndoRedoService {
         console.log('stack undo redo', this.listUndo);
     }
 
-    // addUndo(resizeAction: ResizeCanvasAction): void {
-    //     if (!this.isDefaultCanvasResizeInStack) {
-    //         const undoRedoEvent = { offsetX: this.cvsResizerService.canvasSize.x, offsetY: this.cvsResizerService.canvasSize.y } as MouseEvent;
-    //         const resizeCanvasAction = new ResizeCanvasAction(undoRedoEvent, resizeCtx, baseCanvas, this.resizeDirection, this);
-    //         this.undoRedoService.addUndo(resizeCanvasAction);
-    //     }
-    // }
-
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
-    async undo(): Promise<void> {
+    undo(): void {
         const action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
 
         if (action) {
@@ -80,8 +68,20 @@ export class UndoRedoService {
 
             console.log(this.listUndo);
 
+            let listOfResize: AbsUndoRedo[] = [];
+
             for (const element of this.listUndo) {
-                element.apply();
+                if (element instanceof ResizeCanvasAction) {
+                    listOfResize.push(element);
+                } else {
+                    element.apply();
+                }
+            }
+
+            if (listOfResize.length == 0) {
+                this.defaultCanvasAction.apply();
+            } else {
+                listOfResize[listOfResize.length - 1].apply();
             }
         }
     }
