@@ -70,7 +70,7 @@ export class UndoRedoService {
 
             // console.log('pile undo : undo fct', this.listUndo);
             // console.log('pile redo : undo fct', this.listRedo);
-            console.log('undo', this.nbelementsRedo);
+            console.log('redo', this.nbelementsRedo);
 
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
             // reapply the currents elements (without the removed one)
