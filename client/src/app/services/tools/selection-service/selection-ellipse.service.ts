@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
+import { SelectionEllipseAction } from '@app/classes/undo-redo/selection-ellipse-action';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { SelectionService } from './selection-service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionEllipseService extends SelectionService {
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService) {
         super(drawingService);
     }
 
@@ -30,6 +32,18 @@ export class SelectionEllipseService extends SelectionService {
                     { x: this.selectRectInitialPos.x + this.mouseMouvement.x, y: this.selectRectInitialPos.y + this.mouseMouvement.y },
                     this.image,
                 );
+                // undo redo
+                const selectEllipseAc = new SelectionEllipseAction(
+                    { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
+                    { x: this.selectRectInitialPos.x + this.mouseMouvement.x, y: this.selectRectInitialPos.y + this.mouseMouvement.y },
+                    this.image,
+                    this.selectRectInitialPos,
+                    this.width,
+                    this.height,
+                    this,
+                );
+                this.undoRedoService.addUndo(selectEllipseAc);
+                this.undoRedoService.clearRedo();
                 this.isAllSelect = false;
                 this.mouseMouvement = { x: 0, y: 0 };
             }
@@ -127,6 +141,17 @@ export class SelectionEllipseService extends SelectionService {
                 { x: this.selectRectInitialPos.x + this.mouseMouvement.x, y: this.selectRectInitialPos.y + this.mouseMouvement.y },
                 this.image,
             );
+            const selectEllipseAc = new SelectionEllipseAction(
+                { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
+                { x: this.selectRectInitialPos.x + this.mouseMouvement.x, y: this.selectRectInitialPos.y + this.mouseMouvement.y },
+                this.image,
+                this.selectRectInitialPos,
+                this.width,
+                this.height,
+                this,
+            );
+            this.undoRedoService.addUndo(selectEllipseAc);
+            this.undoRedoService.clearRedo();
             this.mouseMouvement = { x: 0, y: 0 };
         }
     }
