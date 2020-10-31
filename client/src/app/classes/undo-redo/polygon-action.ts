@@ -21,7 +21,7 @@ export class PolygoneAction extends AbsUndoRedo {
     }
 
     apply(): void {
-        this.drawingService.baseCtx.lineCap = 'round';
+        this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
         this.drawingService.baseCtx.strokeStyle = this.primaryColor;
         this.drawingService.baseCtx.shadowColor = this.secondaryColor;
         this.drawingService.baseCtx.lineWidth = this.lineWidth;
