@@ -65,21 +65,13 @@ export class UndoRedoService {
         this.nbelementsRedo++;
         if (action) {
             this.listRedo.push(action);
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
-
             const listOfResize: AbsUndoRedo[] = [];
 
-            this.listRedo.push(action); // save into redo to be able to cancel the undo.
-            // allows to return to the previous "live" state on the canvas
-            // const tempPrimaryColor = this.drawingService.baseCtx.strokeStyle;
-            // const tempSecondaryColor = this.drawingService.baseCtx.shadowColor;
-            // const tempAlpha = this.colorService.primaryColorTransparency;
-            // const tempThickness = this.drawingService.baseCtx.lineWidth;
-
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
             console.log('pile undo : undo fct', this.listUndo);
             console.log('pile redo : undo fct', this.listRedo);
             console.log('undo', this.nbelementsRedo);
+
+            this.drawingService.clearCanvas(this.drawingService.baseCtx);
             // reapply the currents elements (without the removed one)
             for (const element of this.listUndo) {
                 if (element instanceof ResizeCanvasAction) {
