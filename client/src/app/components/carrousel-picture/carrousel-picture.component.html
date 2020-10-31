@@ -1,6 +1,6 @@
 <p>selection-picture works!</p>
 <button mat-raised-button (click)="reset()">réinitialise tout</button>
-<div *ngFor="let picture of getPicturesTestAll()">
+<div *ngFor="let picture of getPicturesAll()">
     <div>
         {{ picture.name }}
         <div *ngFor="let indix of picture.labels">
@@ -9,6 +9,7 @@
         <img />
     </div>
 </div>
+<div *ngIf="!getPicturesAll().length"><p>Aucune image trouver changée le critère de recherche ou réinitialise</p></div>
 <div>
     <mat-form-field>
         <mat-label>critère de recherche</mat-label>

@@ -51,7 +51,7 @@ export class ClientServerCommunicationService {
         return this.http.post<Message>(this.HTTP_SERVE_LOCAL + '/savePicture', newPicture).pipe(catchError(this.handleError<Message>('basicPost')));
     }
 
-    ElementResearch(message: Message): Observable<CancasInformation[]> {
+    getElementResearch(message: Message): Observable<CancasInformation[]> {
         return this.http
             .post<CancasInformation[]>(this.HTTP_SERVE_LOCAL + '/research', message)
             .pipe(catchError(this.handleError<CancasInformation[]>('basicPost')));

@@ -51,7 +51,6 @@ export class CarrouselPictureComponent implements OnInit {
         if (itList) {
             this.labelSelect.push(label);
         }
-        console.log(this.labelSelect.length);
         this.labelSelect.length === 0 ? this.addAllData() : this.setMessageLabel(this.labelSelect);
     }
     private setMessageLabel(labels: string[]): void {
@@ -62,22 +61,18 @@ export class CarrouselPictureComponent implements OnInit {
         const message: Message = { title: 'labels', body: textLabel };
         this.clientServerCommunicationService.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
-    getPicturesTestAll(): CancasInformation[] {
+    getPicturesAll(): CancasInformation[] {
         return this.dataPicture;
     }
     setSearchCriteria(): void {
         switch (this.selectedType) {
             case 'name':
                 const message: Message = { title: 'name', body: this.name };
-                this.clientServerCommunicationService.ElementResearch(message).subscribe((info) => (this.dataPicture = info));
+                this.clientServerCommunicationService.getElementResearch(message).subscribe((info) => (this.dataPicture = info));
                 break;
             case 'date':
-                try {
-                    const messageDate: Message = { title: 'date', body: (this.myDate.value as Date).toString() };
-                    this.clientServerCommunicationService.ElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
-                } catch (error) {
-                    alert('La date est correttre elle doit être de forme mm/jj/aaaa');
-                }
+                const messageDate: Message = { title: 'date', body: (this.myDate.value as Date).toString() };
+                this.clientServerCommunicationService.getElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
                 break;
         }
     }
