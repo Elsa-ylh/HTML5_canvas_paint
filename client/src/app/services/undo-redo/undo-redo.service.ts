@@ -10,13 +10,14 @@ export class UndoRedoService {
     isundoDisabled: boolean = true; // to disactivate the option to redo-redo. diabled=true (cant undo-red0 when app loads)
     isRedoDisabled: boolean = true;
     defaultCanvasAction: ResizeCanvasAction; // will be instanciated when canvas is ngAfterViewInit
+    nbelementsRedo: number = 0; // size of redo for redo but.
+
     private listUndo: AbsUndoRedo[] = [];
     private listRedo: AbsUndoRedo[] = [];
-    nbelementsRedo: number = 0;
     constructor(private drawingService: DrawingService) {}
+
     // Controls the buttons of redo-undo
     onMouseUpActivateUndo(mouseEvent: MouseEvent): void {
-        // there is one element
         if (this.listUndo.length > 0) {
             this.isundoDisabled = false;
         }
@@ -67,8 +68,8 @@ export class UndoRedoService {
             this.listRedo.push(action);
             const listOfResize: AbsUndoRedo[] = [];
 
-            console.log('pile undo : undo fct', this.listUndo);
-            console.log('pile redo : undo fct', this.listRedo);
+            // console.log('pile undo : undo fct', this.listUndo);
+            // console.log('pile redo : undo fct', this.listRedo);
             console.log('undo', this.nbelementsRedo);
 
             this.drawingService.clearCanvas(this.drawingService.baseCtx);

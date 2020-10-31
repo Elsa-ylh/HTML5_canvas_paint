@@ -151,7 +151,6 @@ export class CanvasResizerService {
         this.resizeCursor = cursorName.default;
 
         if (this.addToUndoRedo) {
-            console.log('hi');
             const resizeAction = new ResizeCanvasAction(event, resizeCtx, baseCanvas, this.resizeDirection, this);
             this.undoRedoService.addUndo(resizeAction);
         }
