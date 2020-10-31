@@ -8,7 +8,7 @@ import {
 } from '@app/classes/resize-canvas';
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { ToolUsed } from '@app/classes/tool';
-import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-Canvas-Action';
+import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';

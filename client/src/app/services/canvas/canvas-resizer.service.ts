@@ -10,7 +10,7 @@ import {
     WORK_AREA_PADDING_SIZE,
 } from '@app/classes/resize-canvas';
 import { ResizeDirection } from '@app/classes/resize-direction';
-import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-Canvas-Action';
+import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { Vec2 } from '@app/classes/vec2';
 import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
