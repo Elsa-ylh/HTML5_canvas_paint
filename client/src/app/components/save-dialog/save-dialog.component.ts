@@ -13,6 +13,7 @@ export class SaveDialogComponent implements OnInit {
     textLabel: string = '';
     textName: string = '';
     private labelSelect: string[] = [];
+    disabled: boolean = true;
 
     constructor(private clientServerCommunicationService: ClientServerCommunicationService) {}
     ngOnInit(): void {
@@ -40,7 +41,9 @@ export class SaveDialogComponent implements OnInit {
     saveServer(): boolean {
         const nameResult = !this.verifierName(this.textName);
         const labelResult = !this.verifierLabel(this.textLabel);
-        return nameResult && labelResult;
+        if (nameResult && labelResult) {
+        }
+        return false;
     }
     // retour inverser
     verifierName(name: string): boolean {
@@ -60,6 +63,7 @@ export class SaveDialogComponent implements OnInit {
         }
         return false;
     }
+
     notGoodCharacter(text: string): boolean {
         return (
             text.split('#').length !== 0 ||

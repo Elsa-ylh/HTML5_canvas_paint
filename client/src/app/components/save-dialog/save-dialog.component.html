@@ -2,8 +2,8 @@
 <mat-grid-list cols="3" rowHeight="2:1">
     <mat-grid-tile>
         <mat-label>
-            consigne pour le nom <br />
-            Les car non autoriser sont : / ! " ' % ? & * # |
+            Consigne pour le nom :<br />espace ne doit pas être vide<br />
+            Les caractère non autoriser sont : / ! " ' % ? & * # |
         </mat-label>
         <mat-form-field appearance="legacy">
             <mat-label>Nom de image</mat-label>
@@ -12,8 +12,9 @@
     </mat-grid-tile>
     <mat-grid-tile>
         <mat-label>
-            consigne pour creer une étiquette <br />Chaque nouvelle étiquette doive être séparé par un espace.<br />
-            Les car non autoriser sont : / ! " ' % ? & * # |
+            consigne pour creer une étiquette <br />Chaque nouvelle étiquette doive être séparé par un espace. Un minimome de caractère 6 et le max
+            est de 20<br />
+            Les caractère non autoriser sont : / ! " ' % ? & * # |
         </mat-label>
         <mat-form-field appearance="legacy">
             <mat-label>créer des étiquettes</mat-label>
@@ -21,9 +22,7 @@
         </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile>
-        <button mat-raised-button (click)="saveServer()" [disabled]="verifierName(textName) || verifierLabel(textLabel)">
-            Sauvegarder sur le serveur
-        </button>
+        <button mat-raised-button (click)="saveServer()">Sauvegarder sur le serveur</button>
     </mat-grid-tile>
 </mat-grid-list>
 <div>
