@@ -12,6 +12,7 @@ export class UndoRedoService {
     defaultCanvasAction: ResizeCanvasAction; // will be instanciated when canvas is ngAfterViewInit
     private listUndo: AbsUndoRedo[] = [];
     private listRedo: AbsUndoRedo[] = [];
+    nbelementsRedo: number = 0;
     constructor(private drawingService: DrawingService) {}
     // Controls the buttons of redo-undo
     onMouseUpActivateUndo(mouseEvent: MouseEvent): void {
@@ -21,7 +22,8 @@ export class UndoRedoService {
         }
     }
     onMouseUpActivateRedo(mouseEvent: MouseEvent): void {
-        if (this.listRedo.length > 0) {
+        console.log('before condition', this.nbelementsRedo);
+        if (this.nbelementsRedo > 0) {
             this.isRedoDisabled = false;
         }
     }
@@ -34,7 +36,9 @@ export class UndoRedoService {
     redo(): void {
         if (this.listRedo.length > 0) {
             const action = this.listRedo.pop();
+            this.nbelementsRedo--;
             if (action) {
+                console.log('redo', this.nbelementsRedo);
                 this.listUndo.push(action);
                 action.apply(); // applies the action
             }
@@ -58,12 +62,10 @@ export class UndoRedoService {
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
     undo(): void {
         const action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
-
+        this.nbelementsRedo++;
         if (action) {
             this.listRedo.push(action);
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
-
-            console.log(this.listUndo);
 
             const listOfResize: AbsUndoRedo[] = [];
 
@@ -75,9 +77,10 @@ export class UndoRedoService {
             // const tempThickness = this.drawingService.baseCtx.lineWidth;
 
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
-            // reapply the currents elements (without the removed one)
             console.log('pile undo : undo fct', this.listUndo);
             console.log('pile redo : undo fct', this.listRedo);
+            console.log('undo', this.nbelementsRedo);
+            // reapply the currents elements (without the removed one)
             for (const element of this.listUndo) {
                 if (element instanceof ResizeCanvasAction) {
                     listOfResize.push(element);
