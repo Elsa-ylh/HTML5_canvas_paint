@@ -65,7 +65,7 @@ export class UndoRedoService {
 
             console.log(this.listUndo);
 
-            let listOfResize: AbsUndoRedo[] = [];
+            const listOfResize: AbsUndoRedo[] = [];
 
             this.listRedo.push(action); // save into redo to be able to cancel the undo.
             // allows to return to the previous "live" state on the canvas
@@ -86,7 +86,7 @@ export class UndoRedoService {
                 }
             }
 
-            if (listOfResize.length == 0) {
+            if (listOfResize.length === 0) {
                 this.defaultCanvasAction.apply();
             } else {
                 listOfResize[listOfResize.length - 1].apply();

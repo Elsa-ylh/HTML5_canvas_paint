@@ -12,7 +12,7 @@ import {
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { Vec2 } from '@app/classes/vec2';
-import { UndoRedoService } from '../undo-redo/undo-redo.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',

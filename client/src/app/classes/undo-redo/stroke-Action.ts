@@ -22,7 +22,6 @@ export class StrokeAction extends AbsUndoRedo {
     apply(): void {
         //  console.log('apply pencil');
         //  console.log(this.changes);
-        debugger;
         this.drawingService.baseCtx.lineCap = 'round';
         this.drawingService.baseCtx.lineJoin = 'round';
         this.drawingService.baseCtx.strokeStyle = this.colorPencil;
