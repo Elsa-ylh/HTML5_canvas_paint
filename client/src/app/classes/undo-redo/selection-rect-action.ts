@@ -1,6 +1,6 @@
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
+import { Vec2 } from '@app/classes/vec2';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
-import { Vec2 } from '../vec2';
 
 export class SelectionRectAction extends AbsUndoRedo {
     constructor(

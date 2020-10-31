@@ -1,6 +1,6 @@
+import { AbsUndoRedo } from '@app//classes/undo-redo/abs-undo-redo';
+import { Vec2 } from '@app/classes/vec2';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
-import { Vec2 } from '../vec2';
-import { AbsUndoRedo } from './abs-undo-redo';
 
 export class SelectionEllipseAction extends AbsUndoRedo {
     constructor(
