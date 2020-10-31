@@ -11,7 +11,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
-    private color: string = '#fff';
+    private color: string = '#ffffff';
     eraserWidth: number = 5;
     constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService) {
         super(drawingService);
@@ -37,6 +37,7 @@ export class EraserService extends Tool {
             if (this.mouseMove) {
                 this.pathData.push(mousePosition);
                 this.removeLine(this.drawingService.baseCtx, this.pathData);
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
             } else {
                 // code to draw dot
                 this.clearPath();
@@ -45,14 +46,12 @@ export class EraserService extends Tool {
                 this.drawingService.previewCtx.fillStyle = this.color;
                 this.drawingService.previewCtx.fillRect(mousePosition.x, mousePosition.y, this.eraserWidth, this.eraserWidth);
                 this.pathData.push(mousePosition);
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
             }
         }
         const actionEraser = new EraseAction(this.pathData, this.color, this.eraserWidth, this, this.drawingService);
         this.undoRedoService.addUndo(actionEraser);
-        // console.log('erase action in eraser service', actionEraser);
-        // console.log('stack inside eraser service', this.undoRedoService['listUndo']);
         this.undoRedoService.clearRedo();
-        this.clearEffectTool();
         this.clearPath();
         this.mouseDown = false;
     }
@@ -80,7 +79,6 @@ export class EraserService extends Tool {
     }
     removeLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        console.log('path eraser service', path);
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }

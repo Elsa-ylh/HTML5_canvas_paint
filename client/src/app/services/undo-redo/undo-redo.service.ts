@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
-import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-Canvas-Action';
-// import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-Canvas-Action';
+import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-// import { CanvasResizerService } from '../canvas/canvas-resizer.service';
 
 @Injectable({
     providedIn: 'root',
@@ -55,7 +53,6 @@ export class UndoRedoService {
     // adds the latest  action to the undo stack.
     addUndo(action: AbsUndoRedo): void {
         this.listUndo.push(action);
-        console.log('stack undo redo', this.listUndo);
     }
 
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
@@ -70,6 +67,17 @@ export class UndoRedoService {
 
             let listOfResize: AbsUndoRedo[] = [];
 
+            this.listRedo.push(action); // save into redo to be able to cancel the undo.
+            // allows to return to the previous "live" state on the canvas
+            // const tempPrimaryColor = this.drawingService.baseCtx.strokeStyle;
+            // const tempSecondaryColor = this.drawingService.baseCtx.shadowColor;
+            // const tempAlpha = this.colorService.primaryColorTransparency;
+            // const tempThickness = this.drawingService.baseCtx.lineWidth;
+
+            this.drawingService.clearCanvas(this.drawingService.baseCtx);
+            // reapply the currents elements (without the removed one)
+            console.log('pile undo : undo fct', this.listUndo);
+            console.log('pile redo : undo fct', this.listRedo);
             for (const element of this.listUndo) {
                 if (element instanceof ResizeCanvasAction) {
                     listOfResize.push(element);

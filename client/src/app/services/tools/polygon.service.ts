@@ -84,7 +84,7 @@ export class PolygonService extends Tool {
             this,
             this.drawingService,
         );
-        console.log('action polyhone', polygoneAction);
+        console.log('action polygone', polygoneAction);
         console.log('stack mosPoS', this.mousePosition);
         console.log('STACK mousDown', this.mouseDownCoord);
         this.undoRedoService.addUndo(polygoneAction);
