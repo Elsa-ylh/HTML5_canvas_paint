@@ -9,6 +9,9 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class PaintBucketService extends Tool {
+    private readonly black: RGBA = { red: 0, green: 0, blue: 0, alpha: 255 } as RGBA;
+    private readonly white: RGBA = { red: 255, green: 255, blue: 255, alpha: 255 } as RGBA;
+
     constructor(drawingService: DrawingService, private colorService: ColorService, private cvsResizerService: CanvasResizerService) {
         super(drawingService);
     }
@@ -37,7 +40,6 @@ export class PaintBucketService extends Tool {
 
     private checkFourPolesAndDraw(event: MouseEvent, rgba: RGBA): void {
         // check north
-
         let colorToCheck = this.getPosColor({ offsetX: event.offsetX, offsetY: event.offsetY - 1 } as MouseEvent);
         if (event.offsetY > 0 && this.compareRGBA(colorToCheck, rgba)) {
             this.drawPosColor({ offsetX: event.offsetX, offsetY: event.offsetY - 1 } as MouseEvent, rgba);
@@ -72,15 +74,13 @@ export class PaintBucketService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        const pixelColorToBucket = this.getPosColor(event);
+        // const pixelColorToBucket = this.getPosColor(event);
 
         this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
 
-        console.log('hello');
-
-        debugger;
         // We will do detection north, south, east and west. No need to do diagonal detection.
-        this.checkFourPolesAndDraw(event, pixelColorToBucket);
+        debugger;
+        this.checkFourPolesAndDraw(event, this.white);
 
         console.log('bonsoir');
     }
