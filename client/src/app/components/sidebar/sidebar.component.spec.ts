@@ -470,17 +470,17 @@ describe('SidebarComponent', () => {
         expect(component.selectionEllipseChecked).toEqual(true);
         expect(spyPickSelectionEllipse).toHaveBeenCalled();
     });
-
-    it('should call prevent default and selectAll for rectangle', () => {
-        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle;
-        const event = new KeyboardEvent('window:keydown.control.a', {});
-        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
-        const spySelectAllRect = spyOn(selectionRectangleStub, 'selectAll').and.stub();
-        window.dispatchEvent(event);
-        component.selectAllCanvas(event);
-        expect(spyPreventDefault).toHaveBeenCalled();
-        expect(spySelectAllRect).toHaveBeenCalled();
-    });
+    
+    // it('should call prevent default and selectAll for rectangle', () => {
+    //     toolServiceStub.currentToolName = ToolUsed.SelectionRectangle;
+    //     const event = new KeyboardEvent('window:keydown.control.a', {});
+    //     const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+    //     const spySelectAllRect = spyOn(selectionRectangleStub, 'selectAll').and.stub();
+    //     window.dispatchEvent(event);
+    //     component.selectAllCanvas(event);
+    //     expect(spyPreventDefault).toHaveBeenCalled();
+    //     expect(spySelectAllRect).toHaveBeenCalled();
+    // });
 
     it('should call prevent default and selectAll for ellipse', () => {
         toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
