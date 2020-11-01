@@ -5,6 +5,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -21,10 +22,16 @@ describe('DialogCreateNewDrawingComponent', () => {
     let keyboardEvent: KeyboardEvent;
     let undoRedoStub: UndoRedoService;
 
+    let baseCtxStub: CanvasRenderingContext2D;
+    let previewCtxStub: CanvasRenderingContext2D;
+
     beforeEach(async () => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
         canvasResizerStub = new CanvasResizerService(undoRedoStub);
+
+        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
 
         await TestBed.configureTestingModule({
             imports: [MatDialogModule, MatIconModule, MatGridListModule, BrowserAnimationsModule, HttpClientModule],
@@ -37,6 +44,8 @@ describe('DialogCreateNewDrawingComponent', () => {
                 { provide: CanvasResizerService, useValue: canvasResizerStub },
             ],
         }).compileComponents();
+        drawingStub.baseCtx = baseCtxStub;
+        drawingStub.previewCtx = previewCtxStub;
     });
 
     beforeEach(() => {
@@ -44,7 +53,6 @@ describe('DialogCreateNewDrawingComponent', () => {
         component = fixture.componentInstance;
         onConfirmClickSpy = spyOn<any>(component, 'onConfirmClick').and.callThrough();
         alertSpy = spyOn<any>(window, 'alert').and.callThrough();
-
         fixture.detectChanges();
     });
 
