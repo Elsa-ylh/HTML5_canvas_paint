@@ -140,6 +140,7 @@ describe('SidebarComponent', () => {
                     { provide: MatDialogRef, useValue: {} },
                     { provide: PolygonService, useValue: polygonStub },
                     { provide: Observable, useValue: {} },
+                    { provide: UndoRedoService, useValue: undoRedoStub },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);
@@ -470,7 +471,7 @@ describe('SidebarComponent', () => {
         expect(component.selectionEllipseChecked).toEqual(true);
         expect(spyPickSelectionEllipse).toHaveBeenCalled();
     });
-    
+
     // it('should call prevent default and selectAll for rectangle', () => {
     //     toolServiceStub.currentToolName = ToolUsed.SelectionRectangle;
     //     const event = new KeyboardEvent('window:keydown.control.a', {});
@@ -491,5 +492,48 @@ describe('SidebarComponent', () => {
         component.selectAllCanvas(event);
         expect(spyPreventDefault).toHaveBeenCalled();
         expect(spySelectAllEllipse).toHaveBeenCalled();
+    });
+
+    // it('should call onLeftArrow  when clicking on the left arrow key when using selectRectangle', () => {
+    //     toolServiceStub.currentToolName = ToolUsed.SelectionRectangle as ToolUsed;
+    //     const event = new KeyboardEvent('window:keydown.ArrowLeft', {});
+    //     const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+    //     const spyonLeftArrowRect = spyOn(selectionRectangleStub, 'onLeftArrow').and.callThrough();
+    //     const spyonLeftArrowEllipse = spyOn(selectionEllipseStub, 'onLeftArrow').and.stub();
+    //     window.dispatchEvent(event);
+    //     component.onLeftArrow(event);
+    //     expect(spyPreventDefault).toHaveBeenCalled();
+    //     expect(spyonLeftArrowRect).toHaveBeenCalled();
+    //     expect(spyonLeftArrowEllipse).not.toHaveBeenCalled();
+    // });
+    it('should call onLeftArrow  when clicking on the left arrow key when using selectEllipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new KeyboardEvent('window:keydown.ArrowLeft', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonLeftArrowEllipse = spyOn(selectionEllipseStub, 'onLeftArrow').and.stub();
+        const spyonLeftArrowRect = spyOn(selectionRectangleStub, 'onLeftArrow').and.stub();
+        window.dispatchEvent(event);
+        component.onLeftArrow(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonLeftArrowEllipse).toHaveBeenCalled();
+        expect(spyonLeftArrowRect).not.toHaveBeenCalled();
+    });
+
+    it('should call undo if isUndoDisabled is false and ctrl z is pressed', () => {
+        const event = new KeyboardEvent('window:keydown.control.z', {});
+        undoRedoStub.isundoDisabled = false;
+        const spyUndo = spyOn(undoRedoStub, 'undo').and.stub();
+        window.dispatchEvent(event);
+        component.callUndo(event);
+        expect(spyUndo).toHaveBeenCalled();
+    });
+
+    it('should call redo if isRedoDisabled is false and ctrl shift z is pressed', () => {
+        const event = new KeyboardEvent('window:keydown.control.shift.z', {});
+        undoRedoStub.isRedoDisabled = false;
+        const spyRedo = spyOn(undoRedoStub, 'redo').and.stub();
+        window.dispatchEvent(event);
+        component.callRedo(event);
+        expect(spyRedo).toHaveBeenCalled();
     });
 });
