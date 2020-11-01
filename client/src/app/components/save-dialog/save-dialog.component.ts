@@ -44,6 +44,8 @@ export class SaveDialogComponent implements OnInit {
         const labelResult = !this.checkLabel(this.textLabel);
         this.errerTextLabel = !nameResult;
         if (nameResult && labelResult) {
+            //fonctonne evoier un les info pour save
+            //reret un fonction pour veriver le retoure et remettre button disponible
         } else {
             this.saveload = false;
         }
