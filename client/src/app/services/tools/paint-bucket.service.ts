@@ -76,12 +76,12 @@ export class PaintBucketService extends Tool {
 
         this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
 
-        console.log('hello');
+        //console.log('hello');
 
         debugger;
         // We will do detection north, south, east and west. No need to do diagonal detection.
         this.checkFourPolesAndDraw(event, pixelColorToBucket);
 
-        console.log('bonsoir');
+        //console.log('bonsoir');
     }
 }
