@@ -275,9 +275,8 @@ export class DataController {
     private checkName(name: string): boolean {
         return name === '' || name === undefined || this.notGoodCharacter(name) || name.split(' ').length !== 1;
     }
-    private checkLabel(labels: Label[]): boolean {
-        for (let index = 0; index < labels.length; index++) {
-            const label = labels[index];
+    private async checkLabel(labels: Label[]): Promise<boolean> {
+        for await (const label of labels) {
             if (this.notGoodCharacter(label.label)) {
                 return true;
             }

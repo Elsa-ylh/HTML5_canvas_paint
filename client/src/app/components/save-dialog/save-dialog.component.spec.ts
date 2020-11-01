@@ -16,6 +16,7 @@ import { SaveDialogComponent } from './save-dialog.component';
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
 // tslint:disable:no-unused-expression
+// tslint:disable:no-empty
 fdescribe('SaveDialogComponent', () => {
     let component: SaveDialogComponent;
     let fixture: ComponentFixture<SaveDialogComponent>;

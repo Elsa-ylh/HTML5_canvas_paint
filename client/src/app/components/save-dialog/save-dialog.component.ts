@@ -44,8 +44,8 @@ export class SaveDialogComponent implements OnInit {
         const labelResult = !this.checkLabel(this.textLabel);
         this.errerTextLabel = !nameResult;
         if (nameResult && labelResult) {
-            //fonctonne evoier un les info pour save
-            //reret un fonction pour veriver le retoure et remettre button disponible
+            // fonctonne evoier un les info pour save
+            // reret un fonction pour veriver le retoure et remettre button disponible
         } else {
             this.saveload = false;
         }
@@ -54,7 +54,7 @@ export class SaveDialogComponent implements OnInit {
     checkName(name: string): boolean {
         return name === '' || name === undefined || this.notGoodCharacter(name) || name.split(' ').length !== 1;
     }
-    checkLabel(label: string): boolean {
+    async checkLabel(label: string): Promise<boolean> {
         if (this.notGoodCharacter(label)) {
             return true;
         }
@@ -62,9 +62,8 @@ export class SaveDialogComponent implements OnInit {
             return false;
         }
         const arrayText = label.split(' ');
-        for (let index = 0; index < arrayText.length; index++) {
-            const element = arrayText[index];
-            if (element.length < MIN_CHARACTER || element.length > MAX_CHARACTER) return true;
+        for await (const textLabel of arrayText) {
+            if (textLabel.length < MIN_CHARACTER || textLabel.length > MAX_CHARACTER) return true;
         }
         return false;
     }
