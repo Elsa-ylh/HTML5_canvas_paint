@@ -21,7 +21,7 @@ export class PaintBucketService extends Tool {
         const pixel_stack: Vec2[] = [];
         pixel_stack.push({ x: x, y: y });
         const pixels = this.drawingService.baseCtx.getImageData(0, 0, this.cvsResizerService.canvasSize.x, this.cvsResizerService.canvasSize.y);
-        var linear_cords = (y * this.cvsResizerService.canvasSize.x + x) * 4;
+        let linear_cords = (y * this.cvsResizerService.canvasSize.x + x) * 4;
         const original_color = {
             red: pixels.data[linear_cords],
             green: pixels.data[linear_cords + 1],
