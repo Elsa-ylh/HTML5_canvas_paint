@@ -1,34 +1,31 @@
 import { Injectable } from '@angular/core';
 import { RGBA } from '@app/classes/rgba';
 import { Tool } from '@app/classes/tool';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { CanvasResizerService } from '../canvas/canvas-resizer.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class PaintBucketService extends Tool {
-    private readonly black: RGBA = { red: 0, green: 0, blue: 0, alpha: 255 } as RGBA;
-    private readonly white: RGBA = { red: 255, green: 255, blue: 255, alpha: 255 } as RGBA;
-
     constructor(drawingService: DrawingService, private colorService: ColorService, private cvsResizerService: CanvasResizerService) {
         super(drawingService);
     }
 
     // if needed, put parameter as MouseEvent with only offsetX and offsetY to get that particular position color
-    private getPosColor(event: MouseEvent): RGBA {
+    private getPosColor(pos: Vec2): RGBA {
         return {
-            red: this.drawingService.baseCtx.getImageData(event.offsetX, event.offsetY, 1, 1).data[0],
-            green: this.drawingService.baseCtx.getImageData(event.offsetX, event.offsetY, 1, 1).data[1],
-            blue: this.drawingService.baseCtx.getImageData(event.offsetX, event.offsetY, 1, 1).data[2],
-            alpha: this.drawingService.baseCtx.getImageData(event.offsetX, event.offsetY, 1, 1).data[3],
+            red: this.drawingService.baseCtx.getImageData(pos.x, pos.y, 1, 1).data[0],
+            green: this.drawingService.baseCtx.getImageData(pos.x, pos.y, 1, 1).data[1],
+            blue: this.drawingService.baseCtx.getImageData(pos.x, pos.y, 1, 1).data[2],
+            alpha: this.drawingService.baseCtx.getImageData(pos.x, pos.y, 1, 1).data[3],
         } as RGBA;
     }
 
-    private drawPosColor(event: MouseEvent, rgba: RGBA): void {
-        this.drawingService.baseCtx.rect(event.offsetX, event.offsetY, 1, 1);
-        this.drawingService.baseCtx.fill();
+    private drawPosColor(pos: Vec2, rgba: RGBA): void {
+        this.drawingService.baseCtx.fillRect(pos.x, pos.y, 1, 1);
     }
 
     private compareRGBA(first: RGBA, second: RGBA): boolean {
@@ -38,6 +35,7 @@ export class PaintBucketService extends Tool {
         return false;
     }
 
+    /*
     private checkFourPolesAndDraw(event: MouseEvent, rgba: RGBA): void {
         // check north
         let colorToCheck = this.getPosColor({ offsetX: event.offsetX, offsetY: event.offsetY - 1 } as MouseEvent);
@@ -72,15 +70,25 @@ export class PaintBucketService extends Tool {
             this.checkFourPolesAndDraw(rightEvent, rgba);
         }
     }
+    */
+
+    // https://en.wikipedia.org/wiki/Flood_fill#:~:text=Flood%20fill%2C%20also%20called%20seed,in%20a%20multi%2Ddimensional%20array.
+    private draw(pos: Vec2, rgba: RGBA): void {
+        return;
+    }
 
     onMouseDown(event: MouseEvent): void {
-        // const pixelColorToBucket = this.getPosColor(event);
+        const pixelColorToBucket = this.getPosColor(event);
+        pixelColorToBucket.alpha = 255;
+        pixelColorToBucket.red = 255;
+        pixelColorToBucket.green = 255;
+        pixelColorToBucket.blue = 255;
 
         this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
 
         // We will do detection north, south, east and west. No need to do diagonal detection.
-        debugger;
-        this.checkFourPolesAndDraw(event, this.white);
+        // this.checkFourPolesAndDraw(event, this.white);
+        this.draw({ x: event.offsetX, y: event.offsetY }, pixelColorToBucket);
 
         //console.log('bonsoir');
     }
