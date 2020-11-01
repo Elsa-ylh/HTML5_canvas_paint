@@ -14,82 +14,95 @@ export class PaintBucketService extends Tool {
         super(drawingService);
     }
 
-    // if needed, put parameter as MouseEvent with only offsetX and offsetY to get that particular position color
-    private getPosColor(pos: Vec2): RGBA {
-        return {
-            red: this.drawingService.baseCtx.getImageData(pos.x, pos.y, 1, 1).data[0],
-            green: this.drawingService.baseCtx.getImageData(pos.x, pos.y, 1, 1).data[1],
-            blue: this.drawingService.baseCtx.getImageData(pos.x, pos.y, 1, 1).data[2],
-            alpha: this.drawingService.baseCtx.getImageData(pos.x, pos.y, 1, 1).data[3],
-        } as RGBA;
-    }
-
-    private drawPosColor(pos: Vec2, rgba: RGBA): void {
-        this.drawingService.baseCtx.fillRect(pos.x, pos.y, 1, 1);
-    }
-
-    private compareRGBA(first: RGBA, second: RGBA): boolean {
-        if (first.red === second.red && first.green === second.green && first.blue === second.blue && first.alpha === second.alpha) {
-            return true;
-        }
-        return false;
-    }
-
-    /*
-    private checkFourPolesAndDraw(event: MouseEvent, rgba: RGBA): void {
-        // check north
-        let colorToCheck = this.getPosColor({ offsetX: event.offsetX, offsetY: event.offsetY - 1 } as MouseEvent);
-        if (event.offsetY > 0 && this.compareRGBA(colorToCheck, rgba)) {
-            this.drawPosColor({ offsetX: event.offsetX, offsetY: event.offsetY - 1 } as MouseEvent, rgba);
-
-            const northEvent = { offsetX: event.offsetX, offsetY: event.offsetY - 1 } as MouseEvent;
-            this.checkFourPolesAndDraw(northEvent, rgba);
-        }
-        // check south
-        colorToCheck = this.getPosColor({ offsetX: event.offsetX, offsetY: event.offsetY + 1 } as MouseEvent);
-        if (event.offsetY < this.cvsResizerService.canvasSize.y && this.compareRGBA(colorToCheck, rgba)) {
-            this.drawPosColor({ offsetX: event.offsetX, offsetY: event.offsetY + 1 } as MouseEvent, rgba);
-
-            const southEvent = { offsetX: event.offsetX, offsetY: event.offsetY + 1 } as MouseEvent;
-            this.checkFourPolesAndDraw(southEvent, rgba);
-        }
-        // check left
-        colorToCheck = this.getPosColor({ offsetX: event.offsetX - 1, offsetY: event.offsetY } as MouseEvent);
-        if (event.offsetX > 0 && this.compareRGBA(colorToCheck, rgba)) {
-            this.drawPosColor({ offsetX: event.offsetX - 1, offsetY: event.offsetY } as MouseEvent, rgba);
-
-            const leftEvent = { offsetX: event.offsetX - 1, offsetY: event.offsetY } as MouseEvent;
-            this.checkFourPolesAndDraw(leftEvent, rgba);
-        }
-        // check right
-        colorToCheck = this.getPosColor({ offsetX: event.offsetX + 1, offsetY: event.offsetY } as MouseEvent);
-        if (event.offsetX < this.cvsResizerService.canvasSize.x && this.compareRGBA(colorToCheck, rgba)) {
-            this.drawPosColor({ offsetX: event.offsetX + 1, offsetY: event.offsetY } as MouseEvent, rgba);
-
-            const rightEvent = { offsetX: event.offsetX + 1, offsetY: event.offsetY } as MouseEvent;
-            this.checkFourPolesAndDraw(rightEvent, rgba);
-        }
-    }
-    */
-
     // https://en.wikipedia.org/wiki/Flood_fill#:~:text=Flood%20fill%2C%20also%20called%20seed,in%20a%20multi%2Ddimensional%20array.
-    private draw(pos: Vec2, rgba: RGBA): void {
-        return;
+    // https://ben.akrin.com/?p=7888
+    // https://ben.akrin.com/canvas_fill/fill_04.html
+    flood_fill(x: number, y: number, replacementColor: RGBA): void {
+        const pixel_stack: Vec2[] = [];
+        pixel_stack.push({ x: x, y: y });
+        const pixels = this.drawingService.baseCtx.getImageData(0, 0, this.cvsResizerService.canvasSize.x, this.cvsResizerService.canvasSize.y);
+        var linear_cords = (y * this.cvsResizerService.canvasSize.x + x) * 4;
+        const original_color = {
+            red: pixels.data[linear_cords],
+            green: pixels.data[linear_cords + 1],
+            blue: pixels.data[linear_cords + 2],
+            alpha: pixels.data[linear_cords + 3],
+        };
+
+        while (pixel_stack.length > 0) {
+            const new_pixel = pixel_stack.shift() as Vec2;
+            x = new_pixel.x;
+            y = new_pixel.y;
+
+            //console.log( x + ", " + y ) ;
+
+            linear_cords = (y * this.cvsResizerService.canvasSize.x + x) * 4;
+            while (
+                y-- >= 0 &&
+                pixels.data[linear_cords] == original_color.red &&
+                pixels.data[linear_cords + 1] == original_color.green &&
+                pixels.data[linear_cords + 2] == original_color.blue &&
+                pixels.data[linear_cords + 3] == original_color.alpha
+            ) {
+                linear_cords -= this.cvsResizerService.canvasSize.x * 4;
+            }
+            linear_cords += this.cvsResizerService.canvasSize.x * 4;
+            y++;
+
+            var reached_left = false;
+            var reached_right = false;
+            while (
+                y++ < this.cvsResizerService.canvasSize.y &&
+                pixels.data[linear_cords] == original_color.red &&
+                pixels.data[linear_cords + 1] == original_color.green &&
+                pixels.data[linear_cords + 2] == original_color.blue &&
+                pixels.data[linear_cords + 3] == original_color.alpha
+            ) {
+                pixels.data[linear_cords] = replacementColor.red;
+                pixels.data[linear_cords + 1] = replacementColor.green;
+                pixels.data[linear_cords + 2] = replacementColor.blue;
+                pixels.data[linear_cords + 3] = replacementColor.alpha;
+
+                if (x > 0) {
+                    if (
+                        pixels.data[linear_cords - 4] == original_color.red &&
+                        pixels.data[linear_cords - 4 + 1] == original_color.green &&
+                        pixels.data[linear_cords - 4 + 2] == original_color.blue &&
+                        pixels.data[linear_cords - 4 + 3] == original_color.alpha
+                    ) {
+                        if (!reached_left) {
+                            pixel_stack.push({ x: x - 1, y: y });
+                            reached_left = true;
+                        }
+                    } else if (reached_left) {
+                        reached_left = false;
+                    }
+                }
+
+                if (x < this.cvsResizerService.canvasSize.x - 1) {
+                    if (
+                        pixels.data[linear_cords + 4] == original_color.red &&
+                        pixels.data[linear_cords + 4 + 1] == original_color.green &&
+                        pixels.data[linear_cords + 4 + 2] == original_color.blue &&
+                        pixels.data[linear_cords + 4 + 3] == original_color.alpha
+                    ) {
+                        if (!reached_right) {
+                            pixel_stack.push({ x: x + 1, y: y });
+                            reached_right = true;
+                        }
+                    } else if (reached_right) {
+                        reached_right = false;
+                    }
+                }
+
+                linear_cords += this.cvsResizerService.canvasSize.x * 4;
+            }
+        }
+        this.drawingService.baseCtx.putImageData(pixels, 0, 0);
     }
 
     onMouseDown(event: MouseEvent): void {
-        const pixelColorToBucket = this.getPosColor(event);
-        pixelColorToBucket.alpha = 255;
-        pixelColorToBucket.red = 255;
-        pixelColorToBucket.green = 255;
-        pixelColorToBucket.blue = 255;
-
-        this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
-
-        // We will do detection north, south, east and west. No need to do diagonal detection.
-        // this.checkFourPolesAndDraw(event, this.white);
-        this.draw({ x: event.offsetX, y: event.offsetY }, pixelColorToBucket);
-
-        //console.log('bonsoir');
+        debugger;
+        this.flood_fill(event.offsetX, event.offsetY, { red: 100, green: 100, blue: 100, alpha: 255 });
     }
 }
