@@ -49,8 +49,8 @@ export class PaintBucketService extends Tool {
             linear_cords += this.cvsResizerService.canvasSize.x * 4;
             y++;
 
-            var reached_left = false;
-            var reached_right = false;
+            let reached_left = false;
+            let reached_right = false;
             while (
                 y++ < this.cvsResizerService.canvasSize.y &&
                 pixels.data[linear_cords] == original_color.red &&
