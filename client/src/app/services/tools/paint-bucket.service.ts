@@ -82,6 +82,6 @@ export class PaintBucketService extends Tool {
         debugger;
         this.checkFourPolesAndDraw(event, this.white);
 
-        console.log('bonsoir');
+        //console.log('bonsoir');
     }
 }
