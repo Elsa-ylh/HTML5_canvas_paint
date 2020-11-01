@@ -6,6 +6,8 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
 
 const HTTP_STATUS_BAD_REQUEST = 400;
+const MIN_CHARACTER = 6;
+const MAX_CHARACTER = 10;
 @injectable()
 export class DataController {
     router: Router;
@@ -191,50 +193,66 @@ export class DataController {
                 const newPicture: CancasInformation = {
                     _id: req.body._id,
                     name: req.body.name,
-                    labels: req.body.labels === undefined ? req.body.labels : [],
+                    labels: req.body.labels,
                     date: req.body.date,
                     picture: req.body.picture,
                     height: req.body.height,
                     width: req.body.width,
                 };
-                if (newPicture._id === '') {
-                    this.databaseService
-                        .addPicture(newPicture)
-                        .then((good: boolean) => {
-                            const successMessage: Message = {
-                                title: 'success',
-                                body: 'addPicture : ' + good,
-                            };
-                            res.json(successMessage);
-                        })
-                        .catch((reason: unknown) => {
-                            const errorMessage: Message = {
-                                title: 'Errer',
-                                body: reason as string,
-                            };
-                            res.json(errorMessage);
-                        });
+                if (this.checkName(newPicture.name) || this.checkLabel(newPicture.labels)) {
+                    const errorMessage: Message = {
+                        title: 'Error',
+                        body:
+                            'name error : ' +
+                            this.checkName(newPicture.name) +
+                            ' Request : ' +
+                            newPicture.name +
+                            '; label error : ' +
+                            this.checkLabel(newPicture.labels) +
+                            ' Request : ' +
+                            newPicture.labels,
+                    };
+                    res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
                 } else {
-                    this.databaseService
-                        .modifyPicture(newPicture)
-                        .then((good: boolean) => {
-                            const successMessage: Message = {
-                                title: 'success',
-                                body: 'modifyPicture : ' + good,
-                            };
-                            res.json(successMessage);
-                        })
-                        .catch((reason: unknown) => {
-                            const errorMessage: Message = {
-                                title: 'Errer',
-                                body: reason as string,
-                            };
-                            res.json(errorMessage);
-                        });
+                    if (newPicture._id === '') {
+                        this.databaseService
+                            .addPicture(newPicture)
+                            .then((good: boolean) => {
+                                const successMessage: Message = {
+                                    title: 'success',
+                                    body: 'addPicture : ' + good,
+                                };
+                                res.json(successMessage);
+                            })
+                            .catch((reason: unknown) => {
+                                const errorMessage: Message = {
+                                    title: 'Error',
+                                    body: reason as string,
+                                };
+                                res.json(errorMessage);
+                            });
+                    } else {
+                        this.databaseService
+                            .modifyPicture(newPicture)
+                            .then((good: boolean) => {
+                                const successMessage: Message = {
+                                    title: 'success',
+                                    body: 'modifyPicture : ' + good,
+                                };
+                                res.json(successMessage);
+                            })
+                            .catch((reason: unknown) => {
+                                const errorMessage: Message = {
+                                    title: 'Error',
+                                    body: reason as string,
+                                };
+                                res.json(errorMessage);
+                            });
+                    }
                 }
             } else {
                 const errorMessage: Message = {
-                    title: 'Errer',
+                    title: 'Error',
                     body: 'it is not picture',
                 };
                 res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
@@ -252,6 +270,35 @@ export class DataController {
             req.body.width !== undefined &&
             req.body.height !== undefined &&
             req.body.picture !== undefined
+        );
+    }
+    private checkName(name: string): boolean {
+        return name === '' || name === undefined || this.notGoodCharacter(name) || name.split(' ').length !== 1;
+    }
+    private checkLabel(labels: Label[]): boolean {
+        for (let index = 0; index < labels.length; index++) {
+            const label = labels[index];
+            if (this.notGoodCharacter(label.label)) {
+                return true;
+            }
+            if (label.label.length < MIN_CHARACTER || label.label.length > MAX_CHARACTER) return true;
+        }
+        return false;
+    }
+    private notGoodCharacter(text: string): boolean {
+        return (
+            text.split('#').length !== 1 ||
+            text.split("'").length !== 1 ||
+            text.split('/').length !== 1 ||
+            text.split('"').length !== 1 ||
+            text.split('-').length !== 1 ||
+            text.split('&').length !== 1 ||
+            text.split('*').length !== 1 ||
+            text.split('!').length !== 1 ||
+            text.split('$').length !== 1 ||
+            text.split('?').length !== 1 ||
+            text.split('|').length !== 1 ||
+            text.split('%').length !== 1
         );
     }
 }

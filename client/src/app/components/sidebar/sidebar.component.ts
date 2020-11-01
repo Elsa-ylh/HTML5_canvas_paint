@@ -112,7 +112,7 @@ export class SidebarComponent {
                 width: '90%',
                 height: '90%',
             });
-            this.dialogLoadRef.afterClosed().subscribe(() => {
+            this.dialogSaveRef.afterClosed().subscribe(() => {
                 this.isDialogOpenSaveEport = true;
             });
         }

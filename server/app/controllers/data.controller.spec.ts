@@ -95,7 +95,7 @@ describe('Data Controller', () => {
                 console.log('Error ' + err.message);
             });
     });
-    it('should post test labels errer mongodb', async () => {
+    it('should post test labels error mongodb', async () => {
         dataService.getPicturesLabals.rejects(new Error('error in the service'));
         const service = {
             title: 'Titre',
@@ -114,7 +114,7 @@ describe('Data Controller', () => {
                 console.log('Error ' + err.message);
             });
     });
-    it('should post test labels errer mongodb', async () => {
+    it('should post test labels error mongodb', async () => {
         dataService.getPicturesLabals.rejects(new Error('error in the service mongo'));
         const service: Message = {
             title: 'labels',
@@ -206,7 +206,7 @@ describe('Data Controller', () => {
                 console.log('Error ' + err);
             });
     });
-    it('post in good research name both errer', async () => {
+    it('post in good research name both error', async () => {
         dataService.getPicturesName.rejects(new Error('error in the service mongo'));
         const service = {
             title: 'name',
@@ -257,7 +257,7 @@ describe('Data Controller', () => {
                 console.log('Error ' + err);
             });
     });
-    it('post in good research date both errer', async () => {
+    it('post in good research date both error', async () => {
         dataService.getPicturesDate.rejects(new Error('error in the service mongo'));
         const service = {
             title: 'date',
@@ -332,7 +332,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_OK)
             .send(newCancasInformationAdd)
             .then(async (reponse: any) => {
-                expect(reponse.body.title).to.equal('Errer');
+                expect(reponse.body.title).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
@@ -354,7 +354,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_OK)
             .send(newCancasInformationAdd)
             .then(async (reponse: any) => {
-                expect(reponse.body.title).to.equal('Errer');
+                expect(reponse.body.title).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
@@ -365,7 +365,49 @@ describe('Data Controller', () => {
             .post('/api/data/savePicture')
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .then(async (reponse: any) => {
-                expect(reponse.body.title).to.equal('Errer');
+                expect(reponse.body.title).to.equal('Error');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in not good savePicture label and name error', () => {
+        const newCancasInformationAdd = {
+            _id: '',
+            name: 'test5 ',
+            labels: [{ label: 'label1' }, { label: 'label$' }],
+            width: 0,
+            height: 0,
+            date: isDate,
+            picture: 'test5',
+        } as CancasInformation;
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_BAD_REQUEST_OK)
+            .send(newCancasInformationAdd)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Error');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in not good savePicture label < 6', () => {
+        const newCancasInformationAdd = {
+            _id: '',
+            name: 'test5 ',
+            labels: [{ label: 'label1' }, { label: 'label' }],
+            width: 0,
+            height: 0,
+            date: isDate,
+            picture: 'test5',
+        } as CancasInformation;
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_BAD_REQUEST_OK)
+            .send(newCancasInformationAdd)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);

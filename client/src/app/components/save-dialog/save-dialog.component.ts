@@ -13,7 +13,8 @@ export class SaveDialogComponent implements OnInit {
     textLabel: string = '';
     textName: string = '';
     private labelSelect: string[] = [];
-    disabled: boolean = true;
+    errerTextLabel: boolean = false;
+    saveload: boolean = false;
 
     constructor(private clientServerCommunicationService: ClientServerCommunicationService) {}
     ngOnInit(): void {
@@ -34,16 +35,18 @@ export class SaveDialogComponent implements OnInit {
             this.labelSelect.push(label);
         }
     }
-
     refresh(): void {
         this.addAllLabal();
     }
-    saveServer(): boolean {
+    saveServer(): void {
+        this.saveload = true;
         const nameResult = !this.checkName(this.textName);
         const labelResult = !this.checkLabel(this.textLabel);
+        this.errerTextLabel = !nameResult;
         if (nameResult && labelResult) {
+        } else {
+            this.saveload = false;
         }
-        return false;
     }
     // retour inverser
     checkName(name: string): boolean {

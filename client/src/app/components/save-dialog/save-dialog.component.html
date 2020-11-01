@@ -7,24 +7,29 @@
         </mat-label>
         <mat-form-field appearance="legacy">
             <mat-label>Nom de image</mat-label>
-            <input matInput [(ngModel)]="textName" />
+            <input id="textName" type="text" matInput [(ngModel)]="textName" />
         </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile>
         <mat-label>
             Consigne pour creer une étiquette <br />Chaque nouvelle étiquette doive être séparé par un espace. Un minimome de caractère 6 et le max
             est de 20.<br />
-            Les caractère non autoriser sont : / ! " ' % ? & * # |
+            Les caractère sont non autoriser sont : / ! " ' % ? & * # |
         </mat-label>
         <mat-form-field appearance="legacy">
             <mat-label>créer des étiquettes</mat-label>
-            <textarea matInput [(ngModel)]="textLabel"></textarea>
+            <textarea matInput type="text" [(ngModel)]="textLabel"></textarea>
         </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile>
-        <button mat-raised-button (click)="saveServer()" [disabled]="checkLabel(textLabel) || checkName(textName)">Sauvegarder sur le serveur</button>
+        <button mat-raised-button (click)="saveServer()" [disabled]="checkName(textName) || saveload">Sauvegarder sur le serveur</button>
     </mat-grid-tile>
 </mat-grid-list>
+<div>
+    <p class="errer" *ngIf="notGoodCharacter(textName)">Name : Les caractère sont non autoriser sont : / ! " ' % ? & * # |</p>
+    <p class="errer" *ngIf="errerTextLabel">Une à plus erreur dans les étiquette</p>
+    <p class="errer" *ngIf="notGoodCharacter(textLabel)">Étiquette : les caractère sont non autoriser sont : / ! " ' % ? & * # |</p>
+</div>
 <div>
     <h1>liste d'étiquettes existent</h1>
     <p *ngIf="!dataLabel.length">appuyer sur le button "rafraichir la liste" étiquettes</p>
