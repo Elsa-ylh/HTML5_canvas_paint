@@ -17,92 +17,91 @@ export class PaintBucketService extends Tool {
     // https://en.wikipedia.org/wiki/Flood_fill#:~:text=Flood%20fill%2C%20also%20called%20seed,in%20a%20multi%2Ddimensional%20array.
     // https://ben.akrin.com/?p=7888
     // https://ben.akrin.com/canvas_fill/fill_04.html
+    // tslint:disable: cyclomatic-complexity
+    // tslint:disable: no-magic-numbers
     flood_fill(x: number, y: number, replacementColor: RGBA): void {
-        const pixel_stack: Vec2[] = [];
-        pixel_stack.push({ x: x, y: y });
+        const pixelStack: Vec2[] = [];
+        pixelStack.push({ x, y });
         const pixels = this.drawingService.baseCtx.getImageData(0, 0, this.cvsResizerService.canvasSize.x, this.cvsResizerService.canvasSize.y);
-        let linear_cords = (y * this.cvsResizerService.canvasSize.x + x) * 4;
-        const original_color = {
-            red: pixels.data[linear_cords],
-            green: pixels.data[linear_cords + 1],
-            blue: pixels.data[linear_cords + 2],
-            alpha: pixels.data[linear_cords + 3],
+        let linearCoords = (y * this.cvsResizerService.canvasSize.x + x) * 4;
+        const originalColor = {
+            red: pixels.data[linearCoords],
+            green: pixels.data[linearCoords + 1],
+            blue: pixels.data[linearCoords + 2],
+            alpha: pixels.data[linearCoords + 3],
         };
 
-        while (pixel_stack.length > 0) {
-            const new_pixel = pixel_stack.shift() as Vec2;
-            x = new_pixel.x;
-            y = new_pixel.y;
+        while (pixelStack.length > 0) {
+            const newPixel = pixelStack.shift() as Vec2;
+            x = newPixel.x;
+            y = newPixel.y;
 
-            //console.log( x + ", " + y ) ;
-
-            linear_cords = (y * this.cvsResizerService.canvasSize.x + x) * 4;
+            linearCoords = (y * this.cvsResizerService.canvasSize.x + x) * 4;
             while (
                 y-- >= 0 &&
-                pixels.data[linear_cords] == original_color.red &&
-                pixels.data[linear_cords + 1] == original_color.green &&
-                pixels.data[linear_cords + 2] == original_color.blue &&
-                pixels.data[linear_cords + 3] == original_color.alpha
+                pixels.data[linearCoords] === originalColor.red &&
+                pixels.data[linearCoords + 1] === originalColor.green &&
+                pixels.data[linearCoords + 2] === originalColor.blue &&
+                pixels.data[linearCoords + 3] === originalColor.alpha
             ) {
-                linear_cords -= this.cvsResizerService.canvasSize.x * 4;
+                linearCoords -= this.cvsResizerService.canvasSize.x * 4;
             }
-            linear_cords += this.cvsResizerService.canvasSize.x * 4;
+            linearCoords += this.cvsResizerService.canvasSize.x * 4;
             y++;
 
-            let reached_left = false;
-            let reached_right = false;
+            let reachedLeft = false;
+            let reachedRight = false;
             while (
                 y++ < this.cvsResizerService.canvasSize.y &&
-                pixels.data[linear_cords] == original_color.red &&
-                pixels.data[linear_cords + 1] == original_color.green &&
-                pixels.data[linear_cords + 2] == original_color.blue &&
-                pixels.data[linear_cords + 3] == original_color.alpha
+                pixels.data[linearCoords] === originalColor.red &&
+                pixels.data[linearCoords + 1] === originalColor.green &&
+                pixels.data[linearCoords + 2] === originalColor.blue &&
+                pixels.data[linearCoords + 3] === originalColor.alpha
             ) {
-                pixels.data[linear_cords] = replacementColor.red;
-                pixels.data[linear_cords + 1] = replacementColor.green;
-                pixels.data[linear_cords + 2] = replacementColor.blue;
-                pixels.data[linear_cords + 3] = replacementColor.alpha;
+                pixels.data[linearCoords] = replacementColor.red;
+                pixels.data[linearCoords + 1] = replacementColor.green;
+                pixels.data[linearCoords + 2] = replacementColor.blue;
+                pixels.data[linearCoords + 3] = replacementColor.alpha;
 
                 if (x > 0) {
                     if (
-                        pixels.data[linear_cords - 4] == original_color.red &&
-                        pixels.data[linear_cords - 4 + 1] == original_color.green &&
-                        pixels.data[linear_cords - 4 + 2] == original_color.blue &&
-                        pixels.data[linear_cords - 4 + 3] == original_color.alpha
+                        pixels.data[linearCoords - 4] === originalColor.red &&
+                        pixels.data[linearCoords - 4 + 1] === originalColor.green &&
+                        pixels.data[linearCoords - 4 + 2] === originalColor.blue &&
+                        pixels.data[linearCoords - 4 + 3] === originalColor.alpha
                     ) {
-                        if (!reached_left) {
-                            pixel_stack.push({ x: x - 1, y: y });
-                            reached_left = true;
+                        if (!reachedLeft) {
+                            pixelStack.push({ x: x - 1, y });
+                            reachedLeft = true;
                         }
-                    } else if (reached_left) {
-                        reached_left = false;
+                    } else if (reachedLeft) {
+                        reachedLeft = false;
                     }
                 }
 
                 if (x < this.cvsResizerService.canvasSize.x - 1) {
                     if (
-                        pixels.data[linear_cords + 4] == original_color.red &&
-                        pixels.data[linear_cords + 4 + 1] == original_color.green &&
-                        pixels.data[linear_cords + 4 + 2] == original_color.blue &&
-                        pixels.data[linear_cords + 4 + 3] == original_color.alpha
+                        pixels.data[linearCoords + 4] === originalColor.red &&
+                        pixels.data[linearCoords + 4 + 1] === originalColor.green &&
+                        pixels.data[linearCoords + 4 + 2] === originalColor.blue &&
+                        pixels.data[linearCoords + 4 + 3] === originalColor.alpha
                     ) {
-                        if (!reached_right) {
-                            pixel_stack.push({ x: x + 1, y: y });
-                            reached_right = true;
+                        if (!reachedRight) {
+                            pixelStack.push({ x: x + 1, y });
+                            reachedRight = true;
                         }
-                    } else if (reached_right) {
-                        reached_right = false;
+                    } else if (reachedRight) {
+                        reachedRight = false;
                     }
                 }
 
-                linear_cords += this.cvsResizerService.canvasSize.x * 4;
+                linearCoords += this.cvsResizerService.canvasSize.x * 4;
             }
         }
         this.drawingService.baseCtx.putImageData(pixels, 0, 0);
     }
 
     onMouseDown(event: MouseEvent): void {
-        debugger;
-        this.flood_fill(event.offsetX, event.offsetY, { red: 100, green: 100, blue: 100, alpha: 255 });
+        this.flood_fill(event.offsetX, event.offsetY);
     }
 }
