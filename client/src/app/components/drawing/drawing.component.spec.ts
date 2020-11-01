@@ -18,6 +18,7 @@ import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
@@ -42,22 +43,24 @@ describe('DrawingComponent', () => {
     let polygonStub: PolygonService;
     let selectionRectangleStub: SelectionRectangleService;
     let selectionEllipseStub: SelectionEllipseService;
+    let undoRedoStub: UndoRedoService;
 
     beforeEach(
         waitForAsync(() => {
             drawingStub = new DrawingService();
-            canvasResizerStub = new CanvasResizerService();
+            undoRedoStub = new UndoRedoService(drawingStub);
+            canvasResizerStub = new CanvasResizerService(undoRedoStub);
             colorStub = new ColorService(drawingStub);
-            pencilStub = new PencilService(drawingStub, colorStub);
-            eraserStub = new EraserService(drawingStub);
-            brushStub = new BrushService(drawingStub, colorStub);
-            lineStub = new LineService(drawingStub, colorStub);
-            rectangleStub = new RectangleService(drawingStub, colorStub);
-            ellipseStub = new EllipseService(drawingStub, colorStub);
+            pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub);
+            eraserStub = new EraserService(drawingStub, undoRedoStub);
+            brushStub = new BrushService(drawingStub, colorStub, undoRedoStub);
+            lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
+            rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub);
+            ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub);
             dropperStub = new DropperService(drawingStub, colorStub);
-            polygonStub = new PolygonService(drawingStub, colorStub);
-            selectionRectangleStub = new SelectionRectangleService(drawingStub);
-            selectionEllipseStub = new SelectionEllipseService(drawingStub);
+            polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub);
+            selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
+            selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
 
             toolServiceStub = new ToolService(
                 pencilStub,

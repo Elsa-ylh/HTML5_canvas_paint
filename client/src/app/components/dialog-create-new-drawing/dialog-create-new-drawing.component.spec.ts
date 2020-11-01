@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { DialogCreateNewDrawingComponent } from './dialog-create-new-drawing.component';
 
 describe('DialogCreateNewDrawingComponent', () => {
@@ -18,10 +19,12 @@ describe('DialogCreateNewDrawingComponent', () => {
     let onConfirmClickSpy: jasmine.Spy<any>;
     let alertSpy: jasmine.Spy<any>;
     let keyboardEvent: KeyboardEvent;
+    let undoRedoStub: UndoRedoService;
 
     beforeEach(async () => {
         drawingStub = new DrawingService();
-        canvasResizerStub = new CanvasResizerService();
+        undoRedoStub = new UndoRedoService(drawingStub);
+        canvasResizerStub = new CanvasResizerService(undoRedoStub);
 
         await TestBed.configureTestingModule({
             imports: [MatDialogModule, MatIconModule, MatGridListModule, BrowserAnimationsModule, HttpClientModule],

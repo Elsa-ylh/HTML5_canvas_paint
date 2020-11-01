@@ -33,6 +33,7 @@ import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { SidebarComponent } from './sidebar.component';
 
 describe('SidebarComponent', () => {
@@ -51,6 +52,7 @@ describe('SidebarComponent', () => {
     let polygonStub: PolygonService;
     let selectionRectangleStub: SelectionRectangleService;
     let selectionEllipseStub: SelectionEllipseService;
+    let undoRedoStub: UndoRedoService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -58,16 +60,17 @@ describe('SidebarComponent', () => {
 
     beforeEach(async () => {
         drawingStub = new DrawingService();
+        undoRedoStub = new UndoRedoService(drawingStub);
         colorStub = new ColorService(drawingStub);
-        rectangleStub = new RectangleService(drawingStub, colorStub);
-        ellipseStub = new EllipseService(drawingStub, colorStub);
-        brushStub = new BrushService(drawingStub, colorStub);
-        pencilStub = new PencilService(drawingStub, colorStub);
-        eraserStub = new EraserService(drawingStub);
-        lineStub = new LineService(drawingStub, colorStub);
+        rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub);
+        ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub);
+        brushStub = new BrushService(drawingStub, colorStub, undoRedoStub);
+        pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub);
+        eraserStub = new EraserService(drawingStub, undoRedoStub);
+        lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
         dropperServiceStub = new DropperService(drawingStub, colorStub);
-        selectionRectangleStub = new SelectionRectangleService(drawingStub);
-        selectionEllipseStub = new SelectionEllipseService(drawingStub);
+        selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
+        selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
 
         toolServiceStub = new ToolService(
             pencilStub,
@@ -81,7 +84,7 @@ describe('SidebarComponent', () => {
             selectionRectangleStub,
             selectionEllipseStub,
         );
-        polygonStub = new PolygonService(drawingStub, colorStub);
+        polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub);
 
         canvas = canvasTestHelper.canvas;
         // tslint:disable: no-magic-numbers
