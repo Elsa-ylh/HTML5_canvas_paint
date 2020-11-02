@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
-import { CancasInformation, Label } from '@common/communication/canvas-information';
+import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 
 @Component({
@@ -10,7 +10,7 @@ import { Message } from '@common/communication/message';
     styleUrls: ['./carrousel-picture.component.scss'],
 })
 export class CarrouselPictureComponent implements OnInit {
-    private dataPicture: CancasInformation[] = [];
+    private dataPicture: CanvasInformation[] = [];
     dataLabel: Label[] = [];
     private labelSelect: string[] = [];
     selectedType: string = 'name';
@@ -61,7 +61,7 @@ export class CarrouselPictureComponent implements OnInit {
         const message: Message = { title: 'labels', body: textLabel };
         this.clientServerCommunicationService.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
-    getPicturesAll(): CancasInformation[] {
+    getPicturesAll(): CanvasInformation[] {
         return this.dataPicture;
     }
     setSearchCriteria(): void {

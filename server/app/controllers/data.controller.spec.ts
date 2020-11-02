@@ -1,7 +1,7 @@
 import { Application } from '@app/app';
 import { DatabasePicureService } from '@app/services/database-picture.service';
 import { TYPES } from '@app/types';
-import { CancasInformation, Label } from '@common/communication/canvas-information';
+import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { expect } from 'chai';
 import * as supertest from 'supertest';
@@ -15,23 +15,23 @@ describe('Data Controller', () => {
     let dataService: Stubbed<DatabasePicureService>;
     let app: Express.Application;
     let isDate: Date = new Date('10/08/2020');
-    const testCancasInformationAdd = {
+    const testCanvasInformationAdd = {
         _id: '',
-        name: 'test5',
+        name: 'stest5',
         labels: [{ label: 'label1' }],
         width: 0,
         height: 0,
         date: isDate,
         picture: 'test5',
-    } as CancasInformation;
+    } as CanvasInformation;
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
         container.rebind(TYPES.DatabasePicureService).toConstantValue({
-            getPicturesLabals: sandbox.stub().resolves(testCancasInformationAdd),
-            getPictures: sandbox.stub().resolves(testCancasInformationAdd),
-            getAllLabel: sandbox.stub().resolves(testCancasInformationAdd),
-            getPicturesName: sandbox.stub().resolves(testCancasInformationAdd),
-            getPicturesDate: sandbox.stub().resolves(testCancasInformationAdd),
+            getPicturesLabals: sandbox.stub().resolves(testCanvasInformationAdd),
+            getPictures: sandbox.stub().resolves(testCanvasInformationAdd),
+            getAllLabel: sandbox.stub().resolves(testCanvasInformationAdd),
+            getPicturesName: sandbox.stub().resolves(testCanvasInformationAdd),
+            getPicturesDate: sandbox.stub().resolves(testCanvasInformationAdd),
             addPicture: sandbox.stub().resolves(undefined),
             modifyPicture: sandbox.stub().resolves(undefined),
         });
@@ -40,12 +40,12 @@ describe('Data Controller', () => {
     });
 
     it('should return ', async () => {
-        dataService.getPictures.resolves(testCancasInformationAdd);
+        dataService.getPictures.resolves(testCanvasInformationAdd);
         return supertest(app)
             .get('/api/data')
             .expect(HTTP_STATUS_OK)
             .then((reponse: any) => {
-                expect(reponse.body.name).to.deep.equal(testCancasInformationAdd.name);
+                expect(reponse.body.name).to.deep.equal(testCanvasInformationAdd.name);
             });
     });
     it('should return rejet ', async () => {
@@ -69,9 +69,9 @@ describe('Data Controller', () => {
             .send(service)
             .expect(HTTP_STATUS_OK)
             .then(async (reponse: any) => {
-                expect(reponse.body.name).to.deep.equal(testCancasInformationAdd.name);
-                expect(reponse.body.labels[0]).to.deep.equal(testCancasInformationAdd.labels[0]);
-                expect(reponse.body._id).to.deep.equal(testCancasInformationAdd._id);
+                expect(reponse.body.name).to.deep.equal(testCanvasInformationAdd.name);
+                expect(reponse.body.labels[0]).to.deep.equal(testCanvasInformationAdd.labels[0]);
+                expect(reponse.body._id).to.deep.equal(testCanvasInformationAdd._id);
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
@@ -226,14 +226,14 @@ describe('Data Controller', () => {
     it('post in good research name ', async () => {
         const service = {
             title: 'name',
-            body: 'test5',
+            body: 'stest5',
         };
         return supertest(app)
             .post('/api/data/research')
             .expect(HTTP_STATUS_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body._id).to.equal(testCancasInformationAdd._id);
+                expect(reponse.body._id).to.equal(testCanvasInformationAdd._id);
                 expect(reponse.body.name).to.equal(service.body);
             })
             .catch((err: Error) => {
@@ -250,7 +250,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body._id).to.equal(testCancasInformationAdd._id);
+                expect(reponse.body._id).to.equal(testCanvasInformationAdd._id);
                 expect(reponse.body.date).to.equal('2020-10-08T04:00:00.000Z');
             })
             .catch((err: Error) => {
@@ -275,19 +275,19 @@ describe('Data Controller', () => {
             });
     });
     it('post in good savePicture update', async () => {
-        const newCancasInformationAdd = {
+        const newCanvasInformationAdd = {
             _id: '1234',
-            name: 'test5',
+            name: 'stest5',
             labels: [{ label: 'label1' }],
             width: 0,
             height: 0,
             date: isDate,
             picture: 'test5',
-        } as CancasInformation;
+        } as CanvasInformation;
         return supertest(app)
             .post('/api/data/savePicture')
             .expect(HTTP_STATUS_OK)
-            .send(newCancasInformationAdd)
+            .send(newCanvasInformationAdd)
             .then(async (reponse: any) => {
                 expect(reponse.body.title).to.equal('success');
             })
@@ -296,19 +296,19 @@ describe('Data Controller', () => {
             });
     });
     it('post in good savePicture save', async () => {
-        const newCancasInformationAdd = {
+        const newCanvasInformationAdd = {
             _id: '',
-            name: 'test5',
+            name: 'stest5',
             labels: [{ label: 'label1' }],
             width: 0,
             height: 0,
             date: isDate,
             picture: 'test5',
-        } as CancasInformation;
+        } as CanvasInformation;
         return supertest(app)
             .post('/api/data/savePicture')
             .expect(HTTP_STATUS_OK)
-            .send(newCancasInformationAdd)
+            .send(newCanvasInformationAdd)
             .then(async (reponse: any) => {
                 expect(reponse.body.title).to.equal('success');
             })
@@ -318,19 +318,19 @@ describe('Data Controller', () => {
     });
     it('post in not good savePicture update', async () => {
         dataService.modifyPicture.rejects(new Error('error in the service mongo'));
-        const newCancasInformationAdd = {
+        const newCanvasInformationAdd = {
             _id: '1234',
-            name: 'test5',
+            name: 'stest5',
             labels: [{ label: 'label1' }],
             width: 0,
             height: 0,
             date: isDate,
             picture: 'test5',
-        } as CancasInformation;
+        } as CanvasInformation;
         return supertest(app)
             .post('/api/data/savePicture')
             .expect(HTTP_STATUS_OK)
-            .send(newCancasInformationAdd)
+            .send(newCanvasInformationAdd)
             .then(async (reponse: any) => {
                 expect(reponse.body.title).to.equal('Error');
             })
@@ -340,19 +340,19 @@ describe('Data Controller', () => {
     });
     it('post in not good savePicture save', async () => {
         dataService.addPicture.rejects(new Error('error in the service mongo'));
-        const newCancasInformationAdd = {
+        const newCanvasInformationAdd = {
             _id: '',
-            name: 'test5',
+            name: 'sstest5',
             labels: [{ label: 'label1' }],
             width: 0,
             height: 0,
             date: isDate,
             picture: 'test5',
-        } as CancasInformation;
+        } as CanvasInformation;
         return supertest(app)
             .post('/api/data/savePicture')
             .expect(HTTP_STATUS_OK)
-            .send(newCancasInformationAdd)
+            .send(newCanvasInformationAdd)
             .then(async (reponse: any) => {
                 expect(reponse.body.title).to.equal('Error');
             })
@@ -372,7 +372,7 @@ describe('Data Controller', () => {
             });
     });
     it('post in not good savePicture label and name error', () => {
-        const newCancasInformationAdd = {
+        const newCanvasInformationAdd = {
             _id: '',
             name: 'test5 ',
             labels: [{ label: 'label1' }, { label: 'label$' }],
@@ -380,11 +380,11 @@ describe('Data Controller', () => {
             height: 0,
             date: isDate,
             picture: 'test5',
-        } as CancasInformation;
+        } as CanvasInformation;
         return supertest(app)
             .post('/api/data/savePicture')
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
-            .send(newCancasInformationAdd)
+            .send(newCanvasInformationAdd)
             .then(async (reponse: any) => {
                 expect(reponse.body.title).to.equal('Error');
             })
@@ -393,7 +393,7 @@ describe('Data Controller', () => {
             });
     });
     it('post in not good savePicture label < 6', () => {
-        const newCancasInformationAdd = {
+        const newCanvasInformationAdd = {
             _id: '',
             name: 'test5 ',
             labels: [{ label: 'label1' }, { label: 'label' }],
@@ -401,11 +401,11 @@ describe('Data Controller', () => {
             height: 0,
             date: isDate,
             picture: 'test5',
-        } as CancasInformation;
+        } as CanvasInformation;
         return supertest(app)
             .post('/api/data/savePicture')
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
-            .send(newCancasInformationAdd)
+            .send(newCanvasInformationAdd)
             .then(async (reponse: any) => {
                 expect(reponse.body.title).to.equal('Error');
             })

@@ -10,8 +10,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Vec2 } from '@app/classes/vec2';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
-import { CancasInformation, Label } from '@common/communication/canvas-information';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { CanvasInformation, Label } from '@common/communication/canvas-information';
+import { of } from 'rxjs';
 import { SaveDialogComponent } from './save-dialog.component';
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
@@ -22,7 +26,8 @@ fdescribe('SaveDialogComponent', () => {
     let fixture: ComponentFixture<SaveDialogComponent>;
     let httpMock: HttpTestingController;
     const isDate: Date = new Date();
-    const testCancasInformationAdd: CancasInformation = {
+    let processedMessageSpy: jasmine.Spy<any>;
+    const testCanvasInformationAdd: CanvasInformation = {
         _id: '',
         name: 'test5',
         width: 0,
@@ -31,7 +36,8 @@ fdescribe('SaveDialogComponent', () => {
         date: isDate,
         picture: 'test5',
     };
-    const testCancasInformationAdds = [testCancasInformationAdd];
+    const vec = { x: 50, y: 45 } as Vec2;
+    const testCanvasInformationAdds = [testCanvasInformationAdd];
     const labels: Label[] = [{ label: 'lable1' }, { label: 'label2' }];
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -54,12 +60,20 @@ fdescribe('SaveDialogComponent', () => {
                     provide: ClientServerCommunicationService,
                     useValue: {
                         getAllLabel: () => labels,
-                        // subscribe: (info: any) => testCancasInformationAdds,
+                        // subscribe: (info: any) => testCanvasInformationAdds,
                         resetDatas: () => '',
-                        getInformation: () => testCancasInformationAdds,
-                        getElementResearch: () => testCancasInformationAdds,
-                        savePicture: (info: CancasInformation) => Message,
+                        getInformation: () => testCanvasInformationAdds,
+                        getElementResearch: () => testCanvasInformationAdds,
+                        savePicture: () => Message,
                     },
+                },
+                {
+                    provide: CanvasResizerService,
+                    useValue: { canvasSize: () => vec },
+                },
+                {
+                    provide: DrawingService,
+                    useValue: { convertBaseCanvasToBase64: () => 'image_test' },
                 },
             ],
         }).compileComponents();
@@ -68,8 +82,10 @@ fdescribe('SaveDialogComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(SaveDialogComponent);
         component = fixture.componentInstance;
+        spyOn(component['clientServerComSvc'], 'savePicture').and.returnValue(of());
         httpMock = TestBed.inject(HttpTestingController);
         fixture.detectChanges();
+        processedMessageSpy = spyOn<any>(component, 'processedMessage').and.callThrough();
     });
     afterEach(() => {
         if (fixture.nativeElement && 'remove' in fixture.nativeElement) {
@@ -134,5 +150,13 @@ fdescribe('SaveDialogComponent', () => {
         component.selectionLabel(labels[0].label);
         expect(component['labelSelect'][0]).toEqual(labels[1].label);
     });
-    it('', () => {});
+    it('', () => {
+        component.saveServer();
+        expect(processedMessageSpy).not.toHaveBeenCalled();
+    });
+    it('', () => {
+        component.textName = 'aaaaaa';
+        component.saveServer();
+        expect(processedMessageSpy).not.toHaveBeenCalled();
+    });
 });

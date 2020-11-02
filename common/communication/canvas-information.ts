@@ -1,4 +1,4 @@
-export interface CancasInformation {
+export interface CanvasInformation {
     _id: string;
     name: string;
     labels: Label[];

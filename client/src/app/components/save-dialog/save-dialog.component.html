@@ -1,4 +1,3 @@
-<p>save-dialog works!</p>
 <mat-grid-list cols="3" rowHeight="1:1">
     <mat-grid-tile>
         <mat-label>
@@ -18,7 +17,7 @@
         </mat-label>
         <mat-form-field appearance="legacy">
             <mat-label>créer des étiquettes</mat-label>
-            <textarea matInput type="text" [(ngModel)]="textLabel"></textarea>
+            <textarea matInput [(ngModel)]="textLabel"></textarea>
         </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile>
@@ -26,6 +25,7 @@
     </mat-grid-tile>
 </mat-grid-list>
 <div>
+    <p class="errer" *ngIf="checkName(textName)">Name : Une à plus erreur respecter les consigne</p>
     <p class="errer" *ngIf="notGoodCharacter(textName)">Name : Les caractère sont non autoriser sont : / ! " ' % ? & * # |</p>
     <p class="errer" *ngIf="errerTextLabel">Une à plus erreur dans les étiquette</p>
     <p class="errer" *ngIf="notGoodCharacter(textLabel)">Étiquette : les caractère sont non autoriser sont : / ! " ' % ? & * # |</p>

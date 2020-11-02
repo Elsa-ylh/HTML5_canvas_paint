@@ -1,4 +1,4 @@
-import { CancasInformation } from '@common/communication/canvas-information';
+import { CanvasInformation } from '@common/communication/canvas-information';
 import { expect } from 'chai';
 import { Db, MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
@@ -9,13 +9,13 @@ describe('Database service', () => {
     let mongoServer: MongoMemoryServer;
     let db: Db;
     let client: MongoClient;
-    let testCancasInformationAdd: CancasInformation;
+    let testCanvasInformationAdd: CanvasInformation;
     const allDataTest = [
         { name: 'test1', labels: [{ label: 'label1' }], width: 0, height: 0, date: new Date('10/04/2020'), picture: 'test1' },
         { name: 'test2', labels: [{ label: 'label1' }, { label: 'label2' }], width: 0, height: 0, date: new Date('10/05/2020'), picture: 'test2' },
         { name: 'test3', labels: [{}], width: 0, height: 0, date: new Date('10/08/2020 15:15:15'), picture: 'test3' },
         { name: 'test4', labels: [{ label: 'label2' }], width: 0, height: 0, date: new Date('10/08/2020'), picture: 'test4' },
-    ] as CancasInformation[];
+    ] as CanvasInformation[];
 
     beforeEach(async () => {
         databaseService = new DatabasePicureService();
@@ -26,7 +26,7 @@ describe('Database service', () => {
 
         db = client.db(await mongoServer.getDbName());
         databaseService.collection = db.collection('test');
-        testCancasInformationAdd = {
+        testCanvasInformationAdd = {
             _id: '',
             name: 'test5',
             labels: [{ label: 'label1' }],
@@ -60,22 +60,22 @@ describe('Database service', () => {
         expect(getImageData.length).to.equal(0);
     });
 
-    it('should getPicturesLabals return 2 CancasInformation ', async () => {
+    it('should getPicturesLabals return 2 CanvasInformation ', async () => {
         const label: string[] = ['label1'];
         const getImagesData = await databaseService.getPicturesLabals(label);
         expect(getImagesData.length).to.equal(2);
     });
 
-    it('should getPicturesLabals 2 labels return 3 CancasInformation ', async () => {
+    it('should getPicturesLabals 2 labels return 3 CanvasInformation ', async () => {
         const label: string[] = ['label1', 'label2'];
         const getImagesData = await databaseService.getPicturesLabals(label);
         expect(getImagesData.length).to.equal(3);
     });
 
     it('should addPicture in the collection and find the added item', async () => {
-        await databaseService.addPicture(testCancasInformationAdd);
-        const getImagesData: CancasInformation = await databaseService.getPictureName(testCancasInformationAdd.name);
-        expect(getImagesData.name).to.equal(testCancasInformationAdd.name);
+        await databaseService.addPicture(testCanvasInformationAdd);
+        const getImagesData: CanvasInformation = await databaseService.getPictureName(testCanvasInformationAdd.name);
+        expect(getImagesData.name).to.equal(testCanvasInformationAdd.name);
     });
 
     it('should addPicture is not add collection', async () => {
@@ -86,7 +86,7 @@ describe('Database service', () => {
             height: 0,
             date: new Date('10/08/2020'),
             picture: 'a',
-        } as CancasInformation;
+        } as CanvasInformation;
 
         await databaseService
             .addPicture(newPictError)
@@ -105,7 +105,7 @@ describe('Database service', () => {
             labels: [{ label: 'label3' }],
             date: new Date('10/08/2020'),
             picture: 'test5',
-        } as CancasInformation);
+        } as CanvasInformation);
         await databaseService
             .getAllLabel()
             .then((resol: any) => {
@@ -164,7 +164,7 @@ describe('Database service', () => {
         const label: string = 'label1';
         await databaseService
             .getPictureName(label)
-            .then((req: CancasInformation) => {
+            .then((req: CanvasInformation) => {
                 expect(req.name).to.equal('MongoError');
             })
             .catch((error: Error) => {
@@ -175,7 +175,7 @@ describe('Database service', () => {
     it('test error find addPicture', async () => {
         client.close();
         await databaseService
-            .addPicture(testCancasInformationAdd)
+            .addPicture(testCanvasInformationAdd)
             .then((value: any) => {
                 expect(value.name).to.equal('Error');
             })
@@ -258,7 +258,7 @@ describe('Database service', () => {
             });
     });
     it('test find modifyPicture', async () => {
-        let infoModif: CancasInformation = await databaseService.getPictureName(allDataTest[0].name);
+        let infoModif: CanvasInformation = await databaseService.getPictureName(allDataTest[0].name);
         const modify = 'modify';
         infoModif.name = modify;
         await databaseService
@@ -269,11 +269,11 @@ describe('Database service', () => {
             .catch((error: unknown) => {
                 expect(error).to.true;
             });
-        const infoModiReturn: CancasInformation = await databaseService.getPictureName(modify);
+        const infoModiReturn: CanvasInformation = await databaseService.getPictureName(modify);
         expect(infoModiReturn.name).to.equal(modify);
     });
     it('test find modifyPicture', async () => {
-        let infoModif: CancasInformation = await databaseService.getPictureName(allDataTest[0].name);
+        let infoModif: CanvasInformation = await databaseService.getPictureName(allDataTest[0].name);
         const modify = 'modify';
         infoModif.name = modify;
         await databaseService
@@ -287,7 +287,7 @@ describe('Database service', () => {
     });
     it('test find modifyPicture false', async () => {
         await client.close();
-        const infoModif: CancasInformation = {
+        const infoModif: CanvasInformation = {
             _id: 'allDataTest.id',
             name: allDataTest[0].name,
             labels: [{ label: 'label1' }],
@@ -308,7 +308,7 @@ describe('Database service', () => {
     });
 
     it('test find modifyPicture erreur', async () => {
-        const infoModif: CancasInformation = {
+        const infoModif: CanvasInformation = {
             _id: '',
             name: '',
             labels: [{ label: 'label1' }],
