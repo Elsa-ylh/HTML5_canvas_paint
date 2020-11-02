@@ -236,6 +236,10 @@
                 <app-color></app-color>
             </mat-grid-list>
 
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.PaintBucket">
+              <app-color></app-color>
+          </mat-grid-list>
+
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Dropper">
                 <app-dropper-color></app-dropper-color>
             </mat-grid-list>

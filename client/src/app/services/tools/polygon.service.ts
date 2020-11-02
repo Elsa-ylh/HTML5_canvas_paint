@@ -94,9 +94,11 @@ export class PolygonService extends Tool {
         ctx.setLineDash([0, 0]);
         this.drawPolygon(ctx, this.numberOfSides);
         ctx.fill();
+        // draw preview circle
         if (this.drawingService.previewCtx === ctx) {
-            ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
             ctx.lineWidth = this.lineCirclewidth;
+            ctx.strokeStyle = this.strokeCircleColor;
+            ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
             ctx.arc(this.mouseDownCoord.x, this.mouseDownCoord.y, this.radius, 0, 2 * Math.PI, false);
             ctx.stroke();
         }
@@ -111,7 +113,7 @@ export class PolygonService extends Tool {
         ctx.setLineDash([0, 0]);
         this.drawPolygon(ctx, this.numberOfSides);
         ctx.stroke();
-
+        ctx.strokeStyle = this.strokeCircleColor;
         this.drawPreviewCircle(ctx, mouseDownPos, mouseUpPos);
     }
 
@@ -126,7 +128,7 @@ export class PolygonService extends Tool {
         this.drawPolygon(ctx, this.numberOfSides);
         ctx.stroke();
         ctx.fill();
-
+        ctx.strokeStyle = this.strokeCircleColor;
         this.drawPreviewCircle(ctx, mouseDownPos, mouseUpPos);
     }
 
