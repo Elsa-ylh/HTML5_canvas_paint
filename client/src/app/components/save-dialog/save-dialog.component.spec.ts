@@ -21,7 +21,7 @@ import { SaveDialogComponent } from './save-dialog.component';
 // tslint:disable:no-string-literal
 // tslint:disable:no-unused-expression
 // tslint:disable:no-empty
-describe('SaveDialogComponent', () => {
+fdescribe('SaveDialogComponent', () => {
     let component: SaveDialogComponent;
     let fixture: ComponentFixture<SaveDialogComponent>;
     let httpMock: HttpTestingController;
@@ -173,5 +173,10 @@ describe('SaveDialogComponent', () => {
         component.textLabel = 'aaaaaaaaa';
         component.saveServer();
         expect(processedMessageSpy).not.toHaveBeenCalled();
+    });
+    it('', () => {
+        component.saveload = true;
+        component.processedMessage({ title: 'succes', body: 'reussi' });
+        expect(component.saveload).toEqual(false);
     });
 });
