@@ -42,7 +42,7 @@ import { AppComponent } from './components/app/app.component';
 import { CarrouselPictureComponent } from './components/carrousel-picture/carrousel-picture.component';
 import { ColorComponent } from './components/color/color.component';
 import { DialogCreateNewDrawingComponent } from './components/dialog-create-new-drawing/dialog-create-new-drawing.component';
-import { DialogExportDrawingComponent } from './components/dialog-export-drawing/dialog-export-drawing.component';
+import { DialogExportDrawingComponent } from './components/dialog-export-locally/dialog-export-locally.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { DropperColorComponent } from './components/dropper-color/dropper-color.component';
 import { EditorComponent } from './components/editor/editor.component';

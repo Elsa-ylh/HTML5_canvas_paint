@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DialogExportDrawingComponent } from './dialog-export-drawing.component';
+import { DialogExportDrawingComponent } from './dialog-export-locally.component';
 
 describe('DialogExportDrawingComponent', () => {
     let component: DialogExportDrawingComponent;

@@ -8,7 +8,7 @@ import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
 import { CarrouselPictureComponent } from '@app/components/carrousel-picture/carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
-import { DialogExportDrawingComponent } from '@app/components/dialog-export-drawing/dialog-export-drawing.component';
+import { DialogExportDrawingComponent } from '@app/components/dialog-export-locally/dialog-export-locally.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
