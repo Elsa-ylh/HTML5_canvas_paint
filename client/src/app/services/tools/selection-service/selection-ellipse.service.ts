@@ -141,6 +141,7 @@ export class SelectionEllipseService extends SelectionService {
                 { x: this.selectRectInitialPos.x + this.mouseMouvement.x, y: this.selectRectInitialPos.y + this.mouseMouvement.y },
                 this.image,
             );
+            // undo-redo
             const selectEllipseAc = new SelectionEllipseAction(
                 { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 { x: this.selectRectInitialPos.x + this.mouseMouvement.x, y: this.selectRectInitialPos.y + this.mouseMouvement.y },

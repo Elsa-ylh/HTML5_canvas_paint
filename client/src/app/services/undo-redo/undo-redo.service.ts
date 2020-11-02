@@ -20,13 +20,13 @@ export class UndoRedoService {
 
     // Controls the buttons of redo-undo
     onMouseUpActivateUndo(mouseEvent: MouseEvent): void {
-        console.log('undo', this.nbinUndoList);
+        // console.log('undo', this.nbinUndoList);
         if (this.listUndo.length > 0 || this.nbinResizeList > 0) {
             this.isundoDisabled = false;
         }
     }
     onMouseUpActivateRedo(mouseEvent: MouseEvent): void {
-        console.log('redo', this.nbinRedoList);
+        // console.log('redo', this.nbinRedoList);
         if (this.nbinRedoList > 0 || this.nbinResizeList > 0) {
             this.isRedoDisabled = false;
         }
