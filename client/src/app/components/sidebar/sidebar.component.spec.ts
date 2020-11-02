@@ -31,7 +31,8 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
-import { SelectionService } from '@app/services/tools/selection-service';
+import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
+import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SidebarComponent } from './sidebar.component';
 
 describe('SidebarComponent', () => {
@@ -47,8 +48,9 @@ describe('SidebarComponent', () => {
     let lineStub: LineService;
     let colorStub: ColorService;
     let dropperServiceStub: DropperService;
-    let selectionStub: SelectionService;
     let polygonStub: PolygonService;
+    let selectionRectangleStub: SelectionRectangleService;
+    let selectionEllipseStub: SelectionEllipseService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -64,6 +66,8 @@ describe('SidebarComponent', () => {
         eraserStub = new EraserService(drawingStub);
         lineStub = new LineService(drawingStub, colorStub);
         dropperServiceStub = new DropperService(drawingStub, colorStub);
+        selectionRectangleStub = new SelectionRectangleService(drawingStub);
+        selectionEllipseStub = new SelectionEllipseService(drawingStub);
 
         toolServiceStub = new ToolService(
             pencilStub,
@@ -73,10 +77,10 @@ describe('SidebarComponent', () => {
             rectangleStub,
             ellipseStub,
             dropperServiceStub,
-            selectionStub,
             polygonStub,
+            selectionRectangleStub,
+            selectionEllipseStub,
         );
-        selectionStub = new SelectionService(drawingStub);
         polygonStub = new PolygonService(drawingStub, colorStub);
 
         canvas = canvasTestHelper.canvas;
@@ -121,7 +125,8 @@ describe('SidebarComponent', () => {
                 { provide: PencilService, useValue: pencilStub },
                 { provide: EraserService, useValue: eraserStub },
                 { provide: LineService, useValue: lineStub },
-                { provide: SelectionService, useValue: selectionStub },
+                { provide: SelectionRectangleService, useValue: selectionRectangleStub },
+                { provide: SelectionEllipseService, useValue: selectionEllipseStub },
                 { provide: ToolService, useValue: toolServiceStub },
                 { provide: DropperService, useValue: dropperServiceStub },
                 { provide: MatDialog, useValue: {} },
