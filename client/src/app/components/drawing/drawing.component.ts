@@ -86,7 +86,6 @@ export class DrawingComponent implements AfterViewInit {
 
     onMouseDown(event: MouseEvent): void {
         this.toolService.currentTool.onMouseDown(event);
-        this.undoRedoService.undoRedoDisabled(); // activate or not undo redo
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -95,8 +94,6 @@ export class DrawingComponent implements AfterViewInit {
 
     onMouseUp(event: MouseEvent): void {
         this.toolService.currentTool.onMouseUp(event);
-        this.undoRedoService.onMouseUpActivateUndo(event);
-        this.undoRedoService.onMouseUpActivateRedo(event);
     }
 
     onMouseOut(event: MouseEvent): void {

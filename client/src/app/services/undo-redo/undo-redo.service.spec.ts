@@ -31,7 +31,7 @@ describe('Service: UndoRedo', () => {
 
     it('should set isUndoDisabled and isRedoDisabled to true ', () => {
         undoRedoStub.undoRedoDisabled();
-        expect(undoRedoStub.isundoDisabled).toEqual(true);
+        expect(undoRedoStub.isUndoDisabled).toEqual(true);
         expect(undoRedoStub.isRedoDisabled).toEqual(true);
     });
 
@@ -58,7 +58,7 @@ describe('Service: UndoRedo', () => {
         // expect( );
     });
 
-    it('should add an element into the listUndo', () => {
-        
+    it('should add an element into the listUndo', () => {   
+                
     });
 });

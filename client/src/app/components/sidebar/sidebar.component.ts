@@ -22,7 +22,6 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-// import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 
 @Component({
     selector: 'app-sidebar',
@@ -93,7 +92,6 @@ export class SidebarComponent {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
         this.undoRedoService.clearRedo();
         this.undoRedoService.clearUndo();
-        this.undoRedoService.undoRedoDisabled();
     }
 
     openCarrouse(): void {
@@ -413,7 +411,7 @@ export class SidebarComponent {
     }
     @HostListener('window:keydown.control.z', ['$event'])
     callUndo(eventK: KeyboardEvent): void {
-        if (!this.undoRedoService.isundoDisabled) {
+        if (!this.undoRedoService.isUndoDisabled) {
             this.undoRedoService.undo();
         }
     }

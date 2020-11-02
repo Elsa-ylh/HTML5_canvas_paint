@@ -51,28 +51,24 @@
                 </mat-button-toggle-group>
             </mat-list>
             <mat-list class="miscellaneous-buttons">
-                <mat-button-toggle
-                    value="justify"
-                    disable
-                    aria-label="text align justify"
+                <button
+                    mat-button
                     matTooltip="Annuler"
                     matTooltipPosition="right"
                     (click)="undoRedoService.undo()"
-                    [disabled]="undoRedoService.isundoDisabled"
+                    [disabled]="undoRedoService.isUndoDisabled"
                 >
-                    <mat-icon> undo</mat-icon>
-                </mat-button-toggle>
-                <mat-button-toggle
-                    value="justify"
-                    disabled
-                    aria-label="text align justify"
+                    <mat-icon> undo </mat-icon>
+                </button>
+                <button
+                    mat-button
                     matTooltip="Refaire"
                     matTooltipPosition="right"
                     (click)="undoRedoService.redo()"
                     [disabled]="undoRedoService.isRedoDisabled"
                 >
-                    <mat-icon> redo</mat-icon>
-                </mat-button-toggle>
+                    <mat-icon> redo </mat-icon>
+                </button>
                 <mat-button-toggle-group vertical="true">
                     <mat-button-toggle (click)="openCarrouse()" matTooltipPosition="right">
                         <mat-icon>add</mat-icon>

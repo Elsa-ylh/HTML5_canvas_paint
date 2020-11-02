@@ -521,7 +521,7 @@ describe('SidebarComponent', () => {
 
     it('should call undo if isUndoDisabled is false and ctrl z is pressed', () => {
         const event = new KeyboardEvent('window:keydown.control.z', {});
-        undoRedoStub.isundoDisabled = false;
+        undoRedoStub.isUndoDisabled = false;
         const spyUndo = spyOn(undoRedoStub, 'undo').and.stub();
         window.dispatchEvent(event);
         component.callUndo(event);
