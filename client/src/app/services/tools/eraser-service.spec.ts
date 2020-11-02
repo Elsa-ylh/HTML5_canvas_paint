@@ -3,8 +3,8 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoService } from '../undo-redo/undo-redo.service';
-import { EraserService } from './eraser-service';
+import { EraserService } from '@app/services/tools/eraser-service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // tslint:disable:no-any
 describe('EraserService', () => {

@@ -2,9 +2,9 @@
 import { TestBed } from '@angular/core/testing';
 import { EraseAction } from '@app/classes/undo-redo/erase-actions';
 import { Vec2 } from '@app/classes/vec2';
-import { DrawingService } from '../drawing/drawing.service';
-import { EraserService } from '../tools/eraser-service';
-import { UndoRedoService } from './undo-redo.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { EraserService } from '@app/services/tools/eraser-service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 describe('Service: UndoRedo', () => {
     let undoRedoStub: UndoRedoService;
@@ -29,14 +29,11 @@ describe('Service: UndoRedo', () => {
         expect(undoRedoStub).toBeTruthy();
     });
 
-    it('should set isUndoDisabled and isRedoDisabled to true ', () => {
-        undoRedoStub.undoRedoDisabled();
-        expect(undoRedoStub.isUndoDisabled).toEqual(true);
-        expect(undoRedoStub.isRedoDisabled).toEqual(true);
-    });
+    // it('should set isUndoDisabled and isRedoDisabled to true ', () => {});
 
     it('should redo the lastest action and pushed into the undoList', () => {
-        let path: Vec2[] = [];
+        const path: Vec2[] = [];
+        /* tslint:disable:no-magic-numbers */
         path.push({ x: 10, y: 15 }, { x: 20, y: 25 });
         const actionTest = new EraseAction(path, '#FFFFF', 3, eraserStub, drawingStub);
 
@@ -50,15 +47,14 @@ describe('Service: UndoRedo', () => {
     });
 
     it('should clear the list listUndo', () => {
-        let path: Vec2[] = [];
+        const path: Vec2[] = [];
+
+        /* tslint:disable:no-magic-numbers */
         path.push({ x: 10, y: 15 }, { x: 20, y: 25 });
         const actionTest = new EraseAction(path, '#FFFFF', 3, eraserStub, drawingStub);
         undoRedoStub.addUndo(actionTest);
         undoRedoStub.clearUndo();
-        // expect( );
     });
 
-    it('should add an element into the listUndo', () => {   
-                
-    });
+    // it('should add an element into the listUndo', () => {});
 });
