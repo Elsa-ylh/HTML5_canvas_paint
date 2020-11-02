@@ -58,6 +58,9 @@ export class SaveDialogComponent implements OnInit {
                     labelsSting.push({ label: textLabel });
                 });
             }
+            this.labelSelect.forEach((element) => {
+                labelsSting.push({ label: element });
+            });
             const savePicture: CanvasInformation = {
                 _id: '',
                 date: new Date(),
@@ -75,7 +78,7 @@ export class SaveDialogComponent implements OnInit {
         }
     }
 
-    private processedMessage(message: Message): void {
+    processedMessage(message: Message): void {
         if (message === undefined) {
             alert('Sauvegede : Échec \n aucune communication au server');
         } else {

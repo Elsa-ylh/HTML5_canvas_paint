@@ -21,7 +21,7 @@ import { SaveDialogComponent } from './save-dialog.component';
 // tslint:disable:no-string-literal
 // tslint:disable:no-unused-expression
 // tslint:disable:no-empty
-fdescribe('SaveDialogComponent', () => {
+describe('SaveDialogComponent', () => {
     let component: SaveDialogComponent;
     let fixture: ComponentFixture<SaveDialogComponent>;
     let httpMock: HttpTestingController;
@@ -150,12 +150,27 @@ fdescribe('SaveDialogComponent', () => {
         component.selectionLabel(labels[0].label);
         expect(component['labelSelect'][0]).toEqual(labels[1].label);
     });
-    it('', () => {
+    it('test not name and not label function saveServer', () => {
         component.saveServer();
         expect(processedMessageSpy).not.toHaveBeenCalled();
     });
-    it('', () => {
+    it('test name not and label function saveServer', () => {
         component.textName = 'aaaaaa';
+        component.saveServer();
+        expect(processedMessageSpy).not.toHaveBeenCalled();
+    });
+    it('refresh is testing', async () => {
+        expect(component.dataLabel[0].label).toEqual(labels[0].label);
+        const labeltest: Label = { label: 'modif' };
+        spyOn(component['clientServerComSvc'], 'getAllLabel').and.returnValue([labeltest]);
+        component.refresh();
+        expect(component.dataLabel[0].label).toEqual(labeltest.label);
+    });
+
+    it('test name and label function saveServer', () => {
+        component.textName = 'aaaaaa';
+        component.selectionLabel(labels[0].label);
+        component.textLabel = 'aaaaaaaaa';
         component.saveServer();
         expect(processedMessageSpy).not.toHaveBeenCalled();
     });
