@@ -78,4 +78,10 @@ export class UndoRedoService {
         this.isRedoDisabled = this.listRedo.length === 0;
         this.isUndoDisabled = this.listUndo.length === 0;
     }
+
+    // disactivate the buttons when drawing on the canvas
+    whileDrawingUndoRedo(event: MouseEvent): void {
+        this.isUndoDisabled = true;
+        this.isRedoDisabled = true;
+    }
 }

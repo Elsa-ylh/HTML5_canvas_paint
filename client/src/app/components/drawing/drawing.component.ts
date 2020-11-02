@@ -86,6 +86,7 @@ export class DrawingComponent implements AfterViewInit {
 
     onMouseDown(event: MouseEvent): void {
         this.toolService.currentTool.onMouseDown(event);
+        this.undoRedoService.whileDrawingUndoRedo(event);
     }
 
     onMouseMove(event: MouseEvent): void {
