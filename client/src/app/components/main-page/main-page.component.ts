@@ -21,6 +21,10 @@ export class MainPageComponent {
         });
     }
 
+    isThereExistingDrawing(): boolean {
+        return true;
+    }
+
     openUserGuide(): void {
         this.checkDocumentationRef = this.dialogCreator.open(WriteTextDialogUserGuideComponent, {
             width: '90%',

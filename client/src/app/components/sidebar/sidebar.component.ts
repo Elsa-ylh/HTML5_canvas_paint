@@ -6,7 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { cursorName } from '@app/classes/cursor-name';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
-import { CarrouselPictureComponent } from '@app/components/carrousel-picture/carrousel-picture.component';
+import { CarrouselPictureComponent } from '@app/components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { ColorService } from '@app/services/color/color.service';
