@@ -3,8 +3,8 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { MouseButton } from '@app/classes/mouse-button';
-import { Vec2 } from '@app/classes/vec2';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { RGBA } from '@app/classes/rgba';
+// import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
@@ -15,14 +15,13 @@ describe('Service: PaintBucket', () => {
     let paintBucketService: PaintBucketService;
     let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
     // tslint:disable-next-line:prefer-const
-    let canvasReziserServiceSpy: jasmine.SpyObj<CanvasResizerService>;
+    // let canvasReziserServiceSpy: jasmine.SpyObj<CanvasResizerService>;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let mouseEvent: MouseEvent;
-    let getPosColorSpy: jasmine.Spy<any>;
-    let drawPosColorSpy: jasmine.Spy<any>;
-    let compareRGBASpy: jasmine.Spy<any>;
-    let checkFourPolesAndDrawSpy: jasmine.Spy<any>;
+    // let hexToRgbASpy: jasmine.Spy<any>;
+    let matchFillColorSpy: jasmine.Spy<any>;
+    let floodFillSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -41,21 +40,14 @@ describe('Service: PaintBucket', () => {
         paintBucketService['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         paintBucketService['drawingService'].previewCtx = previewCtxStub;
         // spy for private methods
-        getPosColorSpy = spyOn<any>(paintBucketService, 'getPosColor').and.callThrough();
-        drawPosColorSpy = spyOn<any>(paintBucketService, 'drawPosColor').and.callThrough();
-        compareRGBASpy = spyOn<any>(paintBucketService, 'compareRGBA').and.callThrough();
-        checkFourPolesAndDrawSpy = spyOn<any>(paintBucketService, 'checkFourPolesAndDraw').and.callThrough();
+        // hexToRgbASpy = spyOn<any>(paintBucketService, 'hexToRgbA').and.callThrough();
+        matchFillColorSpy = spyOn<any>(paintBucketService, 'matchFillColor').and.callThrough();
+        floodFillSpy = spyOn<any>(paintBucketService, 'checkFourPolesAndDraw').and.callThrough();
     });
 
-    it('should ...', inject([PaintBucketService], (service: PaintBucketService) => {
-        expect(paintBucketService).toBeTruthy();
+    it('should be created', inject([PaintBucketService], (serviceRec: PaintBucketService) => {
+        expect(serviceRec).toBeTruthy();
     }));
-
-    it(' mouseDown should set mouseDownCoord to correct position', () => {
-        const expectedResult: Vec2 = { x: 25, y: 25 };
-        paintBucketService.onMouseDown(mouseEvent);
-        expect(paintBucketService.mouseDownCoord).toEqual(expectedResult);
-    });
 
     it(' mouseDown should set mouseDown property to true on left click', () => {
         paintBucketService.onMouseDown(mouseEvent);
@@ -72,83 +64,54 @@ describe('Service: PaintBucket', () => {
         expect(paintBucketService.mouseDown).toEqual(false);
     });
 
-    it('mouseDown should call getPosColor', () => {
+    it('mouseDown should call floodFill', () => {
         paintBucketService.onMouseDown(mouseEvent);
-        expect(getPosColorSpy).toHaveBeenCalled();
+        expect(floodFillSpy).toHaveBeenCalled();
     });
 
-    it('mouseDown should call drawPosColor', () => {
-        paintBucketService.onMouseDown(mouseEvent);
-        expect(drawPosColorSpy).toHaveBeenCalled();
+    it(' should change mouseOut value to true when the mouse is living the canvas while left click is pressed', () => {
+        paintBucketService.mouseDown = true;
+        paintBucketService.onMouseOut(mouseEvent);
+        expect(paintBucketService.mouseOut).toEqual(true);
     });
 
-    it('mouseDown should call compareRGBA', () => {
-        paintBucketService.onMouseDown(mouseEvent);
-        expect(compareRGBASpy).toHaveBeenCalled();
+    it(' should not change mouseOut value to true when the mouse is living the canvas while left click is not pressed', () => {
+        paintBucketService.mouseDown = false;
+        paintBucketService.onMouseOut(mouseEvent);
+        expect(paintBucketService.mouseOut).toEqual(false);
     });
 
-    it('mouseDown should call checkFourPolesAndDraw', () => {
-        paintBucketService.onMouseDown(mouseEvent);
-        expect(checkFourPolesAndDrawSpy).toHaveBeenCalled();
+    it('originalColor and replacementColor are the same', () => {
+        const originalColor: RGBA = { red: 0, green: 0, blue: 0, alpha: 1 };
+        const replacementColor: RGBA = { red: 0, green: 0, blue: 0, alpha: 1 };
+        const check = matchFillColorSpy(originalColor, replacementColor);
+        expect(check).toBeTrue();
+        expect(floodFillSpy).toHaveBeenCalled();
     });
 
-    it('event.offsetY > 0', () => {
-        const offset: Vec2 = { x: 100, y: 100 };
-        const vec2 = drawPosColorSpy([offset.x, offset.y]);
-        expect(vec2).toEqual({ x: 100, y: 100 });
+    it('should call matchFillColor', () => {
+        const mouseEventTest = { offsetX: 15, offsetY: 15 } as MouseEvent;
+        paintBucketService.onMouseMove(mouseEventTest);
+        expect(paintBucketService.matchFillColor).toHaveBeenCalled();
     });
 
-    it('event.offsetX > 0', () => {
-        const offset: Vec2 = { x: 100, y: 100 };
-        const vec2 = drawPosColorSpy([offset.x, offset.y]);
-        expect(vec2).toEqual({ x: 100, y: 100 });
+    it('matchFillColor to be true', () => {
+        const currentColor: RGBA = { red: 0, green: 0, blue: 1, alpha: 1 };
+        const targetColor: RGBA = { red: 0, green: 0, blue: 1, alpha: 1 };
+        const check = matchFillColorSpy(currentColor, targetColor);
+        expect(check).toBeTrue();
     });
 
-    it('event.offsetX < canvasSize', () => {
-        const tmp = canvasReziserServiceSpy.canvasSize.x - 1;
-        const offset: Vec2 = { x: tmp, y: 0 };
-        const vec2 = drawPosColorSpy([offset.x, offset.y]);
-        expect(vec2).toEqual({ x: tmp, y: 0 });
-        expect(checkFourPolesAndDrawSpy).toHaveBeenCalled();
+    it('should call hexToRgbA', () => {
+        const mouseEventTest = { offsetX: 15, offsetY: 15 } as MouseEvent;
+        paintBucketService.onMouseMove(mouseEventTest);
+        expect(paintBucketService.hexToRgbA).toHaveBeenCalled();
     });
 
-    it('event.offsetY < canvasSize', () => {
-        const tmp = canvasReziserServiceSpy.canvasSize.y - 1;
-        const offset: Vec2 = { x: 0, y: tmp };
-        const vec2 = drawPosColorSpy([offset.x, offset.y]);
-        expect(vec2).toEqual({ x: 0, y: tmp });
-        expect(checkFourPolesAndDrawSpy).toHaveBeenCalled();
+    it('x < canvasSize.x - 1', () => {
+        const originalColor: RGBA = { red: 0, green: 0, blue: 0, alpha: 1 };
+        const pixelColor: RGBA = { red: 0, green: 0, blue: 0, alpha: 1 };
+        const check = matchFillColorSpy(originalColor, pixelColor);
+        expect(check).toBeTrue();
     });
-
-    it('event.offsetY > canvasSize', () => {
-        const tmp = canvasReziserServiceSpy.canvasSize.y + 1;
-        const offset: Vec2 = { x: 0, y: tmp };
-        const vec2 = drawPosColorSpy([offset.x, offset.y]);
-        expect(vec2).toEqual({ x: 0, y: tmp });
-        expect(checkFourPolesAndDrawSpy).not.toHaveBeenCalled();
-    });
-
-    it('event.offsetX > canvasSize', () => {
-        const tmp = canvasReziserServiceSpy.canvasSize.y + 1;
-        const offset: Vec2 = { x: 0, y: tmp };
-        const vec2 = drawPosColorSpy([offset.x, offset.y]);
-        expect(vec2).toEqual({ x: 0, y: tmp });
-        expect(checkFourPolesAndDrawSpy).not.toHaveBeenCalled();
-    });
-
-    // it('curremtColor and targetColor are the same', () => {
-    //     const currentColor: RGBA = { red: 0, green: 0, blue: 0, alpha: 1 };
-    //     const targetColor: RGBA = { red: 0, green: 0, blue: 0, alpha: 1 };
-    //     const check = compareRGBASpy(currentColor, targetColor);
-    //     expect(check).toBeTrue;
-    //     expect(checkFourPolesAndDrawSpy).toHaveBeenCalled();
-    // });
-
-    // it('curremtColor and targetColor are different', () => {
-    //     const currentColor: RGBA = { red: 1, green: 0, blue: 0, alpha: 1 };
-    //     const targetColor: RGBA = { red: 0, green: 2, blue: 0, alpha: 1 };
-    //     const check = compareRGBASpy(currentColor, targetColor);
-    //     expect(check).toBeFalse;
-    //     expect(checkFourPolesAndDrawSpy).not.toHaveBeenCalled();
-    // });
 });

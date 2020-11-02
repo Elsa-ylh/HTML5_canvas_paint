@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
@@ -16,6 +17,7 @@ export class PaintBucketService extends Tool {
     radix: number = 16;
     colorAttributs: number = 4; // r,g,b,a
     oldColor: RGBA;
+    mouseOut: boolean = false;
 
     // https://en.wikipedia.org/wiki/Flood_fill#:~:text=Flood%20fill%2C%20also%20called%20seed,in%20a%20multi%2Ddimensional%20array.
     // https://ben.akrin.com/?p=7888
@@ -153,9 +155,20 @@ export class PaintBucketService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        // debugger;
-        console.log('color string', this.colorService.primaryColor);
-        console.log('color rgba', this.hexToRgbA(this.colorService.primaryColor));
-        this.floodFill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
+        // pixels contigus
+        if (event.button === MouseButton.Left) {
+            this.mouseDown = false;
+            this.floodFill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
+        }
+        // pixels non contigus
+        if (event.button === MouseButton.Right) {
+            this.mouseDown = false;
+        }
+    }
+
+    onMouseOut(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.mouseOut = true;
+        }
     }
 }
