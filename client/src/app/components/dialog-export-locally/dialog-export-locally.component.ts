@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Data } from '@angular/router';
-import { Vec2 } from '@app/classes/vec2';
+import { Filter } from '@app/classes/filter';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Component({
     selector: 'app-dialog-export-locally',
@@ -13,31 +14,46 @@ export class DialogExportDrawingComponent implements AfterViewInit {
     isJPG = false;
     isPNG = false;
 
-    // change the name of the filter when effect has been chosen
-    whichFilter = new Map([
-        ['filterOne', false],
-        ['filterTwo', false],
-        ['filterThree', false],
-        ['filterFour', false],
-        ['filterFive', false],
-    ]);
+    whichFilter: Filter = Filter.NONE;
 
     nameFormControl: FormControl;
-    private imgReducerCanvas: HTMLCanvasElement;
-    private imgReducerCtx: CanvasRenderingContext2D;
-    private previewImgSize: Vec2 = { x: 300, y: 300 } as Vec2;
 
-    constructor(@Inject(MAT_DIALOG_DATA) private data: Data, private dialogRef: MatDialogRef<DialogExportDrawingComponent>) {
+    constructor(
+        @Inject(MAT_DIALOG_DATA) private data: Data, //private dialogRef: MatDialogRef<DialogExportDrawingComponent>
+        private drawingService: DrawingService,
+    ) {
         this.nameFormControl = new FormControl('default', Validators.pattern('[a-zA-Z ]*'));
-        this.imgReducerCanvas = document.createElement('canvas');
-        this.imgReducerCtx = this.imgReducerCanvas.getContext('2d') as CanvasRenderingContext2D;
     }
 
     @ViewChild('previewImage', { static: false }) previewImage: ElementRef<HTMLImageElement>;
 
     // https://stackoverflow.com/questions/19262141/resize-image-with-javascript-canvas-smoothly
     ngAfterViewInit(): void {
-        this.imgReducerCtx.drawImage();
-        this.previewImage.nativeElement.src = 'assets/leaf.svg';
+        this.previewImage.nativeElement.src = this.drawingService.convertBaseCanvasToBase64();
+    }
+
+    checkFirst(): void {
+        this.whichFilter = Filter.BLUR;
+        this.previewImage.nativeElement.style.filter = 'blur(4px)';
+    }
+
+    checkSecond(): void {
+        this.whichFilter = Filter.GRAYSCALE;
+        this.previewImage.nativeElement.style.filter = 'grayscale(100)';
+    }
+
+    checkThird(): void {
+        this.whichFilter = Filter.INVERT;
+        this.previewImage.nativeElement.style.filter = 'invert(50)';
+    }
+
+    checkFourth(): void {
+        this.whichFilter = Filter.BRIGHTNESS;
+        this.previewImage.nativeElement.style.filter = 'brightness(200)';
+    }
+
+    checkFifth(): void {
+        this.whichFilter = Filter.SEPIA;
+        this.previewImage.nativeElement.style.filter = 'sepia(50)';
     }
 }

@@ -1,19 +1,20 @@
 <mat-dialog-content>
-    <p>Exportation du dessin local actuel.</p>
+    <p>Sauvegarde du dessin localement.</p>
     <mat-button-toggle-group name="imageType">
         <mat-button-toggle [checked]="isJPG">JPG</mat-button-toggle>
         <mat-button-toggle [checked]="isPNG">PNG</mat-button-toggle>
     </mat-button-toggle-group>
     <br />
     <mat-button-toggle-group name="filterType">
-        <mat-button-toggle [checked]="whichFilter['filterOne']">Filtre un</mat-button-toggle>
-        <mat-button-toggle [checked]="whichFilter['filterTwo']">Filtre deux</mat-button-toggle>
-        <mat-button-toggle [checked]="whichFilter['filterThree']">Filtre trois</mat-button-toggle>
-        <mat-button-toggle [checked]="whichFilter['filterFour']">Filtre quatre</mat-button-toggle>
-        <mat-button-toggle [checked]="whichFilter['filterFive']">Filtre cinq</mat-button-toggle>
+        <mat-button-toggle (click)="checkFirst()">Filtre un</mat-button-toggle>
+        <mat-button-toggle (click)="checkSecond()">Filtre deux</mat-button-toggle>
+        <mat-button-toggle (click)="checkThird()">Filtre trois</mat-button-toggle>
+        <mat-button-toggle (click)="checkFourth()">Filtre quatre</mat-button-toggle>
+        <mat-button-toggle (click)="checkFifth()">Filtre cinq</mat-button-toggle>
     </mat-button-toggle-group>
     <br />
     <img #previewImage />
+    <br />
     <mat-form-field class="name-form-field">
         <mat-label>Nom de fichier</mat-label>
         <input matInput [formControl]="nameFormControl" placeholder="fichier image" />
