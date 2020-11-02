@@ -1,5 +1,6 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
@@ -58,6 +59,12 @@ describe('Service: Ellipse', () => {
     it('should be created', inject([EllipseService], (serviceRec: EllipseService) => {
         expect(serviceRec).toBeTruthy();
     }));
+
+    it('should be called', () => {
+        const mouseEventTest = { x: 15, y: 6, button: MouseButton.Right } as MouseEvent;
+        service.onMouseDown(mouseEventTest);
+        expect(colorServiceSpy.getColor).toHaveBeenCalled();
+    });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
