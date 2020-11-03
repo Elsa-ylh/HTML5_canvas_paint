@@ -30,6 +30,7 @@ describe('Data Controller', () => {
             getAllLabel: sandbox.stub().resolves(testCancasInformationAdd),
             getPicturesName: sandbox.stub().resolves(testCancasInformationAdd),
             getPicturesDate: sandbox.stub().resolves(testCancasInformationAdd),
+            delete: sandbox.stub(),
         });
         dataService = container.get(TYPES.DatabasePicureService);
         app = container.get<Application>(TYPES.Application).app;
@@ -270,4 +271,5 @@ describe('Data Controller', () => {
                 console.log('Error ' + err);
             });
     });
+    it('delite', () => {});
 });

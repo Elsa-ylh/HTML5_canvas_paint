@@ -131,6 +131,13 @@ export class DatabasePicureService {
                 throw error;
             });
     }
+    async delete(deliteId: string): Promise<boolean> {
+        const reponse = await this.collection.deleteOne({ _id: deliteId }).catch((err) => {
+            throw err;
+        });
+        return reponse.result.n === 1;
+    }
+
     async addPicture(picture: CancasInformation): Promise<void> {
         const bool = await this.validatePicture(picture);
         if (bool === true) {

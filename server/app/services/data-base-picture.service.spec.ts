@@ -239,4 +239,49 @@ describe('Database service', () => {
                 return error;
             });
     });
+    it('test find getPicturesName ', async () => {
+        await databaseService
+            .getPicturesName('test1')
+            .then((value: any) => {
+                expect(value[0].name).to.equal('test1');
+            })
+            .catch((error: unknown) => {
+                return error;
+            });
+    });
+    it('delite it good id return true', async () => {
+        let getImageData: any[] = await databaseService.getPictures();
+        if (getImageData.length) {
+            await databaseService
+                .delete(getImageData[0]._id)
+                .then((bool: boolean) => {
+                    expect(bool).to.equal(true);
+                })
+                .catch((err: Error) => {
+                    console.log(err.message);
+                });
+        }
+    });
+    it('delite not good id return false', async () => {
+        await databaseService
+            .delete('')
+            .then((bool: boolean) => {
+                expect(bool).to.equal(false);
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
+    });
+    it('delite errer mongodb close', async () => {
+        client.close();
+        await databaseService
+            .delete('')
+            .then((bool: boolean) => {
+                expect(bool).to.equal(false);
+            })
+            .catch((err) => {
+                expect(err.message).to.equal('server is closed');
+                console.log(err.message);
+            });
+    });
 });

@@ -1,5 +1,6 @@
 import { DatabasePicureService } from '@app/services/data-base-picture.service';
 import { CancasInformation, Label } from '@common/communication/canvas-information';
+import { Message } from '@common/communication/message';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
@@ -163,6 +164,26 @@ export class DataController {
                     picture: '',
                 };
                 res.status(HTTP_STATUS_BAD_REQUEST).json(errorData);
+            }
+        });
+        this.router.delete('/delete', (req: Request, res: Response, next: NextFunction) => {
+            if (req.body.title === 'delete') {
+                this.databaseService
+                    .delete(req.body.body)
+                    .then((bool: boolean) => {
+                        const succesMessage: Message = {
+                            title: bool ? 'Susse' : 'Not delete',
+                            body: bool ? 'Susse' : 'not good id',
+                        };
+                        res.json(succesMessage);
+                    })
+                    .catch((err: Error) => {
+                        const errorMessage: Message = {
+                            title: 'Errer',
+                            body: err.message.toString(),
+                        };
+                        res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
+                    });
             }
         });
     }
