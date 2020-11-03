@@ -1,5 +1,5 @@
 import { DatabasePicureService } from '@app/services/data-base-picture.service';
-import { CancasInformation, Label } from '@common/communication/canvas-information';
+import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
@@ -17,11 +17,11 @@ export class DataController {
         this.router.get('/', (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getPictures()
-                .then((cancasInformation: CancasInformation[]) => {
-                    res.json(cancasInformation);
+                .then((CanvasInformation: CanvasInformation[]) => {
+                    res.json(CanvasInformation);
                 })
                 .catch((reason: unknown) => {
-                    const errorMessage: CancasInformation = {
+                    const errorMessage: CanvasInformation = {
                         id: 'Error',
                         name: reason as string,
                         labels: [],
@@ -35,7 +35,7 @@ export class DataController {
             this.databaseService
                 .getAllLabel()
                 .then((labelsInformation: Label[]) => {
-                    const informationMessage: CancasInformation = {
+                    const informationMessage: CanvasInformation = {
                         id: 'list_of_all_labals',
                         name: 'labels',
                         labels: labelsInformation,
@@ -45,7 +45,7 @@ export class DataController {
                     res.json(informationMessage);
                 })
                 .catch((reason: unknown) => {
-                    const errorMessage: CancasInformation = {
+                    const errorMessage: CanvasInformation = {
                         id: 'Error',
                         name: reason as string,
                         labels: [],
@@ -63,7 +63,7 @@ export class DataController {
                     sbody = req.body.body;
                     labels = this.textToTable(sbody);
                 } catch (error) {
-                    const errorData: CancasInformation = {
+                    const errorData: CanvasInformation = {
                         id: 'Error',
                         name: error as string,
                         labels: [],
@@ -74,7 +74,7 @@ export class DataController {
                     sbody = 'Error';
                 }
             } else {
-                const errorData: CancasInformation = {
+                const errorData: CanvasInformation = {
                     id: 'Error',
                     name: 'Titre message non valide',
                     labels: [],
@@ -88,11 +88,11 @@ export class DataController {
             if (sbody !== 'Error') {
                 this.databaseService
                     .getPicturesLabals(labels)
-                    .then((cancasInformation: CancasInformation[]) => {
-                        res.json(cancasInformation);
+                    .then((CanvasInformation: CanvasInformation[]) => {
+                        res.json(CanvasInformation);
                     })
                     .catch((reason: unknown) => {
-                        const errorMessage: CancasInformation = {
+                        const errorMessage: CanvasInformation = {
                             id: 'Error',
                             name: reason as string,
                             labels: [],
@@ -112,11 +112,11 @@ export class DataController {
                     case 'name':
                         this.databaseService
                             .getPicturesName(research)
-                            .then((cancasInformation: CancasInformation[]) => {
-                                res.json(cancasInformation);
+                            .then((CanvasInformation: CanvasInformation[]) => {
+                                res.json(CanvasInformation);
                             })
                             .catch((reason: unknown) => {
-                                const errorMessage: CancasInformation = {
+                                const errorMessage: CanvasInformation = {
                                     id: 'Error',
                                     name: reason as string,
                                     labels: [],
@@ -129,11 +129,11 @@ export class DataController {
                     case 'date':
                         this.databaseService
                             .getPicturesDate(research)
-                            .then((cancasInformation: CancasInformation[]) => {
-                                res.json(cancasInformation);
+                            .then((CanvasInformation: CanvasInformation[]) => {
+                                res.json(CanvasInformation);
                             })
                             .catch((reason: unknown) => {
-                                const errorMessage: CancasInformation = {
+                                const errorMessage: CanvasInformation = {
                                     id: 'Error',
                                     name: reason as string,
                                     labels: [],
@@ -144,7 +144,7 @@ export class DataController {
                             });
                         break;
                     default:
-                        const errorData: CancasInformation = {
+                        const errorData: CanvasInformation = {
                             id: 'Error',
                             name: 'not good research : ' + req.body.title,
                             labels: [],
@@ -155,7 +155,7 @@ export class DataController {
                         break;
                 }
             } else {
-                const errorData: CancasInformation = {
+                const errorData: CanvasInformation = {
                     id: 'Error',
                     name: 'not request in post',
                     labels: [],

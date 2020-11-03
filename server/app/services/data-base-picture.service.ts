@@ -1,4 +1,4 @@
-import { CancasInformation, Label } from '@common/communication/canvas-information';
+import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { injectable } from 'inversify';
 import { Collection, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
@@ -11,7 +11,7 @@ const MINUTE_MIDNIGHT = 59;
 const SECOND_MIDNIGHT = 59;
 @injectable()
 export class DatabasePicureService {
-    collection: Collection<CancasInformation>;
+    collection: Collection<CanvasInformation>;
 
     private options: MongoClientOptions = {
         useNewUrlParser: true,
@@ -29,7 +29,7 @@ export class DatabasePicureService {
             });
     }
 
-    async getPicturesLabals(setLabels: string[]): Promise<CancasInformation[]> {
+    async getPicturesLabals(setLabels: string[]): Promise<CanvasInformation[]> {
         if (setLabels[0] === 'Error') {
             return [{ id: 'not catch the labels', name: 'Error', labels: [], date: new Date(), picture: '' }];
         } else if (!setLabels.length) {
@@ -40,7 +40,7 @@ export class DatabasePicureService {
                     'labels.label': { $in: setLabels },
                 })
                 .toArray()
-                .then((picture: CancasInformation[]) => {
+                .then((picture: CanvasInformation[]) => {
                     return picture;
                 })
                 .catch((error: Error) => {
@@ -49,11 +49,11 @@ export class DatabasePicureService {
         }
     }
 
-    async getPictures(): Promise<CancasInformation[]> {
+    async getPictures(): Promise<CanvasInformation[]> {
         return this.collection
             .find()
             .toArray()
-            .then((pictures: CancasInformation[]) => {
+            .then((pictures: CanvasInformation[]) => {
                 return pictures;
             })
             .catch((error: Error) => {
@@ -63,11 +63,11 @@ export class DatabasePicureService {
     async getAllLabel(): Promise<Label[]> {
         try {
             const listLabels: Label[] = [];
-            const collectionPincture: CancasInformation[] = await this.collection
+            const collectionPincture: CanvasInformation[] = await this.collection
                 .find({ 'labels.label': { $exists: true } })
                 .project({ 'labels.label': 1 })
                 .toArray()
-                .then((pictures: CancasInformation[]) => {
+                .then((pictures: CanvasInformation[]) => {
                     return pictures;
                 });
             collectionPincture.forEach((element) => {
@@ -91,28 +91,28 @@ export class DatabasePicureService {
         return booltouver;
     }
 
-    async getPictureName(namePicture: string): Promise<CancasInformation> {
+    async getPictureName(namePicture: string): Promise<CanvasInformation> {
         return this.collection
             .findOne({ name: namePicture })
-            .then((picture: CancasInformation) => {
+            .then((picture: CanvasInformation) => {
                 return picture;
             })
             .catch((error: Error) => {
                 throw error;
             });
     }
-    async getPicturesName(namePicture: string): Promise<CancasInformation[]> {
+    async getPicturesName(namePicture: string): Promise<CanvasInformation[]> {
         return this.collection
             .find({ name: { $regex: namePicture } })
             .toArray()
-            .then((picture: CancasInformation[]) => {
+            .then((picture: CanvasInformation[]) => {
                 return picture;
             })
             .catch((error: Error) => {
                 throw error;
             });
     }
-    async getPicturesDate(datePicture: string): Promise<CancasInformation[]> {
+    async getPicturesDate(datePicture: string): Promise<CanvasInformation[]> {
         const stratDate = new Date(datePicture);
         stratDate.setHours(0);
         stratDate.setMinutes(0);
@@ -124,14 +124,14 @@ export class DatabasePicureService {
         return this.collection
             .find({ date: { $gte: stratDate, $lte: endDate } })
             .toArray()
-            .then((picture: CancasInformation[]) => {
+            .then((picture: CanvasInformation[]) => {
                 return picture;
             })
             .catch((error: Error) => {
                 throw error;
             });
     }
-    async addPicture(picture: CancasInformation): Promise<void> {
+    async addPicture(picture: CanvasInformation): Promise<void> {
         const bool = await this.validatePicture(picture);
         if (bool === true) {
             this.collection.insertOne(picture); // .catch((error: Error) => {throw error;});
@@ -140,7 +140,7 @@ export class DatabasePicureService {
         }
     }
 
-    private async validatePicture(cancas: CancasInformation): Promise<boolean> {
+    private async validatePicture(cancas: CanvasInformation): Promise<boolean> {
         const boolTestCancas = cancas.picture !== '' && cancas.name !== '';
         if (!boolTestCancas) return boolTestCancas;
         return await this.validateName(cancas.id);
