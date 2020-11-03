@@ -141,5 +141,7 @@ export class CarrouselPictureComponent implements OnInit {
             // let ctx = canvas.getContext('2d');
         });
     }
-    deletePicture(idPicture: string) {}
+    deletePicture(idPicture: string): void {
+        alert('Suprimer');
+    }
 }

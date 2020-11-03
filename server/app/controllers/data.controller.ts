@@ -166,7 +166,7 @@ export class DataController {
                 res.status(HTTP_STATUS_BAD_REQUEST).json(errorData);
             }
         });
-        this.router.delete('/delete', (req: Request, res: Response, next: NextFunction) => {
+        this.router.post('/delete', (req: Request, res: Response, next: NextFunction) => {
             if (req.body.title !== undefined || req.body.body !== undefined) {
                 if (req.body.title === 'delete') {
                     this.databaseService

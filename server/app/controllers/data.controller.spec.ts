@@ -274,7 +274,7 @@ describe('Data Controller', () => {
     it('delite not request message', () => {
         //dataService.getPicturesLabals.rejects(new Error('error in the service'));
         return supertest(app)
-            .delete('/api/data/delete')
+            .post('/api/data/delete')
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .send()
             .then(async (reponse: any) => {
@@ -289,7 +289,7 @@ describe('Data Controller', () => {
         //dataService.getPicturesLabals.rejects(new Error('error in the service'));
         const message: Message = { title: '', body: '' };
         return supertest(app)
-            .delete('/api/data/delete')
+            .post('/api/data/delete')
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .send(message)
             .then(async (reponse: any) => {
@@ -304,7 +304,7 @@ describe('Data Controller', () => {
         dataService.delete.rejects(new Error('error in the service'));
         const message: Message = { title: 'delete', body: 'ssss' };
         return supertest(app)
-            .delete('/api/data/delete')
+            .post('/api/data/delete')
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .send(message)
             .then(async (reponse: any) => {
@@ -318,7 +318,7 @@ describe('Data Controller', () => {
     it('delite success', () => {
         const message: Message = { title: 'delete', body: 'ssss' };
         return supertest(app)
-            .delete('/api/data/delete')
+            .post('/api/data/delete')
             .expect(HTTP_STATUS_OK)
             .send(message)
             .then(async (reponse: any) => {
@@ -333,7 +333,7 @@ describe('Data Controller', () => {
         dataService.delete.resolves(false);
         const message: Message = { title: 'delete', body: 'ssss' };
         return supertest(app)
-            .delete('/api/data/delete')
+            .post('/api/data/delete')
             .expect(HTTP_STATUS_OK)
             .send(message)
             .then(async (reponse: any) => {

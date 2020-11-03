@@ -52,4 +52,7 @@ export class ClientServerCommunicationService {
             .post<CancasInformation[]>(this.HTTP_SERVE_LOCAL + '/research', message)
             .pipe(catchError(this.handleError<CancasInformation[]>('basicPost')));
     }
+    deleteQuery(message: Message): Observable<Message> {
+        return this.http.post<Message>(this.HTTP_SERVE_LOCAL + '/delete', message).pipe(catchError(this.handleError<Message>('basicPost')));
+    }
 }
