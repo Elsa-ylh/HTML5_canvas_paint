@@ -34,7 +34,7 @@
                         [checked]="paintBucketChecked"
                         matTooltip="Outil sceau de peinture"
                         matTooltipPosition="right"
-                    ><mat-icon svgIcon="paint-bucket"></mat-icon>
+                        ><mat-icon svgIcon="paint-bucket"></mat-icon>
                     </mat-button-toggle>
                     <mat-button-toggle
                         (click)="pickColor()"
@@ -77,7 +77,7 @@
                     <mat-icon> redo </mat-icon>
                 </button>
                 <mat-button-toggle-group vertical="true">
-                    <mat-button-toggle (click)="openSave()" matTooltipPosition="right">
+                    <mat-button-toggle (click)="openSaveServer()" matTooltipPosition="right">
                         <mat-icon>cloud_download</mat-icon>
                     </mat-button-toggle>
                     <mat-button-toggle (click)="openCarrousel()" matTooltipPosition="right">
@@ -286,8 +286,8 @@
             </mat-grid-list>
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.PaintBucket">
-              <app-paint-bucket-color></app-paint-bucket-color>
-          </mat-grid-list>
+                <app-paint-bucket-color></app-paint-bucket-color>
+            </mat-grid-list>
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Dropper">
                 <app-dropper-color></app-dropper-color>

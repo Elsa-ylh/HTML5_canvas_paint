@@ -40,12 +40,13 @@ export class SidebarComponent {
     toolUsed = ToolUsed;
 
     isDialogOpen: boolean = false;
-    isDialogOpenSaveEport: boolean = true;
+    isDialogloadSaveEport: boolean = true;
     lineWidth: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
     dialogLoadRef: MatDialogRef<CarrouselPictureComponent>;
     dialogSaveRef: MatDialogRef<SaveDialogComponent>;
+    exportDrawingRef: MatDialogRef<DialogExportDrawingComponent>;
     private isPencilChecked: boolean = false;
     private isEraserChecked: boolean = false;
     private isBrushChecked: boolean = false;
@@ -96,7 +97,12 @@ export class SidebarComponent {
     }
 
     exportDrawing(): void {
-        this.dialogCreator.open(DialogExportDrawingComponent);
+        if (this.isDialogloadSaveEport) {
+            this.exportDrawingRef = this.dialogCreator.open(DialogExportDrawingComponent);
+            this.exportDrawingRef.afterClosed().subscribe(() => {
+                this.isDialogloadSaveEport = true;
+            });
+        }
     }
 
     createNewDrawing(): void {
@@ -106,26 +112,26 @@ export class SidebarComponent {
     }
 
     openCarrousel(): void {
-        if (this.isDialogOpenSaveEport) {
-            this.isDialogOpenSaveEport = false;
+        if (this.isDialogloadSaveEport) {
+            this.isDialogloadSaveEport = false;
             this.dialogLoadRef = this.dialogCreator.open(CarrouselPictureComponent, {
                 width: '90%',
                 height: '90%',
             });
             this.dialogLoadRef.afterClosed().subscribe(() => {
-                this.isDialogOpenSaveEport = true;
+                this.isDialogloadSaveEport = true;
             });
         }
     }
-    openSave(): void {
-        if (this.isDialogOpenSaveEport) {
-            this.isDialogOpenSaveEport = false;
+    openSaveServer(): void {
+        if (this.isDialogloadSaveEport) {
+            this.isDialogloadSaveEport = false;
             this.dialogSaveRef = this.dialogCreator.open(SaveDialogComponent, {
                 width: '90%',
                 height: '90%',
             });
             this.dialogSaveRef.afterClosed().subscribe(() => {
-                this.isDialogOpenSaveEport = true;
+                this.isDialogloadSaveEport = true;
             });
         }
     }
@@ -277,14 +283,14 @@ export class SidebarComponent {
 
     // keybind control o for new drawing
     @HostListener('window:keydown.control.o', ['$event']) onKeyDown(event: KeyboardEvent): void {
-        if (!this.isDialogOpen && !this.drawingService.isCanvasBlank() && this.isDialogOpenSaveEport) {
+        if (!this.isDialogOpen && !this.drawingService.isCanvasBlank() && this.isDialogloadSaveEport) {
             event.preventDefault();
             this.clearCanvas();
         }
     }
 
     @HostListener('window:keydown.1', ['$event']) changeRectangleMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogOpenSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
             this.resetCheckedButton();
             this.isRectangleChecked = true;
             this.pickRectangle(1);
@@ -292,7 +298,7 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.2', ['$event']) changleEllipseMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogOpenSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
             this.resetCheckedButton();
             this.isEllipseChecked = true;
             this.pickEllipse(SubToolselected.tool1);
@@ -301,7 +307,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.3', ['$event'])
     changePolygonMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogOpenSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
             this.resetCheckedButton();
             this.isPolygonChecked = true;
             this.pickPolygon(SubToolselected.tool3);
@@ -310,7 +316,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.e', ['$event'])
     changeEraserMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogOpenSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
             this.resetCheckedButton();
             this.isEraserChecked = true;
             this.pickEraser();
@@ -319,7 +325,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.c', ['$event'])
     changePencilMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogOpenSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
             this.resetCheckedButton();
             this.isPencilChecked = true;
             this.pickPencil();
@@ -328,7 +334,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.w', ['$event'])
     changeBrushMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogOpenSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
             this.resetCheckedButton();
             this.isBrushChecked = true;
             this.pickBrush(SubToolselected.tool1);
@@ -337,7 +343,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.l', ['$event'])
     changeLineMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogOpenSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
             this.resetCheckedButton();
             this.isLineChecked = true;
             this.pickLine();
@@ -353,7 +359,7 @@ export class SidebarComponent {
     }
     @HostListener('window:keydown.i', ['$event'])
     changeDropperMode(event: KeyboardEvent): void {
-        if (this.isDialogOpenSaveEport) {
+        if (this.isDialogloadSaveEport) {
             this.resetCheckedButton();
             this.isDropperChecked = true;
             this.pickDropper();
@@ -362,7 +368,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.r', ['$event'])
     changeSelectionRectangleMode(event: KeyboardEvent): void {
-        if (this.isDialogOpenSaveEport) {
+        if (this.isDialogloadSaveEport) {
             this.resetCheckedButton();
             // this.isSelectionChecked = true;
             this.isSelectionRectangleChecked = true;
@@ -371,7 +377,7 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.s', ['$event']) changeSelectionEllipseMode(event: KeyboardEvent): void {
-        if (this.isDialogOpenSaveEport) {
+        if (this.isDialogloadSaveEport) {
             this.resetCheckedButton();
             // this.isSelectionChecked = true;
             this.isSelectionEllipseChecked = true;
@@ -382,13 +388,11 @@ export class SidebarComponent {
     @HostListener('window:keydown.control.shift.g', ['$event']) openCarrouselKey(event: KeyboardEvent): void {
         this.openCarrousel();
     }
-    @HostListener('window:keydown.control.shift.s', ['$event']) openSaveKey(event: KeyboardEvent): void {
-        this.openSave();
+    @HostListener('window:keydown.control.shift.s', ['$event']) openSaveServerKey(event: KeyboardEvent): void {
+        this.openSaveServer();
     }
-    @HostListener('window:keydown.control.shift.e', ['$event']) openExportKey(event: KeyboardEvent): void {
-        if (!this.isDialogOpenSaveEport) {
-            this.openSave();
-        }
+    @HostListener('window:keydown.control.shift.e', ['$event']) exportDrawingKey(event: KeyboardEvent): void {
+        this.exportDrawing();
     }
     @HostListener('window:keydown.control.a', ['$event']) selectAllCanvas(event: KeyboardEvent): void {
         event.preventDefault();
