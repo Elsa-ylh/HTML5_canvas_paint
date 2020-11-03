@@ -1,6 +1,6 @@
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { injectable } from 'inversify';
-import { Collection, MongoClient, MongoClientOptions } from 'mongodb';
+import { Collection, MongoClient, MongoClientOptions, ObjectId } from 'mongodb';
 import 'reflect-metadata';
 
 const DATABASE_URL = 'mongodb+srv://Admin:LOG2990gr103@saved-canvas-images.2ticq.mongodb.net/project2?retryWrites=true&w=majority';
@@ -31,7 +31,7 @@ export class DatabasePicureService {
 
     async getPicturesLabals(setLabels: string[]): Promise<CanvasInformation[]> {
         if (setLabels[0] === 'Error') {
-            return [{ id: 'not catch the labels', name: 'Error', labels: [], date: new Date(), picture: '' }];
+            return [{ _id: 'not catch the labels', name: 'Error', labels: [], width: 0, height: 0, date: new Date(), picture: '' }];
         } else if (!setLabels.length) {
             return this.getPictures();
         } else {
@@ -44,7 +44,7 @@ export class DatabasePicureService {
                     return picture;
                 })
                 .catch((error: Error) => {
-                    return [{ id: error.message as string, name: 'Error', labels: [], date: new Date(), picture: '' }];
+                    return [{ _id: error.message as string, name: 'Error', labels: [], width: 0, height: 0, date: new Date(), picture: '' }];
                 });
         }
     }
@@ -131,23 +131,52 @@ export class DatabasePicureService {
                 throw error;
             });
     }
-    async addPicture(picture: CanvasInformation): Promise<void> {
-        const bool = await this.validatePicture(picture);
-        if (bool === true) {
-            this.collection.insertOne(picture); // .catch((error: Error) => {throw error;});
+    async delete(deliteId: string): Promise<boolean> {
+        const reponse = await this.collection.deleteOne({ _id: deliteId }).catch((err) => {
+            throw err;
+        });
+        return reponse.result.n === 1;
+    }
+
+    async addPicture(newpicture: CanvasInformation): Promise<boolean> {
+        const newID = new ObjectId();
+        const picture: CanvasInformation = {
+            _id: newID.toHexString(),
+            name: newpicture.name,
+            labels: newpicture.labels,
+            date: newpicture.date,
+            picture: newpicture.picture,
+            height: newpicture.height,
+            width: newpicture.width,
+        };
+        const bool = this.validatePicture(picture);
+        if (bool) {
+            const resolt = await this.collection.insertOne(picture).catch((error: Error) => {
+                throw error;
+            });
+            return resolt.result.ok === 1;
+        } else {
+            throw new Error('Invalid picture');
+        }
+    }
+    async modifyPicture(picture: CanvasInformation): Promise<boolean> {
+        if (this.validatePicture(picture)) {
+            const res = await this.collection.updateOne({ _id: picture._id }, { $set: picture }, { upsert: true }).catch((error: Error) => {
+                throw error;
+            });
+            return res.matchedCount === 1;
         } else {
             throw new Error('Invalid picture');
         }
     }
 
-    private async validatePicture(cancas: CanvasInformation): Promise<boolean> {
-        const boolTestCancas = cancas.picture !== '' && cancas.name !== '';
-        if (!boolTestCancas) return boolTestCancas;
-        return await this.validateName(cancas.id);
+    private validatePicture(cancas: CanvasInformation): boolean {
+        const boolTestCancas = cancas.picture !== '' && cancas.name !== '' && cancas.height >= 0 && cancas.width >= 0;
+        return boolTestCancas;
     }
 
-    private async validateName(idPicture: string): Promise<boolean> {
+    /* private async validateName(idPicture: string): Promise<boolean> {
         const picture = await this.getPictureName(idPicture);
         return picture === null;
-    }
+    }*/
 }

@@ -1,0 +1,48 @@
+<mat-grid-list cols="3" rowHeight="1:1">
+    <mat-grid-tile>
+        <mat-label>
+            Consigne pour le nom :<br />Il ne doit pas être vide et d'avoir espace,<br />
+            Les caractère non autoriser sont : / ! " ' % ? & * # |
+        </mat-label>
+        <mat-form-field appearance="legacy">
+            <mat-label>Nom de image</mat-label>
+            <input id="textName" type="text" matInput [(ngModel)]="textName" />
+        </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <mat-label>
+            Consigne pour creer une étiquette <br />Chaque nouvelle étiquette doive être séparé par un espace. Un minimome de caractère 6 et le max
+            est de 20.<br />
+            Les caractère sont non autoriser sont : / ! " ' % ? & * # |
+        </mat-label>
+        <mat-form-field appearance="legacy">
+            <mat-label>créer des étiquettes</mat-label>
+            <textarea matInput [(ngModel)]="textLabel"></textarea>
+        </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <button mat-raised-button (click)="saveServer()" [disabled]="checkName(textName) || saveload">Sauvegarder sur le serveur</button>
+    </mat-grid-tile>
+</mat-grid-list>
+<div>
+    <p class="errer" *ngIf="checkName(textName)">Name : Une à plus erreur respecter les consigne</p>
+    <p class="errer" *ngIf="notGoodCharacter(textName)">Name : Les caractère sont non autoriser sont : / ! " ' % ? & * # |</p>
+    <p class="errer" *ngIf="errerTextLabel">Une à plus erreur dans les étiquette</p>
+    <p class="errer" *ngIf="notGoodCharacter(textLabel)">Étiquette : les caractère sont non autoriser sont : / ! " ' % ? & * # |</p>
+</div>
+<div>
+    <h1>liste d'étiquettes existent</h1>
+    <p *ngIf="!dataLabel.length">appuyer sur le button "rafraichir la liste" étiquettes</p>
+    <button mat-raised-button (click)="refresh()">rafraichir la liste</button>
+    <div>
+        <mat-button-toggle
+            *ngFor="let element of dataLabel"
+            class="sub-button"
+            mat-button
+            color="primary"
+            id="{{ element.label }}"
+            (click)="selectionLabel(element.label)"
+            >{{ element.label }}
+        </mat-button-toggle>
+    </div>
+</div>

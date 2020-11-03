@@ -1,0 +1,224 @@
+import { Injectable } from '@angular/core';
+import { MouseButton } from '@app/classes/mouse-button';
+import { RGBA } from '@app/classes/rgba';
+import { Tool } from '@app/classes/tool';
+import { Vec2 } from '@app/classes/vec2';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { ColorService } from '@app/services/color/color.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+
+const MAX_TOLERANCE = 100;
+
+@Injectable({
+    providedIn: 'root',
+})
+export class PaintBucketService extends Tool {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private cvsResizerService: CanvasResizerService) {
+        super(drawingService);
+    }
+    radix: number = 16;
+    colorAttributs: number = 4; // r,g,b,a
+    oldColor: RGBA;
+    mouseOut: boolean = false;
+    tolerance: number;
+
+    // https://en.wikipedia.org/wiki/Flood_fill#:~:text=Flood%20fill%2C%20also%20called%20seed,in%20a%20multi%2Ddimensional%20array.
+    // https://ben.akrin.com/?p=7888
+    // https://ben.akrin.com/canvas_fill/fill_04.html
+
+    /*tslint:disable:cyclomatic-complexity*/
+    floodFill(x: number, y: number, replacementColor: RGBA): void {
+        const pixelStack: Vec2[] = [];
+        pixelStack.push({ x, y });
+        const pixels: ImageData = this.drawingService.baseCtx.getImageData(
+            0,
+            0,
+            this.cvsResizerService.canvasSize.x,
+            this.cvsResizerService.canvasSize.y,
+        );
+        let linearCords: number = (y * this.cvsResizerService.canvasSize.x + x) * this.colorAttributs;
+        const originalColor = {
+            red: pixels.data[linearCords],
+            green: pixels.data[linearCords + 1],
+            blue: pixels.data[linearCords + 2],
+            // tslint:disable-next-line:no-magic-numbers
+            alpha: pixels.data[linearCords + 3],
+        };
+
+        // if current pixel matches clicked color
+        if (this.matchFillColor(originalColor, replacementColor)) return;
+
+        while (pixelStack.length > 0) {
+            const newPixel: Vec2 = pixelStack.shift() as Vec2;
+            x = newPixel.x;
+            y = newPixel.y;
+
+            // console.log( x + ", " + y ) ;
+
+            linearCords = (y * this.cvsResizerService.canvasSize.x + x) * this.colorAttributs;
+            while (
+                y-- >= 0 &&
+                pixels.data[linearCords] === originalColor.red &&
+                pixels.data[linearCords + 1] === originalColor.green &&
+                pixels.data[linearCords + 2] === originalColor.blue &&
+                // tslint:disable-next-line:no-magic-numbers
+                pixels.data[linearCords + 3] === originalColor.alpha
+            ) {
+                linearCords -= this.cvsResizerService.canvasSize.x * this.colorAttributs;
+            }
+            linearCords += this.cvsResizerService.canvasSize.x * this.colorAttributs;
+            y++;
+
+            let reachedLeft = false;
+            let reachedRight = false;
+            while (
+                y++ < this.cvsResizerService.canvasSize.y &&
+                pixels.data[linearCords] === originalColor.red &&
+                pixels.data[linearCords + 1] === originalColor.green &&
+                pixels.data[linearCords + 2] === originalColor.blue &&
+                // tslint:disable-next-line:no-magic-numbers
+                pixels.data[linearCords + 3] === originalColor.alpha
+            ) {
+                pixels.data[linearCords] = replacementColor.red;
+                pixels.data[linearCords + 1] = replacementColor.green;
+                pixels.data[linearCords + 2] = replacementColor.blue;
+                // tslint:disable-next-line:no-magic-numbers
+                pixels.data[linearCords + 3] = replacementColor.alpha;
+
+                if (x > 0) {
+                    if (
+                        pixels.data[linearCords - this.colorAttributs] === originalColor.red &&
+                        pixels.data[linearCords - this.colorAttributs + 1] === originalColor.green &&
+                        pixels.data[linearCords - this.colorAttributs + 2] === originalColor.blue &&
+                        // tslint:disable-next-line:no-magic-numbers
+                        pixels.data[linearCords - this.colorAttributs + 3] === originalColor.alpha
+                    ) {
+                        if (!reachedLeft) {
+                            pixelStack.push({ x: x - 1, y });
+                            reachedLeft = true;
+                        }
+                    } else if (reachedLeft) {
+                        reachedLeft = false;
+                    }
+                }
+
+                if (x < this.cvsResizerService.canvasSize.x - 1) {
+                    if (
+                        pixels.data[linearCords + this.colorAttributs] === originalColor.red &&
+                        pixels.data[linearCords + this.colorAttributs + 1] === originalColor.green &&
+                        pixels.data[linearCords + this.colorAttributs + 2] === originalColor.blue &&
+                        // tslint:disable-next-line:no-magic-numbers
+                        pixels.data[linearCords + this.colorAttributs + 3] === originalColor.alpha
+                    ) {
+                        if (!reachedRight) {
+                            pixelStack.push({ x: x + 1, y });
+                            reachedRight = true;
+                        }
+                    } else if (reachedRight) {
+                        reachedRight = false;
+                    }
+                }
+
+                linearCords += this.cvsResizerService.canvasSize.x * this.colorAttributs;
+            }
+        }
+        this.drawingService.baseCtx.putImageData(pixels, 0, 0);
+    }
+    /*tslint:enable:cyclomatic-complexity*/
+
+    // clic droit : double for dans une nouvelle fonction fill
+    // tolerance : nombre entre 0 et 100 => 0 tolerance max et 100 tolerance minimale => fill tout
+    // difference entre les couleurs : red, blue, green, alpha puis moyenne a comparer => convertir en %
+
+    // transform #000000 in {red : 0, green : 0, blue : 0, alpha : 0}
+    hexToRgbA(hex: string): RGBA {
+        // tslint:disable-next-line:no-magic-numbers
+        const r: number = parseInt(hex.slice(1, 3), this.radix);
+        // tslint:disable-next-line:no-magic-numbers
+        const g: number = parseInt(hex.slice(3, 5), this.radix);
+        // tslint:disable-next-line:no-magic-numbers
+        const b: number = parseInt(hex.slice(5, 7), this.radix);
+        // tslint:disable-next-line:no-magic-numbers
+        const a = 255;
+
+        return { red: r, green: g, blue: b, alpha: a };
+    }
+
+    matchFillColor(currentColor: RGBA, targetColor: RGBA): boolean {
+        let matchFillColor = true;
+        const tolerance = this.toleranceToRGBA();
+        console.log(tolerance);
+        matchFillColor = matchFillColor && targetColor.red >= currentColor.red - tolerance && targetColor.red <= currentColor.red + tolerance;
+        matchFillColor = matchFillColor && targetColor.green >= currentColor.green - tolerance && targetColor.green <= currentColor.green + tolerance;
+        matchFillColor = matchFillColor && targetColor.blue >= currentColor.blue - tolerance && targetColor.blue <= currentColor.blue + tolerance;
+
+        return matchFillColor;
+    }
+
+    fill(x: number, y: number, replacementColor: RGBA): void {
+        const pixels: ImageData = this.drawingService.baseCtx.getImageData(
+            0,
+            0,
+            this.cvsResizerService.canvasSize.x,
+            this.cvsResizerService.canvasSize.y,
+        );
+        const linearCords: number = (y * this.cvsResizerService.canvasSize.x + x) * this.colorAttributs;
+        const originalColor = {
+            red: pixels.data[linearCords],
+            green: pixels.data[linearCords + 1],
+            blue: pixels.data[linearCords + 2],
+            // tslint:disable-next-line:no-magic-numbers
+            alpha: pixels.data[linearCords + 3],
+        };
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < pixels.data.length; i++) {
+            // for (let j = 0; j < this.cvsResizerService.canvasSize.y; j++) {
+            if (this.matchFillColor(originalColor, replacementColor)) {
+                this.PaintPixel(
+                    this.drawingService.baseCtx.getImageData(0, 0, this.cvsResizerService.canvasSize.x, this.cvsResizerService.canvasSize.y),
+                    (y * this.cvsResizerService.canvasSize.x + x) * this.colorAttributs,
+                );
+            }
+            // }
+        }
+    }
+
+    PaintPixel(imageData: ImageData, pos: number): void {
+        const replacementColor: RGBA = this.hexToRgbA(this.colorService.primaryColor);
+        imageData.data[pos] = replacementColor.red;
+        imageData.data[pos + 1] = replacementColor.green;
+        imageData.data[pos + 2] = replacementColor.blue;
+        // tslint:disable-next-line:no-magic-numbers
+        imageData.data[pos + 3] = replacementColor.alpha;
+    }
+
+    toleranceToRGBA(): number {
+        // Maximum tolerance of 100, Default to 0
+        // tslint:disable-next-line:no-magic-numbers
+        this.tolerance = !isNaN(this.tolerance) ? Math.min(Math.abs(Math.round(this.tolerance)), 100) : 0;
+        // console.log('this : ', this.tolerance);
+        // tslint:disable-next-line:no-magic-numbers
+        return (this.tolerance / MAX_TOLERANCE) * 255;
+    }
+
+    onMouseDown(event: MouseEvent): void {
+        // debugger;
+        this.floodFill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
+        // pixels contigus
+        if (event.button === MouseButton.Left) {
+            this.mouseDown = false;
+            this.floodFill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
+        }
+        // pixels non contigus
+        // if (event.button === MouseButton.Right) {
+        //     this.mouseDown = false;
+        //     this.fill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
+        // }
+    }
+
+    onMouseOut(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.mouseOut = true;
+        }
+    }
+}
