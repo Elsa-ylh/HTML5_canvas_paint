@@ -147,7 +147,7 @@ export class PaintBucketService extends Tool {
     matchFillColor(currentColor: RGBA, targetColor: RGBA): boolean {
         let matchFillColor = true;
         const tolerance = this.toleranceToRGBA();
-        console.log(tolerance);
+        //console.log(tolerance);
         matchFillColor = matchFillColor && targetColor.red >= currentColor.red - tolerance && targetColor.red <= currentColor.red + tolerance;
         matchFillColor = matchFillColor && targetColor.green >= currentColor.green - tolerance && targetColor.green <= currentColor.green + tolerance;
         matchFillColor = matchFillColor && targetColor.blue >= currentColor.blue - tolerance && targetColor.blue <= currentColor.blue + tolerance;
@@ -171,15 +171,14 @@ export class PaintBucketService extends Tool {
             alpha: pixels.data[linearCords + 3],
         };
         // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < pixels.data.length; i++) {
-            // for (let j = 0; j < this.cvsResizerService.canvasSize.y; j++) {
-            if (this.matchFillColor(originalColor, replacementColor)) {
-                this.PaintPixel(
-                    this.drawingService.baseCtx.getImageData(0, 0, this.cvsResizerService.canvasSize.x, this.cvsResizerService.canvasSize.y),
-                    (y * this.cvsResizerService.canvasSize.x + x) * this.colorAttributs,
-                );
+        for (let i = 0; i < this.cvsResizerService.canvasSize.x ; i++) {
+            for (let j = 0; j < this.cvsResizerService.canvasSize.y; j++) {
+              if (this.matchFillColor(originalColor, replacementColor)) {
+                  this.PaintPixel(
+                      this.drawingService.baseCtx.getImageData(0, 0, this.cvsResizerService.canvasSize.x, this.cvsResizerService.canvasSize.y),
+                      linearCords);
             }
-            // }
+          }
         }
     }
 
@@ -210,10 +209,10 @@ export class PaintBucketService extends Tool {
             this.floodFill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
         }
         // pixels non contigus
-        // if (event.button === MouseButton.Right) {
-        //     this.mouseDown = false;
-        //     this.fill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
-        // }
+        if (event.button === MouseButton.Right) {
+            this.mouseDown = false;
+            this.fill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
+        }
     }
 
     onMouseOut(event: MouseEvent): void {
