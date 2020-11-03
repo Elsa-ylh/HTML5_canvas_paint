@@ -11,7 +11,7 @@ export class MainPageComponent {
     onGoingDrawing: boolean;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
-    constructor(private dialogCreator: MatDialog) {
+    constructor(public dialogCreator: MatDialog) {
         this.onGoingDrawing = false;
     }
 
