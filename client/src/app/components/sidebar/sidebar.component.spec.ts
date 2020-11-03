@@ -2,8 +2,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialog } from '@angular/material/dialog';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -36,6 +36,7 @@ import { SelectionEllipseService } from '@app/services/tools/selection-service/s
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { Observable, Subject } from 'rxjs';
 import { SidebarComponent } from './sidebar.component';
 
 // tslint:disable:no-any
@@ -67,7 +68,7 @@ describe('SidebarComponent', () => {
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
-    // let dialogMock: jasmine.SpyObj<MatDialog>;
+    let dialogMock: jasmine.SpyObj<MatDialog>;
     beforeEach(
         waitForAsync(async () => {
             drawingStub = new DrawingService();
@@ -81,6 +82,7 @@ describe('SidebarComponent', () => {
             lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
             dropperServiceStub = new DropperService(drawingStub, colorStub);
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub);
+            selectionStub = new SelectionService(drawingStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -108,6 +110,7 @@ describe('SidebarComponent', () => {
             drawingStub.canvas = canvas;
             drawingStub.baseCtx = baseStub; // Jasmine doesnt copy properties with underlying data
             drawingStub.previewCtx = previewStub;
+            dialogMock = jasmine.createSpyObj('dialogCreator', ['open']);
 
             await TestBed.configureTestingModule({
                 declarations: [
@@ -138,21 +141,25 @@ describe('SidebarComponent', () => {
                     { provide: PencilService, useValue: pencilStub },
                     { provide: EraserService, useValue: eraserStub },
                     { provide: LineService, useValue: lineStub },
-                    { provide: SelectionService, useValue: selectionStub },
+                    { provide: SelectionRectangleService, usevalue: selectionRectangleStub },
+                    { provide: SelectionEllipseService, useValue: selectionEllipseStub },
                     { provide: ToolService, useValue: toolServiceStub },
                     { provide: DropperService, useValue: dropperServiceStub },
-                    { provide: MatDialog, useValue: {} },
+                    { provide: MatDialog, useValue: dialogMock },
+                    { provide: MatDialogRef, useValue: {} },
                     { provide: PolygonService, useValue: polygonStub },
+                    { provide: Observable, useValue: {} },
+                    { provide: SelectionService, useValue: selectionStub },
+                    { provide: UndoRedoService, useValue: undoRedoStub },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);
             TestBed.inject(DomSanitizer);
-
+            selectionRectangleStub = TestBed.inject(SelectionRectangleService);
+            selectionEllipseStub = TestBed.inject(SelectionEllipseService);
             fixture = TestBed.createComponent(SidebarComponent);
             component = fixture.componentInstance;
             fixture.detectChanges();
-
-            // dialogMock = jasmine.createSpyObj('dialogCreator', ['open']);
         }),
     );
 
@@ -186,7 +193,6 @@ describe('SidebarComponent', () => {
         expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Dropper);
     });
 
-    /*
     it(' should clear canvas dialog', () => {
         drawingStub.baseCtx.fillStyle = 'green';
         drawingStub.baseCtx.fillRect(10, 10, drawingStub.canvas.width, drawingStub.canvas.height);
@@ -204,7 +210,6 @@ describe('SidebarComponent', () => {
 
         expect(component.isDialogOpen).toEqual(false);
     });
-    */
 
     it(' should create new drawing dialog', () => {
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
@@ -214,15 +219,20 @@ describe('SidebarComponent', () => {
         component.createNewDrawing();
         expect(component.dialogCreator.open).toHaveBeenCalled();
     });
-    // it(' should open user guide dialog', () => {
-    //    const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
-    //    component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
-    //    component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
-    //        return matdialogRef;
-    //    });
-    //    component.openCarrousel();
-    //    expect(component.dialogLoadRef).toEqual(matdialogRef);
-    // });
+    it(' should open user guide dialog', () => {
+        const closedSubject = new Subject<any>();
+
+        const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
+        dialogRefMock.afterClosed.and.returnValue(closedSubject.asObservable());
+        dialogMock.open.and.returnValue(dialogRefMock);
+        component.isDialogloadSaveEport = true;
+        component.openCarrousel();
+        expect(component.isDialogloadSaveEport).toEqual(false);
+
+        closedSubject.next();
+
+        expect(component.isDialogloadSaveEport).toEqual(true);
+    });
     it('should open writeTextDialogUserComponent', () => {
         const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
@@ -311,12 +321,12 @@ describe('SidebarComponent', () => {
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
     });
-    // it('should pick selection ellipse', () => {
-    //    const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.callThrough();
-    //    component.pickSelectionEllipse();
-    //    expect(drawingStub.cursorUsed).toEqual(cursorName.default);
-    //    expect(switchToolSpy).toHaveBeenCalled();
-    // });
+    it('should pick selection ellipse', () => {
+        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.callThrough();
+        component.pickSelectionEllipse();
+        expect(drawingStub.cursorUsed).toEqual(cursorName.default);
+        expect(switchToolSpy).toHaveBeenCalled();
+    });
     it('should set all checked to false', () => {
         component.resetCheckedButton();
         expect(component.pencilChecked).toEqual(false);
@@ -333,7 +343,7 @@ describe('SidebarComponent', () => {
         expect(component.selectionEllipseChecked).toEqual(false);
         expect(component.selectionRectangleChecked).toEqual(false);
     });
-    /*
+
     it('should set subtoolselected as tool 2', () => {
         const event = { checked: true } as MatCheckboxChange;
         component.checkboxChangeToggle(event);
@@ -344,7 +354,7 @@ describe('SidebarComponent', () => {
         component.checkboxChangeToggle(event);
         expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool1);
     });
-    */
+
     it('should call preventDefault clearCanvas and set isDialogOpen to true', () => {
         component.isDialogOpen = false;
         drawingStub.baseCtx.beginPath();
@@ -371,17 +381,17 @@ describe('SidebarComponent', () => {
         expect(component.rectangleChecked).toEqual(true);
         expect(spyPickRect).toHaveBeenCalled();
     });
-    // it('should call resetCheckedButton set isEllipseChecked to true should call pickEllipse', () => {
-    //    toolServiceStub.currentToolName = ToolUsed.Pencil;
-    //    const event = new KeyboardEvent('window:keydown.2', {});
-    //    const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
-    //    const spyPickEllipse = spyOn(component, 'pickEllipse').and.callThrough();
-    //    window.dispatchEvent(event);
-    //    component.changleEllipseMode(event);
-    //    expect(spyReset).toHaveBeenCalled();
-    //    expect(component.ellipseChecked).toEqual(true);
-    //    expect(spyPickEllipse).toHaveBeenCalled();
-    // });
+    it('should call resetCheckedButton set isEllipseChecked to true should call pickEllipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.Pencil;
+        const event = new KeyboardEvent('window:keydown.2', {});
+        const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
+        const spyPickEllipse = spyOn(component, 'pickEllipse').and.callThrough();
+        window.dispatchEvent(event);
+        component.changleEllipseMode(event);
+        expect(spyReset).toHaveBeenCalled();
+        expect(component.ellipseChecked).toEqual(true);
+        expect(spyPickEllipse).toHaveBeenCalled();
+    });
     it('should call resetCheckedButton set isPolygonChecked to true should call pickPolygon', () => {
         toolServiceStub.currentToolName = ToolUsed.Pencil;
         const event = new KeyboardEvent('window:keydown.3', {});
@@ -466,30 +476,30 @@ describe('SidebarComponent', () => {
         expect(spyPickSelectionRect).toHaveBeenCalled();
     });
 
-    // it(' should call resetCheckButton set isSelectionChecked and isSelectionEllipseChecked to true should call pickSelectionEllipse', () => {
-    //    toolServiceStub.currentToolName = ToolUsed.Pencil;
-    //    const event = new KeyboardEvent('window:keydown.s', {});
-    //    const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
-    //    const spyPickSelectionEllipse = spyOn(component, 'pickSelectionEllipse').and.stub();
-    //    window.dispatchEvent(event);
-    //    component.changeSelectionEllipseMode(event);
-    //    expect(spyReset).toHaveBeenCalled();
-    //    expect(component.selectionEllipseChecked).toEqual(true);
-    //    expect(spyPickSelectionEllipse).toHaveBeenCalled();
-    // });
+    it(' should call resetCheckButton set isSelectionChecked and isSelectionEllipseChecked to true should call pickSelectionEllipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.Pencil;
+        const event = new KeyboardEvent('window:keydown.s', {});
+        const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
+        const spyPickSelectionEllipse = spyOn(component, 'pickSelectionEllipse').and.stub();
+        component.isDialogloadSaveEport = true;
+        window.dispatchEvent(event);
+        component.changeSelectionEllipseMode(event);
+        expect(spyReset).toHaveBeenCalled();
+        expect(component.selectionEllipseChecked).toEqual(true);
+        expect(spyPickSelectionEllipse).toHaveBeenCalled();
+    });
 
-    // it('should call prevent default and selectAll for rectangle', () => {
-    //     toolServiceStub.currentToolName = ToolUsed.SelectionRectangle;
-    //     const event = new KeyboardEvent('window:keydown.control.a', {});
-    //     const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
-    //     const spySelectAllRect = spyOn(selectionRectangleStub, 'selectAll').and.stub();
-    //     window.dispatchEvent(event);
-    //     component.selectAllCanvas(event);
-    //     expect(spyPreventDefault).toHaveBeenCalled();
-    //     expect(spySelectAllRect).toHaveBeenCalled();
-    // });
+    it('should call prevent default and selectAll for rectangle', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle;
+        const event = new KeyboardEvent('window:keydown.control.a', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spySelectAllRect = spyOn(selectionRectangleStub, 'selectAll').and.stub();
+        window.dispatchEvent(event);
+        component.selectAllCanvas(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spySelectAllRect).toHaveBeenCalled();
+    });
 
-    /*
     it('should call prevent default and selectAll for ellipse', () => {
         toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
         const event = new KeyboardEvent('window:keydown.control.a', {});
@@ -500,33 +510,181 @@ describe('SidebarComponent', () => {
         expect(spyPreventDefault).toHaveBeenCalled();
         expect(spySelectAllEllipse).toHaveBeenCalled();
     });
-    */
 
-    // it('should call onLeftArrow  when clicking on the left arrow key when using selectRectangle', () => {
-    //     toolServiceStub.currentToolName = ToolUsed.SelectionRectangle as ToolUsed;
-    //     const event = new KeyboardEvent('window:keydown.ArrowLeft', {});
-    //     const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
-    //     const spyonLeftArrowRect = spyOn(selectionRectangleStub, 'onLeftArrow').and.callThrough();
-    //     const spyonLeftArrowEllipse = spyOn(selectionEllipseStub, 'onLeftArrow').and.stub();
-    //     window.dispatchEvent(event);
-    //     component.onLeftArrow(event);
-    //     expect(spyPreventDefault).toHaveBeenCalled();
-    //     expect(spyonLeftArrowRect).toHaveBeenCalled();
-    //     expect(spyonLeftArrowEllipse).not.toHaveBeenCalled();
-    // });
+    it('should call onLeftArrow  when clicking on the left arrow key when using selectRectangle', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle as ToolUsed;
+        const event = new KeyboardEvent('window:keydown.ArrowLeft', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonLeftArrowRect = spyOn(selectionRectangleStub, 'onLeftArrow').and.stub();
+        window.dispatchEvent(event);
+        component.onLeftArrow(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonLeftArrowRect).toHaveBeenCalled();
+    });
 
-    /*
     it('should call onLeftArrow  when clicking on the left arrow key when using selectEllipse', () => {
         toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
         const event = new KeyboardEvent('window:keydown.ArrowLeft', {});
         const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
         const spyonLeftArrowEllipse = spyOn(selectionEllipseStub, 'onLeftArrow').and.stub();
-        const spyonLeftArrowRect = spyOn(selectionRectangleStub, 'onLeftArrow').and.stub();
         window.dispatchEvent(event);
         component.onLeftArrow(event);
         expect(spyPreventDefault).toHaveBeenCalled();
         expect(spyonLeftArrowEllipse).toHaveBeenCalled();
-        expect(spyonLeftArrowRect).not.toHaveBeenCalled();
+    });
+
+    it('should call onRightArrow  when clicking on the right arrow key when using selectRectangle', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle as ToolUsed;
+        const event = new KeyboardEvent('window:keydown.ArrowRight', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonRightArrowRect = spyOn(selectionRectangleStub, 'onRightArrow').and.stub();
+        window.dispatchEvent(event);
+        component.onRightArrow(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonRightArrowRect).toHaveBeenCalled();
+    });
+
+    it('should call onRightArrow  when clicking on the right arrow key when using selectEllipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new KeyboardEvent('window:keydown.ArrowRight', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonRightArrowEllipse = spyOn(selectionEllipseStub, 'onRightArrow').and.stub();
+        window.dispatchEvent(event);
+        component.onRightArrow(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonRightArrowEllipse).toHaveBeenCalled();
+    });
+
+    it('should call onDownArrow  when clicking on the down arrow key when using selectRectangle', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle as ToolUsed;
+        const event = new KeyboardEvent('window:keydown.ArrowDown', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonDownArrowRect = spyOn(selectionRectangleStub, 'onDownArrow').and.stub();
+        window.dispatchEvent(event);
+        component.onDownArrow(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonDownArrowRect).toHaveBeenCalled();
+    });
+
+    it('should call onDownArrow  when clicking on the right down key when using selectEllipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new KeyboardEvent('window:keydown.ArrowDown', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonDownArrowEllipse = spyOn(selectionEllipseStub, 'onDownArrow').and.stub();
+        window.dispatchEvent(event);
+        component.onDownArrow(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonDownArrowEllipse).toHaveBeenCalled();
+    });
+
+    it('should call onUpArrow  when clicking on the up arrow key when using selectRectangle', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle as ToolUsed;
+        const event = new KeyboardEvent('window:keydown.ArrowUp', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonUpArrowRect = spyOn(selectionRectangleStub, 'onUpArrow').and.stub();
+        window.dispatchEvent(event);
+        component.onUpArrow(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonUpArrowRect).toHaveBeenCalled();
+    });
+
+    it('should call onUpArrow  when clicking on the right up key when using selectEllipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new KeyboardEvent('window:keydown.ArrowUp', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonUpArrowEllipse = spyOn(selectionEllipseStub, 'onUpArrow').and.stub();
+        window.dispatchEvent(event);
+        component.onUpArrow(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonUpArrowEllipse).toHaveBeenCalled();
+    });
+
+    it('should call onLeftArrowUp  when releasing on the left arrow key when using selectRectangle', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle as ToolUsed;
+        const event = new KeyboardEvent('window:keyup.ArrowLeft', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonLeftUpArrowRect = spyOn(selectionRectangleStub, 'onLeftArrowUp').and.stub();
+        window.dispatchEvent(event);
+        component.onLeftArrowUp(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonLeftUpArrowRect).toHaveBeenCalled();
+    });
+
+    it('should call onLeftArrowUp  when releasing on the left arrow key when using selectEllipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse as ToolUsed;
+        const event = new KeyboardEvent('window:keyup.ArrowLeft', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonLeftUpArrowEllipse = spyOn(selectionEllipseStub, 'onLeftArrowUp').and.stub();
+        window.dispatchEvent(event);
+        component.onLeftArrowUp(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonLeftUpArrowEllipse).toHaveBeenCalled();
+    });
+
+    it('should call onRightArrowUp  when releasing on the right arrow key when using selectRectangle', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle as ToolUsed;
+        const event = new KeyboardEvent('window:keyup.ArrowRight', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonRightUpArrowRect = spyOn(selectionRectangleStub, 'onRightArrowUp').and.stub();
+        window.dispatchEvent(event);
+        component.onRightArrowUp(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonRightUpArrowRect).toHaveBeenCalled();
+    });
+
+    it('should call onRightArrowUp  when releasing on the right arrow key when using selectEllipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse as ToolUsed;
+        const event = new KeyboardEvent('window:keyup.ArrowRight', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonRightUpArrowEllipse = spyOn(selectionEllipseStub, 'onRightArrowUp').and.stub();
+        window.dispatchEvent(event);
+        component.onRightArrowUp(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonRightUpArrowEllipse).toHaveBeenCalled();
+    });
+
+    it('should call onDownArrowUp  when releasing on the down arrow key when using selectRectangle', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle as ToolUsed;
+        const event = new KeyboardEvent('window:keyup.ArrowDown', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonDownUpArrowRect = spyOn(selectionRectangleStub, 'onDownArrowUp').and.stub();
+        window.dispatchEvent(event);
+        component.onDownArrowUp(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonDownUpArrowRect).toHaveBeenCalled();
+    });
+
+    it('should call onDownArrowUp  when releasing on the down arrow key when using selectEllipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse as ToolUsed;
+        const event = new KeyboardEvent('window:keyup.ArrowDown', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonDownUpArrowEllipse = spyOn(selectionEllipseStub, 'onDownArrowUp').and.stub();
+        window.dispatchEvent(event);
+        component.onDownArrowUp(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonDownUpArrowEllipse).toHaveBeenCalled();
+    });
+
+    it('should call onUpArrowUp  when releasing on the up arrow key when using selectRectangle', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle as ToolUsed;
+        const event = new KeyboardEvent('window:keyup.ArrowUp', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonUpUpArrowRect = spyOn(selectionRectangleStub, 'onUpArrowUp').and.stub();
+        window.dispatchEvent(event);
+        component.onUpArrowUp(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonUpUpArrowRect).toHaveBeenCalled();
+    });
+
+    it('should call onUpArrowUp  when releasing on the up arrow key when using selectEllipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse as ToolUsed;
+        const event = new KeyboardEvent('window:keyup.ArrowUp', {});
+        const spyPreventDefault = spyOn(event, 'preventDefault').and.callThrough();
+        const spyonUpUpArrowEllipse = spyOn(selectionEllipseStub, 'onUpArrowUp').and.stub();
+        window.dispatchEvent(event);
+        component.onUpArrowUp(event);
+        expect(spyPreventDefault).toHaveBeenCalled();
+        expect(spyonUpUpArrowEllipse).toHaveBeenCalled();
     });
 
     it('should call undo if isUndoDisabled is false and ctrl z is pressed', () => {
@@ -537,9 +695,7 @@ describe('SidebarComponent', () => {
         component.callUndo(event);
         expect(spyUndo).toHaveBeenCalled();
     });
-    */
 
-    /*
     it('should call redo if isRedoDisabled is false and ctrl shift z is pressed', () => {
         const event = new KeyboardEvent('window:keydown.control.shift.z', {});
         undoRedoStub.isRedoDisabled = false;
@@ -548,5 +704,4 @@ describe('SidebarComponent', () => {
         component.callRedo(event);
         expect(spyRedo).toHaveBeenCalled();
     });
-    */
 });
