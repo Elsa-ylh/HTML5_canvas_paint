@@ -9,7 +9,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
-import { CancasInformation, Label } from '@common/communication/canvas-information';
+import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { of } from 'rxjs';
 import { CarrouselPictureComponent } from './dialog-carrousel-picture.component';
 // tslint:disable:no-any
@@ -18,12 +18,12 @@ import { CarrouselPictureComponent } from './dialog-carrousel-picture.component'
 describe('CarrouselPictureComponent', () => {
     let component: CarrouselPictureComponent;
     let fixture: ComponentFixture<CarrouselPictureComponent>;
-    const informationsService: CancasInformation[] = [];
+    const informationsService: CanvasInformation[] = [];
     let httpMock: HttpTestingController;
     const isDate: Date = new Date();
     let addAllDataSpy: jasmine.Spy<any>;
     let addAllLabalSpy: jasmine.Spy<any>;
-    const testCanvasInformationAdd: CancasInformation = {
+    const testCanvasInformationAdd: CanvasInformation = {
         id: '',
         name: 'test5',
         labels: [{ label: 'label1' }],

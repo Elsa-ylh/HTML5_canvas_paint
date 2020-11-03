@@ -16,7 +16,7 @@ import { ImageFormat } from '@app/classes/image-format';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DialogExportDrawingComponent } from './dialog-export-locally.component';
 
-fdescribe('DialogExportDrawingComponent', () => {
+describe('DialogExportDrawingComponent', () => {
     let component: DialogExportDrawingComponent;
     let fixture: ComponentFixture<DialogExportDrawingComponent>;
 
