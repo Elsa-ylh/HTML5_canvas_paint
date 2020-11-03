@@ -214,8 +214,8 @@ describe('SidebarComponent', () => {
         component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
             return matdialogRef;
         });
-        component.openCarrouse();
-        expect(component.newCarrouselRef).toEqual(matdialogRef);
+        component.openCarrousel();
+        expect(component.dialogLoadRef).toEqual(matdialogRef);
     });
     it('should open writeTextDialogUserComponent', () => {
         const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);

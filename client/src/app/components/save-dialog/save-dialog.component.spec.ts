@@ -21,7 +21,7 @@ import { SaveDialogComponent } from './save-dialog.component';
 // tslint:disable:no-string-literal
 // tslint:disable:no-unused-expression
 // tslint:disable:no-empty
-fdescribe('SaveDialogComponent', () => {
+describe('SaveDialogComponent', () => {
     let component: SaveDialogComponent;
     let fixture: ComponentFixture<SaveDialogComponent>;
     let httpMock: HttpTestingController;

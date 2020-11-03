@@ -64,13 +64,10 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         MainPageComponent,
         SidebarComponent,
         WriteTextDialogUserGuideComponent,
-<<<<<<< HEAD
         ColorComponent,
         CarrouselPictureComponent,
         DropperColorComponent,
         SaveDialogComponent,
-=======
->>>>>>> dev
     ],
     imports: [
         ReactiveFormsModule,

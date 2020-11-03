@@ -267,7 +267,7 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.1', ['$event']) changeRectnagleMode(event: KeyboardEvent): void {
+    @HostListener('window:keydown.1', ['$event']) changeRectangleMode(event: KeyboardEvent): void {
         if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogOpenSaveEport) {
             this.resetCheckedButton();
             this.isRectangleChecked = true;
