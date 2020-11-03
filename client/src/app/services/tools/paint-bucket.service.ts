@@ -53,8 +53,6 @@ export class PaintBucketService extends Tool {
             x = newPixel.x;
             y = newPixel.y;
 
-            // console.log( x + ", " + y ) ;
-
             linearCords = (y * this.cvsResizerService.canvasSize.x + x) * this.colorAttributs;
             while (
                 y-- >= 0 &&
@@ -193,7 +191,7 @@ export class PaintBucketService extends Tool {
     }
 
     toleranceToRGBA(): number {
-        // Maximum tolerance of 100, Default to 0
+        // Maximum tolerance of 99, Default to 0
         // tslint:disable-next-line:no-magic-numbers
         this.tolerance = !isNaN(this.tolerance) ? Math.min(Math.abs(Math.round(this.tolerance)), 100) : 0;
         // tslint:disable-next-line:no-magic-numbers
@@ -202,12 +200,13 @@ export class PaintBucketService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.floodFill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
-        // contiguous pixels aka
+        // Only near pixels with similar looking colors are painted. For example, a bounded domain is the only place where the paint will be.
+        // Outside of the domain, the paint is not there.
         if (event.button === MouseButton.Left) {
             this.mouseDown = false;
             this.floodFill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
         }
-        // pixels non contigus
+        // The entire canvas is being verified if the target color plus tolerance can be colored with the replacement color.
         if (event.button === MouseButton.Right) {
             this.mouseDown = false;
             this.fill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
