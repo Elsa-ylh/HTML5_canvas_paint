@@ -290,7 +290,7 @@ describe('Database service', () => {
                 console.log(err.message);
             });
     });
-    it('delite errer mongodb close', async () => {
+    it('delete errer mongodb close', async () => {
         client.close();
         await databaseService
             .delete('')
@@ -298,8 +298,8 @@ describe('Database service', () => {
                 expect(bool).to.equal(false);
             })
             .catch((err) => {
-                expect(err.message).to.equal('server is closed');
-                console.log(err.message);
+                expect(err.message).to.equal('Topology is closed, please connect');
+                //console.log(err.message);
             });
     });
     it('test find modifyPicture', async () => {
