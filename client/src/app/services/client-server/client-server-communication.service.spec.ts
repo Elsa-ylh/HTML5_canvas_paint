@@ -88,7 +88,7 @@ describe('ClientServerCommunicationService', () => {
     it('should message return expected CancasInformations (HttpClient called once)', () => {
         const expectedMessage: Message = { body: 'name', title: 'test' };
         // check the content of the mocked call
-        service.ElementResearch(expectedMessage).subscribe((response: CancasInformation[]) => {
+        service.getElementResearch(expectedMessage).subscribe((response: CancasInformation[]) => {
             expect(response[0].id).toEqual(expectedCancasInformations[0].id, 'id check');
             expect(response[0].name).toEqual(expectedCancasInformations[0].name, 'name check');
         }, fail);

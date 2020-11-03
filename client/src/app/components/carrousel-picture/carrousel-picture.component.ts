@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { CancasInformation, Label } from '@common/communication/canvas-information';
@@ -9,7 +9,7 @@ import { Message } from '@common/communication/message';
     templateUrl: './carrousel-picture.component.html',
     styleUrls: ['./carrousel-picture.component.scss'],
 })
-export class CarrouselPictureComponent {
+export class CarrouselPictureComponent implements OnInit {
     private dataPicture: CancasInformation[] = [];
     dataLabel: Label[] = [];
     private labelSelect: string[] = [];
@@ -18,7 +18,8 @@ export class CarrouselPictureComponent {
     myDate: FormControl = new FormControl(new Date());
 
     constructor(private clientServerCommunicationService: ClientServerCommunicationService) {}
-    OnInit(): void {
+
+    ngOnInit(): void {
         this.addAllData();
         this.addAllLabal();
     }
@@ -51,7 +52,6 @@ export class CarrouselPictureComponent {
         if (itList) {
             this.labelSelect.push(label);
         }
-        console.log(this.labelSelect.length);
         this.labelSelect.length === 0 ? this.addAllData() : this.setMessageLabel(this.labelSelect);
     }
     private setMessageLabel(labels: string[]): void {
@@ -62,22 +62,18 @@ export class CarrouselPictureComponent {
         const message: Message = { title: 'labels', body: textLabel };
         this.clientServerCommunicationService.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
-    getPicturesTestAll(): CancasInformation[] {
+    getPicturesAll(): CancasInformation[] {
         return this.dataPicture;
     }
     setSearchCriteria(): void {
         switch (this.selectedType) {
             case 'name':
                 const message: Message = { title: 'name', body: this.name };
-                this.clientServerCommunicationService.ElementResearch(message).subscribe((info) => (this.dataPicture = info));
+                this.clientServerCommunicationService.getElementResearch(message).subscribe((info) => (this.dataPicture = info));
                 break;
             case 'date':
-                try {
-                    const messageDate: Message = { title: 'date', body: (this.myDate.value as Date).toString() };
-                    this.clientServerCommunicationService.ElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
-                } catch (error) {
-                    alert('La date est correttre elle doit être de forme mm/jj/aaaa');
-                }
+                const messageDate: Message = { title: 'date', body: (this.myDate.value as Date).toString() };
+                this.clientServerCommunicationService.getElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
                 break;
         }
     }

@@ -47,7 +47,7 @@ export class ClientServerCommunicationService {
         return [];
     }
 
-    ElementResearch(message: Message): Observable<CancasInformation[]> {
+    getElementResearch(message: Message): Observable<CancasInformation[]> {
         return this.http
             .post<CancasInformation[]>(this.HTTP_SERVE_LOCAL + '/research', message)
             .pipe(catchError(this.handleError<CancasInformation[]>('basicPost')));
