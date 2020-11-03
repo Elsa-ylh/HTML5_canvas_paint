@@ -43,6 +43,7 @@ export class DialogCreateNewDrawingComponent {
         this.canvasResizerService.canvasSize.x = this.canvasResizerService.DEFAULT_WIDTH;
         this.canvasResizerService.canvasSize.y = this.canvasResizerService.DEFAULT_HEIGHT;
         this.dialogRef.close(true);
+
         if (this.message === 'Êtes-vous sûr de vouloir effacer votre dessin actuel ?') {
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);

@@ -119,17 +119,19 @@ describe('BrushService', () => {
         service.subToolSelect = SubToolselected.tool1;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-
+        // const mousePos = service.getPositionFromMouse(mouseEvent);
+        // @ts-ignore
+        // BrushService['mouseOut'] = true;
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
+        // @ts-ignore
+        // expect(BrushService['lastPoint'].toEqual(mousePos));
     });
 
     it(' onMouseMove should not call drawLine if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
-
-        service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
@@ -211,13 +213,13 @@ describe('BrushService', () => {
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
     });
-    it('exit et over de canvas not downMasse it false', () => {
+    it('exit and over de canvas not downMasse if false', () => {
         service.onMouseOut(mouseEvent);
         service.onMouseEnter(mouseEvent);
         expect(drawLineSpy).not.toHaveBeenCalled();
         expect(drawBrushToolSpy).not.toHaveBeenCalled();
     });
-    it('Mouse exit et over de canvas not downMasse ', () => {
+    it('Mouse exit or over of canvas not downMasse ', () => {
         service.onMouseDown(mouseEvent1);
         service.onMouseOut(mouseEvent);
         service.onMouseEnter(mouseEvent);

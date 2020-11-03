@@ -101,13 +101,8 @@ describe('PencilService', () => {
     it(' onMouseUp should draw a dot when onMouseDown called once and no onMouseMove', () => {
         service.mouseDown = true;
         service.mouseMove = false;
-
-        baseCtxStub.strokeStyle = '#000000';
         service.onMouseUp(mouseEvent);
-        expect(baseCtxStub.fillStyle).toBe('#000000');
-        expect(previewCtxStub.fillStyle).toBe('#000000');
 
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(drawLineSpy).toHaveBeenCalled();
     });
 });

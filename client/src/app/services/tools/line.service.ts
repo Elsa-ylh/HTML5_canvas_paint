@@ -2,24 +2,32 @@ import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
+import { LineAction } from '@app/classes/undo-redo/line-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+
+export interface LineParameters {
+    data: Vec2[];
+    selectedLineTool: SubToolselected;
+}
 
 @Injectable({
     providedIn: 'root',
 })
 export class LineService extends Tool {
-    secondarySizePixel: number = 2;
-    lineWidth: number = 2;
+    secondarySizePixel: number = 2; //
+    lineWidth: number = 2; //
+    private pathData: Vec2[] = []; //
     isBallOn: boolean = false;
-    private pathData: Vec2[] = [];
-    private pointMouse: Vec2 = { x: 0, y: 0 };
-    private pointShiftMemory: Vec2 = { x: 0, y: 0 };
+    private pointMouse: Vec2 = { x: 0, y: 0 }; //
+    private pointShiftMemory: Vec2 = { x: 0, y: 0 }; //
+    private colorLine: string = this.colorService.primaryColor;
     private shiftKeyDown: boolean = false;
     private mouseOut: boolean = false;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
     }
 
@@ -29,19 +37,19 @@ export class LineService extends Tool {
         if (this.mouseDown && !this.shiftKeyDown && !this.mouseOut) {
             this.mouseMove = true;
             this.pathData.push(this.getPositionFromMouse(event));
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.drawLine(this.drawingService.previewCtx, { data: this.pathData, selectedLineTool: this.subToolSelect }, this.lineWidth);
             return;
         }
         if (this.mouseDown && this.shiftKeyDown) {
             this.pathData.push(this.pointMouse);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.drawLine(this.drawingService.previewCtx, { data: this.pathData, selectedLineTool: this.subToolSelect }, this.lineWidth);
         }
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseMove && !this.shiftKeyDown) {
             this.pointShiftMemory = this.pointMouse = this.getPositionFromMouse(event);
-            this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointMouse);
+            this.drawLineLastPoint(this.drawingService.previewCtx, { data: this.pathData, selectedLineTool: this.subToolSelect }, this.pointMouse);
             return;
         }
         if (this.shiftKeyDown) {
@@ -59,7 +67,7 @@ export class LineService extends Tool {
             this.shiftKeyDown = true;
             this.mouseMove = false;
             this.pointMouse = this.shiftDrawAngleLine(this.pathData, this.pointMouse);
-            this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointMouse);
+            this.drawLineLastPoint(this.drawingService.previewCtx, { data: this.pathData, selectedLineTool: this.subToolSelect }, this.pointMouse);
         }
     }
 
@@ -67,7 +75,11 @@ export class LineService extends Tool {
         if (this.mouseDown && this.shiftKeyDown) {
             this.mouseMove = true;
             this.shiftKeyDown = false;
-            this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointShiftMemory);
+            this.drawLineLastPoint(
+                this.drawingService.previewCtx,
+                { data: this.pathData, selectedLineTool: this.subToolSelect },
+                this.pointShiftMemory,
+            );
         }
     }
 
@@ -102,7 +114,22 @@ export class LineService extends Tool {
         if (this.mergeFirstPoint(this.pathData)) {
             this.pathData[this.pathData.length - 1] = this.pathData[0];
         }
-        this.drawLine(this.drawingService.baseCtx, this.pathData);
+        this.drawLine(this.drawingService.baseCtx, { data: this.pathData, selectedLineTool: this.subToolSelect }, this.lineWidth);
+        // undo-redo
+        this.colorLine = this.colorService.primaryColor;
+        const actionLine = new LineAction(
+            this.pathData,
+            this.pointMouse,
+            this.colorLine,
+            this.lineWidth,
+            this.secondarySizePixel,
+            this,
+            this.drawingService,
+            this.subToolSelect,
+        );
+        this.undoRedoService.addUndo(actionLine);
+        this.undoRedoService.clearRedo();
+
         this.clearPath();
         this.clearEffectTool();
         this.mouseDown = false;
@@ -119,38 +146,38 @@ export class LineService extends Tool {
     onKeyBackSpace(event: KeyboardEvent): void {
         if (this.mouseDown && this.pathData.length > 1) {
             this.pathData.pop();
-            this.drawLineLastPoint(this.drawingService.previewCtx, this.pathData, this.pointMouse);
+            this.drawLineLastPoint(this.drawingService.previewCtx, { data: this.pathData, selectedLineTool: this.subToolSelect }, this.pointMouse);
         }
     }
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.lineWidth;
+    drawLine(ctx: CanvasRenderingContext2D, path: LineParameters, lineWidth: number): void {
+        ctx.lineWidth = lineWidth;
         this.clearPreviewCtx();
         ctx.beginPath();
-        for (const point of path) {
+        for (const point of path.data) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
 
-        if (this.subToolSelect === SubToolselected.tool2) this.drawPoint(ctx, path);
+        if (path.selectedLineTool === SubToolselected.tool2) this.drawPoint(ctx, path.data, this.secondarySizePixel);
     }
 
-    private drawLineLastPoint(ctx: CanvasRenderingContext2D, path: Vec2[], lastPoint: Vec2): void {
+    drawLineLastPoint(ctx: CanvasRenderingContext2D, path: LineParameters, lastPoint: Vec2): void {
         this.clearPreviewCtx();
         ctx.lineCap = 'butt';
         ctx.lineJoin = 'bevel';
         ctx.beginPath();
-        for (const point of path) {
+        for (const point of path.data) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.lineTo(lastPoint.x, lastPoint.y);
         ctx.stroke();
-        if (this.subToolSelect === SubToolselected.tool2) this.drawPoint(ctx, path);
+        if (path.selectedLineTool === SubToolselected.tool2) this.drawPoint(ctx, path.data, this.secondarySizePixel);
     }
 
-    private drawPoint(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawPoint(ctx: CanvasRenderingContext2D, path: Vec2[], secondPixelSize: number): void {
         ctx.lineJoin = ctx.lineCap = 'round';
         const sizePx = ctx.lineWidth;
-        ctx.lineWidth = this.secondarySizePixel;
+        ctx.lineWidth = secondPixelSize;
         for (const point of path) {
             ctx.beginPath();
             ctx.lineTo(point.x, point.y);

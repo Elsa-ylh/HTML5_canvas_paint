@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, ElementRef, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
 import { Vec2 } from '@app/classes/vec2';
+import { ColorErrorComponent } from '@app/components/color-error/color-error.component';
 import { ColorService, GradientStyle, LastColor } from '@app/services/color/color.service';
 
 const SIZE_OPACITY = 207;
@@ -29,7 +30,6 @@ export class ColorComponent implements AfterViewInit {
     @ViewChild('horizontalPalette') horizontalCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('opacitySlider') opacitySliderCanvas: ElementRef<HTMLCanvasElement>; // to have an opacity slider
     @ViewChild('opacitySliderPreview') opacitySliderPreview: ElementRef<HTMLCanvasElement>; // to have a hover
-    @ViewChild('message', { static: false }) messageRGB: TemplateRef<HTMLElement>;
 
     squareDimension: Vec2 = { x: this.WIDTH, y: this.SQUARE_HEIGHT };
     horizontalDimension: Vec2 = { x: this.WIDTH, y: this.horizontalHeight };
@@ -46,12 +46,14 @@ export class ColorComponent implements AfterViewInit {
     lastColors: LastColor[];
 
     color: string;
+    message: MatDialogRef<ColorErrorComponent>;
 
     constructor(
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
         public colorService: ColorService,
         public matDialog: MatDialog,
+        public errorMsg: MatDialog,
     ) {
         this.lastColors = this.colorService.getLastColors();
         this.iconRegistry.addSvgIcon('red', this.sanitizer.bypassSecurityTrustResourceUrl('assets/apple.svg'));
@@ -179,13 +181,13 @@ export class ColorComponent implements AfterViewInit {
             this.colorService.primaryColor = this.color;
             this.colorService.changeColorOpacity(rgb.alpha);
         } else {
-            this.openWarningMessage(this.messageRGB);
+            this.openWarningMessage();
         }
     }
 
-    openWarningMessage(templateRef: TemplateRef<HTMLElement>): void {
-        this.matDialog.open(templateRef, {
-            width: '300px',
+    openWarningMessage(): void {
+        this.message = this.errorMsg.open(ColorErrorComponent, {
+            width: '300',
         });
     }
 }

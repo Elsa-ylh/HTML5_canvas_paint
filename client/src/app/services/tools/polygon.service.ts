@@ -2,17 +2,20 @@ import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
+import { ToolInfoPolygone } from '@app/classes/tool-info-polygone';
+import { PolygoneAction } from '@app/classes/undo-redo/polygon-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class PolygonService extends Tool {
     lineWidth: number = 1;
-    fillColor: string;
-    strokeColor: string;
+    fillColor: string; // primary
+    strokeColor: string; // secondary
     mousePosition: Vec2;
     distanceX: number;
     distanceY: number;
@@ -22,12 +25,13 @@ export class PolygonService extends Tool {
     radius: number;
     mouseEnter: boolean = false;
     mouseOut: boolean = false;
+    isRenderingBase: boolean;
     strokeCircleColor: string = '#000000';
     lineCirclewidth: number = 1;
     // tslint:disable-next-line:no-magic-numbers
     possibleNbSides: number[] = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; // numbers of sides allowed for polygon -> autorized disable magical number
 
-    constructor(drawingService: DrawingService, private colorService: ColorService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
     }
 
@@ -55,9 +59,34 @@ export class PolygonService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.mousePosition = mousePosition;
-            this.selectPolygon(mousePosition, true);
+            this.isRenderingBase = true;
+            this.selectPolygon(mousePosition, this.mouseDownCoord, {
+                primaryColor: this.strokeColor,
+                secondaryColor: this.fillColor,
+                lineWidth: this.lineWidth,
+                nbsides: this.numberOfSides,
+                selectSubTool: this.subToolSelect,
+                isRenderingBase: this.isRenderingBase,
+            });
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
+        // undo- redo
+        const polygoneAction = new PolygoneAction(
+            this.mousePosition,
+            this.mouseDownCoord,
+            this.strokeColor,
+            this.fillColor,
+            this.lineWidth,
+            this.numberOfSides,
+            this.isRenderingBase,
+            this.subToolSelect,
+            this,
+            this.drawingService,
+        );
+
+        this.undoRedoService.addUndo(polygoneAction);
+        this.undoRedoService.clearRedo();
+
         this.mouseDown = false;
         this.mouseEnter = false;
     }
@@ -69,7 +98,15 @@ export class PolygonService extends Tool {
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.selectPolygon(mousePosition, false);
+            this.isRenderingBase = false;
+            this.selectPolygon(mousePosition, this.mouseDownCoord, {
+                primaryColor: this.strokeColor,
+                secondaryColor: this.fillColor,
+                lineWidth: this.lineWidth,
+                nbsides: this.numberOfSides,
+                selectSubTool: this.subToolSelect,
+                isRenderingBase: this.isRenderingBase,
+            });
         }
     }
 
@@ -87,6 +124,10 @@ export class PolygonService extends Tool {
     }
 
     drawFillPolygon(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
+        ctx.strokeStyle = this.strokeColor;
+        ctx.fillStyle = this.fillColor;
+        ctx.lineWidth = this.lineWidth;
+
         this.drawingService.baseCtx.beginPath();
         this.drawingService.previewCtx.beginPath();
 
@@ -98,6 +139,10 @@ export class PolygonService extends Tool {
     }
 
     drawPolygonOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
+        ctx.strokeStyle = this.strokeColor;
+        ctx.fillStyle = this.fillColor;
+        ctx.lineWidth = this.lineWidth;
+
         this.drawingService.baseCtx.beginPath();
         this.drawingService.previewCtx.beginPath();
 
@@ -124,40 +169,48 @@ export class PolygonService extends Tool {
 
         this.drawPreviewCircle(ctx, mouseDownPos, mouseUpPos);
     }
+    selectPolygon(mousePosition: Vec2, mouseDownCoord: Vec2, infoPolygone: ToolInfoPolygone): void {
+        this.distanceX = mousePosition.x - mouseDownCoord.x;
+        this.distanceY = mousePosition.y - mouseDownCoord.y;
 
-    selectPolygon(mousePosition: Vec2, isRenderingBase: boolean): void {
-        this.distanceX = mousePosition.x - this.mouseDownCoord.x;
-        this.distanceY = mousePosition.y - this.mouseDownCoord.y;
-        this.radius = Math.sqrt(Math.pow(mousePosition.x - this.mouseDownCoord.x, 2) + Math.pow(mousePosition.y - this.mouseDownCoord.y, 2));
-        if (isRenderingBase) {
-            switch (this.subToolSelect) {
+        this.mouseDownCoord = mouseDownCoord;
+        this.fillColor = infoPolygone.secondaryColor;
+        this.strokeColor = infoPolygone.primaryColor;
+        this.lineWidth = infoPolygone.lineWidth;
+        this.numberOfSides = infoPolygone.nbsides;
+        this.radius = Math.sqrt(Math.pow(mousePosition.x - mouseDownCoord.x, 2) + Math.pow(mousePosition.y - this.mouseDownCoord.y, 2));
+        if (infoPolygone.isRenderingBase) {
+            switch (infoPolygone.selectSubTool) {
                 case SubToolselected.tool1: {
-                    this.drawFillPolygon(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition);
+                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                    this.drawFillPolygon(this.drawingService.baseCtx, mouseDownCoord, mousePosition);
                     break;
                 }
 
                 case SubToolselected.tool2: {
-                    this.drawPolygonOutline(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition);
+                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                    this.drawPolygonOutline(this.drawingService.baseCtx, mouseDownCoord, mousePosition);
                     break;
                 }
 
                 case SubToolselected.tool3: {
-                    this.drawFillPolygonOutline(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition);
+                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                    this.drawFillPolygonOutline(this.drawingService.baseCtx, mouseDownCoord, mousePosition);
                     break;
                 }
             }
         } else {
-            switch (this.subToolSelect) {
+            switch (infoPolygone.selectSubTool) {
                 case SubToolselected.tool1:
-                    this.drawFillPolygon(this.drawingService.previewCtx, this.mouseDownCoord, mousePosition);
+                    this.drawFillPolygon(this.drawingService.previewCtx, mouseDownCoord, mousePosition);
                     break;
 
                 case SubToolselected.tool2:
-                    this.drawPolygonOutline(this.drawingService.previewCtx, this.mouseDownCoord, mousePosition);
+                    this.drawPolygonOutline(this.drawingService.previewCtx, mouseDownCoord, mousePosition);
                     break;
 
                 case SubToolselected.tool3:
-                    this.drawFillPolygonOutline(this.drawingService.previewCtx, this.mouseDownCoord, mousePosition);
+                    this.drawFillPolygonOutline(this.drawingService.previewCtx, mouseDownCoord, mousePosition);
                     break;
             }
         }
