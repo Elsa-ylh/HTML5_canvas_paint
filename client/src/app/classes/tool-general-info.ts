@@ -1,4 +1,4 @@
-import { SubToolselected } from './sub-tool-selected';
+import { SubToolselected } from '@app/classes/sub-tool-selected';
 
 export interface ToolGeneralInfo {
     primaryColor: string;
