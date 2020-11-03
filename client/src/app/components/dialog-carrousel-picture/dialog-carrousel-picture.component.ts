@@ -1,7 +1,8 @@
+// tslint:disable:no-magic-numbers
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
-import { CancasInformation, Label } from '@common/communication/canvas-information';
+import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 const THREE_FILES_AT_A_TIME = 3;
 @Component({
@@ -10,8 +11,8 @@ const THREE_FILES_AT_A_TIME = 3;
     styleUrls: ['./dialog-carrousel-picture.component.scss'],
 })
 export class CarrouselPictureComponent implements OnInit {
-    private dataPicture: CancasInformation[] = [];
-    private possition: number = 0;
+    private dataPicture: CanvasInformation[] = [];
+    private position: number = 0;
     dataLabel: Label[] = [];
     private labelSelect: string[] = [];
     selectedType: string = 'name';
@@ -64,7 +65,7 @@ export class CarrouselPictureComponent implements OnInit {
         const message: Message = { title: 'labels', body: textLabel };
         this.clientServerCommunicationService.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
-    getPicturesAll(): CancasInformation[] {
+    getPicturesAll(): CanvasInformation[] {
         return this.dataPicture;
     }
     setSearchCriteria(): void {
@@ -78,55 +79,55 @@ export class CarrouselPictureComponent implements OnInit {
                 this.clientServerCommunicationService.getElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
                 break;
         }
-        this.possition = 0;
+        this.position = 0;
     }
     prior(): void {
-        switch (this.possition) {
+        switch (this.position) {
             case -1:
-                this.possition = -1;
+                this.position = -1;
                 break;
             case 0:
-                this.possition = this.dataPicture.length - 1;
+                this.position = this.dataPicture.length - 1;
                 break;
             default:
-                this.possition--;
+                this.position--;
                 break;
         }
     }
     next(): void {
-        switch (this.possition) {
+        switch (this.position) {
             case -1:
-                this.possition = -1;
+                this.position = -1;
                 break;
             case this.dataPicture.length - 1:
-                this.possition = 0;
+                this.position = 0;
                 break;
             default:
-                this.possition++;
+                this.position++;
                 break;
         }
     }
 
-    getPictures(): CancasInformation[] {
-        let threePictures: CancasInformation[] = [];
+    getPictures(): CanvasInformation[] {
+        let threePictures: CanvasInformation[] = [];
         if (this.dataPicture.length <= THREE_FILES_AT_A_TIME) {
             threePictures = this.dataPicture;
-            this.possition = -1;
+            this.position = -1;
         }
-        if (this.possition > 0 && this.possition <= this.dataPicture.length + 1 - THREE_FILES_AT_A_TIME) {
-            for (let index = this.possition - 1; index < this.possition - 1 + THREE_FILES_AT_A_TIME; index++) {
+        if (this.position > 0 && this.position <= this.dataPicture.length + 1 - THREE_FILES_AT_A_TIME) {
+            for (let index = this.position - 1; index < this.position - 1 + THREE_FILES_AT_A_TIME; index++) {
                 threePictures.push(this.dataPicture[index]);
             }
         }
-        switch (this.possition) {
+        switch (this.position) {
             case 0:
                 threePictures.push(this.dataPicture[this.dataPicture.length - 1]);
-                threePictures.push(this.dataPicture[this.possition]);
+                threePictures.push(this.dataPicture[this.position]);
                 threePictures.push(this.dataPicture[1]);
                 break;
             case this.dataPicture.length - 1:
-                threePictures.push(this.dataPicture[this.possition - 1]);
-                threePictures.push(this.dataPicture[this.possition]);
+                threePictures.push(this.dataPicture[this.position - 1]);
+                threePictures.push(this.dataPicture[this.position]);
                 threePictures.push(this.dataPicture[0]);
 
                 break;
@@ -134,7 +135,7 @@ export class CarrouselPictureComponent implements OnInit {
         this.createImage(threePictures);
         return threePictures;
     }
-    private createImage(listCard: CancasInformation[]): void {
+    private createImage(listCard: CanvasInformation[]): void {
         listCard.forEach((element) => {
             // let canvas = document.getElementById(element.id);
             // let ctx = canvas.getContext('2d');

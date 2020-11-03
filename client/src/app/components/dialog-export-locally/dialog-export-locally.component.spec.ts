@@ -1,4 +1,6 @@
 /* tslint:disable:no-unused-variable */
+/* tslint:disable:no-string-literal */
+/* tslint:disable:no-any */
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';

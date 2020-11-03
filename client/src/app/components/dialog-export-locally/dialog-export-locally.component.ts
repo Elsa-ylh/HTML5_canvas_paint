@@ -15,7 +15,7 @@ export class DialogExportDrawingComponent implements AfterViewInit {
 
     nameFormControl: FormControl;
 
-    private filterString = new Map([
+    private filterString: Map<Filter, string> = new Map([
         [Filter.BLUR, 'blur(4px)'],
         [Filter.BRIGHTNESS, 'brightness(200)'],
         [Filter.GRAYSCALE, 'grayscale(100)'],
@@ -23,7 +23,7 @@ export class DialogExportDrawingComponent implements AfterViewInit {
         [Filter.SEPIA, 'sepia(50)'],
     ]);
 
-    private imageFormatString = new Map([
+    private imageFormatString: Map<ImageFormat, string> = new Map([
         [ImageFormat.PNG, '.png'],
         [ImageFormat.JPG, '.jpg'],
     ]);
