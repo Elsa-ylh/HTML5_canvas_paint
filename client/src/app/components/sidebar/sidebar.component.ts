@@ -411,7 +411,6 @@ export class SidebarComponent {
             this.selectionEllipseService.onLeftArrow();
         }
     }
-    // TO DO TESTS
     @HostListener('window:keydown.ArrowRight', ['$event']) onRightArrow(event: KeyboardEvent): void {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
