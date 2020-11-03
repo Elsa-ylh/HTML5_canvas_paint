@@ -3,12 +3,16 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { Router } from '@angular/router';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { of } from 'rxjs';
 import { CarrouselPictureComponent } from './dialog-carrousel-picture.component';
@@ -18,6 +22,9 @@ import { CarrouselPictureComponent } from './dialog-carrousel-picture.component'
 describe('CarrouselPictureComponent', () => {
     let component: CarrouselPictureComponent;
     let fixture: ComponentFixture<CarrouselPictureComponent>;
+    let drawingStub: DrawingService;
+    let undoRedoStub: UndoRedoService;
+    let canvasResizerStub: CanvasResizerService;
     const informationsService: CanvasInformation[] = [];
     let httpMock: HttpTestingController;
     const isDate: Date = new Date();
@@ -35,6 +42,9 @@ describe('CarrouselPictureComponent', () => {
     const testCanvasInformationAdds = [testCanvasInformationAdd];
     const labels: Label[] = [{ label: 'lable1' }, { label: 'label2' }];
     beforeEach(async () => {
+        drawingStub = new DrawingService();
+        undoRedoStub = new UndoRedoService(drawingStub);
+        canvasResizerStub = new CanvasResizerService(undoRedoStub);
         await TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -48,6 +58,9 @@ describe('CarrouselPictureComponent', () => {
             declarations: [CarrouselPictureComponent],
             providers: [
                 HttpClient,
+                { provide: MatDialogRef, useValue: { close: () => '' } },
+                { provide: Router, useValue: { navigate: () => '' } },
+                { provide: CanvasResizerService, useValue: canvasResizerStub },
                 {
                     provide: ClientServerCommunicationService,
                     useValue: {
