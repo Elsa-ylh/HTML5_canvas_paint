@@ -1,10 +1,12 @@
-import { DatabasePicureService } from '@app/services/data-base-picture.service';
+import { DatabasePicureService } from '@app/services/database-picture.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
+import { Message } from '@common/communication/message';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
-
 const HTTP_STATUS_BAD_REQUEST = 400;
+const MIN_CHARACTER = 6;
+const MAX_CHARACTER = 64;
 @injectable()
 export class DataController {
     router: Router;
@@ -22,9 +24,11 @@ export class DataController {
                 })
                 .catch((reason: unknown) => {
                     const errorMessage: CanvasInformation = {
-                        id: 'Error',
+                        _id: 'Error',
                         name: reason as string,
                         labels: [],
+                        width: 0,
+                        height: 0,
                         date: new Date(),
                         picture: '',
                     };
@@ -36,9 +40,11 @@ export class DataController {
                 .getAllLabel()
                 .then((labelsInformation: Label[]) => {
                     const informationMessage: CanvasInformation = {
-                        id: 'list_of_all_labals',
+                        _id: 'list_of_all_labals',
                         name: 'labels',
                         labels: labelsInformation,
+                        width: 0,
+                        height: 0,
                         date: new Date(),
                         picture: '',
                     };
@@ -46,9 +52,11 @@ export class DataController {
                 })
                 .catch((reason: unknown) => {
                     const errorMessage: CanvasInformation = {
-                        id: 'Error',
+                        _id: 'Error',
                         name: reason as string,
                         labels: [],
+                        width: 0,
+                        height: 0,
                         date: new Date(),
                         picture: '',
                     };
@@ -64,9 +72,11 @@ export class DataController {
                     labels = this.textToTable(sbody);
                 } catch (error) {
                     const errorData: CanvasInformation = {
-                        id: 'Error',
+                        _id: 'Error',
                         name: error as string,
                         labels: [],
+                        width: 0,
+                        height: 0,
                         date: new Date(),
                         picture: '',
                     };
@@ -75,9 +85,11 @@ export class DataController {
                 }
             } else {
                 const errorData: CanvasInformation = {
-                    id: 'Error',
+                    _id: 'Error',
                     name: 'Titre message non valide',
                     labels: [],
+                    width: 0,
+                    height: 0,
                     date: new Date(),
                     picture: '',
                 };
@@ -88,14 +100,16 @@ export class DataController {
             if (sbody !== 'Error') {
                 this.databaseService
                     .getPicturesLabals(labels)
-                    .then((canvasInformation: CanvasInformation[]) => {
-                        res.json(canvasInformation);
+                    .then((canvasInfo: CanvasInformation[]) => {
+                        res.json(canvasInfo);
                     })
                     .catch((reason: unknown) => {
                         const errorMessage: CanvasInformation = {
-                            id: 'Error',
+                            _id: 'Error',
                             name: reason as string,
                             labels: [],
+                            width: 0,
+                            height: 0,
                             date: new Date(),
                             picture: '',
                         };
@@ -112,14 +126,16 @@ export class DataController {
                     case 'name':
                         this.databaseService
                             .getPicturesName(research)
-                            .then((canvasInformation: CanvasInformation[]) => {
-                                res.json(canvasInformation);
+                            .then((canvasInfo: CanvasInformation[]) => {
+                                res.json(canvasInfo);
                             })
                             .catch((reason: unknown) => {
                                 const errorMessage: CanvasInformation = {
-                                    id: 'Error',
+                                    _id: 'Error',
                                     name: reason as string,
                                     labels: [],
+                                    width: 0,
+                                    height: 0,
                                     date: new Date(),
                                     picture: '',
                                 };
@@ -129,14 +145,16 @@ export class DataController {
                     case 'date':
                         this.databaseService
                             .getPicturesDate(research)
-                            .then((canvasInformation: CanvasInformation[]) => {
-                                res.json(canvasInformation);
+                            .then((canvasInfo: CanvasInformation[]) => {
+                                res.json(canvasInfo);
                             })
                             .catch((reason: unknown) => {
                                 const errorMessage: CanvasInformation = {
-                                    id: 'Error',
+                                    _id: 'Error',
                                     name: reason as string,
                                     labels: [],
+                                    width: 0,
+                                    height: 0,
                                     date: new Date(),
                                     picture: '',
                                 };
@@ -145,9 +163,11 @@ export class DataController {
                         break;
                     default:
                         const errorData: CanvasInformation = {
-                            id: 'Error',
+                            _id: 'Error',
                             name: 'not good research : ' + req.body.title,
                             labels: [],
+                            width: 0,
+                            height: 0,
                             date: new Date(),
                             picture: '',
                         };
@@ -156,17 +176,162 @@ export class DataController {
                 }
             } else {
                 const errorData: CanvasInformation = {
-                    id: 'Error',
+                    _id: 'Error',
                     name: 'not request in post',
                     labels: [],
+                    width: 0,
+                    height: 0,
                     date: new Date(),
                     picture: '',
                 };
                 res.status(HTTP_STATUS_BAD_REQUEST).json(errorData);
             }
         });
+        this.router.post('/savePicture', (req: Request, res: Response, next: NextFunction) => {
+            if (this.testBodyCanvasInformation(req)) {
+                const newPicture: CanvasInformation = {
+                    _id: req.body._id,
+                    name: req.body.name,
+                    labels: req.body.labels,
+                    date: req.body.date,
+                    picture: req.body.picture,
+                    height: req.body.height,
+                    width: req.body.width,
+                };
+                console.log();
+                if (this.checkName(newPicture.name) || this.checkLabel(newPicture.labels)) {
+                    const errorMessage: Message = {
+                        title: 'Error',
+                        body:
+                            'name error : ' +
+                            this.checkName(newPicture.name) +
+                            ' Request : ' +
+                            newPicture.name +
+                            '; label error : ' +
+                            this.checkLabel(newPicture.labels) +
+                            ' Request : ' +
+                            newPicture.labels,
+                    };
+                    res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
+                } else {
+                    if (newPicture._id === '') {
+                        this.databaseService
+                            .addPicture(newPicture)
+                            .then((good: boolean) => {
+                                const successMessage: Message = {
+                                    title: 'success',
+                                    body: 'addPicture : ' + good,
+                                };
+                                res.json(successMessage);
+                            })
+                            .catch((reason: unknown) => {
+                                const errorMessage: Message = {
+                                    title: 'Error',
+                                    body: reason as string,
+                                };
+                                res.json(errorMessage);
+                            });
+                    } else {
+                        this.databaseService
+                            .modifyPicture(newPicture)
+                            .then((good: boolean) => {
+                                const successMessage: Message = {
+                                    title: 'success',
+                                    body: 'modifyPicture : ' + good,
+                                };
+                                res.json(successMessage);
+                            })
+                            .catch((reason: unknown) => {
+                                const errorMessage: Message = {
+                                    title: 'Error',
+                                    body: reason as string,
+                                };
+                                res.json(errorMessage);
+                            });
+                    }
+                }
+            } else {
+                const errorMessage: Message = {
+                    title: 'Error',
+                    body: 'it is not picture',
+                };
+                res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
+            }
+        });
+        this.router.post('/delete', (req: Request, res: Response, next: NextFunction) => {
+            if (req.body.title !== undefined || req.body.body !== undefined) {
+                if (req.body.title === 'delete') {
+                    this.databaseService
+                        .delete(req.body.body)
+                        .then((bool: boolean) => {
+                            const succesMessage: Message = {
+                                title: bool ? 'Success' : 'Not delete',
+                                body: bool ? 'Success' : 'not good id',
+                            };
+                            res.json(succesMessage);
+                        })
+                        .catch((err: Error) => {
+                            const errorMessage: Message = {
+                                title: 'Error',
+                                body: err.message.toString(),
+                            };
+                            res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
+                        });
+                } else {
+                    const errorMessage: Message = {
+                        title: 'Error',
+                        body: 'It not delete title element',
+                    };
+                    res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
+                }
+            } else {
+                const errorMessage: Message = {
+                    title: 'Error',
+                    body: 'not request message',
+                };
+                res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
+            }
+        });
     }
     private textToTable(theTest: string): string[] {
         return theTest.split(',');
+    }
+    private testBodyCanvasInformation(req: Request): boolean {
+        return (
+            req.body._id !== undefined &&
+            req.body.name !== undefined &&
+            req.body.date !== undefined &&
+            req.body.width !== undefined &&
+            req.body.height !== undefined &&
+            req.body.picture !== undefined
+        );
+    }
+    private checkName(name: string): boolean {
+        return name === '' || name === undefined || this.notGoodCharacter(name) || name.split(' ').length !== 1;
+    }
+    private checkLabel(labels: Label[]): boolean {
+        for (const label of labels) {
+            if (this.notGoodCharacter(label.label)) {
+                return true;
+            }
+            if (label.label.length < MIN_CHARACTER || label.label.length > MAX_CHARACTER) return true;
+        }
+        return false;
+    }
+    private notGoodCharacter(text: string): boolean {
+        return (
+            text.split('#').length !== 1 ||
+            text.split("'").length !== 1 ||
+            text.split('/').length !== 1 ||
+            text.split('"').length !== 1 ||
+            text.split('-').length !== 1 ||
+            text.split('&').length !== 1 ||
+            text.split('*').length !== 1 ||
+            text.split('!').length !== 1 ||
+            text.split('$').length !== 1 ||
+            text.split('?').length !== 1 ||
+            text.split('|').length !== 1 ||
+            text.split('%').length !== 1
+        );
     }
 }

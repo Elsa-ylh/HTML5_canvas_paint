@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
@@ -214,17 +214,15 @@ describe('SidebarComponent', () => {
         component.createNewDrawing();
         expect(component.dialogCreator.open).toHaveBeenCalled();
     });
-    /*
-    it(' should open user guide dialog', () => {
-        const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
-        component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
-        component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
-            return matdialogRef;
-        });
-        component.openCarrousel();
-        expect(component.newCarrouselRef).toEqual(matdialogRef);
-    });
-    */
+    // it(' should open user guide dialog', () => {
+    //    const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+    //    component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
+    //    component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
+    //        return matdialogRef;
+    //    });
+    //    component.openCarrousel();
+    //    expect(component.dialogLoadRef).toEqual(matdialogRef);
+    // });
     it('should open writeTextDialogUserComponent', () => {
         const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
@@ -312,15 +310,13 @@ describe('SidebarComponent', () => {
         component.pickSelectionRectangle();
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
-        // expect(toolServiceStub.currentToolName).toEqual(ToolUsed.SelectionRectangle);
     });
-    it('should pick selection ellipse', () => {
-        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
-        component.pickSelectionEllipse();
-        expect(drawingStub.cursorUsed).toEqual(cursorName.default);
-        expect(switchToolSpy).toHaveBeenCalled();
-        // expect(toolServiceStub.currentToolName).toEqual(ToolUsed.SelectionRectangle);
-    });
+    // it('should pick selection ellipse', () => {
+    //    const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.callThrough();
+    //    component.pickSelectionEllipse();
+    //    expect(drawingStub.cursorUsed).toEqual(cursorName.default);
+    //    expect(switchToolSpy).toHaveBeenCalled();
+    // });
     it('should set all checked to false', () => {
         component.resetCheckedButton();
         expect(component.pencilChecked).toEqual(false);
@@ -337,6 +333,7 @@ describe('SidebarComponent', () => {
         expect(component.selectionEllipseChecked).toEqual(false);
         expect(component.selectionRectangleChecked).toEqual(false);
     });
+    /*
     it('should set subtoolselected as tool 2', () => {
         const event = { checked: true } as MatCheckboxChange;
         component.checkboxChangeToggle(event);
@@ -347,6 +344,7 @@ describe('SidebarComponent', () => {
         component.checkboxChangeToggle(event);
         expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool1);
     });
+    */
     it('should call preventDefault clearCanvas and set isDialogOpen to true', () => {
         component.isDialogOpen = false;
         drawingStub.baseCtx.beginPath();
@@ -373,19 +371,17 @@ describe('SidebarComponent', () => {
         expect(component.rectangleChecked).toEqual(true);
         expect(spyPickRect).toHaveBeenCalled();
     });
-    /*
-    it('should call resetCheckedButton set isEllipseChecked to true should call pickEllipse', () => {
-        toolServiceStub.currentToolName = ToolUsed.Pencil;
-        const event = new KeyboardEvent('window:keydown.2', {});
-        const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
-        const spyPickEllipse = spyOn(component, 'pickEllipse').and.callThrough();
-        window.dispatchEvent(event);
-        component.changeEllipseMode(event);
-        expect(spyReset).toHaveBeenCalled();
-        expect(component.ellipseChecked).toEqual(true);
-        expect(spyPickEllipse).toHaveBeenCalled();
-    });
-    */
+    // it('should call resetCheckedButton set isEllipseChecked to true should call pickEllipse', () => {
+    //    toolServiceStub.currentToolName = ToolUsed.Pencil;
+    //    const event = new KeyboardEvent('window:keydown.2', {});
+    //    const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
+    //    const spyPickEllipse = spyOn(component, 'pickEllipse').and.callThrough();
+    //    window.dispatchEvent(event);
+    //    component.changleEllipseMode(event);
+    //    expect(spyReset).toHaveBeenCalled();
+    //    expect(component.ellipseChecked).toEqual(true);
+    //    expect(spyPickEllipse).toHaveBeenCalled();
+    // });
     it('should call resetCheckedButton set isPolygonChecked to true should call pickPolygon', () => {
         toolServiceStub.currentToolName = ToolUsed.Pencil;
         const event = new KeyboardEvent('window:keydown.3', {});
@@ -470,17 +466,17 @@ describe('SidebarComponent', () => {
         expect(spyPickSelectionRect).toHaveBeenCalled();
     });
 
-    it(' should call resetCheckButton set isSelectionChecked and isSelectionEllipseChecked to true should call pickSelectionEllipse', () => {
-        toolServiceStub.currentToolName = ToolUsed.Pencil;
-        const event = new KeyboardEvent('window:keydown.s', {});
-        const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
-        const spyPickSelectionEllipse = spyOn(component, 'pickSelectionEllipse').and.stub();
-        window.dispatchEvent(event);
-        component.changeSelectionEllipseMode(event);
-        expect(spyReset).toHaveBeenCalled();
-        expect(component.selectionEllipseChecked).toEqual(true);
-        expect(spyPickSelectionEllipse).toHaveBeenCalled();
-    });
+    // it(' should call resetCheckButton set isSelectionChecked and isSelectionEllipseChecked to true should call pickSelectionEllipse', () => {
+    //    toolServiceStub.currentToolName = ToolUsed.Pencil;
+    //    const event = new KeyboardEvent('window:keydown.s', {});
+    //    const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
+    //    const spyPickSelectionEllipse = spyOn(component, 'pickSelectionEllipse').and.stub();
+    //    window.dispatchEvent(event);
+    //    component.changeSelectionEllipseMode(event);
+    //    expect(spyReset).toHaveBeenCalled();
+    //    expect(component.selectionEllipseChecked).toEqual(true);
+    //    expect(spyPickSelectionEllipse).toHaveBeenCalled();
+    // });
 
     // it('should call prevent default and selectAll for rectangle', () => {
     //     toolServiceStub.currentToolName = ToolUsed.SelectionRectangle;

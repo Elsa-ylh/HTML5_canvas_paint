@@ -1,10 +1,20 @@
 export interface CanvasInformation {
-    id: string;
+    _id: string;
     name: string;
     labels: Label[];
+    width: number;
+    height: number;
     date: Date;
     picture: string; // base64
 }
+/*export interface NewCancasInformation {
+    name: string;
+    labels: Label[];
+    width: number;
+    height: number;
+    date: Date;
+    picture: string; // base64
+}*/
 export interface Label {
     label: string;
 }
