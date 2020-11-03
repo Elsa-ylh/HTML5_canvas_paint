@@ -1,7 +1,11 @@
 // tslint:disable:no-magic-numbers
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 const NB_FILES_OPEN_AT_A_TIME = 3;
@@ -19,9 +23,13 @@ export class CarrouselPictureComponent implements OnInit {
     name: string;
     myDate: FormControl = new FormControl(new Date());
 
-    constructor(private clientServerComSvc: ClientServerCommunicationService) // private cvsResizerService: CanvasResizerService,
-    // private drawingService: DrawingService,
-    {}
+    constructor(
+        private clientServerComSvc: ClientServerCommunicationService,
+        private cvsResizerService: CanvasResizerService,
+        private drawingService: DrawingService,
+        private router: Router,
+        private dialogRef: MatDialogRef<CarrouselPictureComponent>,
+    ) {}
 
     ngOnInit(): void {
         this.addAllData();
@@ -143,10 +151,20 @@ export class CarrouselPictureComponent implements OnInit {
             // let ctx = canvas.getContext('2d');
         });
     }
-    deletePicture(idPicture: CanvasInformation): void {
-        if (confirm('Suprimer : ' + idPicture.name)) {
-            const deleteMassage: Message = { title: 'delete', body: idPicture._id };
+    loadPicture(picture: CanvasInformation): void {
+        if (confirm('load :' + picture.name)) {
+            this.drawingService;
+            this.cvsResizerService.canvasSize.y = picture.height;
+            this.cvsResizerService.canvasSize.x = picture.width;
+            this.drawingService.convertBase64ToBaseCanvas(picture.picture);
+        }
+    }
+    deletePicture(picture: CanvasInformation): void {
+        if (confirm('Suprimer : ' + picture.name)) {
+            const deleteMassage: Message = { title: 'delete', body: picture._id };
             this.clientServerComSvc.deleteQuery(deleteMassage).subscribe((info) => this.messageDelite(info));
+            this.dialogRef.close(true);
+            this.router.navigate(['/editor']);
         }
     }
     messageDelite(message: Message): void {

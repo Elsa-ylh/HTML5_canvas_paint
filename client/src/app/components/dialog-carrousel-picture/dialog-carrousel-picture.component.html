@@ -17,7 +17,7 @@
                     <div *ngFor="let element of pictureCarte.labels"># {{ element.label }}</div>
                 </mat-card-content>
                 <mat-card-actions>
-                    <button mat-button>Charger</button>
+                    <button mat-button (click)="loadPicture(pictureCarte)">Charger</button>
                     <button mat-button (click)="deletePicture(pictureCarte)">Supprimer</button>
                 </mat-card-actions>
             </mat-card>

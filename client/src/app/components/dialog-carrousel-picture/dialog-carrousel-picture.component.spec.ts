@@ -68,8 +68,8 @@ describe('CarrouselPictureComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(CarrouselPictureComponent);
         component = fixture.componentInstance;
-        spyOn(component['clientServerCommunicationService'], 'getData').and.returnValue(of([testCanvasInformationAdd]));
-        // spyOn(component['clientServerCommunicationService'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
+        spyOn(component['clientServerComSvc'], 'getData').and.returnValue(of([testCanvasInformationAdd]));
+        // spyOn(component['clientServerComSvc'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
         httpMock = TestBed.inject(HttpTestingController);
 
         addAllDataSpy = spyOn<any>(component, 'addAllData').and.callThrough();
@@ -103,19 +103,19 @@ describe('CarrouselPictureComponent', () => {
         expect(component.getPicturesAll()[0].name).toEqual(testCanvasInformationAdd.name);
     });
     it('test selectionLabel', () => {
-        spyOn(component['clientServerCommunicationService'], 'selectPictureWithLabel').and.returnValue(of([testCanvasInformationAdd]));
+        spyOn(component['clientServerComSvc'], 'selectPictureWithLabel').and.returnValue(of([testCanvasInformationAdd]));
         component.ngOnInit();
         component.selectionLabel('label1');
         expect(component['dataPicture'][0].name).toEqual(testCanvasInformationAdd.name);
     });
     it('test selectionLabel with the parameter not in liste dataLabel', () => {
-        spyOn(component['clientServerCommunicationService'], 'selectPictureWithLabel').and.returnValue(of([]));
+        spyOn(component['clientServerComSvc'], 'selectPictureWithLabel').and.returnValue(of([]));
         component.ngOnInit();
         component.selectionLabel('label3');
         expect(component['dataPicture'].length).toEqual(0);
     });
     it('test the selectionLabel 3 times with the parameter label1', () => {
-        spyOn(component['clientServerCommunicationService'], 'selectPictureWithLabel').and.returnValue(of([testCanvasInformationAdd]));
+        spyOn(component['clientServerComSvc'], 'selectPictureWithLabel').and.returnValue(of([testCanvasInformationAdd]));
         component.dataLabel = labels;
         component.selectionLabel(labels[1].label);
         component.selectionLabel(labels[1].label);
@@ -123,7 +123,7 @@ describe('CarrouselPictureComponent', () => {
         expect(component['dataPicture'][0].name).toEqual(testCanvasInformationAdd.name);
     });
     it('test the selectionLabel times with the parameter label1', () => {
-        spyOn(component['clientServerCommunicationService'], 'selectPictureWithLabel').and.returnValue(of([testCanvasInformationAdd]));
+        spyOn(component['clientServerComSvc'], 'selectPictureWithLabel').and.returnValue(of([testCanvasInformationAdd]));
         component.dataLabel = labels;
         component.selectionLabel(labels[0].label);
         component.selectionLabel(labels[1].label);
@@ -135,20 +135,20 @@ describe('CarrouselPictureComponent', () => {
         expect(component['addAllLabal']).toHaveBeenCalled;
     });
     it('', () => {
-        spyOn(component['clientServerCommunicationService'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
+        spyOn(component['clientServerComSvc'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
         component.setSearchCriteria();
         expect(component['dataPicture'][0].name).toEqual(testCanvasInformationAdd.name);
     });
     it('', () => {
         component.selectedType = 'date';
-        spyOn(component['clientServerCommunicationService'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
+        spyOn(component['clientServerComSvc'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
         component.setSearchCriteria();
         expect(component['dataPicture'][0].name).toEqual(testCanvasInformationAdd.name);
     });
     it('', () => {
         component.selectedType = 'date';
         component.myDate = new FormControl(testCanvasInformationAdd);
-        spyOn(component['clientServerCommunicationService'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
+        spyOn(component['clientServerComSvc'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
         component.setSearchCriteria();
         expect(component['dataPicture'][0].name).toEqual(testCanvasInformationAdd.name);
     });

@@ -30,14 +30,14 @@ export class MainPageComponent {
     }
 
     openCarrousel(): void {
-        if (this.isDialogOpenSaveEport) {
-            this.isDialogOpenSaveEport = false;
+        if (!this.isDialogOpenSaveEport) {
+            this.isDialogOpenSaveEport = true;
             this.dialogLoadRef = this.dialogCreator.open(CarrouselPictureComponent, {
                 width: '90%',
                 height: '90%',
             });
             this.dialogLoadRef.afterClosed().subscribe(() => {
-                this.isDialogOpenSaveEport = true;
+                this.isDialogOpenSaveEport = false;
             });
         }
     }
