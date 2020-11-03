@@ -1,2 +1,21 @@
+<<<<<<< HEAD
 
 [1102/215501.739:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+=======
+[1023/095906.537:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1024/155124.701:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1026/183208.006:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1027/194400.494:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1029/154206.213:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1030/144513.312:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1030/212236.365:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1101/131301.798:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1101/135732.042:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1101/143627.129:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1101/145458.831:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1101/150646.145:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1101/154755.292:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1101/163905.963:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1101/173155.980:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1102/193747.009:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+>>>>>>> dev

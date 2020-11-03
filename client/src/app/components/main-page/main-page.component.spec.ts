@@ -7,9 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { MainPageComponent } from '@app/components/main-page/main-page.component';
 import { IndexService } from '@app/services/index/index.service';
 import { of } from 'rxjs';
-import { MainPageComponent } from './main-page.component';
 
 import SpyObj = jasmine.SpyObj;
 
@@ -34,7 +35,7 @@ describe('MainPageComponent', () => {
                     BrowserAnimationsModule,
                     HttpClientModule,
                 ],
-                declarations: [MainPageComponent],
+                declarations: [MainPageComponent, DialogCreateNewDrawingComponent],
                 providers: [{ provide: MatDialog, useValue: {} }],
             }).compileComponents();
             TestBed.inject(MatDialog);
@@ -59,15 +60,27 @@ describe('MainPageComponent', () => {
         expect(component.onGoingDrawing).toBeFalse();
     });
 
-    it('should open a new drawing modal', () => {
-        const createNewDrawingSpy = spyOn<any>(component, 'createNewDrawing');
+    it('should open warning message when creating a new drawing', () => {
+        const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+
+        component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
+        component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
+            return matdialogRef;
+        });
+
         component.createNewDrawing();
-        expect(createNewDrawingSpy).toHaveBeenCalled();
+        expect(component.newDrawingRef).toEqual(matdialogRef);
     });
 
-    it('should open a new drawin modal user guide', () => {
-        const openUserGuideSpy = spyOn<any>(component, 'openUserGuide');
+    it('should open warning message when opening "guide dutilisation"', () => {
+        const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+
+        component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
+        component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
+            return matdialogRef;
+        });
+
         component.openUserGuide();
-        expect(openUserGuideSpy).toHaveBeenCalled();
+        expect(component.checkDocumentationRef).toEqual(matdialogRef);
     });
 });
