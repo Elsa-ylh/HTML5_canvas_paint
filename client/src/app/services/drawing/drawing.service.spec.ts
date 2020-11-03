@@ -33,4 +33,10 @@ describe('DrawingService', () => {
         service.baseCtx.fillRect(20, 20, 100, 100);
         expect(service.isCanvasBlank()).toEqual(false);
     });
+
+    it('isPreviewCanvasBlank should return false if canvas is not empty', () => {
+        // tslint:disable: no-magic-numbers
+        service.previewCtx.fillRect(20, 20, 100, 100);
+        expect(service.isPreviewCanvasBlank()).toEqual(false);
+    });
 });

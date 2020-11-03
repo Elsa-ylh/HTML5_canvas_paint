@@ -6,8 +6,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { cursorName } from '@app/classes/cursor-name';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
-import { CarrouselPictureComponent } from '@app/components/carrousel-picture/carrousel-picture.component';
+import { CarrouselPictureComponent } from '@app/components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DialogExportDrawingComponent } from '@app/components/dialog-export-locally/dialog-export-locally.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -20,7 +21,9 @@ import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
-import { SelectionService } from '@app/services/tools/selection-service';
+import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
+import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -28,6 +31,8 @@ import { SelectionService } from '@app/services/tools/selection-service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
+    // This file is longer than 350 lines because of all the hostlistener, but we have no over choice than to put them in this componant
+    // tslint:disable:max-file-line-count
     // We need this alias for the enum so ngSwitchCase look way better than just numbers.
     // I can't stand reading numbers anymore.
     // tslint:disable-next-line: typedef
@@ -46,7 +51,7 @@ export class SidebarComponent {
     private isEllipseChecked: boolean = false;
     private isColorChecked: boolean = false;
     private isDropperChecked: boolean = false;
-    private isSelectionChecked: boolean = false;
+    // private isSelectionChecked: boolean = false;
     private isSelectionEllipseChecked: boolean = false;
     private isSelectionRectangleChecked: boolean = false;
     private isPolygonChecked: boolean = false;
@@ -54,7 +59,7 @@ export class SidebarComponent {
 
     constructor(
         public drawingService: DrawingService,
-        private dialogCreator: MatDialog,
+        public dialogCreator: MatDialog,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
         public toolService: ToolService,
@@ -65,9 +70,12 @@ export class SidebarComponent {
         public eraserService: EraserService,
         public colorService: ColorService,
         public lineService: LineService,
-        public selectionService: SelectionService,
+        // public selectionService: SelectionService,
         public polygonService: PolygonService,
         public paintBucketService: PaintBucketService,
+        public undoRedoService: UndoRedoService,
+        public selectionRectangleService: SelectionRectangleService,
+        public selectionEllipseService: SelectionEllipseService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
@@ -78,14 +86,21 @@ export class SidebarComponent {
     clearCanvas(): void {
         if (!this.drawingService.isCanvasBlank()) {
             this.newDrawingRef = this.dialogCreator.open(DialogCreateNewDrawingComponent);
+            this.isDialogOpen = true;
             this.newDrawingRef.afterClosed().subscribe(() => {
                 this.isDialogOpen = false;
             });
         }
     }
 
+    exportDrawing(): void {
+        this.dialogCreator.open(DialogExportDrawingComponent);
+    }
+
     createNewDrawing(): void {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
+        this.undoRedoService.clearRedo();
+        this.undoRedoService.clearUndo();
     }
 
     openCarrouse(): void {
@@ -99,6 +114,7 @@ export class SidebarComponent {
         this.checkDocumentationRef = this.dialogCreator.open(WriteTextDialogUserGuideComponent, {
             width: '90%',
             height: '100%',
+            disableClose: true,
         });
     }
 
@@ -202,23 +218,24 @@ export class SidebarComponent {
         return this.isDropperChecked;
     }
 
-    pickSelection(subTool: number): void {
+    pickSelectionRectangle(): void {
         // debugger;
         this.drawingService.cursorUsed = cursorName.default;
-        this.toolService.switchTool(ToolUsed.Selection);
-        this.toolService.currentTool.subToolSelect = subTool;
-    }
-
-    get selectionChecked(): boolean {
-        return this.isSelectionChecked;
-    }
-
-    get selectionEllipseChecked(): boolean {
-        return this.isSelectionEllipseChecked;
+        this.toolService.switchTool(ToolUsed.SelectionRectangle);
     }
 
     get selectionRectangleChecked(): boolean {
         return this.isSelectionRectangleChecked;
+    }
+
+    pickSelectionEllipse(): void {
+        // debugger;
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.SelectionEllipse);
+    }
+
+    get selectionEllipseChecked(): boolean {
+        return this.isSelectionEllipseChecked;
     }
 
     resetCheckedButton(): void {
@@ -231,21 +248,21 @@ export class SidebarComponent {
         this.isColorChecked = false;
         this.isPaintBucketChecked = false;
         this.isDropperChecked = false;
-        this.isSelectionChecked = false;
+        // this.isSelectionChecked = false;
         this.isSelectionEllipseChecked = false;
         this.isSelectionRectangleChecked = false;
     }
 
-    CheckboxChangeToggle(args: MatCheckboxChange): void {
+    checkboxChangeToggle(args: MatCheckboxChange): void {
         this.toolService.currentTool.subToolSelect = args.checked ? SubToolselected.tool2 : SubToolselected.tool1;
     }
 
     // keybind control o for new drawing
     @HostListener('window:keydown.control.o', ['$event']) onKeyDown(event: KeyboardEvent): void {
+        console.log(this.isDialogOpen);
         if (!this.isDialogOpen && !this.drawingService.isCanvasBlank()) {
             event.preventDefault();
             this.clearCanvas();
-            this.isDialogOpen = true;
         }
     }
 
@@ -327,23 +344,108 @@ export class SidebarComponent {
     @HostListener('window:keydown.r', ['$event'])
     changeSelectionRectangleMode(event: KeyboardEvent): void {
         this.resetCheckedButton();
-        this.isSelectionChecked = true;
+        // this.isSelectionChecked = true;
         this.isSelectionRectangleChecked = true;
-        this.pickSelection(1);
+        this.pickSelectionRectangle();
     }
 
     @HostListener('window:keydown.s', ['$event']) changeSelectionEllipseMode(event: KeyboardEvent): void {
         this.resetCheckedButton();
-        this.isSelectionChecked = true;
+        // this.isSelectionChecked = true;
         this.isSelectionEllipseChecked = true;
-        this.pickSelection(2);
+        this.pickSelectionEllipse();
     }
 
     @HostListener('window:keydown.control.a', ['$event']) selectAllCanvas(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName === ToolUsed.Selection) {
-            event.preventDefault();
-            this.selectionService.selectAll();
-            console.log('test');
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.selectAll();
+        } else {
+            this.selectionEllipseService.selectAll();
+        }
+    }
+
+    @HostListener('window:keydown.ArrowLeft', ['$event']) onLeftArrow(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onLeftArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onLeftArrow();
+        }
+    }
+    // TO DO TESTS
+    @HostListener('window:keydown.ArrowRight', ['$event']) onRightArrow(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onRightArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onRightArrow();
+        }
+    }
+
+    @HostListener('window:keydown.ArrowDown', ['$event']) onDownArrow(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onDownArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onDownArrow();
+        }
+    }
+
+    @HostListener('window:keydown.ArrowUp', ['$event']) onUpArrow(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onUpArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onUpArrow();
+        }
+    }
+    @HostListener('window:keyup.ArrowLeft', ['$event']) onLeftArrowUp(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onLeftArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onLeftArrowUp();
+        }
+    }
+
+    @HostListener('window:keyup.ArrowRight', ['$event']) onRightArrowUp(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onRightArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onRightArrowUp();
+        }
+    }
+
+    @HostListener('window:keyup.ArrowDown', ['$event']) onDownArrowUp(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onDownArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onDownArrowUp();
+        }
+    }
+
+    @HostListener('window:keyup.ArrowUp', ['$event']) onUpArrowUp(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.onUpArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.onUpArrowUp();
+        }
+    }
+    @HostListener('window:keydown.control.z', ['$event'])
+    callUndo(eventK: KeyboardEvent): void {
+        if (!this.undoRedoService.isUndoDisabled) {
+            this.undoRedoService.undo();
+        }
+    }
+
+    @HostListener('window:keydown.control.shift.z', ['$event'])
+    callRedo(eventK: KeyboardEvent): void {
+        if (!this.undoRedoService.isRedoDisabled) {
+            this.undoRedoService.redo();
         }
     }
 }

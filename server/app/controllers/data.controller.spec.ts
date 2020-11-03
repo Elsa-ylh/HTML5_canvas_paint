@@ -1,7 +1,7 @@
 import { Application } from '@app/app';
 import { DatabasePicureService } from '@app/services/data-base-picture.service';
 import { TYPES } from '@app/types';
-import { CancasInformation, Label } from '@common/communication/canvas-information';
+import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { expect } from 'chai';
 import * as supertest from 'supertest';
@@ -15,7 +15,7 @@ describe('Data Controller', () => {
     let dataService: Stubbed<DatabasePicureService>;
     let app: Express.Application;
     let isDate: Date = new Date('10/08/2020');
-    const testCancasInformationAdd: CancasInformation = {
+    const testCanvasInformationAdd: CanvasInformation = {
         id: '',
         name: 'test5',
         labels: [{ label: 'label1' }],
@@ -25,23 +25,23 @@ describe('Data Controller', () => {
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
         container.rebind(TYPES.DatabasePicureService).toConstantValue({
-            getPicturesLabals: sandbox.stub().resolves(testCancasInformationAdd),
-            getPictures: sandbox.stub().resolves(testCancasInformationAdd),
-            getAllLabel: sandbox.stub().resolves(testCancasInformationAdd),
-            getPicturesName: sandbox.stub().resolves(testCancasInformationAdd),
-            getPicturesDate: sandbox.stub().resolves(testCancasInformationAdd),
+            getPicturesLabals: sandbox.stub().resolves(testCanvasInformationAdd),
+            getPictures: sandbox.stub().resolves(testCanvasInformationAdd),
+            getAllLabel: sandbox.stub().resolves(testCanvasInformationAdd),
+            getPicturesName: sandbox.stub().resolves(testCanvasInformationAdd),
+            getPicturesDate: sandbox.stub().resolves(testCanvasInformationAdd),
         });
         dataService = container.get(TYPES.DatabasePicureService);
         app = container.get<Application>(TYPES.Application).app;
     });
 
     it('should return ', async () => {
-        dataService.getPictures.resolves(testCancasInformationAdd);
+        dataService.getPictures.resolves(testCanvasInformationAdd);
         return supertest(app)
             .get('/api/data')
             .expect(HTTP_STATUS_OK)
             .then((reponse: any) => {
-                expect(reponse.body.name).to.deep.equal(testCancasInformationAdd.name);
+                expect(reponse.body.name).to.deep.equal(testCanvasInformationAdd.name);
             });
     });
     it('should return rejet ', async () => {
@@ -65,9 +65,9 @@ describe('Data Controller', () => {
             .send(service)
             .expect(HTTP_STATUS_OK)
             .then(async (reponse: any) => {
-                expect(reponse.body.name).to.deep.equal(testCancasInformationAdd.name);
-                expect(reponse.body.labels[0]).to.deep.equal(testCancasInformationAdd.labels[0]);
-                expect(reponse.body.id).to.deep.equal(testCancasInformationAdd.id);
+                expect(reponse.body.name).to.deep.equal(testCanvasInformationAdd.name);
+                expect(reponse.body.labels[0]).to.deep.equal(testCanvasInformationAdd.labels[0]);
+                expect(reponse.body.id).to.deep.equal(testCanvasInformationAdd.id);
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
@@ -229,7 +229,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal(testCancasInformationAdd.id);
+                expect(reponse.body.id).to.equal(testCanvasInformationAdd.id);
                 expect(reponse.body.name).to.equal(service.body);
             })
             .catch((err: Error) => {
@@ -246,7 +246,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal(testCancasInformationAdd.id);
+                expect(reponse.body.id).to.equal(testCanvasInformationAdd.id);
                 expect(reponse.body.date).to.equal('2020-10-08T04:00:00.000Z');
             })
             .catch((err: Error) => {

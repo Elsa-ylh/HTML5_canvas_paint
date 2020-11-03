@@ -2,19 +2,27 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SubToolselected } from './sub-tool-selected';
 import { Vec2 } from './vec2';
 
+
 export enum ToolUsed {
-    NONE = 0,
-    Pencil = 1,
-    Eraser = 2,
-    Brush = 3,
-    Line = 4,
-    Rectangle = 5,
-    Ellipse = 6,
-    Polygon = 7,
-    PaintBucket = 8,
-    Selection = 9,
-    Color = 1000,
-    Dropper = 1003,
+  NONE = 0,
+  Pencil = 1,
+  Eraser = 2,
+  Brush = 3,
+  Line = 4,
+  Rectangle = 5,
+  Ellipse = 6,
+  Polygon = 7,
+
+  PaintBucket = 8,
+  Selection = 9,
+
+
+
+
+  Color = 1000,
+  Dropper = 1003,
+  SelectionRectangle,
+  SelectionEllipse
 }
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant

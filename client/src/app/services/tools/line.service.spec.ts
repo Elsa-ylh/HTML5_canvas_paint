@@ -61,45 +61,45 @@ describe('Service: Line', () => {
         expect(serviceRec).toBeTruthy();
     }));
 
-    it('one point function mergeFirstPoint si true', () => {
+    it('one point function mergeFirstPoint if true', () => {
         pathData.push({ x: 25, y: 10 });
         const boolFonction = mergeFirstPointSpy(pathData);
         expect(boolFonction).toEqual(true);
     });
-    it('two point function mergeFirstPoint si true', () => {
+    it('two point function mergeFirstPoint if true', () => {
         pathData.push({ x: 25, y: 10 });
         pathData.push({ x: 45, y: 30 });
         const boolFonction = mergeFirstPointSpy(pathData);
         expect(boolFonction).toEqual(true);
     });
-    it('two point function mergeFirstPoint si false', () => {
+    it('two point function mergeFirstPoint if false', () => {
         pathData.push({ x: 25, y: 10 });
         pathData.push({ x: 46, y: 31 });
         const boolFonction = mergeFirstPointSpy(pathData);
         expect(boolFonction).toEqual(false);
     });
-    it('trois point function mergeFirstPoint si true', () => {
+    it('trois point function mergeFirstPoint if true', () => {
         pathData.push({ x: 25, y: 10 });
         pathData.push({ x: 250, y: 100 });
         pathData.push({ x: 45, y: 30 });
         const boolFonction = mergeFirstPointSpy(pathData);
         expect(boolFonction).toEqual(true);
     });
-    it('trois point function mergeFirstPoint si false', () => {
+    it('trois point function mergeFirstPoint if false', () => {
         pathData.push({ x: 25, y: 10 });
         pathData.push({ x: 250, y: 100 });
         pathData.push({ x: 46, y: 31 });
         const boolFonction = mergeFirstPointSpy(pathData);
         expect(boolFonction).toEqual(false);
     });
-    it('trois point function mergeFirstPoint si x false ', () => {
+    it('trois point function mergeFirstPoint if x false ', () => {
         pathData.push({ x: 25, y: 10 });
         pathData.push({ x: 250, y: 100 });
         pathData.push({ x: 46, y: 30 });
         const boolFonction = mergeFirstPointSpy(pathData);
         expect(boolFonction).toEqual(false);
     });
-    it('trois point function mergeFirstPoint si y false ', () => {
+    it('trois point function mergeFirstPoint if y false ', () => {
         pathData.push({ x: 25, y: 10 });
         pathData.push({ x: 250, y: 100 });
         pathData.push({ x: 45, y: 31 });
@@ -109,8 +109,8 @@ describe('Service: Line', () => {
     it(' onMouseMove should call drawLine if mouse was already down', () => {
         service.subToolSelect = SubToolselected.tool1;
         service.onMouseDown(events.mouseEvent1);
-
         service.onMouseMove(events.mouseEvent);
+
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineLastPointSpy).toHaveBeenCalled();
     });
