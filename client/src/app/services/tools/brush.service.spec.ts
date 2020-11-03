@@ -213,13 +213,13 @@ describe('BrushService', () => {
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
     });
-    it('exit et over de canvas not downMasse it false', () => {
+    it('exit and over de canvas not downMasse if false', () => {
         service.onMouseOut(mouseEvent);
         service.onMouseEnter(mouseEvent);
         expect(drawLineSpy).not.toHaveBeenCalled();
         expect(drawBrushToolSpy).not.toHaveBeenCalled();
     });
-    it('Mouse exit et over de canvas not downMasse ', () => {
+    it('Mouse exit or over of canvas not downMasse ', () => {
         service.onMouseDown(mouseEvent1);
         service.onMouseOut(mouseEvent);
         service.onMouseEnter(mouseEvent);
