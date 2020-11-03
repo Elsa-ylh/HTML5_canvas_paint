@@ -132,10 +132,17 @@ export class PolygonService extends Tool {
         this.drawingService.previewCtx.beginPath();
 
         ctx.fillStyle = this.fillColor;
-        ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
+        ctx.setLineDash([0, 0]);
         this.drawPolygon(ctx, this.numberOfSides);
         ctx.fill();
-        this.drawPreviewCircle(ctx, mouseDownPos, mouseUpPos);
+        // draw preview circle
+        if (this.drawingService.previewCtx === ctx) {
+            ctx.lineWidth = this.lineCirclewidth;
+            ctx.strokeStyle = this.strokeCircleColor;
+            ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
+            ctx.arc(this.mouseDownCoord.x, this.mouseDownCoord.y, this.radius, 0, 2 * Math.PI, false);
+            ctx.stroke();
+        }
     }
 
     drawPolygonOutline(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mouseUpPos: Vec2): void {
@@ -151,7 +158,7 @@ export class PolygonService extends Tool {
         ctx.setLineDash([0, 0]);
         this.drawPolygon(ctx, this.numberOfSides);
         ctx.stroke();
-
+        ctx.strokeStyle = this.strokeCircleColor;
         this.drawPreviewCircle(ctx, mouseDownPos, mouseUpPos);
     }
 
@@ -166,7 +173,7 @@ export class PolygonService extends Tool {
         this.drawPolygon(ctx, this.numberOfSides);
         ctx.stroke();
         ctx.fill();
-
+        ctx.strokeStyle = this.strokeCircleColor;
         this.drawPreviewCircle(ctx, mouseDownPos, mouseUpPos);
     }
     selectPolygon(mousePosition: Vec2, mouseDownCoord: Vec2, infoPolygone: ToolInfoPolygone): void {
