@@ -27,6 +27,7 @@ export class CarrouselPictureComponent implements OnInit {
     }
     private addAllData(): void {
         this.clientServerCommunicationService.getData().subscribe((info) => (this.dataPicture = info));
+        this.possition = 0;
     }
 
     private addAllLabal(): void {
@@ -38,6 +39,7 @@ export class CarrouselPictureComponent implements OnInit {
         this.addAllData();
         this.labelSelect = [];
         this.name = '';
+        this.possition = 0;
         this.myDate = new FormControl(new Date());
     }
     refresh(): void {
@@ -54,6 +56,7 @@ export class CarrouselPictureComponent implements OnInit {
         if (itList) {
             this.labelSelect.push(label);
         }
+        this.possition = 0;
         console.log(this.labelSelect.length);
         this.labelSelect.length === 0 ? this.addAllData() : this.setMessageLabel(this.labelSelect);
     }
@@ -66,7 +69,6 @@ export class CarrouselPictureComponent implements OnInit {
         this.clientServerCommunicationService.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
     getPicturesAll(): CanvasInformation[] {
-        console.log(this.dataPicture);
         return this.dataPicture;
     }
     setSearchCriteria(): void {
@@ -113,12 +115,13 @@ export class CarrouselPictureComponent implements OnInit {
         let threePictures: CanvasInformation[] = [];
         if (this.dataPicture.length <= THREE_FILES_AT_A_TIME) {
             threePictures = this.dataPicture;
-            this.possition = LESS_THEN_ONE;
+            return threePictures;
         }
         if (this.possition > 0 && this.possition <= this.dataPicture.length + 1 - THREE_FILES_AT_A_TIME) {
             for (let index = this.possition - 1; index < this.possition - 1 + THREE_FILES_AT_A_TIME; index++) {
                 threePictures.push(this.dataPicture[index]);
             }
+            return threePictures;
         }
         switch (this.possition) {
             case 0:
@@ -130,7 +133,6 @@ export class CarrouselPictureComponent implements OnInit {
                 threePictures.push(this.dataPicture[this.possition - 1]);
                 threePictures.push(this.dataPicture[this.possition]);
                 threePictures.push(this.dataPicture[0]);
-
                 break;
         }
         this.createImage(threePictures);
