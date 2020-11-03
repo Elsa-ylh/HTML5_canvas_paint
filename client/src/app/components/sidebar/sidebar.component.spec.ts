@@ -42,6 +42,7 @@ import { SidebarComponent } from './sidebar.component';
 // tslint:disable:no-any
 // tslint:disable:no-magic-numbers
 // tslint:disable:max-file-line-count
+// tslint:disable:prefer-const
 
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
@@ -62,7 +63,7 @@ describe('SidebarComponent', () => {
     let selectionRectangleStub: SelectionRectangleService;
     let selectionEllipseStub: SelectionEllipseService;
     let undoRedoStub: UndoRedoService;
-    let selectionStub : SelectionService;
+    let selectionStub: SelectionService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -80,7 +81,7 @@ describe('SidebarComponent', () => {
             eraserStub = new EraserService(drawingStub, undoRedoStub);
             lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
             dropperServiceStub = new DropperService(drawingStub, colorStub);
-            paintBucketStub = new PaintBucketService(drawingStub,colorStub, canvasResizerStub)
+            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -109,52 +110,48 @@ describe('SidebarComponent', () => {
             drawingStub.baseCtx = baseStub; // Jasmine doesnt copy properties with underlying data
             drawingStub.previewCtx = previewStub;
 
+            await TestBed.configureTestingModule({
+                declarations: [
+                    SidebarComponent,
+                    ColorComponent,
+                    WriteTextDialogUserGuideComponent,
+                    DialogCreateNewDrawingComponent,
+                    DropperColorComponent,
+                ],
+                imports: [
+                    MatIconModule,
+                    MatGridListModule,
+                    MatSlideToggleModule,
+                    MatButtonToggleModule,
+                    MatButtonModule,
+                    MatListModule,
+                    MatInputModule,
+                    MatCheckboxModule,
+                    BrowserAnimationsModule,
+                    HttpClientModule,
+                ],
+                providers: [
+                    { provide: DrawingService, useValue: drawingStub },
+                    { provide: ToolService, useValue: toolServiceStub },
+                    { provide: RectangleService, useValue: rectangleStub },
+                    { provide: EllipseService, useValue: ellipseStub },
+                    { provide: BrushService, useValue: brushStub },
+                    { provide: PencilService, useValue: pencilStub },
+                    { provide: EraserService, useValue: eraserStub },
+                    { provide: LineService, useValue: lineStub },
+                    { provide: SelectionService, useValue: selectionStub },
+                    { provide: ToolService, useValue: toolServiceStub },
+                    { provide: DropperService, useValue: dropperServiceStub },
+                    { provide: MatDialog, useValue: {} },
+                    { provide: PolygonService, useValue: polygonStub },
+                ],
+            }).compileComponents();
+            TestBed.inject(MatDialog);
+            TestBed.inject(DomSanitizer);
 
-
-        await TestBed.configureTestingModule({
-            declarations: [
-                SidebarComponent,
-                ColorComponent,
-                WriteTextDialogUserGuideComponent,
-                DialogCreateNewDrawingComponent,
-                DropperColorComponent,
-            ],
-            imports: [
-                MatIconModule,
-                MatGridListModule,
-                MatSlideToggleModule,
-                MatButtonToggleModule,
-                MatButtonModule,
-                MatListModule,
-                MatInputModule,
-                MatCheckboxModule,
-                BrowserAnimationsModule,
-                HttpClientModule,
-            ],
-            providers: [
-                { provide: DrawingService, useValue: drawingStub },
-                { provide: ToolService, useValue: toolServiceStub },
-                { provide: RectangleService, useValue: rectangleStub },
-                { provide: EllipseService, useValue: ellipseStub },
-                { provide: BrushService, useValue: brushStub },
-                { provide: PencilService, useValue: pencilStub },
-                { provide: EraserService, useValue: eraserStub },
-                { provide: LineService, useValue: lineStub },
-                { provide: SelectionService, useValue: selectionStub },
-                { provide: ToolService, useValue: toolServiceStub },
-                { provide: DropperService, useValue: dropperServiceStub },
-                { provide: MatDialog, useValue: {} },
-                { provide: PolygonService, useValue: polygonStub },
-            ],
-        }).compileComponents();
-        TestBed.inject(MatDialog);
-        TestBed.inject(DomSanitizer);
-
-        fixture = TestBed.createComponent(SidebarComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-
-
+            fixture = TestBed.createComponent(SidebarComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
 
             dialogMock = jasmine.createSpyObj('dialogCreator', ['open']);
 

@@ -42,13 +42,10 @@ describe('DrawingComponent', () => {
     let colorStub: ColorService;
     let dropperStub: DropperService;
     let polygonStub: PolygonService;
-<<<<<<< HEAD
     let paintBucketStub: PaintBucketService;
-=======
     let selectionRectangleStub: SelectionRectangleService;
     let selectionEllipseStub: SelectionEllipseService;
     let undoRedoStub: UndoRedoService;
->>>>>>> dev
 
     beforeEach(
         waitForAsync(() => {
@@ -63,15 +60,10 @@ describe('DrawingComponent', () => {
             rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub);
             ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub);
             dropperStub = new DropperService(drawingStub, colorStub);
-<<<<<<< HEAD
-            selectionStub = new SelectionService(drawingStub);
-            polygonStub = new PolygonService(drawingStub, colorStub);
-            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub);
-=======
             polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub);
+            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub);
             selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
->>>>>>> dev
 
             toolServiceStub = new ToolService(
                 pencilStub,
@@ -82,12 +74,9 @@ describe('DrawingComponent', () => {
                 ellipseStub,
                 dropperStub,
                 polygonStub,
-<<<<<<< HEAD
                 paintBucketStub,
-=======
                 selectionRectangleStub,
                 selectionEllipseStub,
->>>>>>> dev
             );
 
             toolStub = toolServiceStub.currentTool;
