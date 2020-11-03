@@ -70,7 +70,6 @@ export class SidebarComponent {
         public eraserService: EraserService,
         public colorService: ColorService,
         public lineService: LineService,
-        // public selectionService: SelectionService,
         public polygonService: PolygonService,
         public undoRedoService: UndoRedoService,
         public selectionRectangleService: SelectionRectangleService,
@@ -222,7 +221,6 @@ export class SidebarComponent {
     }
 
     pickSelectionRectangle(): void {
-        // debugger;
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.SelectionRectangle);
     }
@@ -232,7 +230,6 @@ export class SidebarComponent {
     }
 
     pickSelectionEllipse(): void {
-        // debugger;
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.SelectionEllipse);
     }
