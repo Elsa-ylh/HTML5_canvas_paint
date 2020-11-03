@@ -7,10 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { MainPageComponent } from '@app/components/main-page/main-page.component';
 import { IndexService } from '@app/services/index/index.service';
 import { of } from 'rxjs';
-import { DialogCreateNewDrawingComponent } from '../dialog-create-new-drawing/dialog-create-new-drawing.component';
-import { MainPageComponent } from './main-page.component';
 
 import SpyObj = jasmine.SpyObj;
 
