@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
-import { CancasInformation, Label } from '@common/communication/canvas-information';
+import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 const THREE_FILES_AT_A_TIME = 3;
 const LESS_THEN_ONE = -1;
@@ -11,7 +11,8 @@ const LESS_THEN_ONE = -1;
     styleUrls: ['./dialog-carrousel-picture.component.scss'],
 })
 export class CarrouselPictureComponent implements OnInit {
-    private dataPicture: CancasInformation[] = [];
+    private dataPicture: CanvasInformation[] = [];
+
     private possition: number = 0;
     dataLabel: Label[] = [];
     private labelSelect: string[] = [];
@@ -20,7 +21,6 @@ export class CarrouselPictureComponent implements OnInit {
     myDate: FormControl = new FormControl(new Date());
 
     constructor(private clientServerCommunicationService: ClientServerCommunicationService) {}
-
     ngOnInit(): void {
         this.addAllData();
         this.addAllLabal();
@@ -65,7 +65,8 @@ export class CarrouselPictureComponent implements OnInit {
         const message: Message = { title: 'labels', body: textLabel };
         this.clientServerCommunicationService.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
-    getPicturesAll(): CancasInformation[] {
+    getPicturesAll(): CanvasInformation[] {
+        console.log(this.dataPicture);
         return this.dataPicture;
     }
     setSearchCriteria(): void {
@@ -108,8 +109,8 @@ export class CarrouselPictureComponent implements OnInit {
         }
     }
 
-    getPictures(): CancasInformation[] {
-        let threePictures: CancasInformation[] = [];
+    getPictures(): CanvasInformation[] {
+        let threePictures: CanvasInformation[] = [];
         if (this.dataPicture.length <= THREE_FILES_AT_A_TIME) {
             threePictures = this.dataPicture;
             this.possition = LESS_THEN_ONE;
@@ -135,7 +136,7 @@ export class CarrouselPictureComponent implements OnInit {
         this.createImage(threePictures);
         return threePictures;
     }
-    private createImage(listCard: CancasInformation[]): void {
+    private createImage(listCard: CanvasInformation[]): void {
         listCard.forEach((element) => {
             // let canvas = document.getElementById(element.id);
             // let ctx = canvas.getContext('2d');

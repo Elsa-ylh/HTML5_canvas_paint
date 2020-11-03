@@ -1,7 +1,7 @@
 import { DataController } from '@app/controllers/data.controller';
 import { DateController } from '@app/controllers/date.controller';
 import { IndexController } from '@app/controllers/index.controller';
-import { DatabasePicureService } from '@app/services/data-base-picture.service';
+import { DatabasePicureService } from '@app/services/database-picture.service';
 import { DateService } from '@app/services/date.service';
 import { IndexService } from '@app/services/index.service';
 import { Container } from 'inversify';

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 [1102/215501.739:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 =======
@@ -19,3 +20,18 @@
 [1101/173155.980:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
 [1102/193747.009:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
 >>>>>>> dev
+=======
+[1031/153846.767:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1031/154408.657:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1031/161212.415:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1031/163445.961:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1031/173256.548:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1031/175256.508:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1031/182401.816:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1101/212058.633:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1101/232520.094:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1101/234944.250:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1102/104802.467:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1102/105744.189:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin dï¿½accï¿½s spï¿½cifiï¿½ est introuvable. (0x3)
+[1102/230629.208:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+>>>>>>> 13-sauvegarder-le-dessin-sur-serveur
