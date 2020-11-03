@@ -18,6 +18,7 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
+import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
@@ -57,6 +58,7 @@ export class SidebarComponent {
     private isSelectionEllipseChecked: boolean = false;
     private isSelectionRectangleChecked: boolean = false;
     private isPolygonChecked: boolean = false;
+    private isPaintBucketChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -72,6 +74,7 @@ export class SidebarComponent {
         public colorService: ColorService,
         public lineService: LineService,
         public polygonService: PolygonService,
+        public paintBucketService: PaintBucketService,
         public undoRedoService: UndoRedoService,
         public selectionRectangleService: SelectionRectangleService,
         public selectionEllipseService: SelectionEllipseService,
@@ -79,6 +82,7 @@ export class SidebarComponent {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
         this.iconRegistry.addSvgIcon('polygon', this.sanitizer.bypassSecurityTrustResourceUrl('assets/polygon.svg'));
+        this.iconRegistry.addSvgIcon('paint-bucket', this.sanitizer.bypassSecurityTrustResourceUrl('assets/paint-bucket.svg'));
     }
 
     clearCanvas(): void {
@@ -216,6 +220,15 @@ export class SidebarComponent {
         return this.isColorChecked;
     }
 
+    pickPaintBucket(): void {
+        // debugger;
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.PaintBucket);
+    }
+
+    get paintBucketChecked(): boolean {
+        return this.isPaintBucketChecked;
+    }
     pickDropper(): void {
         this.drawingService.cursorUsed = 'pointer';
         this.toolService.switchTool(ToolUsed.Dropper);
@@ -251,6 +264,7 @@ export class SidebarComponent {
         this.isRectangleChecked = false;
         this.isEllipseChecked = false;
         this.isColorChecked = false;
+        this.isPaintBucketChecked = false;
         this.isDropperChecked = false;
         // this.isSelectionChecked = false;
         this.isSelectionEllipseChecked = false;
@@ -330,6 +344,13 @@ export class SidebarComponent {
         }
     }
 
+    @HostListener('window:keydown.b', ['$event'])
+    changePaintBucketMode(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName !== ToolUsed.PaintBucket) {
+            this.resetCheckedButton();
+            this.isPaintBucketChecked = true;
+        }
+    }
     @HostListener('window:keydown.i', ['$event'])
     changeDropperMode(event: KeyboardEvent): void {
         if (this.isDialogOpenSaveEport) {

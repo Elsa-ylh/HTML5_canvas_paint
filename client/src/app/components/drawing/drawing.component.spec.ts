@@ -13,6 +13,7 @@ import { DropperService } from '@app/services/tools/dropper.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { LineService } from '@app/services/tools/line.service';
+import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
@@ -41,6 +42,7 @@ describe('DrawingComponent', () => {
     let colorStub: ColorService;
     let dropperStub: DropperService;
     let polygonStub: PolygonService;
+    let paintBucketStub: PaintBucketService;
     let selectionRectangleStub: SelectionRectangleService;
     let selectionEllipseStub: SelectionEllipseService;
     let undoRedoStub: UndoRedoService;
@@ -59,6 +61,7 @@ describe('DrawingComponent', () => {
             ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub);
             dropperStub = new DropperService(drawingStub, colorStub);
             polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub);
+            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub);
             selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
 
@@ -71,6 +74,7 @@ describe('DrawingComponent', () => {
                 ellipseStub,
                 dropperStub,
                 polygonStub,
+                paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
             );
