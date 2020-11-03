@@ -47,6 +47,10 @@ export class DialogExportDrawingComponent implements AfterViewInit {
         this.whichExportType = ImageFormat.JPG;
     }
 
+    checkNone(): void {
+        this.whichFilter = Filter.NONE;
+        this.previewImage.nativeElement.style.filter = '';
+    }
     checkFirst(): void {
         this.whichFilter = Filter.BLUR;
         this.previewImage.nativeElement.style.filter = 'blur(4px)';
@@ -74,20 +78,51 @@ export class DialogExportDrawingComponent implements AfterViewInit {
 
     downloadImage(): void {
         if (this.nameFormControl.valid) {
-            const finalImageCanvas = document.createElement('canvas');
-            const finalImageCtx = finalImageCanvas.getContext('2d') as CanvasRenderingContext2D;
+            let textImageFormat: string = this.nameFormControl.value;
+            switch (this.whichExportType) {
+                case ImageFormat.PNG:
+                    textImageFormat += '.png';
+                    break;
+                case ImageFormat.JPG:
+                    textImageFormat += '.jpg';
+                    break;
+            }
+            switch (this.whichFilter) {
+                case Filter.NONE:
+                    textImageFormat += '\n Aucun filtre';
+                    break;
+                case Filter.BLUR:
+                    textImageFormat += '\n Filtre blur';
+                    break;
+                case Filter.BRIGHTNESS:
+                    textImageFormat += '\n Filtre brightness';
+                    break;
+                case Filter.GRAYSCALE:
+                    textImageFormat += '\n Filtre grayscale';
+                    break;
+                case Filter.INVERT:
+                    textImageFormat += '\n Filtre invert';
+                    break;
+                case Filter.SEPIA:
+                    textImageFormat += '\n Filtre sepia';
+                    break;
+            }
+            if (confirm('Vous voulez saugarder ' + textImageFormat)) {
+                const finalImageCanvas = document.createElement('canvas');
+                const finalImageCtx = finalImageCanvas.getContext('2d') as CanvasRenderingContext2D;
 
-            finalImageCanvas.width = this.drawingService.canvas.width;
-            finalImageCanvas.height = this.drawingService.canvas.height;
+                finalImageCanvas.width = this.drawingService.canvas.width;
+                finalImageCanvas.height = this.drawingService.canvas.height;
 
-            finalImageCtx.filter = this.filterString.get(this.whichFilter) as string;
-            finalImageCtx.drawImage(this.previewImage.nativeElement, 0, 0);
+                finalImageCtx.filter = this.filterString.get(this.whichFilter) as string;
+                finalImageCtx.drawImage(this.previewImage.nativeElement, 0, 0);
 
-            // https://stackoverflow.com/a/50300880
-            const link = document.createElement('a');
-            link.download = this.nameFormControl.value + this.imageFormatString.get(this.whichExportType);
-            link.href = finalImageCanvas.toDataURL();
-            link.click();
+                // https://stackoverflow.com/a/50300880
+                const link = document.createElement('a');
+                link.download = this.nameFormControl.value + this.imageFormatString.get(this.whichExportType);
+                link.href = finalImageCanvas.toDataURL();
+                link.click();
+            }
         }
     }
 }
