@@ -140,11 +140,17 @@ export class CarrouselPictureComponent implements OnInit {
     }
     private createImage(listCard: CanvasInformation[]): void {
         listCard.forEach((element) => {
-            // let canvas = document.getElementById(element.id);
-            // let ctx = canvas.getContext('2d');
+            //
+            //
         });
     }
-    deletePicture(idPicture: string): void {
-        alert('Suprimer');
+    deletePicture(idPicture: CanvasInformation): void {
+        if (confirm('Suprimer : ' + idPicture.name)) {
+            const deleteMassage: Message = { title: 'delete', body: idPicture._id };
+            this.clientServerCommunicationService.deleteQuery(deleteMassage).subscribe((info) => this.messageDelite(info));
+        }
+    }
+    messageDelite(message: Message): void {
+        alert(message.body);
     }
 }
