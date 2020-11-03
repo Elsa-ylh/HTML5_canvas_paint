@@ -51,7 +51,7 @@ describe('Service: CanvasResizer', () => {
     it('should onResizeDown Right click horizontal', () => {
         canvasResizerService.onResizeDown(events.mouseEventR, ResizeDirection.horizontal);
         expect(canvasResizerService.resizerIndex).toEqual(canvasResizerService.NORMAL_INDEX);
-        expect(canvasResizerService.resizeDirection).not.toEqual(ResizeDirection.horizontal);
+        expect(canvasResizerService.resizeDirection).toEqual(ResizeDirection.horizontal);
     });
 
     it('should onResizeDown vertical', () => {

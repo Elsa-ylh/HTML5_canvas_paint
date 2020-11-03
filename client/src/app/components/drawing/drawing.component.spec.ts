@@ -18,6 +18,7 @@ import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
@@ -42,22 +43,24 @@ describe('DrawingComponent', () => {
     let polygonStub: PolygonService;
     let selectionRectangleStub: SelectionRectangleService;
     let selectionEllipseStub: SelectionEllipseService;
+    let undoRedoStub: UndoRedoService;
 
     beforeEach(
         waitForAsync(() => {
             drawingStub = new DrawingService();
-            canvasResizerStub = new CanvasResizerService();
+            undoRedoStub = new UndoRedoService(drawingStub);
+            canvasResizerStub = new CanvasResizerService(undoRedoStub);
             colorStub = new ColorService(drawingStub);
-            pencilStub = new PencilService(drawingStub, colorStub);
-            eraserStub = new EraserService(drawingStub);
-            brushStub = new BrushService(drawingStub, colorStub);
-            lineStub = new LineService(drawingStub, colorStub);
-            rectangleStub = new RectangleService(drawingStub, colorStub);
-            ellipseStub = new EllipseService(drawingStub, colorStub);
+            pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub);
+            eraserStub = new EraserService(drawingStub, undoRedoStub);
+            brushStub = new BrushService(drawingStub, colorStub, undoRedoStub);
+            lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
+            rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub);
+            ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub);
             dropperStub = new DropperService(drawingStub, colorStub);
-            polygonStub = new PolygonService(drawingStub, colorStub);
-            selectionRectangleStub = new SelectionRectangleService(drawingStub);
-            selectionEllipseStub = new SelectionEllipseService(drawingStub);
+            polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub);
+            selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
+            selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
 
             toolServiceStub = new ToolService(
                 pencilStub,
@@ -228,13 +231,12 @@ describe('DrawingComponent', () => {
         expect(onResizeOutSpy).toHaveBeenCalled();
     });
 
-    it('not call getColor onMouseOverMainCanvas', () => {
+    it('not set previewColor onMouseOverMainCanvas', () => {
         const canvas = document.createElement('canvas');
         canvas.setAttribute('width', '100');
         canvas.setAttribute('height', '100');
         component.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
         const event = { offsetX: 15, offsetY: 37 } as MouseEvent;
-        // const getColorSpy = spyOn(colorStub, 'getColor').and.callThrough();
 
         component.onMouseOverMainCanvas(event);
 
@@ -243,7 +245,18 @@ describe('DrawingComponent', () => {
         expect(colorMatrix.data[1]).toEqual(0);
         expect(colorMatrix.data[2]).toEqual(0);
         expect(colorMatrix.data[3]).toEqual(0);
-        // expect(colorStub.previewColor).toBeDefined();
+    });
+
+    it('should set Color', () => {
+        const getColorSpy = spyOn(colorStub, 'getColor').and.stub();
+        const numToHexSpy = spyOn(colorStub, 'numeralToHex').and.stub();
+
+        const event = { offsetX: 15, offsetY: 47 } as MouseEvent;
+
+        component.onMouseOverMainCanvas(event);
+
+        expect(getColorSpy).toHaveBeenCalled();
+        expect(numToHexSpy).toHaveBeenCalled();
     });
 
     it(' should onShiftKeyDown trigger tool service', () => {

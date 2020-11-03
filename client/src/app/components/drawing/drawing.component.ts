@@ -8,10 +8,12 @@ import {
 } from '@app/classes/resize-canvas';
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { ToolUsed } from '@app/classes/tool';
+import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Component({
     selector: 'app-drawing',
@@ -24,6 +26,7 @@ export class DrawingComponent implements AfterViewInit {
         public toolService: ToolService,
         public cvsResizerService: CanvasResizerService,
         public colorService: ColorService,
+        public undoRedoService: UndoRedoService,
     ) {}
 
     get width(): number {
@@ -65,6 +68,15 @@ export class DrawingComponent implements AfterViewInit {
         this.dropperCtx = this.dropperLayer.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.dropperCtx = this.dropperCtx;
         this.setCanvasBackgroundColor();
+
+        const event = { offsetX: this.cvsResizerService.DEFAULT_WIDTH, offsetY: this.cvsResizerService.DEFAULT_HEIGHT } as MouseEvent;
+        this.undoRedoService.defaultCanvasAction = new ResizeCanvasAction(
+            event,
+            this.resizeCtx,
+            this.baseCanvas.nativeElement,
+            ResizeDirection.verticalAndHorizontal,
+            this.cvsResizerService,
+        );
     }
 
     setCanvasBackgroundColor(): void {
@@ -74,6 +86,7 @@ export class DrawingComponent implements AfterViewInit {
 
     onMouseDown(event: MouseEvent): void {
         this.toolService.currentTool.onMouseDown(event);
+        this.undoRedoService.whileDrawingUndoRedo(event);
     }
 
     onMouseMove(event: MouseEvent): void {
