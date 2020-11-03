@@ -331,12 +331,12 @@ describe('SidebarComponent', () => {
     });
     it('should set subtoolselected as tool 2', () => {
         const event = { checked: true } as MatCheckboxChange;
-        component.CheckboxChangeToggle(event);
+        component.checkboxChangeToggle(event);
         expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool2);
     });
     it('should set subtoolselected as tool 1', () => {
         const event = { checked: false } as MatCheckboxChange;
-        component.CheckboxChangeToggle(event);
+        component.checkboxChangeToggle(event);
         expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool1);
     });
     it('should call preventDefault clearCanvas and set isDialogOpen to true', () => {

@@ -1,16 +1,18 @@
+// tslint:disable:no-magic-numbers
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
-import { CancasInformation, Label } from '@common/communication/canvas-information';
+import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
-
+const THREE_FILES_AT_A_TIME = 3;
 @Component({
-    selector: 'app-carrousel-picture',
-    templateUrl: './carrousel-picture.component.html',
-    styleUrls: ['./carrousel-picture.component.scss'],
+    selector: 'app-dialog-carrousel-picture',
+    templateUrl: './dialog-carrousel-picture.component.html',
+    styleUrls: ['./dialog-carrousel-picture.component.scss'],
 })
 export class CarrouselPictureComponent implements OnInit {
-    private dataPicture: CancasInformation[] = [];
+    private dataPicture: CanvasInformation[] = [];
+    private position: number = 0;
     dataLabel: Label[] = [];
     private labelSelect: string[] = [];
     selectedType: string = 'name';
@@ -52,6 +54,7 @@ export class CarrouselPictureComponent implements OnInit {
         if (itList) {
             this.labelSelect.push(label);
         }
+        console.log(this.labelSelect.length);
         this.labelSelect.length === 0 ? this.addAllData() : this.setMessageLabel(this.labelSelect);
     }
     private setMessageLabel(labels: string[]): void {
@@ -62,7 +65,7 @@ export class CarrouselPictureComponent implements OnInit {
         const message: Message = { title: 'labels', body: textLabel };
         this.clientServerCommunicationService.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
-    getPicturesAll(): CancasInformation[] {
+    getPicturesAll(): CanvasInformation[] {
         return this.dataPicture;
     }
     setSearchCriteria(): void {
@@ -76,15 +79,66 @@ export class CarrouselPictureComponent implements OnInit {
                 this.clientServerCommunicationService.getElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
                 break;
         }
+        this.position = 0;
+    }
+    prior(): void {
+        switch (this.position) {
+            case -1:
+                this.position = -1;
+                break;
+            case 0:
+                this.position = this.dataPicture.length - 1;
+                break;
+            default:
+                this.position--;
+                break;
+        }
+    }
+    next(): void {
+        switch (this.position) {
+            case -1:
+                this.position = -1;
+                break;
+            case this.dataPicture.length - 1:
+                this.position = 0;
+                break;
+            default:
+                this.position++;
+                break;
+        }
     }
 
-    /* getPicture1():void{
+    getPictures(): CanvasInformation[] {
+        let threePictures: CanvasInformation[] = [];
+        if (this.dataPicture.length <= THREE_FILES_AT_A_TIME) {
+            threePictures = this.dataPicture;
+            this.position = -1;
+        }
+        if (this.position > 0 && this.position <= this.dataPicture.length + 1 - THREE_FILES_AT_A_TIME) {
+            for (let index = this.position - 1; index < this.position - 1 + THREE_FILES_AT_A_TIME; index++) {
+                threePictures.push(this.dataPicture[index]);
+            }
+        }
+        switch (this.position) {
+            case 0:
+                threePictures.push(this.dataPicture[this.dataPicture.length - 1]);
+                threePictures.push(this.dataPicture[this.position]);
+                threePictures.push(this.dataPicture[1]);
+                break;
+            case this.dataPicture.length - 1:
+                threePictures.push(this.dataPicture[this.position - 1]);
+                threePictures.push(this.dataPicture[this.position]);
+                threePictures.push(this.dataPicture[0]);
 
-    };
-    getPicture2():void{
-
-    };
-    getPicture3():void{
-
-    };*/
+                break;
+        }
+        this.createImage(threePictures);
+        return threePictures;
+    }
+    private createImage(listCard: CanvasInformation[]): void {
+        listCard.forEach((element) => {
+            // let canvas = document.getElementById(element.id);
+            // let ctx = canvas.getContext('2d');
+        });
+    }
 }
