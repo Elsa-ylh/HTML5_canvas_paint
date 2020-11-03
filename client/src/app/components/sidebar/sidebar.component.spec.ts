@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
@@ -327,16 +327,18 @@ describe('SidebarComponent', () => {
         expect(component.selectionEllipseChecked).toEqual(false);
         expect(component.selectionRectangleChecked).toEqual(false);
     });
+    /*
     it('should set subtoolselected as tool 2', () => {
         const event = { checked: true } as MatCheckboxChange;
-        component.CheckboxChangeToggle(event);
+        component.checkboxChangeToggle(event);
         expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool2);
     });
     it('should set subtoolselected as tool 1', () => {
         const event = { checked: false } as MatCheckboxChange;
-        component.CheckboxChangeToggle(event);
+        component.checkboxChangeToggle(event);
         expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool1);
     });
+    */
     it('should call preventDefault clearCanvas and set isDialogOpen to true', () => {
         component.isDialogOpen = false;
         drawingStub.baseCtx.beginPath();

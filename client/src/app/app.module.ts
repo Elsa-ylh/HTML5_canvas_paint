@@ -14,6 +14,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -43,6 +44,7 @@ import { ColorErrorComponent } from './components/color-error/color-error.compon
 import { ColorComponent } from './components/color/color.component';
 import { CarrouselPictureComponent } from './components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from './components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DialogExportDrawingComponent } from './components/dialog-export-locally/dialog-export-locally.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { DropperColorComponent } from './components/dropper-color/dropper-color.component';
 import { EditorComponent } from './components/editor/editor.component';
@@ -62,6 +64,8 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         DropperColorComponent,
         EditorComponent,
         MainPageComponent,
+        DialogCreateNewDrawingComponent,
+        DialogExportDrawingComponent,
         SidebarComponent,
         WriteTextDialogUserGuideComponent,
         ColorComponent,
@@ -75,6 +79,7 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         BrowserModule,
         HttpClientModule,
         AppRoutingModule,
+        MatFormFieldModule,
         BrowserAnimationsModule,
         MatAutocompleteModule,
         MatBadgeModule,

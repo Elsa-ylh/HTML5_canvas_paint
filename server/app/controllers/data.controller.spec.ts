@@ -1,3 +1,4 @@
+// tslint:disable: max-file-line-count
 import { Application } from '@app/app';
 import { DatabasePicureService } from '@app/services/database-picture.service';
 import { TYPES } from '@app/types';
@@ -14,7 +15,7 @@ describe('Data Controller', () => {
 
     let dataService: Stubbed<DatabasePicureService>;
     let app: Express.Application;
-    let isDate: Date = new Date('10/08/2020');
+    const isDate: Date = new Date('10/08/2020');
     const testCanvasInformationAdd = {
         _id: '',
         name: 'stest5',
@@ -415,7 +416,7 @@ describe('Data Controller', () => {
             });
     });
     it('delite not request message', () => {
-        //dataService.getPicturesLabals.rejects(new Error('error in the service'));
+        // dataService.getPicturesLabals.rejects(new Error('error in the service'));
         return supertest(app)
             .post('/api/data/delete')
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
@@ -429,7 +430,7 @@ describe('Data Controller', () => {
             });
     });
     it('delite', () => {
-        //dataService.getPicturesLabals.rejects(new Error('error in the service'));
+        // dataService.getPicturesLabals.rejects(new Error('error in the service'));
         const message: Message = { title: '', body: '' };
         return supertest(app)
             .post('/api/data/delete')

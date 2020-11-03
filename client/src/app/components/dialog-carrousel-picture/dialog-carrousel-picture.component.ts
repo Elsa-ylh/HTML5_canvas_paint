@@ -1,10 +1,10 @@
+// tslint:disable:no-magic-numbers
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
-const THREE_FILES_AT_A_TIME = 3;
-const LESS_THEN_ONE = -1;
+const NB_FILES_OPEN_AT_A_TIME = 3;
 @Component({
     selector: 'app-dialog-carrousel-picture',
     templateUrl: './dialog-carrousel-picture.component.html',
@@ -12,8 +12,7 @@ const LESS_THEN_ONE = -1;
 })
 export class CarrouselPictureComponent implements OnInit {
     private dataPicture: CanvasInformation[] = [];
-
-    private possition: number = 0;
+    private position: number = 0;
     dataLabel: Label[] = [];
     private labelSelect: string[] = [];
     selectedType: string = 'name';
@@ -21,13 +20,13 @@ export class CarrouselPictureComponent implements OnInit {
     myDate: FormControl = new FormControl(new Date());
 
     constructor(private clientServerCommunicationService: ClientServerCommunicationService) {}
+
     ngOnInit(): void {
         this.addAllData();
         this.addAllLabal();
     }
     private addAllData(): void {
         this.clientServerCommunicationService.getData().subscribe((info) => (this.dataPicture = info));
-        this.possition = 0;
     }
 
     private addAllLabal(): void {
@@ -39,7 +38,6 @@ export class CarrouselPictureComponent implements OnInit {
         this.addAllData();
         this.labelSelect = [];
         this.name = '';
-        this.possition = 0;
         this.myDate = new FormControl(new Date());
     }
     refresh(): void {
@@ -56,7 +54,6 @@ export class CarrouselPictureComponent implements OnInit {
         if (itList) {
             this.labelSelect.push(label);
         }
-        this.possition = 0;
         console.log(this.labelSelect.length);
         this.labelSelect.length === 0 ? this.addAllData() : this.setMessageLabel(this.labelSelect);
     }
@@ -82,57 +79,57 @@ export class CarrouselPictureComponent implements OnInit {
                 this.clientServerCommunicationService.getElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
                 break;
         }
-        this.possition = 0;
+        this.position = 0;
     }
     prior(): void {
-        switch (this.possition) {
-            case LESS_THEN_ONE:
-                this.possition = LESS_THEN_ONE;
+        switch (this.position) {
+            case -1:
+                this.position = -1;
                 break;
             case 0:
-                this.possition = this.dataPicture.length + LESS_THEN_ONE;
+                this.position = this.dataPicture.length - 1;
                 break;
             default:
-                this.possition--;
+                this.position--;
                 break;
         }
     }
     next(): void {
-        switch (this.possition) {
-            case LESS_THEN_ONE:
-                this.possition = LESS_THEN_ONE;
+        switch (this.position) {
+            case -1:
+                this.position = -1;
                 break;
-            case this.dataPicture.length + LESS_THEN_ONE:
-                this.possition = 0;
+            case this.dataPicture.length - 1:
+                this.position = 0;
                 break;
             default:
-                this.possition++;
+                this.position++;
                 break;
         }
     }
 
     getPictures(): CanvasInformation[] {
         let threePictures: CanvasInformation[] = [];
-        if (this.dataPicture.length <= THREE_FILES_AT_A_TIME) {
+        if (this.dataPicture.length <= NB_FILES_OPEN_AT_A_TIME) {
             threePictures = this.dataPicture;
-            return threePictures;
+            this.position = -1;
         }
-        if (this.possition > 0 && this.possition <= this.dataPicture.length + 1 - THREE_FILES_AT_A_TIME) {
-            for (let index = this.possition - 1; index < this.possition - 1 + THREE_FILES_AT_A_TIME; index++) {
+        if (this.position > 0 && this.position <= this.dataPicture.length + 1 - NB_FILES_OPEN_AT_A_TIME) {
+            for (let index = this.position - 1; index < this.position - 1 + NB_FILES_OPEN_AT_A_TIME; index++) {
                 threePictures.push(this.dataPicture[index]);
             }
-            return threePictures;
         }
-        switch (this.possition) {
+        switch (this.position) {
             case 0:
                 threePictures.push(this.dataPicture[this.dataPicture.length - 1]);
-                threePictures.push(this.dataPicture[this.possition]);
+                threePictures.push(this.dataPicture[this.position]);
                 threePictures.push(this.dataPicture[1]);
                 break;
             case this.dataPicture.length - 1:
-                threePictures.push(this.dataPicture[this.possition - 1]);
-                threePictures.push(this.dataPicture[this.possition]);
+                threePictures.push(this.dataPicture[this.position - 1]);
+                threePictures.push(this.dataPicture[this.position]);
                 threePictures.push(this.dataPicture[0]);
+
                 break;
         }
         this.createImage(threePictures);
@@ -140,17 +137,8 @@ export class CarrouselPictureComponent implements OnInit {
     }
     private createImage(listCard: CanvasInformation[]): void {
         listCard.forEach((element) => {
-            //
-            //
+            // let canvas = document.getElementById(element.id);
+            // let ctx = canvas.getContext('2d');
         });
-    }
-    deletePicture(idPicture: CanvasInformation): void {
-        if (confirm('Suprimer : ' + idPicture.name)) {
-            const deleteMassage: Message = { title: 'delete', body: idPicture._id };
-            this.clientServerCommunicationService.deleteQuery(deleteMassage).subscribe((info) => this.messageDelite(info));
-        }
-    }
-    messageDelite(message: Message): void {
-        alert(message.body);
     }
 }
