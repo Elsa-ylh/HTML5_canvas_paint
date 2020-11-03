@@ -156,14 +156,14 @@ export class CarrouselPictureComponent implements OnInit {
             this.cvsResizerService.canvasSize.y = picture.height;
             this.cvsResizerService.canvasSize.x = picture.width;
             this.drawingService.convertBase64ToBaseCanvas(picture.picture);
+            this.dialogRef.close(true);
+            this.router.navigate(['/editor']);
         }
     }
     deletePicture(picture: CanvasInformation): void {
         if (confirm('Suprimer : ' + picture.name)) {
             const deleteMassage: Message = { title: 'delete', body: picture._id };
             this.clientServerComSvc.deleteQuery(deleteMassage).subscribe((info) => this.messageDelite(info));
-            this.dialogRef.close(true);
-            this.router.navigate(['/editor']);
         }
     }
     messageDelite(message: Message): void {
