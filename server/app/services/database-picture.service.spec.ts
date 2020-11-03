@@ -11,17 +11,10 @@ describe('Database service', () => {
     let client: MongoClient;
     let testCanvasInformationAdd: CanvasInformation;
     const allDataTest = [
-<<<<<<< HEAD:server/app/services/database-picture.service.spec.ts
         { name: 'test1', labels: [{ label: 'label1' }], width: 0, height: 0, date: new Date('10/04/2020'), picture: 'test1' },
         { name: 'test2', labels: [{ label: 'label1' }, { label: 'label2' }], width: 0, height: 0, date: new Date('10/05/2020'), picture: 'test2' },
         { name: 'test3', labels: [{}], width: 0, height: 0, date: new Date('10/08/2020 15:15:15'), picture: 'test3' },
         { name: 'test4', labels: [{ label: 'label2' }], width: 0, height: 0, date: new Date('10/08/2020'), picture: 'test4' },
-=======
-        { name: 'test1', labels: [{ label: 'label1' }], date: new Date('10/04/2020'), picture: 'test1' },
-        { name: 'test2', labels: [{ label: 'label1' }, { label: 'label2' }], date: new Date('10/05/2020'), picture: 'test2' },
-        { name: 'test3', labels: [{}], date: new Date('10/08/2020 15:15:15'), picture: 'test3' },
-        { name: 'test4', labels: [{ label: 'label2' }], date: new Date('10/08/2020'), picture: 'test4' },
->>>>>>> dev:server/app/services/data-base-picture.service.spec.ts
     ] as CanvasInformation[];
 
     beforeEach(async () => {
@@ -33,7 +26,6 @@ describe('Database service', () => {
 
         db = client.db(await mongoServer.getDbName());
         databaseService.collection = db.collection('test');
-<<<<<<< HEAD:server/app/services/database-picture.service.spec.ts
         testCanvasInformationAdd = {
             _id: '',
             name: 'test5',
@@ -43,9 +35,6 @@ describe('Database service', () => {
             date: new Date('10/08/2020'),
             picture: 'test5',
         };
-=======
-        testCanvasInformationAdd = { id: '', name: 'test5', labels: [{ label: 'label1' }], date: new Date('10/08/2020'), picture: 'test5' };
->>>>>>> dev:server/app/services/data-base-picture.service.spec.ts
         databaseService.collection.insertMany(allDataTest);
         await databaseService.getPictures();
     });
@@ -90,7 +79,6 @@ describe('Database service', () => {
     });
 
     it('should addPicture is not add collection', async () => {
-<<<<<<< HEAD:server/app/services/database-picture.service.spec.ts
         const newPictError = {
             name: '',
             labels: [{ label: 'label2' }],
@@ -100,9 +88,6 @@ describe('Database service', () => {
             picture: 'a',
         } as CanvasInformation;
 
-=======
-        const newPictError = { name: '', labels: [{ label: 'label2' }], date: new Date('10/08/2020'), picture: 'a' } as CanvasInformation;
->>>>>>> dev:server/app/services/data-base-picture.service.spec.ts
         await databaseService
             .addPicture(newPictError)
             .then((resol: any) => {
