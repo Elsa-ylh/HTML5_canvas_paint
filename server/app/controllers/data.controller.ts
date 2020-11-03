@@ -17,8 +17,8 @@ export class DataController {
         this.router.get('/', (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getPictures()
-                .then((CanvasInformation: CanvasInformation[]) => {
-                    res.json(CanvasInformation);
+                .then((canvasInformation: CanvasInformation[]) => {
+                    res.json(canvasInformation);
                 })
                 .catch((reason: unknown) => {
                     const errorMessage: CanvasInformation = {
@@ -88,8 +88,8 @@ export class DataController {
             if (sbody !== 'Error') {
                 this.databaseService
                     .getPicturesLabals(labels)
-                    .then((CanvasInformation: CanvasInformation[]) => {
-                        res.json(CanvasInformation);
+                    .then((canvasInformation: CanvasInformation[]) => {
+                        res.json(canvasInformation);
                     })
                     .catch((reason: unknown) => {
                         const errorMessage: CanvasInformation = {
@@ -112,8 +112,8 @@ export class DataController {
                     case 'name':
                         this.databaseService
                             .getPicturesName(research)
-                            .then((CanvasInformation: CanvasInformation[]) => {
-                                res.json(CanvasInformation);
+                            .then((canvasInformation: CanvasInformation[]) => {
+                                res.json(canvasInformation);
                             })
                             .catch((reason: unknown) => {
                                 const errorMessage: CanvasInformation = {
@@ -129,8 +129,8 @@ export class DataController {
                     case 'date':
                         this.databaseService
                             .getPicturesDate(research)
-                            .then((CanvasInformation: CanvasInformation[]) => {
-                                res.json(CanvasInformation);
+                            .then((canvasInformation: CanvasInformation[]) => {
+                                res.json(canvasInformation);
                             })
                             .catch((reason: unknown) => {
                                 const errorMessage: CanvasInformation = {
