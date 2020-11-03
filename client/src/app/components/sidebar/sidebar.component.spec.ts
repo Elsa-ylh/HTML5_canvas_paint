@@ -143,6 +143,7 @@ describe('SidebarComponent', () => {
                     { provide: DropperService, useValue: dropperServiceStub },
                     { provide: MatDialog, useValue: {} },
                     { provide: PolygonService, useValue: polygonStub },
+                    { provide: UndoRedoService, useValue: undoRedoStub },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);
@@ -466,17 +467,17 @@ describe('SidebarComponent', () => {
         expect(spyPickSelectionRect).toHaveBeenCalled();
     });
 
-    // it(' should call resetCheckButton set isSelectionChecked and isSelectionEllipseChecked to true should call pickSelectionEllipse', () => {
-    //    toolServiceStub.currentToolName = ToolUsed.Pencil;
-    //    const event = new KeyboardEvent('window:keydown.s', {});
-    //    const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
-    //    const spyPickSelectionEllipse = spyOn(component, 'pickSelectionEllipse').and.stub();
-    //    window.dispatchEvent(event);
-    //    component.changeSelectionEllipseMode(event);
-    //    expect(spyReset).toHaveBeenCalled();
-    //    expect(component.selectionEllipseChecked).toEqual(true);
-    //    expect(spyPickSelectionEllipse).toHaveBeenCalled();
-    // });
+    it(' should call resetCheckButton set isSelectionChecked and isSelectionEllipseChecked to true should call pickSelectionEllipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.Pencil;
+        const event = new KeyboardEvent('window:keydown.s', {});
+        const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
+        const spyPickSelectionEllipse = spyOn(component, 'pickSelectionEllipse').and.stub();
+        window.dispatchEvent(event);
+        component.changeSelectionEllipseMode(event);
+        expect(spyReset).toHaveBeenCalled();
+        expect(component.selectionEllipseChecked).toEqual(true);
+        expect(spyPickSelectionEllipse).toHaveBeenCalled();
+    });
 
     // it('should call prevent default and selectAll for rectangle', () => {
     //     toolServiceStub.currentToolName = ToolUsed.SelectionRectangle;
@@ -528,7 +529,7 @@ describe('SidebarComponent', () => {
         expect(spyonLeftArrowEllipse).toHaveBeenCalled();
         expect(spyonLeftArrowRect).not.toHaveBeenCalled();
     });
-
+*/
     it('should call undo if isUndoDisabled is false and ctrl z is pressed', () => {
         const event = new KeyboardEvent('window:keydown.control.z', {});
         undoRedoStub.isUndoDisabled = false;
@@ -537,9 +538,7 @@ describe('SidebarComponent', () => {
         component.callUndo(event);
         expect(spyUndo).toHaveBeenCalled();
     });
-    */
 
-    /*
     it('should call redo if isRedoDisabled is false and ctrl shift z is pressed', () => {
         const event = new KeyboardEvent('window:keydown.control.shift.z', {});
         undoRedoStub.isRedoDisabled = false;
@@ -548,5 +547,4 @@ describe('SidebarComponent', () => {
         component.callRedo(event);
         expect(spyRedo).toHaveBeenCalled();
     });
-    */
 });
