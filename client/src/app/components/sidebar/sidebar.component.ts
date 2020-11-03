@@ -381,7 +381,7 @@ export class SidebarComponent {
             this.resetCheckedButton();
             // this.isSelectionChecked = true;
             this.isSelectionEllipseChecked = true;
-            this.pickSelectionRectangle();
+            this.pickSelectionEllipse();
         }
     }
 
@@ -411,7 +411,6 @@ export class SidebarComponent {
             this.selectionEllipseService.onLeftArrow();
         }
     }
-    // TO DO TESTS
     @HostListener('window:keydown.ArrowRight', ['$event']) onRightArrow(event: KeyboardEvent): void {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
