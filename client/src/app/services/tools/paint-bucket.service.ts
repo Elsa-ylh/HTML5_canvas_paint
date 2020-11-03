@@ -210,10 +210,10 @@ export class PaintBucketService extends Tool {
             this.floodFill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
         }
         // pixels non contigus
-        if (event.button === MouseButton.Right) {
-            this.mouseDown = false;
-            this.fill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
-        }
+        // if (event.button === MouseButton.Right) {
+        //     this.mouseDown = false;
+        //     this.fill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
+        // }
     }
 
     onMouseOut(event: MouseEvent): void {
