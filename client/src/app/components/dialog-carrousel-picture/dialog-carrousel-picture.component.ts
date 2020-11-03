@@ -153,7 +153,6 @@ export class CarrouselPictureComponent implements OnInit {
     }
     loadPicture(picture: CanvasInformation): void {
         if (confirm('load :' + picture.name)) {
-            this.drawingService;
             this.cvsResizerService.canvasSize.y = picture.height;
             this.cvsResizerService.canvasSize.x = picture.width;
             this.drawingService.convertBase64ToBaseCanvas(picture.picture);
