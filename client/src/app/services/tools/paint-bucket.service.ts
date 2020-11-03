@@ -171,14 +171,15 @@ export class PaintBucketService extends Tool {
             alpha: pixels.data[linearCords + 3],
         };
         // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < this.cvsResizerService.canvasSize.x ; i++) {
+        for (let i = 0; i < this.cvsResizerService.canvasSize.x; i++) {
             for (let j = 0; j < this.cvsResizerService.canvasSize.y; j++) {
-              if (this.matchFillColor(originalColor, replacementColor)) {
-                  this.PaintPixel(
-                      this.drawingService.baseCtx.getImageData(0, 0, this.cvsResizerService.canvasSize.x, this.cvsResizerService.canvasSize.y),
-                      linearCords);
+                if (this.matchFillColor(originalColor, replacementColor)) {
+                    this.PaintPixel(
+                        this.drawingService.baseCtx.getImageData(0, 0, this.cvsResizerService.canvasSize.x, this.cvsResizerService.canvasSize.y),
+                        linearCords,
+                    );
+                }
             }
-          }
         }
     }
 
@@ -195,15 +196,13 @@ export class PaintBucketService extends Tool {
         // Maximum tolerance of 100, Default to 0
         // tslint:disable-next-line:no-magic-numbers
         this.tolerance = !isNaN(this.tolerance) ? Math.min(Math.abs(Math.round(this.tolerance)), 100) : 0;
-        // console.log('this : ', this.tolerance);
         // tslint:disable-next-line:no-magic-numbers
         return (this.tolerance / MAX_TOLERANCE) * 255;
     }
 
     onMouseDown(event: MouseEvent): void {
-        // debugger;
         this.floodFill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
-        // pixels contigus
+        // contiguous pixels aka
         if (event.button === MouseButton.Left) {
             this.mouseDown = false;
             this.floodFill(event.offsetX, event.offsetY, this.hexToRgbA(this.colorService.primaryColor));
