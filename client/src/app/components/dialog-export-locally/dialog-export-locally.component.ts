@@ -10,8 +10,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     styleUrls: ['./dialog-export-locally.component.scss'],
 })
 export class DialogExportDrawingComponent implements AfterViewInit {
-    whichExportType: ImageFormat = ImageFormat.PNG;
-    whichFilter: Filter = Filter.NONE;
+    private whichExportType: ImageFormat = ImageFormat.PNG;
+    private whichFilter: Filter = Filter.NONE;
 
     nameFormControl: FormControl;
 

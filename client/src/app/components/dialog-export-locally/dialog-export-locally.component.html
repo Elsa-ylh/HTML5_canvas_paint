@@ -6,11 +6,11 @@
     </mat-button-toggle-group>
     <br />
     <mat-button-toggle-group name="filterType">
-        <mat-button-toggle (click)="checkFirst()">Filtre un</mat-button-toggle>
-        <mat-button-toggle (click)="checkSecond()">Filtre deux</mat-button-toggle>
-        <mat-button-toggle (click)="checkThird()">Filtre trois</mat-button-toggle>
-        <mat-button-toggle (click)="checkFourth()">Filtre quatre</mat-button-toggle>
-        <mat-button-toggle (click)="checkFifth()">Filtre cinq</mat-button-toggle>
+        <mat-button-toggle (click)="checkFirst()">Brouillard</mat-button-toggle>
+        <mat-button-toggle (click)="checkSecond()">Gris</mat-button-toggle>
+        <mat-button-toggle (click)="checkThird()">Inversion</mat-button-toggle>
+        <mat-button-toggle (click)="checkFourth()">Lumineux</mat-button-toggle>
+        <mat-button-toggle (click)="checkFifth()">Sépia</mat-button-toggle>
     </mat-button-toggle-group>
     <br />
     <img #previewImage />
@@ -21,7 +21,6 @@
                 <mat-label>Nom de fichier</mat-label>
                 <input matInput [formControl]="nameFormControl" placeholder="fichier image" />
                 <mat-hint>Ex. nomDeFichierImage</mat-hint>
-                <mat-error *ngIf="nameFormControl.hasError('required')">Le nom de fichier doit être entre 1 et 255 caractères.</mat-error>
             </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile colspan="1">
