@@ -6,8 +6,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { cursorName } from '@app/classes/cursor-name';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
-import { CarrouselPictureComponent } from '@app/components/carrousel-picture/carrousel-picture.component';
+import { CarrouselPictureComponent } from '@app/components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DialogExportDrawingComponent } from '@app/components/dialog-export-locally/dialog-export-locally.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -86,6 +87,10 @@ export class SidebarComponent {
                 this.isDialogOpen = false;
             });
         }
+    }
+
+    exportDrawing(): void {
+        this.dialogCreator.open(DialogExportDrawingComponent);
     }
 
     createNewDrawing(): void {
@@ -234,7 +239,7 @@ export class SidebarComponent {
         this.isSelectionRectangleChecked = false;
     }
 
-    CheckboxChangeToggle(args: MatCheckboxChange): void {
+    checkboxChangeToggle(args: MatCheckboxChange): void {
         this.toolService.currentTool.subToolSelect = args.checked ? SubToolselected.tool2 : SubToolselected.tool1;
     }
 
