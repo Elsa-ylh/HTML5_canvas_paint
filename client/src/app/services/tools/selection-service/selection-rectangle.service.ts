@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
+import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { SelectionService } from './selection-service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionRectangleService extends SelectionService {
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService) {
         super(drawingService);
     }
 
@@ -30,6 +32,17 @@ export class SelectionRectangleService extends SelectionService {
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                     this.imageData,
                 );
+                // undo redo
+                const selectRectAc = new SelectionRectAction(
+                    { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
+                    this.imageData,
+                    this.selectRectInitialPos,
+                    this.width,
+                    this.height,
+                    this,
+                );
+                this.undoRedoService.addUndo(selectRectAc);
+                this.undoRedoService.clearRedo();
                 this.mouseMouvement = { x: 0, y: 0 };
                 this.isAllSelect = false;
             }
@@ -65,6 +78,17 @@ export class SelectionRectangleService extends SelectionService {
                 { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 this.imageData,
             );
+            // undo redo
+            const selectRectAc = new SelectionRectAction(
+                { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
+                this.imageData,
+                this.selectRectInitialPos,
+                this.width,
+                this.height,
+                this,
+            );
+            this.undoRedoService.addUndo(selectRectAc);
+            this.undoRedoService.clearRedo();
             this.mouseMouvement = { x: 0, y: 0 };
         }
     }

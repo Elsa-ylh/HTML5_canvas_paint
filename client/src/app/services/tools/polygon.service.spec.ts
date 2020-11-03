@@ -91,7 +91,7 @@ describe('Service: Polygon', () => {
         service.onMouseDown(mouseEvent);
         expect(service.subToolSelect).toEqual(SubToolselected.tool3);
     });
-
+    // to test drawfillpolygone
     it(' onMouseUp should not call drawFillPolygon if mouse is already up ', () => {
         service.subToolSelect = SubToolselected.tool1;
         service.mouseDownCoord = { x: 0, y: 0 };
@@ -129,6 +129,35 @@ describe('Service: Polygon', () => {
         expect(drawFillPolygonSpy).toHaveBeenCalled();
     });
 
+    // to test drawpolygoneoutline
+    it(' onMouseUp should not call drawPolygoneOutline if mouse is already up ', () => {
+        service.subToolSelect = SubToolselected.tool2;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+
+        service.onMouseUp(mouseEvent);
+        expect(drawPolygonOutlineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should call drawPolygoneOutline if mouse was already down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.subToolSelect = SubToolselected.tool2;
+
+        service.onMouseMove(mouseEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawPolygonOutlineSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should not call drawPolygoneOutline if mouse was not already down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+
+        service.onMouseMove(mouseEvent);
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+        expect(drawPolygonOutlineSpy).not.toHaveBeenCalled();
+    });
+
     it(' onMouseUp should call drawPolygonOutline if mouse was already down and tool2 selected', () => {
         service.subToolSelect = SubToolselected.tool2;
         service.mouseDownCoord = { x: 0, y: 0 };
@@ -136,6 +165,35 @@ describe('Service: Polygon', () => {
 
         service.onMouseUp(mouseEvent);
         expect(drawPolygonOutlineSpy).toHaveBeenCalled();
+    });
+
+    // to test drawfillpolygoneoutline
+    it(' onMouseUp should not call drawFillPolygoneOutLine if mouse is already up ', () => {
+        service.subToolSelect = SubToolselected.tool3;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+
+        service.onMouseUp(mouseEvent);
+        expect(drawFillPolygonOutlineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should call drawFillPolygoneOutLine if mouse was already down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.subToolSelect = SubToolselected.tool3;
+
+        service.onMouseMove(mouseEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawFillPolygonOutlineSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should not call drawFillPolygoneOutLine if mouse was not already down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+
+        service.onMouseMove(mouseEvent);
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+        expect(drawFillPolygonOutlineSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseUp should call drawFillPolygonOutline if mouse was already down and tool3 selected', () => {

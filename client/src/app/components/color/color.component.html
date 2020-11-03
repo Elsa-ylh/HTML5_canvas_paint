@@ -80,12 +80,6 @@
         ></div>
     </div>
 
-    <ng-template #message>
-        <h3>Veuillez entrer des données valides!</h3>
-        <h4>La valeur RGB doit être comprise en 0 et 255.</h4>
-        <h4>La valeur alpha doit être comprise entre 0 et 1.</h4>
-        <button mat-button mat-dialog-close>OK</button>
-    </ng-template>
     <mat-form-field appearance="outline">
         <mat-label>R</mat-label>
         <input matInput placeholder="0-255" max="255" maxlength="3" #inputR type="number" />
