@@ -381,7 +381,7 @@ export class SidebarComponent {
             this.resetCheckedButton();
             // this.isSelectionChecked = true;
             this.isSelectionEllipseChecked = true;
-            this.pickSelectionRectangle();
+            this.pickSelectionEllipse();
         }
     }
 

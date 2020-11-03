@@ -2,8 +2,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialog } from '@angular/material/dialog';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -36,6 +36,7 @@ import { SelectionEllipseService } from '@app/services/tools/selection-service/s
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { Observable, Subject } from 'rxjs';
 import { SidebarComponent } from './sidebar.component';
 
 // tslint:disable:no-any
@@ -67,7 +68,7 @@ describe('SidebarComponent', () => {
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
-    // let dialogMock: jasmine.SpyObj<MatDialog>;
+    let dialogMock: jasmine.SpyObj<MatDialog>;
     beforeEach(
         waitForAsync(async () => {
             drawingStub = new DrawingService();
@@ -81,6 +82,7 @@ describe('SidebarComponent', () => {
             lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
             dropperServiceStub = new DropperService(drawingStub, colorStub);
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub);
+            selectionStub = new SelectionService(drawingStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -108,6 +110,7 @@ describe('SidebarComponent', () => {
             drawingStub.canvas = canvas;
             drawingStub.baseCtx = baseStub; // Jasmine doesnt copy properties with underlying data
             drawingStub.previewCtx = previewStub;
+            dialogMock = jasmine.createSpyObj('dialogCreator', ['open']);
 
             await TestBed.configureTestingModule({
                 declarations: [
@@ -138,11 +141,15 @@ describe('SidebarComponent', () => {
                     { provide: PencilService, useValue: pencilStub },
                     { provide: EraserService, useValue: eraserStub },
                     { provide: LineService, useValue: lineStub },
-                    { provide: SelectionService, useValue: selectionStub },
+                    { provide: SelectionRectangleService, usevalue: selectionRectangleStub },
+                    { provide: SelectionEllipseService, useValue: selectionEllipseStub },
                     { provide: ToolService, useValue: toolServiceStub },
                     { provide: DropperService, useValue: dropperServiceStub },
-                    { provide: MatDialog, useValue: {} },
+                    { provide: MatDialog, useValue: dialogMock },
+                    { provide: MatDialogRef, useValue: {} },
                     { provide: PolygonService, useValue: polygonStub },
+                    { provide: Observable, useValue: {} },
+                    { provide: SelectionService, useValue: selectionStub },
                     { provide: UndoRedoService, useValue: undoRedoStub },
                 ],
             }).compileComponents();
@@ -187,7 +194,6 @@ describe('SidebarComponent', () => {
         expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Dropper);
     });
 
-    /*
     it(' should clear canvas dialog', () => {
         drawingStub.baseCtx.fillStyle = 'green';
         drawingStub.baseCtx.fillRect(10, 10, drawingStub.canvas.width, drawingStub.canvas.height);
@@ -205,7 +211,6 @@ describe('SidebarComponent', () => {
 
         expect(component.isDialogOpen).toEqual(false);
     });
-    */
 
     it(' should create new drawing dialog', () => {
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
@@ -215,15 +220,20 @@ describe('SidebarComponent', () => {
         component.createNewDrawing();
         expect(component.dialogCreator.open).toHaveBeenCalled();
     });
-    // it(' should open user guide dialog', () => {
-    //    const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
-    //    component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
-    //    component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
-    //        return matdialogRef;
-    //    });
-    //    component.openCarrousel();
-    //    expect(component.dialogLoadRef).toEqual(matdialogRef);
-    // });
+    it(' should open user guide dialog', () => {
+        const closedSubject = new Subject<any>();
+
+        const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
+        dialogRefMock.afterClosed.and.returnValue(closedSubject.asObservable());
+        dialogMock.open.and.returnValue(dialogRefMock);
+        component.isDialogloadSaveEport = true;
+        component.openCarrousel();
+        expect(component.isDialogloadSaveEport).toEqual(false);
+
+        closedSubject.next();
+
+        expect(component.isDialogloadSaveEport).toEqual(true);
+    });
     it('should open writeTextDialogUserComponent', () => {
         const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
@@ -312,12 +322,12 @@ describe('SidebarComponent', () => {
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
     });
-    // it('should pick selection ellipse', () => {
-    //    const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.callThrough();
-    //    component.pickSelectionEllipse();
-    //    expect(drawingStub.cursorUsed).toEqual(cursorName.default);
-    //    expect(switchToolSpy).toHaveBeenCalled();
-    // });
+    it('should pick selection ellipse', () => {
+        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.callThrough();
+        component.pickSelectionEllipse();
+        expect(drawingStub.cursorUsed).toEqual(cursorName.default);
+        expect(switchToolSpy).toHaveBeenCalled();
+    });
     it('should set all checked to false', () => {
         component.resetCheckedButton();
         expect(component.pencilChecked).toEqual(false);
@@ -334,7 +344,7 @@ describe('SidebarComponent', () => {
         expect(component.selectionEllipseChecked).toEqual(false);
         expect(component.selectionRectangleChecked).toEqual(false);
     });
-    /*
+
     it('should set subtoolselected as tool 2', () => {
         const event = { checked: true } as MatCheckboxChange;
         component.checkboxChangeToggle(event);
@@ -345,7 +355,7 @@ describe('SidebarComponent', () => {
         component.checkboxChangeToggle(event);
         expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool1);
     });
-    */
+
     it('should call preventDefault clearCanvas and set isDialogOpen to true', () => {
         component.isDialogOpen = false;
         drawingStub.baseCtx.beginPath();
@@ -372,17 +382,17 @@ describe('SidebarComponent', () => {
         expect(component.rectangleChecked).toEqual(true);
         expect(spyPickRect).toHaveBeenCalled();
     });
-    // it('should call resetCheckedButton set isEllipseChecked to true should call pickEllipse', () => {
-    //    toolServiceStub.currentToolName = ToolUsed.Pencil;
-    //    const event = new KeyboardEvent('window:keydown.2', {});
-    //    const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
-    //    const spyPickEllipse = spyOn(component, 'pickEllipse').and.callThrough();
-    //    window.dispatchEvent(event);
-    //    component.changleEllipseMode(event);
-    //    expect(spyReset).toHaveBeenCalled();
-    //    expect(component.ellipseChecked).toEqual(true);
-    //    expect(spyPickEllipse).toHaveBeenCalled();
-    // });
+    it('should call resetCheckedButton set isEllipseChecked to true should call pickEllipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.Pencil;
+        const event = new KeyboardEvent('window:keydown.2', {});
+        const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
+        const spyPickEllipse = spyOn(component, 'pickEllipse').and.callThrough();
+        window.dispatchEvent(event);
+        component.changleEllipseMode(event);
+        expect(spyReset).toHaveBeenCalled();
+        expect(component.ellipseChecked).toEqual(true);
+        expect(spyPickEllipse).toHaveBeenCalled();
+    });
     it('should call resetCheckedButton set isPolygonChecked to true should call pickPolygon', () => {
         toolServiceStub.currentToolName = ToolUsed.Pencil;
         const event = new KeyboardEvent('window:keydown.3', {});
@@ -472,6 +482,7 @@ describe('SidebarComponent', () => {
         const event = new KeyboardEvent('window:keydown.s', {});
         const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
         const spyPickSelectionEllipse = spyOn(component, 'pickSelectionEllipse').and.stub();
+        component.isDialogloadSaveEport = true;
         window.dispatchEvent(event);
         component.changeSelectionEllipseMode(event);
         expect(spyReset).toHaveBeenCalled();
@@ -490,7 +501,6 @@ describe('SidebarComponent', () => {
     //     expect(spySelectAllRect).toHaveBeenCalled();
     // });
 
-    /*
     it('should call prevent default and selectAll for ellipse', () => {
         toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
         const event = new KeyboardEvent('window:keydown.control.a', {});
@@ -501,7 +511,6 @@ describe('SidebarComponent', () => {
         expect(spyPreventDefault).toHaveBeenCalled();
         expect(spySelectAllEllipse).toHaveBeenCalled();
     });
-    */
 
     // it('should call onLeftArrow  when clicking on the left arrow key when using selectRectangle', () => {
     //     toolServiceStub.currentToolName = ToolUsed.SelectionRectangle as ToolUsed;
@@ -516,7 +525,6 @@ describe('SidebarComponent', () => {
     //     expect(spyonLeftArrowEllipse).not.toHaveBeenCalled();
     // });
 
-    /*
     it('should call onLeftArrow  when clicking on the left arrow key when using selectEllipse', () => {
         toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
         const event = new KeyboardEvent('window:keydown.ArrowLeft', {});
@@ -529,7 +537,7 @@ describe('SidebarComponent', () => {
         expect(spyonLeftArrowEllipse).toHaveBeenCalled();
         expect(spyonLeftArrowRect).not.toHaveBeenCalled();
     });
-*/
+
     it('should call undo if isUndoDisabled is false and ctrl z is pressed', () => {
         const event = new KeyboardEvent('window:keydown.control.z', {});
         undoRedoStub.isUndoDisabled = false;
