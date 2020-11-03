@@ -1,8 +1,8 @@
 <mat-dialog-content>
     <p>Sauvegarde du dessin localement.</p>
     <mat-button-toggle-group name="imageType">
-        <mat-button-toggle [checked]="isJPG">JPG</mat-button-toggle>
-        <mat-button-toggle [checked]="isPNG">PNG</mat-button-toggle>
+        <mat-button-toggle (click)="checkJPG()">JPG</mat-button-toggle>
+        <mat-button-toggle (click)="checkPNG()">PNG</mat-button-toggle>
     </mat-button-toggle-group>
     <br />
     <mat-button-toggle-group name="filterType">
@@ -15,10 +15,17 @@
     <br />
     <img #previewImage />
     <br />
-    <mat-form-field class="name-form-field">
-        <mat-label>Nom de fichier</mat-label>
-        <input matInput [formControl]="nameFormControl" placeholder="fichier image" />
-        <mat-hint>Ex. nomDeFichierImage</mat-hint>
-        <mat-error *ngIf="nameFormControl.hasError('required')">Le nom de fichier doit être entre 1 et 255 caractères.</mat-error>
-    </mat-form-field>
+    <mat-grid-list cols="2" rowHeight="70px">
+        <mat-grid-tile colspan="1">
+            <mat-form-field class="name-form-field">
+                <mat-label>Nom de fichier</mat-label>
+                <input matInput [formControl]="nameFormControl" placeholder="fichier image" />
+                <mat-hint>Ex. nomDeFichierImage</mat-hint>
+                <mat-error *ngIf="nameFormControl.hasError('required')">Le nom de fichier doit être entre 1 et 255 caractères.</mat-error>
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="1">
+            <button mat-raised-button (click)="downloadImage()">Télécharger l'image</button>
+        </mat-grid-tile>
+    </mat-grid-list>
 </mat-dialog-content>
