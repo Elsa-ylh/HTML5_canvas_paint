@@ -167,23 +167,37 @@ export class DataController {
             }
         });
         this.router.delete('/delete', (req: Request, res: Response, next: NextFunction) => {
-            if (req.body.title === 'delete') {
-                this.databaseService
-                    .delete(req.body.body)
-                    .then((bool: boolean) => {
-                        const succesMessage: Message = {
-                            title: bool ? 'Susse' : 'Not delete',
-                            body: bool ? 'Susse' : 'not good id',
-                        };
-                        res.json(succesMessage);
-                    })
-                    .catch((err: Error) => {
-                        const errorMessage: Message = {
-                            title: 'Errer',
-                            body: err.message.toString(),
-                        };
-                        res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
-                    });
+            if (req.body.title !== undefined || req.body.body !== undefined) {
+                if (req.body.title === 'delete') {
+                    this.databaseService
+                        .delete(req.body.body)
+                        .then((bool: boolean) => {
+                            const succesMessage: Message = {
+                                title: bool ? 'Success' : 'Not delete',
+                                body: bool ? 'Success' : 'not good id',
+                            };
+                            res.json(succesMessage);
+                        })
+                        .catch((err: Error) => {
+                            const errorMessage: Message = {
+                                title: 'Error',
+                                body: err.message.toString(),
+                            };
+                            res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
+                        });
+                } else {
+                    const errorMessage: Message = {
+                        title: 'Error',
+                        body: 'It not delete title element',
+                    };
+                    res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
+                }
+            } else {
+                const errorMessage: Message = {
+                    title: 'Error',
+                    body: 'not request message',
+                };
+                res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
             }
         });
     }

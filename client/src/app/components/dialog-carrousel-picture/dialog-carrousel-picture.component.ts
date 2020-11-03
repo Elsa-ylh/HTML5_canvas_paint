@@ -4,6 +4,7 @@ import { ClientServerCommunicationService } from '@app/services/client-server/cl
 import { CancasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 const THREE_FILES_AT_A_TIME = 3;
+const LESS_THEN_ONE = -1;
 @Component({
     selector: 'app-dialog-carrousel-picture',
     templateUrl: './dialog-carrousel-picture.component.html',
@@ -82,11 +83,11 @@ export class CarrouselPictureComponent implements OnInit {
     }
     prior(): void {
         switch (this.possition) {
-            case -1:
-                this.possition = -1;
+            case LESS_THEN_ONE:
+                this.possition = LESS_THEN_ONE;
                 break;
             case 0:
-                this.possition = this.dataPicture.length - 1;
+                this.possition = this.dataPicture.length + LESS_THEN_ONE;
                 break;
             default:
                 this.possition--;
@@ -95,10 +96,10 @@ export class CarrouselPictureComponent implements OnInit {
     }
     next(): void {
         switch (this.possition) {
-            case -1:
-                this.possition = -1;
+            case LESS_THEN_ONE:
+                this.possition = LESS_THEN_ONE;
                 break;
-            case this.dataPicture.length - 1:
+            case this.dataPicture.length + LESS_THEN_ONE:
                 this.possition = 0;
                 break;
             default:
@@ -111,7 +112,7 @@ export class CarrouselPictureComponent implements OnInit {
         let threePictures: CancasInformation[] = [];
         if (this.dataPicture.length <= THREE_FILES_AT_A_TIME) {
             threePictures = this.dataPicture;
-            this.possition = -1;
+            this.possition = LESS_THEN_ONE;
         }
         if (this.possition > 0 && this.possition <= this.dataPicture.length + 1 - THREE_FILES_AT_A_TIME) {
             for (let index = this.possition - 1; index < this.possition - 1 + THREE_FILES_AT_A_TIME; index++) {
@@ -140,4 +141,5 @@ export class CarrouselPictureComponent implements OnInit {
             // let ctx = canvas.getContext('2d');
         });
     }
+    deletePicture(idPicture: string) {}
 }

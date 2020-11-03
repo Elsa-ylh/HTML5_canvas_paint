@@ -30,7 +30,7 @@ describe('Data Controller', () => {
             getAllLabel: sandbox.stub().resolves(testCancasInformationAdd),
             getPicturesName: sandbox.stub().resolves(testCancasInformationAdd),
             getPicturesDate: sandbox.stub().resolves(testCancasInformationAdd),
-            delete: sandbox.stub(),
+            delete: sandbox.stub().resolves(true),
         });
         dataService = container.get(TYPES.DatabasePicureService);
         app = container.get<Application>(TYPES.Application).app;
@@ -271,5 +271,77 @@ describe('Data Controller', () => {
                 console.log('Error ' + err);
             });
     });
-    it('delite', () => {});
+    it('delite not request message', () => {
+        //dataService.getPicturesLabals.rejects(new Error('error in the service'));
+        return supertest(app)
+            .delete('/api/data/delete')
+            .expect(HTTP_STATUS_BAD_REQUEST_OK)
+            .send()
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Error');
+                expect(reponse.body.body).to.equal('not request message');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('delite', () => {
+        //dataService.getPicturesLabals.rejects(new Error('error in the service'));
+        const message: Message = { title: '', body: '' };
+        return supertest(app)
+            .delete('/api/data/delete')
+            .expect(HTTP_STATUS_BAD_REQUEST_OK)
+            .send(message)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Error');
+                expect(reponse.body.body).to.equal('It not delete title element');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('delite', () => {
+        dataService.delete.rejects(new Error('error in the service'));
+        const message: Message = { title: 'delete', body: 'ssss' };
+        return supertest(app)
+            .delete('/api/data/delete')
+            .expect(HTTP_STATUS_BAD_REQUEST_OK)
+            .send(message)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Error');
+                expect(reponse.body.body).to.equal('error in the service');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('delite success', () => {
+        const message: Message = { title: 'delete', body: 'ssss' };
+        return supertest(app)
+            .delete('/api/data/delete')
+            .expect(HTTP_STATUS_OK)
+            .send(message)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Success');
+                expect(reponse.body.body).to.equal('Success');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('delite success', () => {
+        dataService.delete.resolves(false);
+        const message: Message = { title: 'delete', body: 'ssss' };
+        return supertest(app)
+            .delete('/api/data/delete')
+            .expect(HTTP_STATUS_OK)
+            .send(message)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Not delete');
+                expect(reponse.body.body).to.equal('not good id');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
 });
