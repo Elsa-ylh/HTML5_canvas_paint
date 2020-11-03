@@ -1,7 +1,5 @@
 import { AfterViewInit, Component, ElementRef, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
 import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
 import { Vec2 } from '@app/classes/vec2';
@@ -46,19 +44,7 @@ export class PaintBucketColorComponent implements AfterViewInit {
 
     color: string;
 
-    constructor(
-        public colorService: ColorService,
-        public paintBucketService: PaintBucketService,
-        private iconRegistry: MatIconRegistry,
-        private sanitizer: DomSanitizer,
-        public matDialog: MatDialog,
-    ) {
-        this.lastColors = this.colorService.getLastColors();
-        this.iconRegistry.addSvgIcon('red', this.sanitizer.bypassSecurityTrustResourceUrl('assets/apple.svg'));
-        this.iconRegistry.addSvgIcon('green', this.sanitizer.bypassSecurityTrustResourceUrl('assets/leaf.svg'));
-        this.iconRegistry.addSvgIcon('blue', this.sanitizer.bypassSecurityTrustResourceUrl('assets/wave.svg'));
-        this.iconRegistry.addSvgIcon('alpha', this.sanitizer.bypassSecurityTrustResourceUrl('assets/transparency.svg'));
-    }
+    constructor(public colorService: ColorService, public paintBucketService: PaintBucketService, public matDialog: MatDialog) {}
 
     ngAfterViewInit(): void {
         this.previewSquareCtx = this.previewSquare.nativeElement.getContext('2d') as CanvasRenderingContext2D;

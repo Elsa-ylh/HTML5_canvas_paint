@@ -11,14 +11,11 @@ export enum ToolUsed {
     Rectangle = 5,
     Ellipse = 6,
     Polygon = 7,
-
     PaintBucket = 8,
-    Selection = 9,
-
     Color = 1000,
     Dropper = 1003,
-    SelectionRectangle,
-    SelectionEllipse,
+    SelectionRectangle = 10010,
+    SelectionEllipse = 10021,
 }
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
