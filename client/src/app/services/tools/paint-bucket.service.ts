@@ -167,19 +167,21 @@ export class PaintBucketService extends Tool {
         };
 
         let iterator = 0;
-        let atIteratorColor: RGBA = { red: 0, green: 0, blue: 0, alpha: 1 };
+        const atIteratorColor: RGBA = { red: 0, green: 0, blue: 0, alpha: 1 };
         while (iterator <= pixels.data.length) {
             atIteratorColor.red = pixels.data[iterator];
             atIteratorColor.green = pixels.data[iterator + 1];
             atIteratorColor.blue = pixels.data[iterator + 2];
+            // tslint:disable-next-line:no-magic-numbers
             atIteratorColor.alpha = pixels.data[iterator + 3];
             if (this.matchFillColor(originalColor, atIteratorColor)) {
                 pixels.data[iterator] = replacementColor.red;
                 pixels.data[iterator + 1] = replacementColor.green;
                 pixels.data[iterator + 2] = replacementColor.blue;
+                // tslint:disable-next-line:no-magic-numbers
                 pixels.data[iterator + 3] = replacementColor.alpha;
             }
-            iterator += 4;
+            iterator += this.colorAttributs;
         }
 
         this.drawingService.baseCtx.putImageData(pixels, 0, 0);
@@ -196,9 +198,10 @@ export class PaintBucketService extends Tool {
 
     toleranceToRGBA(): number {
         // 255 is the maximum number for a single r, g, b or a
-        // tslint:disable-next-line:no-magic-numbers
         if (this.tolerance === 0) return 0;
+        // tslint:disable-next-line:no-magic-numbers
         if (this.tolerance === 100) return 255;
+        // tslint:disable-next-line:no-magic-numbers
         return (this.tolerance / MAX_TOLERANCE) * 255;
     }
 
