@@ -56,6 +56,7 @@ fdescribe('CarrouselPictureComponent', () => {
         { _id: '', name: 'test3', labels: [{}], width: 0, height: 0, date: new Date('10/08/2020 15:15:15'), picture: 'test3' },
         { _id: '', name: 'test4', labels: [{ label: 'label2' }], width: 0, height: 0, date: new Date('10/08/2020'), picture: 'test4' },
     ] as CanvasInformation[];
+    const messageSuccess = { title: 'string', body: 'string' } as Message;
     const testCanvasInformationAdds = [testCanvasInformationAdd];
     const labels: Label[] = [{ label: 'lable1' }, { label: 'label2' }];
     beforeEach(async () => {
@@ -89,6 +90,7 @@ fdescribe('CarrouselPictureComponent', () => {
                         resetDatas: () => '',
                         getInformation: () => testCanvasInformationAdds,
                         getElementResearch: () => testCanvasInformationAdds,
+                        deleteQuery: () => messageSuccess,
                     },
                 },
             ],
@@ -99,6 +101,7 @@ fdescribe('CarrouselPictureComponent', () => {
         fixture = TestBed.createComponent(CarrouselPictureComponent);
         component = fixture.componentInstance;
         spyOn(component['clientServerComSvc'], 'getData').and.returnValue(of(testCanvasInformationAdds));
+        spyOn(component['clientServerComSvc'], 'deleteQuery').and.returnValue(of(messageSuccess));
         confirmSpy = spyOn<any>(window, 'confirm').and.callThrough();
         alertSpy = spyOn<any>(window, 'alert').and.callThrough();
         // spyOn(component['clientServerComSvc'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
@@ -166,18 +169,18 @@ fdescribe('CarrouselPictureComponent', () => {
         component.refresh();
         expect(component['addAllLabal']).toHaveBeenCalled;
     });
-    it('', () => {
+    it('should setSearchCriteria ', () => {
         spyOn(component['clientServerComSvc'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
         component.setSearchCriteria();
         expect(component['dataPicture'][0].name).toEqual(testCanvasInformationAdd.name);
     });
-    it('', () => {
+    it('should setSearchCriteria date searchCriteria', () => {
         component.selectedType = 'date';
         spyOn(component['clientServerComSvc'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
         component.setSearchCriteria();
         expect(component['dataPicture'][0].name).toEqual(testCanvasInformationAdd.name);
     });
-    it('', () => {
+    it('should setSearchCriteria date and new FormControl', () => {
         component.selectedType = 'date';
         component.myDate = new FormControl(testCanvasInformationAdd);
         spyOn(component['clientServerComSvc'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
@@ -261,16 +264,17 @@ fdescribe('CarrouselPictureComponent', () => {
     it('should deletePicture', () => {
         confirmSpy.and.returnValue(true);
         component.deletePicture(testCanvasInformationAdd);
-        expect(confirmSpy).toHaveBeenCalled();
+        expect(confirmSpy).toHaveBeenCalledWith('Suprimer : ' + testCanvasInformationAdd.name);
     });
     it('should deletePicture', () => {
         confirmSpy.and.returnValue(false);
         component.deletePicture(allDataTest[0]);
-        expect(confirmSpy).toHaveBeenCalled();
+        expect(confirmSpy).toHaveBeenCalledWith('Suprimer : ' + allDataTest[0].name);
     });
     it('should deletePicture', () => {
         //confirmSpy.and.returnValue(true);
-        component.messageDelite({ title: '', body: '' } as Message);
-        expect(alertSpy).toHaveBeenCalled();
+
+        component.messageDelite(messageSuccess);
+        expect(alertSpy).toHaveBeenCalledWith(messageSuccess.body);
     });
 });
