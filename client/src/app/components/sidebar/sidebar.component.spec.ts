@@ -343,6 +343,13 @@ describe('SidebarComponent', () => {
         expect(switchToolSpy).toHaveBeenCalled();
     });
 
+    it('should pick paint bucket', () => {
+        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
+        component.pickPaintBucket();
+        expect(drawingStub.cursorUsed).toEqual(cursorName.default);
+        expect(switchToolSpy).toHaveBeenCalled();
+    });
+
     it('should pick dropper', () => {
         const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
         component.pickDropper();
@@ -484,6 +491,16 @@ describe('SidebarComponent', () => {
         expect(spyReset).toHaveBeenCalled();
         expect(component.lineChecked).toEqual(true);
         expect(spyPickLine).toHaveBeenCalled();
+    });
+
+    it('should call resetCheckButton and set isPaintBucketChecked to true when changePaintBucketMode is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.Pencil;
+        const event = new KeyboardEvent('window:keydown.b', {});
+        const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
+        window.dispatchEvent(event);
+        component.changePaintBucketMode(event);
+        expect(spyReset).toHaveBeenCalled();
+        expect(component.paintBucketChecked).toEqual(true);
     });
 
     it(' should call resetCheckButton set isDropperChecked to true should call pickDropper', () => {
