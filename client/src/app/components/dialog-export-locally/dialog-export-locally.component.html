@@ -6,6 +6,7 @@
     </mat-button-toggle-group>
     <br />
     <mat-button-toggle-group name="filterType">
+        <mat-button-toggle (click)="checkNone()">Aucun</mat-button-toggle>
         <mat-button-toggle (click)="checkFirst()">Brouillard</mat-button-toggle>
         <mat-button-toggle (click)="checkSecond()">Gris</mat-button-toggle>
         <mat-button-toggle (click)="checkThird()">Inversion</mat-button-toggle>

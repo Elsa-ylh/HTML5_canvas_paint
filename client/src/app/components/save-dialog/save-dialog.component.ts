@@ -71,8 +71,6 @@ export class SaveDialogComponent implements OnInit {
                 picture: this.drawingService.convertBaseCanvasToBase64(),
             };
             this.clientServerComSvc.savePicture(savePicture).subscribe((info) => this.processedMessage(info));
-            // fonctonne evoier un les info pour save
-            // reret un fonction pour veriver le retoure et remettre button disponible
         } else {
             this.saveload = false;
         }
