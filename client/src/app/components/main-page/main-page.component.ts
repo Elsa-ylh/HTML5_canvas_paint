@@ -10,7 +10,7 @@ import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-di
     styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent {
-    private isDialogOpenSaveEport: boolean = false;
+    isDialogOpenSaveEport: boolean = false;
     onGoingDrawing: boolean;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     dialogLoadRef: MatDialogRef<CarrouselPictureComponent>;
