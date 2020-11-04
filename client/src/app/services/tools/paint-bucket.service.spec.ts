@@ -2,10 +2,12 @@
 
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { MouseButton } from '@app/classes/mouse-button';
 // import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
+// import { CanvasResizerService } from '../canvas/canvas-resizer.service';
 
 describe('Service: PaintBucket', () => {
     /*tslint:disable:no-any*/
@@ -16,10 +18,12 @@ describe('Service: PaintBucket', () => {
     // let canvasReziserServiceSpy: jasmine.SpyObj<CanvasResizerService>;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    // let mouseEvent: MouseEvent;
-    // let hexToRgbASpy: jasmine.Spy<any>;
-    // let matchFillColorSpy: jasmine.Spy<any>;
-    // let floodFillSpy: jasmine.Spy<any>;
+    let mouseEventTest: MouseEvent;
+    let hexToRGBASpy: jasmine.Spy<any>;
+    let matchFillColorSpy: jasmine.Spy<any>;
+    let floodFillSpy: jasmine.Spy<any>;
+    let paintAllSimilarSpy: jasmine.Spy<any>;
+    let toleranceToRGBASpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -33,85 +37,49 @@ describe('Service: PaintBucket', () => {
             ],
         });
         paintBucketService = TestBed.inject(PaintBucketService);
-        // mouseEvent = { x: 25, y: 25, button: MouseButton.Left } as MouseEvent;
+        mouseEventTest = { x: 25, y: 25, button: MouseButton.Left } as MouseEvent;
         // tslint:disable:no-string-literal
         paintBucketService['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         paintBucketService['drawingService'].previewCtx = previewCtxStub;
         // spy for private methods
-        // hexToRgbASpy = spyOn<any>(paintBucketService, 'hexToRgbA').and.callThrough();
-        // matchFillColorSpy = spyOn<any>(paintBucketService, 'matchFillColor').and.callThrough();
-        // floodFillSpy = spyOn<any>(paintBucketService, 'checkFourPolesAndDraw').and.callThrough();
+        hexToRGBASpy = spyOn<any>(paintBucketService, 'hexToRGBA').and.callThrough();
+        matchFillColorSpy = spyOn<any>(paintBucketService, 'matchFillColor').and.callThrough();
+        floodFillSpy = spyOn<any>(paintBucketService, 'floodFill').and.callThrough();
+        paintAllSimilarSpy = spyOn<any>(paintBucketService, 'paintAllSimilar').and.callThrough();
+        toleranceToRGBASpy = spyOn<any>(paintBucketService, 'toleranceToRGBA').and.callThrough();
     });
 
     it('should be created', () => {
         expect(paintBucketService).toBeTruthy();
     });
 
-    /*
-    it(' mouseDown should set mouseDown property to true on left click', () => {
-        paintBucketService.onMouseDown(mouseEvent);
-        expect(paintBucketService.mouseDown).toEqual(true);
-    });
-
-    it(' mouseDown should set mouseDown property to false on right click', () => {
-        const mouseEventRClick = {
-            offsetX: 25,
-            offsetY: 25,
-            button: MouseButton.Right,
-        } as MouseEvent;
-        paintBucketService.onMouseDown(mouseEventRClick);
-        expect(paintBucketService.mouseDown).toEqual(false);
-    });
-
-    it('mouseDown should call floodFill', () => {
-        paintBucketService.onMouseDown(mouseEvent);
-        expect(floodFillSpy).toHaveBeenCalled();
-    });
-
-    it(' should change mouseOut value to true when the mouse is living the canvas while left click is pressed', () => {
-        paintBucketService.mouseDown = true;
-        paintBucketService.onMouseOut(mouseEvent);
-        expect(paintBucketService.mouseOut).toEqual(true);
-    });
-
-    it(' should not change mouseOut value to true when the mouse is living the canvas while left click is not pressed', () => {
-        paintBucketService.mouseDown = false;
-        paintBucketService.onMouseOut(mouseEvent);
-        expect(paintBucketService.mouseOut).toEqual(false);
-    });
-
-    it('originalColor and replacementColor are the same', () => {
-        const originalColor: RGBA = { red: 0, green: 0, blue: 0, alpha: 1 };
-        const replacementColor: RGBA = { red: 0, green: 0, blue: 0, alpha: 1 };
-        const check = matchFillColorSpy(originalColor, replacementColor);
-        expect(check).toBeTrue();
+    it('should call floodFill', () => {
+        paintBucketService.floodFill(mouseEventTest.x, mouseEventTest.y, { red: 0, green: 0, blue: 0, alpha: 1 });
         expect(floodFillSpy).toHaveBeenCalled();
     });
 
     it('should call matchFillColor', () => {
-        const mouseEventTest = { offsetX: 15, offsetY: 15 } as MouseEvent;
-        paintBucketService.onMouseMove(mouseEventTest);
-        expect(paintBucketService.matchFillColor).toHaveBeenCalled();
+        paintBucketService.matchFillColor({ red: 0, green: 0, blue: 0, alpha: 1 }, { red: 0, green: 0, blue: 0, alpha: 1 });
+        expect(matchFillColorSpy).toHaveBeenCalled();
     });
 
-    it('matchFillColor to be true', () => {
-        const currentColor: RGBA = { red: 0, green: 0, blue: 1, alpha: 1 };
-        const targetColor: RGBA = { red: 0, green: 0, blue: 1, alpha: 1 };
-        const check = matchFillColorSpy(currentColor, targetColor);
-        expect(check).toBeTrue();
+    // it('matchFillColor should be false', () => {
+    //   paintBucketService.matchFillColor({ red: 1, green: 1, blue: 1, alpha: 1}, { red: 0, green: 0, blue: 0, alpha: 1})
+    //   expect(matchFillColorSpy).toBeFalsy();
+    // });
+
+    it('should call hexToRGBA', () => {
+        paintBucketService.hexToRGBA('#000000');
+        expect(hexToRGBASpy).toHaveBeenCalled();
     });
 
-    it('should call hexToRgbA', () => {
-        const mouseEventTest = { offsetX: 15, offsetY: 15 } as MouseEvent;
-        paintBucketService.onMouseMove(mouseEventTest);
-        expect(paintBucketService.hexToRgbA).toHaveBeenCalled();
+    it('should call paintAllSimilar', () => {
+        paintBucketService.paintAllSimilar(mouseEventTest.x, mouseEventTest.y, { red: 0, green: 0, blue: 0, alpha: 1 });
+        expect(paintAllSimilarSpy).toHaveBeenCalled();
     });
 
-    it('x < canvasSize.x - 1', () => {
-        const originalColor: RGBA = { red: 0, green: 0, blue: 0, alpha: 1 };
-        const pixelColor: RGBA = { red: 0, green: 0, blue: 0, alpha: 1 };
-        const check = matchFillColorSpy(originalColor, pixelColor);
-        expect(check).toBeTrue();
+    it('should call toleranceToRGBASpy', () => {
+        paintBucketService.toleranceToRGBA();
+        expect(toleranceToRGBASpy).toHaveBeenCalled();
     });
-    */
 });
