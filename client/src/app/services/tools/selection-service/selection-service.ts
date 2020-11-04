@@ -58,6 +58,7 @@ export class SelectionService extends Tool {
         this.drawingService.previewCtx.fillStyle = 'black';
 
         this.mouseDown = event.button === MouseButton.Left;
+
         if (this.mouseDown) {
             if (this.mousePosition && this.mouseDownCoord) {
                 this.inSelection = this.isInsideSelection(this.getPositionFromMouse(event));
@@ -119,8 +120,8 @@ export class SelectionService extends Tool {
 
     onMouseOut(event: MouseEvent): void {
         if (this.mouseDown && this.inSelection) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.baseCtx.putImageData(this.imageData, this.copyImageInitialPos.x, this.copyImageInitialPos.y);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
         } else {
             this.onMouseUp(event);
         }
