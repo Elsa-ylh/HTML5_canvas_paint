@@ -64,7 +64,6 @@ export class CarrouselPictureComponent implements OnInit {
         if (itList) {
             this.labelSelect.push(label);
         }
-        console.log(this.labelSelect.length);
         this.labelSelect.length === 0 ? this.addAllData() : this.setMessageLabel(this.labelSelect);
     }
     private setMessageLabel(labels: string[]): void {
@@ -72,6 +71,7 @@ export class CarrouselPictureComponent implements OnInit {
         for (let index = 0; index < labels.length; index++) {
             textLabel += index === labels.length - 1 ? labels[index] : labels[index] + ',';
         }
+        this.position = 0;
         const message: Message = { title: 'labels', body: textLabel };
         this.clientServerComSvc.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
@@ -92,43 +92,27 @@ export class CarrouselPictureComponent implements OnInit {
         this.position = 0;
     }
     prior(): void {
-        switch (this.position) {
-            case -1:
-                this.position = -1;
-                break;
-            case 0:
-                this.position = this.dataPicture.length - 1;
-                break;
-            default:
-                this.position--;
-                break;
-        }
+        if (this.position === 0) {
+            this.position = this.dataPicture.length - 1;
+        } else this.position--;
     }
     next(): void {
-        switch (this.position) {
-            case -1:
-                this.position = -1;
-                break;
-            case this.dataPicture.length - 1:
-                this.position = 0;
-                break;
-            default:
-                this.position++;
-                break;
-        }
+        if (this.position === this.dataPicture.length - 1) {
+            this.position = 0;
+        } else this.position++;
     }
 
     getPictures(): CanvasInformation[] {
         let threePictures: CanvasInformation[] = [];
         if (this.dataPicture.length <= NB_FILES_OPEN_AT_A_TIME) {
-            threePictures = this.dataPicture;
-            this.position = -1;
+            //threePictures = ;
+            return this.dataPicture;
         }
-        if (this.position > 0 && this.position <= this.dataPicture.length + 1 - NB_FILES_OPEN_AT_A_TIME) {
+        /* if (this.position > 0 && this.position <= this.dataPicture.length + 1 - NB_FILES_OPEN_AT_A_TIME) {
             for (let index = this.position - 1; index < this.position - 1 + NB_FILES_OPEN_AT_A_TIME; index++) {
                 threePictures.push(this.dataPicture[index]);
             }
-        }
+        }*/
         switch (this.position) {
             case 0:
                 threePictures.push(this.dataPicture[this.dataPicture.length - 1]);
@@ -139,8 +123,11 @@ export class CarrouselPictureComponent implements OnInit {
                 threePictures.push(this.dataPicture[this.position - 1]);
                 threePictures.push(this.dataPicture[this.position]);
                 threePictures.push(this.dataPicture[0]);
-
                 break;
+            default:
+                threePictures.push(this.dataPicture[this.position - 1]);
+                threePictures.push(this.dataPicture[this.position]);
+                threePictures.push(this.dataPicture[this.position + 1]);
         }
         this.createImage(threePictures);
         return threePictures;

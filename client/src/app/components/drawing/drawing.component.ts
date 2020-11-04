@@ -186,6 +186,13 @@ export class DrawingComponent implements AfterViewInit {
         this.colorService.previewColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.baseCtx));
     }
 
+    @HostListener('contextmenu', ['$event'])
+    onRightClick(event: MouseEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.PaintBucket || this.toolService.currentToolName === ToolUsed.Dropper) {
+            event.preventDefault();
+        }
+    }
+
     @HostListener('window:keydown.shift', ['$event'])
     onKeyShiftDown(event: KeyboardEvent): void {
         this.toolService.currentTool.onShiftKeyDown(event);

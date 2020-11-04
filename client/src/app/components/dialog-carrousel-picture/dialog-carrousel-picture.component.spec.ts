@@ -14,6 +14,7 @@ import { ClientServerCommunicationService } from '@app/services/client-server/cl
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
+import { Message } from '@common/communication/message';
 import { of } from 'rxjs';
 import { CarrouselPictureComponent } from './dialog-carrousel-picture.component';
 // tslint:disable:no-any
@@ -30,8 +31,10 @@ fdescribe('CarrouselPictureComponent', () => {
     const isDate: Date = new Date();
     let addAllDataSpy: jasmine.Spy<any>;
     let addAllLabalSpy: jasmine.Spy<any>;
+    let confirmSpy: jasmine.Spy<any>;
+    let alertSpy: jasmine.Spy<any>;
     const testCanvasInformationAdd: CanvasInformation = {
-        _id: '',
+        _id: '1111',
         name: 'test5',
         width: 0,
         height: 0,
@@ -39,6 +42,20 @@ fdescribe('CarrouselPictureComponent', () => {
         date: isDate,
         picture: 'test5',
     };
+    const allDataTest = [
+        { _id: '', name: 'test1', labels: [{ label: 'label1' }], width: 0, height: 0, date: new Date('10/04/2020'), picture: 'test1' },
+        {
+            _id: '',
+            name: 'test2',
+            labels: [{ label: 'label1' }, { label: 'label2' }],
+            width: 0,
+            height: 0,
+            date: new Date('10/05/2020'),
+            picture: 'test2',
+        },
+        { _id: '', name: 'test3', labels: [{}], width: 0, height: 0, date: new Date('10/08/2020 15:15:15'), picture: 'test3' },
+        { _id: '', name: 'test4', labels: [{ label: 'label2' }], width: 0, height: 0, date: new Date('10/08/2020'), picture: 'test4' },
+    ] as CanvasInformation[];
     const testCanvasInformationAdds = [testCanvasInformationAdd];
     const labels: Label[] = [{ label: 'lable1' }, { label: 'label2' }];
     beforeEach(async () => {
@@ -81,7 +98,9 @@ fdescribe('CarrouselPictureComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(CarrouselPictureComponent);
         component = fixture.componentInstance;
-        spyOn(component['clientServerComSvc'], 'getData').and.returnValue(of([testCanvasInformationAdd]));
+        spyOn(component['clientServerComSvc'], 'getData').and.returnValue(of(testCanvasInformationAdds));
+        confirmSpy = spyOn<any>(window, 'confirm').and.callThrough();
+        alertSpy = spyOn<any>(window, 'alert').and.callThrough();
         // spyOn(component['clientServerComSvc'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
         httpMock = TestBed.inject(HttpTestingController);
 
@@ -164,5 +183,94 @@ fdescribe('CarrouselPictureComponent', () => {
         spyOn(component['clientServerComSvc'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
         component.setSearchCriteria();
         expect(component['dataPicture'][0].name).toEqual(testCanvasInformationAdd.name);
+    });
+    it('should prior', () => {
+        component['dataPicture'] = allDataTest;
+        component.prior();
+        expect(component['position']).toEqual(component['dataPicture'].length - 1);
+    });
+    it('should next', () => {
+        component.next();
+        expect(component['position']).toEqual(1);
+    });
+    it('should next 8 ', () => {
+        component['dataPicture'] = allDataTest;
+        component.next();
+        component.next();
+        component.next();
+        component.next();
+        component.next();
+        component.next();
+        component.next();
+        expect(component['position']).toEqual(3);
+    });
+    it('should prior 2', () => {
+        component['dataPicture'] = allDataTest;
+        component.prior();
+        component.prior();
+        expect(component['position']).toEqual(2);
+    });
+    it('should prior next', () => {
+        component['dataPicture'] = allDataTest;
+        component.prior();
+        component.next();
+        expect(component['position']).toEqual(0);
+    });
+    it('should getPictures', () => {
+        component['dataPicture'] = allDataTest;
+
+        const element = component.getPictures();
+
+        expect(element.length).toEqual(3);
+    });
+    it('should getPictures', () => {
+        component['dataPicture'] = [];
+        //component.ngOnInit();
+        const element = component.getPictures();
+
+        expect(element.length).toEqual(0);
+    });
+    it('should getPictures', () => {
+        component['dataPicture'] = allDataTest;
+        component.prior();
+        const element = component.getPictures();
+
+        expect(element[0].name).toEqual(allDataTest[2].name);
+        expect(element[1].name).toEqual(allDataTest[3].name);
+        expect(element[2].name).toEqual(allDataTest[0].name);
+    });
+    it('should getPictures', () => {
+        component['dataPicture'] = allDataTest;
+        component.next();
+        const element = component.getPictures();
+
+        expect(element[0].name).toEqual(allDataTest[0].name);
+        expect(element[1].name).toEqual(allDataTest[1].name);
+        expect(element[2].name).toEqual(allDataTest[2].name);
+    });
+    it('should loadPicture', () => {
+        confirmSpy.and.returnValue(true);
+        component.loadPicture(allDataTest[0]);
+        expect(confirmSpy).toHaveBeenCalled();
+    });
+    it('should loadPicture', () => {
+        confirmSpy.and.returnValue(false);
+        component.loadPicture(allDataTest[0]);
+        expect(confirmSpy).toHaveBeenCalled();
+    });
+    it('should deletePicture', () => {
+        confirmSpy.and.returnValue(true);
+        component.deletePicture(testCanvasInformationAdd);
+        expect(confirmSpy).toHaveBeenCalled();
+    });
+    it('should deletePicture', () => {
+        confirmSpy.and.returnValue(false);
+        component.deletePicture(allDataTest[0]);
+        expect(confirmSpy).toHaveBeenCalled();
+    });
+    it('should deletePicture', () => {
+        //confirmSpy.and.returnValue(true);
+        component.messageDelite({ title: '', body: '' } as Message);
+        expect(alertSpy).toHaveBeenCalled();
     });
 });
