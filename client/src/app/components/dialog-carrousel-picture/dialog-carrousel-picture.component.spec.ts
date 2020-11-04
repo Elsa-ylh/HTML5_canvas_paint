@@ -19,7 +19,7 @@ import { CarrouselPictureComponent } from './dialog-carrousel-picture.component'
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
 // tslint:disable:no-unused-expression
-describe('CarrouselPictureComponent', () => {
+fdescribe('CarrouselPictureComponent', () => {
     let component: CarrouselPictureComponent;
     let fixture: ComponentFixture<CarrouselPictureComponent>;
     let drawingStub: DrawingService;
