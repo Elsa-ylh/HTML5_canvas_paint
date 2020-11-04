@@ -298,7 +298,7 @@ describe('Database service', () => {
                 expect(bool).to.equal(false);
             })
             .catch((err) => {
-                expect(err.message).to.equal('Topology is closed, please connect');
+                expect(err.message).to.equal('server is closed');
                 //console.log(err.message);
             });
     });
