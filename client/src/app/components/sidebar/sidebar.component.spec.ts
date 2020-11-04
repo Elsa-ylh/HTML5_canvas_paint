@@ -81,7 +81,7 @@ describe('SidebarComponent', () => {
             eraserStub = new EraserService(drawingStub, undoRedoStub);
             lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
             dropperServiceStub = new DropperService(drawingStub, colorStub);
-            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub);
+            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub);
             selectionStub = new SelectionService(drawingStub);
             toolServiceStub = new ToolService(
                 pencilStub,
