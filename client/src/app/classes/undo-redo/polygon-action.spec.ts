@@ -8,7 +8,7 @@ import { SubToolselected } from '../sub-tool-selected';
 import { Vec2 } from '../vec2';
 import { PolygoneAction } from './polygon-action';
 
-describe('LineAction', () => {
+describe('PolygonAction', () => {
     let polygonActionStub: PolygoneAction;
     let drawingStub: DrawingService;
     let colorStub: ColorService;

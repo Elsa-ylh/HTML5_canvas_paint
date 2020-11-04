@@ -65,7 +65,7 @@ describe('LineAction', () => {
         lineStub = TestBed.inject(LineService);
     });
 
-    it('should stroke color and lignwidth to be primary color and thickness', () => {
+    it('should stroke color and linewidth to be primary color and thickness', () => {
         drawingStub.baseCtx.shadowColor = drawingStub.previewCtx.shadowColor = '#000000' as string;
         lineActionStub.apply();
         expect(drawingStub.baseCtx.strokeStyle).toEqual(colorLine);
