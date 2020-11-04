@@ -19,7 +19,7 @@ import { DialogExportDrawingComponent } from './dialog-export-locally.component'
 describe('DialogExportDrawingComponent', () => {
     let component: DialogExportDrawingComponent;
     let fixture: ComponentFixture<DialogExportDrawingComponent>;
-
+    let confirmSpy: jasmine.Spy<any>;
     let drawingStub: DrawingService;
 
     beforeEach(
@@ -46,6 +46,7 @@ describe('DialogExportDrawingComponent', () => {
             fixture = TestBed.createComponent(DialogExportDrawingComponent);
             component = fixture.componentInstance;
             fixture.detectChanges();
+            confirmSpy = spyOn<any>(window, 'confirm').and.callThrough();
         }),
     );
 
@@ -62,7 +63,10 @@ describe('DialogExportDrawingComponent', () => {
         component.checkJPG();
         expect(component['whichExportType']).toBe(ImageFormat.JPG);
     });
-
+    it(' should checkNone', () => {
+        component.checkNone();
+        expect(component['whichFilter']).toBe(Filter.NONE);
+    });
     it(' should checkFirst', () => {
         component.checkFirst();
         expect(component['whichFilter']).toBe(Filter.BLUR);
@@ -89,9 +93,55 @@ describe('DialogExportDrawingComponent', () => {
     });
 
     it(' should downloadImage', () => {
+        confirmSpy.and.returnValue(true);
         component.nameFormControl.setValue('default');
         const spyDownloadImage = spyOn<any>(component, 'downloadImage').and.callThrough();
         component.downloadImage();
         expect(spyDownloadImage).toHaveBeenCalled();
+    });
+    it(' should downloadImage cancel', () => {
+        confirmSpy.and.returnValue(false);
+        component.nameFormControl.setValue('default');
+        component.checkFirst();
+        component.checkJPG();
+        const spyDownloadImage = spyOn<any>(component, 'downloadImage').and.callThrough();
+        component.downloadImage();
+        expect(spyDownloadImage).toHaveBeenCalled();
+    });
+    it(' should downloadImage cancel', () => {
+        confirmSpy.and.returnValue(true);
+        component.nameFormControl.setValue('default');
+        component.checkSecond();
+        const spyDownloadImage = spyOn<any>(component, 'downloadImage').and.callThrough();
+        component.downloadImage();
+        expect(spyDownloadImage).toHaveBeenCalled();
+        expect(confirmSpy).toHaveBeenCalledWith('Vous voulez saugarder ' + component.nameFormControl.value + '.png\n Filtre grayscale');
+    });
+    it(' should downloadImage cancel', () => {
+        confirmSpy.and.returnValue(true);
+        component.nameFormControl.setValue('test');
+        component.checkThird();
+        const spyDownloadImage = spyOn<any>(component, 'downloadImage').and.callThrough();
+        component.downloadImage();
+        expect(spyDownloadImage).toHaveBeenCalled();
+        expect(confirmSpy).toHaveBeenCalledWith('Vous voulez saugarder test.png\n Filtre invert');
+    });
+    it(' should downloadImage cancel', () => {
+        confirmSpy.and.returnValue(true);
+        component.nameFormControl.setValue('default');
+        component.checkFourth();
+        const spyDownloadImage = spyOn<any>(component, 'downloadImage').and.callThrough();
+        component.downloadImage();
+        expect(spyDownloadImage).toHaveBeenCalled();
+        expect(confirmSpy).toHaveBeenCalledWith('Vous voulez saugarder default.png\n Filtre brightness');
+    });
+    it(' should downloadImage cancel', () => {
+        confirmSpy.and.returnValue(true);
+        component.nameFormControl.setValue('default');
+        component.checkFifth();
+        const spyDownloadImage = spyOn<any>(component, 'downloadImage').and.callThrough();
+        component.downloadImage();
+        expect(spyDownloadImage).toHaveBeenCalled();
+        expect(confirmSpy).toHaveBeenCalledWith('Vous voulez saugarder default.png\n Filtre sepia');
     });
 });

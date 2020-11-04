@@ -1,5 +1,6 @@
+// tslint:disable: max-file-line-count
 import { Application } from '@app/app';
-import { DatabasePicureService } from '@app/services/data-base-picture.service';
+import { DatabasePicureService } from '@app/services/database-picture.service';
 import { TYPES } from '@app/types';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
@@ -14,14 +15,16 @@ describe('Data Controller', () => {
 
     let dataService: Stubbed<DatabasePicureService>;
     let app: Express.Application;
-    let isDate: Date = new Date('10/08/2020');
-    const testCanvasInformationAdd: CanvasInformation = {
-        id: '',
-        name: 'test5',
+    const isDate: Date = new Date('10/08/2020');
+    const testCanvasInformationAdd = {
+        _id: '',
+        name: 'stest5',
         labels: [{ label: 'label1' }],
+        width: 0,
+        height: 0,
         date: isDate,
         picture: 'test5',
-    };
+    } as CanvasInformation;
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
         container.rebind(TYPES.DatabasePicureService).toConstantValue({
@@ -30,6 +33,9 @@ describe('Data Controller', () => {
             getAllLabel: sandbox.stub().resolves(testCanvasInformationAdd),
             getPicturesName: sandbox.stub().resolves(testCanvasInformationAdd),
             getPicturesDate: sandbox.stub().resolves(testCanvasInformationAdd),
+            addPicture: sandbox.stub().resolves(undefined),
+            modifyPicture: sandbox.stub().resolves(undefined),
+            delete: sandbox.stub().resolves(true),
         });
         dataService = container.get(TYPES.DatabasePicureService);
         app = container.get<Application>(TYPES.Application).app;
@@ -50,7 +56,7 @@ describe('Data Controller', () => {
             .get('/api/data')
             .expect(HTTP_STATUS_OK)
             .then((reponse: any) => {
-                expect(reponse.body.id).to.deep.equal('Error');
+                expect(reponse.body._id).to.deep.equal('Error');
             });
     });
     it('should post test labels', async () => {
@@ -67,7 +73,7 @@ describe('Data Controller', () => {
             .then(async (reponse: any) => {
                 expect(reponse.body.name).to.deep.equal(testCanvasInformationAdd.name);
                 expect(reponse.body.labels[0]).to.deep.equal(testCanvasInformationAdd.labels[0]);
-                expect(reponse.body.id).to.deep.equal(testCanvasInformationAdd.id);
+                expect(reponse.body._id).to.deep.equal(testCanvasInformationAdd._id);
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
@@ -85,13 +91,13 @@ describe('Data Controller', () => {
             .send(service)
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .then((reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err.message);
             });
     });
-    it('should post test labels errer mongodb', async () => {
+    it('should post test labels error mongodb', async () => {
         dataService.getPicturesLabals.rejects(new Error('error in the service'));
         const service = {
             title: 'Titre',
@@ -104,13 +110,13 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .then((reponse: any) => {
                 console.log(reponse.body);
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err.message);
             });
     });
-    it('should post test labels errer mongodb', async () => {
+    it('should post test labels error mongodb', async () => {
         dataService.getPicturesLabals.rejects(new Error('error in the service mongo'));
         const service: Message = {
             title: 'labels',
@@ -122,7 +128,7 @@ describe('Data Controller', () => {
             .send(service)
             .expect(HTTP_STATUS_OK)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
@@ -135,7 +141,7 @@ describe('Data Controller', () => {
             .send()
             .expect(HTTP_STATUS_OK)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
@@ -161,7 +167,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .send()
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
                 expect(reponse.body.name).to.equal('not request in post');
             })
             .catch((err: Error) => {
@@ -178,7 +184,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
                 expect(reponse.body.name).to.equal('not good research : ' + service.title);
             })
             .catch((err: Error) => {
@@ -195,14 +201,14 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_BAD_REQUEST_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
                 expect(reponse.body.name).to.equal('not good research : ' + service.title);
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
             });
     });
-    it('post in good research name both errer', async () => {
+    it('post in good research name both error', async () => {
         dataService.getPicturesName.rejects(new Error('error in the service mongo'));
         const service = {
             title: 'name',
@@ -213,7 +219,7 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
@@ -222,14 +228,14 @@ describe('Data Controller', () => {
     it('post in good research name ', async () => {
         const service = {
             title: 'name',
-            body: 'test5',
+            body: 'stest5',
         };
         return supertest(app)
             .post('/api/data/research')
             .expect(HTTP_STATUS_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal(testCanvasInformationAdd.id);
+                expect(reponse.body._id).to.equal(testCanvasInformationAdd._id);
                 expect(reponse.body.name).to.equal(service.body);
             })
             .catch((err: Error) => {
@@ -246,14 +252,14 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal(testCanvasInformationAdd.id);
+                expect(reponse.body._id).to.equal(testCanvasInformationAdd._id);
                 expect(reponse.body.date).to.equal('2020-10-08T04:00:00.000Z');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);
             });
     });
-    it('post in good research date both errer', async () => {
+    it('post in good research date both error', async () => {
         dataService.getPicturesDate.rejects(new Error('error in the service mongo'));
         const service = {
             title: 'date',
@@ -264,7 +270,219 @@ describe('Data Controller', () => {
             .expect(HTTP_STATUS_OK)
             .send(service)
             .then(async (reponse: any) => {
-                expect(reponse.body.id).to.equal('Error');
+                expect(reponse.body._id).to.equal('Error');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in good savePicture update', async () => {
+        const newCanvasInformationAdd = {
+            _id: '1234',
+            name: 'stest5',
+            labels: [{ label: 'label1' }],
+            width: 0,
+            height: 0,
+            date: isDate,
+            picture: 'test5',
+        } as CanvasInformation;
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_OK)
+            .send(newCanvasInformationAdd)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('success');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in good savePicture save', async () => {
+        const newCanvasInformationAdd = {
+            _id: '',
+            name: 'stest5',
+            labels: [{ label: 'label1' }],
+            width: 0,
+            height: 0,
+            date: isDate,
+            picture: 'test5',
+        } as CanvasInformation;
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_OK)
+            .send(newCanvasInformationAdd)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('success');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in not good savePicture update', async () => {
+        dataService.modifyPicture.rejects(new Error('error in the service mongo'));
+        const newCanvasInformationAdd = {
+            _id: '1234',
+            name: 'stest5',
+            labels: [{ label: 'label1' }],
+            width: 0,
+            height: 0,
+            date: isDate,
+            picture: 'test5',
+        } as CanvasInformation;
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_OK)
+            .send(newCanvasInformationAdd)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Error');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in not good savePicture save', async () => {
+        dataService.addPicture.rejects(new Error('error in the service mongo'));
+        const newCanvasInformationAdd = {
+            _id: '',
+            name: 'sstest5',
+            labels: [{ label: 'label1' }],
+            width: 0,
+            height: 0,
+            date: isDate,
+            picture: 'test5',
+        } as CanvasInformation;
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_OK)
+            .send(newCanvasInformationAdd)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Error');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in not good savePicture ', async () => {
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_BAD_REQUEST_OK)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Error');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in not good savePicture label and name error', () => {
+        const newCanvasInformationAdd = {
+            _id: '',
+            name: 'test5 ',
+            labels: [{ label: 'label1' }, { label: 'label$' }],
+            width: 0,
+            height: 0,
+            date: isDate,
+            picture: 'test5',
+        } as CanvasInformation;
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_BAD_REQUEST_OK)
+            .send(newCanvasInformationAdd)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Error');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('post in not good savePicture label < 6', () => {
+        const newCanvasInformationAdd = {
+            _id: '',
+            name: 'test5 ',
+            labels: [{ label: 'label1' }, { label: 'label' }],
+            width: 0,
+            height: 0,
+            date: isDate,
+            picture: 'test5',
+        } as CanvasInformation;
+        return supertest(app)
+            .post('/api/data/savePicture')
+            .expect(HTTP_STATUS_BAD_REQUEST_OK)
+            .send(newCanvasInformationAdd)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Error');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('delite not request message', () => {
+        // dataService.getPicturesLabals.rejects(new Error('error in the service'));
+        return supertest(app)
+            .post('/api/data/delete')
+            .expect(HTTP_STATUS_BAD_REQUEST_OK)
+            .send()
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Error');
+                expect(reponse.body.body).to.equal('not request message');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('delite', () => {
+        // dataService.getPicturesLabals.rejects(new Error('error in the service'));
+        const message: Message = { title: '', body: '' };
+        return supertest(app)
+            .post('/api/data/delete')
+            .expect(HTTP_STATUS_BAD_REQUEST_OK)
+            .send(message)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Error');
+                expect(reponse.body.body).to.equal('It not delete title element');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('delite', () => {
+        dataService.delete.rejects(new Error('error in the service'));
+        const message: Message = { title: 'delete', body: 'ssss' };
+        return supertest(app)
+            .post('/api/data/delete')
+            .expect(HTTP_STATUS_BAD_REQUEST_OK)
+            .send(message)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Error');
+                expect(reponse.body.body).to.equal('error in the service');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('delite success', () => {
+        const message: Message = { title: 'delete', body: 'ssss' };
+        return supertest(app)
+            .post('/api/data/delete')
+            .expect(HTTP_STATUS_OK)
+            .send(message)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Success');
+                expect(reponse.body.body).to.equal('Success');
+            })
+            .catch((err: Error) => {
+                console.log('Error ' + err);
+            });
+    });
+    it('delite success', () => {
+        dataService.delete.resolves(false);
+        const message: Message = { title: 'delete', body: 'ssss' };
+        return supertest(app)
+            .post('/api/data/delete')
+            .expect(HTTP_STATUS_OK)
+            .send(message)
+            .then(async (reponse: any) => {
+                expect(reponse.body.title).to.equal('Not delete');
+                expect(reponse.body.body).to.equal('not good id');
             })
             .catch((err: Error) => {
                 console.log('Error ' + err);

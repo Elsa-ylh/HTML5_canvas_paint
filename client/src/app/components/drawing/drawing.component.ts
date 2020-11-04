@@ -95,6 +95,7 @@ export class DrawingComponent implements AfterViewInit {
 
     onMouseUp(event: MouseEvent): void {
         this.toolService.currentTool.onMouseUp(event);
+        this.undoRedoService.activateUndo(event);
     }
 
     onMouseOut(event: MouseEvent): void {
@@ -184,6 +185,13 @@ export class DrawingComponent implements AfterViewInit {
     onMouseOverMainCanvas(event: MouseEvent): void {
         const position = { x: event.offsetX, y: event.offsetY };
         this.colorService.previewColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.baseCtx));
+    }
+
+    @HostListener('contextmenu', ['$event'])
+    onRightClick(event: MouseEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.PaintBucket || this.toolService.currentToolName === ToolUsed.Dropper) {
+            event.preventDefault();
+        }
     }
 
     @HostListener('window:keydown.shift', ['$event'])

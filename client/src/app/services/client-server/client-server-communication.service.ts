@@ -41,15 +41,22 @@ export class ClientServerCommunicationService {
     getAllLabel(): Label[] {
         this.catchInformation();
         if (this.information == undefined) return [];
-        if (this.information.id === 'list_of_all_labals') {
+        if (this.information._id === 'list_of_all_labals') {
             return this.information.labels;
         }
         return [];
+    }
+
+    savePicture(newPicture: CanvasInformation): Observable<Message> {
+        return this.http.post<Message>(this.HTTP_SERVE_LOCAL + '/savePicture', newPicture).pipe(catchError(this.handleError<Message>('basicPost')));
     }
 
     getElementResearch(message: Message): Observable<CanvasInformation[]> {
         return this.http
             .post<CanvasInformation[]>(this.HTTP_SERVE_LOCAL + '/research', message)
             .pipe(catchError(this.handleError<CanvasInformation[]>('basicPost')));
+    }
+    deleteQuery(message: Message): Observable<Message> {
+        return this.http.post<Message>(this.HTTP_SERVE_LOCAL + '/delete', message).pipe(catchError(this.handleError<Message>('basicPost')));
     }
 }

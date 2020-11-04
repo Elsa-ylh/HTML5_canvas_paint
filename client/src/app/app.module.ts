@@ -50,6 +50,7 @@ import { DropperColorComponent } from './components/dropper-color/dropper-color.
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { PaintBucketColorComponent } from './components/paint-bucket-color/paint-bucket-color.component';
+import { SaveDialogComponent } from './components/save-dialog/save-dialog.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { WriteTextDialogUserGuideComponent } from './components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 
@@ -71,6 +72,7 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         ColorComponent,
         CarrouselPictureComponent,
         DropperColorComponent,
+        SaveDialogComponent,
         PaintBucketColorComponent,
     ],
     imports: [
