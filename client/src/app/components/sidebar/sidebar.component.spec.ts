@@ -511,6 +511,10 @@ describe('SidebarComponent', () => {
         expect(spySelectAllEllipse).toHaveBeenCalled();
     });
 
+    it('should ')
+
+
+
     it('should call onLeftArrow  when clicking on the left arrow key when using selectRectangle', () => {
         toolServiceStub.currentToolName = ToolUsed.SelectionRectangle as ToolUsed;
         const event = new KeyboardEvent('window:keydown.ArrowLeft', {});
