@@ -7,7 +7,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoService } from '../undo-redo/undo-redo.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 const MAX_TOLERANCE = 100;
 
@@ -237,5 +237,7 @@ export class PaintBucketService extends Tool {
     }
 
     // The rebounce aka onMouseUp even is there so undoredo knows when to deactivate
-    onMouseUp(event: MouseEvent): void {}
+    onMouseUp(event: MouseEvent): void {
+        return;
+    }
 }

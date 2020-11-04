@@ -1,11 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { EraseAction } from '@app/classes/undo-redo/erase-actions';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { canvasTestHelper } from '../canvas-test-helper';
-import { Vec2 } from '../vec2';
-import { EraseAction } from './erase-actions';
 
+// tslint:disable:prefer-const
+// tslint:disable:no-magic-numbers
 describe('EraseAction', () => {
     let eraseActionStub: EraseAction;
     let drawingStub: DrawingService;

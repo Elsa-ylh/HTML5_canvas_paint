@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { PolygoneAction } from '@app/classes/undo-redo/polygon-action';
+import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { canvasTestHelper } from '../canvas-test-helper';
-import { SubToolselected } from '../sub-tool-selected';
-import { Vec2 } from '../vec2';
-import { PolygoneAction } from './polygon-action';
 
+// tslint:disable:no-magic-numbers
 describe('PolygonAction', () => {
     let polygonActionStub: PolygoneAction;
     let drawingStub: DrawingService;
@@ -33,7 +34,9 @@ describe('PolygonAction', () => {
         mouseDownCord = { x: 6, y: 9 };
         primaryColor = '#000000';
         secondaryColor = '#ffffff';
+        // tslint:disable:no-magic-numbers
         lineWidth = 2;
+        // tslint:disable:no-magic-numbers
         nbsides = 3;
         selectSubTool = SubToolselected.tool1;
         isRenderingBase = true;
@@ -57,6 +60,7 @@ describe('PolygonAction', () => {
         );
 
         canvas = canvasTestHelper.canvas;
+        // tslint:disable:no-magic-numbers
         canvas.width = 100;
         canvas.height = 100;
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;

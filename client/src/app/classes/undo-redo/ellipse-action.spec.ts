@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { EllipseAction } from '@app/classes/undo-redo/ellipse-action';
+import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { canvasTestHelper } from '../canvas-test-helper';
-import { SubToolselected } from '../sub-tool-selected';
-import { Vec2 } from '../vec2';
-import { EllipseAction } from './ellipse-action';
 
+// tslint:disable:no-magic-numbers
 describe('EllipseAction', () => {
     let ellipseActionStub: EllipseAction;
     let drawingStub: DrawingService;

@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { SelectionEllipseAction } from '@app/classes/undo-redo/selection-ellipse-action';
+import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { canvasTestHelper } from '../canvas-test-helper';
-import { Vec2 } from '../vec2';
-import { SelectionEllipseAction } from './selection-ellipse-action';
 
 describe('SelectionEllipseAction', () => {
     let selectionEllipseActionStub: SelectionEllipseAction;
@@ -13,14 +13,12 @@ describe('SelectionEllipseAction', () => {
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
     let selectionEllipseStub: SelectionEllipseService;
-
     let copyPosition: Vec2;
     let selectionMove: Vec2;
-    let image: HTMLImageElement; //
+    let image: HTMLImageElement;
     let selectionRect: Vec2;
     let width: number;
     let height: number;
-
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
@@ -30,14 +28,14 @@ describe('SelectionEllipseAction', () => {
         selectionMove = { x: 9, y: 1 };
         image = new Image();
         selectionRect = { x: 6, y: 7 };
+        // tslint:disable:no-magic-numbers
         width = 10;
+        // tslint:disable:no-magic-numbers
         height = 10;
-
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
-
         selectionEllipseActionStub = new SelectionEllipseAction(
             copyPosition,
             selectionMove,
@@ -47,14 +45,13 @@ describe('SelectionEllipseAction', () => {
             height,
             selectionEllipseStub,
         );
-
         canvas = canvasTestHelper.canvas;
+        // tslint:disable:no-magic-numbers
         canvas.width = 100;
+        // tslint:disable:no-magic-numbers
         canvas.height = 100;
-
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-
         drawingStub.canvas = canvas;
         drawingStub.baseCtx = baseStub;
         drawingStub.previewCtx = previewStub;

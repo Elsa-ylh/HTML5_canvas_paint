@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { PaintBucketAction } from '@app/classes/undo-redo/paint-bucket-action';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { canvasTestHelper } from '../canvas-test-helper';
-import { PaintBucketAction } from './paint-bucket-action';
 
+// tslint:disable:prefer-const
 describe('PaintBucketAction', () => {
     let paintBucketActionStub: PaintBucketAction;
     let drawingStub: DrawingService;
@@ -20,22 +21,20 @@ describe('PaintBucketAction', () => {
     let canvas: HTMLCanvasElement;
 
     beforeEach(() => {
+        // tslint:disable:no-magic-numbers
         let pixels: ImageData = new ImageData(10, 10);
-
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasStub, undoRedoStub);
-
         paintBucketActionStub = new PaintBucketAction(pixels, drawingStub);
-
         canvas = canvasTestHelper.canvas;
+        // tslint:disable:no-magic-numbers
         canvas.width = 100;
+        // tslint:disable:no-magic-numbers
         canvas.height = 100;
-
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-
         drawingStub.canvas = canvas;
         drawingStub.baseCtx = baseStub;
         drawingStub.previewCtx = previewStub;

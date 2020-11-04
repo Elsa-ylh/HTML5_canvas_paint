@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { RectangleAction } from '@app/classes/undo-redo/rectangle-action';
+import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { canvasTestHelper } from '../canvas-test-helper';
-import { SubToolselected } from '../sub-tool-selected';
-import { Vec2 } from '../vec2';
-import { RectangleAction } from './rectangle-action';
 
+// tslint:disable:no-magic-numbers
 describe('RectangleAction', () => {
     let rectangleActionStub: RectangleAction;
     let drawingStub: DrawingService;
@@ -33,6 +34,7 @@ describe('RectangleAction', () => {
         mouseDownCord = { x: 8, y: 16 };
         primaryColor = '#000000';
         secondaryColor = '#ffffff';
+        // tslint:disable:no-magic-numbers
         lineWidth = 2;
         canvasSelected = false;
         shiftPressed = true;
@@ -57,6 +59,7 @@ describe('RectangleAction', () => {
         );
 
         canvas = canvasTestHelper.canvas;
+        // tslint:disable:no-magic-numbers
         canvas.width = 100;
         canvas.height = 100;
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;

@@ -1,14 +1,16 @@
 import { TestBed } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { PointArc } from '@app/classes/point-arc';
+import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { BrushAction } from '@app/classes/undo-redo/brush-action';
+import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { canvasTestHelper } from '../canvas-test-helper';
-import { PointArc } from '../point-arc';
-import { SubToolselected } from '../sub-tool-selected';
-import { Vec2 } from '../vec2';
-import { BrushAction } from './brush-action';
 
+// tslint:disable:prefer-const
+// tslint:disable:no-magic-number
 describe('BrushAction', () => {
     let brushActionStub: BrushAction;
     let brushAction2: BrushAction;
@@ -20,7 +22,7 @@ describe('BrushAction', () => {
     let brushPointData: PointArc[] = [];
     let primaryColor: string;
     let secondaryColor: string;
-    let thicknessBrush: number = 3;
+    let thicknessBrush: number;
     let selectedBrushTool1: SubToolselected;
     let selectedBrushTool2: SubToolselected;
     let vec2: Vec2 = { x: 0, y: 0 };
@@ -30,12 +32,15 @@ describe('BrushAction', () => {
     let canvas: HTMLCanvasElement;
 
     beforeEach(() => {
+        // tslint:disable:no-magic-numbers
         vec2.x = 5;
+        // tslint:disable:no-magic-numbers
         vec2.y = 6;
         changesBrush.push({ x: 5, y: 6 });
         changesBrush.push({ x: 25, y: 15 });
         primaryColor = '#ffffff';
         secondaryColor = 'rgba(0,0,0,0)';
+        // tslint:disable:no-magic-numbers
         thicknessBrush = 3;
         selectedBrushTool1 = SubToolselected.tool4;
         selectedBrushTool2 = SubToolselected.tool1;
@@ -68,7 +73,9 @@ describe('BrushAction', () => {
             drawingStub,
         );
         canvas = canvasTestHelper.canvas;
+        // tslint:disable:no-magic-numbers
         canvas.width = 100;
+        // tslint:disable:no-magic-numbers
         canvas.height = 100;
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;

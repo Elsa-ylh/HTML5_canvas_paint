@@ -1,13 +1,15 @@
 import { TestBed } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { LineAction } from '@app/classes/undo-redo/line-action';
+import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from '@app/services/tools/line.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { canvasTestHelper } from '../canvas-test-helper';
-import { SubToolselected } from '../sub-tool-selected';
-import { Vec2 } from '../vec2';
-import { LineAction } from './line-action';
 
+// tslint:disable:prefer-const
+// tslint:disable:no-magic-numbers
 describe('LineAction', () => {
     let lineActionStub: LineAction;
     let drawingStub: DrawingService;
