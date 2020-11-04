@@ -211,6 +211,22 @@ describe('SidebarComponent', () => {
         expect(component.isDialogOpen).toEqual(false);
     });
 
+    it('should export Drawing ', () => {
+        component.isDialogloadSaveEport = true;
+        const closedSubject = new Subject<any>();
+
+        const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
+        dialogRefMock.afterClosed.and.returnValue(closedSubject.asObservable());
+        dialogMock.open.and.returnValue(dialogRefMock);
+
+        component.exportDrawing();
+        expect(component.isDialogloadSaveEport).toEqual(false);
+
+        closedSubject.next();
+
+        expect(component.isDialogloadSaveEport).toEqual(true);
+    });
+
     it(' should create new drawing dialog', () => {
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
         component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
@@ -233,6 +249,23 @@ describe('SidebarComponent', () => {
 
         expect(component.isDialogloadSaveEport).toEqual(true);
     });
+
+    it('should open save server ', () => {
+        component.isDialogloadSaveEport = true;
+        const closedSubject = new Subject<any>();
+
+        const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
+        dialogRefMock.afterClosed.and.returnValue(closedSubject.asObservable());
+        dialogMock.open.and.returnValue(dialogRefMock);
+
+        component.openSaveServer();
+        expect(component.isDialogloadSaveEport).toEqual(false);
+
+        closedSubject.next();
+
+        expect(component.isDialogloadSaveEport).toEqual(true);
+    });
+
     it('should open writeTextDialogUserComponent', () => {
         const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
@@ -309,6 +342,7 @@ describe('SidebarComponent', () => {
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
     });
+
     it('should pick dropper', () => {
         const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
         component.pickDropper();

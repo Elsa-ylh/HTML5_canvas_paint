@@ -99,6 +99,7 @@ export class SidebarComponent {
     exportDrawing(): void {
         if (this.isDialogloadSaveEport) {
             this.exportDrawingRef = this.dialogCreator.open(DialogExportDrawingComponent);
+            this.isDialogloadSaveEport = false;
             this.exportDrawingRef.afterClosed().subscribe(() => {
                 this.isDialogloadSaveEport = true;
             });
