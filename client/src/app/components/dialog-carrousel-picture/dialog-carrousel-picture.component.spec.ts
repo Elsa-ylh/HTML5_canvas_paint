@@ -20,6 +20,7 @@ import { CarrouselPictureComponent } from './dialog-carrousel-picture.component'
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
 // tslint:disable:no-unused-expression
+// tslint:disable:no-magic-numbers
 fdescribe('CarrouselPictureComponent', () => {
     let component: CarrouselPictureComponent;
     let fixture: ComponentFixture<CarrouselPictureComponent>;
@@ -228,7 +229,6 @@ fdescribe('CarrouselPictureComponent', () => {
     });
     it('should getPictures', () => {
         component['dataPicture'] = [];
-        //component.ngOnInit();
         const element = component.getPictures();
 
         expect(element.length).toEqual(0);
@@ -272,8 +272,6 @@ fdescribe('CarrouselPictureComponent', () => {
         expect(confirmSpy).toHaveBeenCalledWith('Suprimer : ' + allDataTest[0].name);
     });
     it('should deletePicture', () => {
-        //confirmSpy.and.returnValue(true);
-
         component.messageDelite(messageSuccess);
         expect(alertSpy).toHaveBeenCalledWith(messageSuccess.body);
     });

@@ -103,16 +103,12 @@ export class CarrouselPictureComponent implements OnInit {
     }
 
     getPictures(): CanvasInformation[] {
-        let threePictures: CanvasInformation[] = [];
+        const threePictures: CanvasInformation[] = [];
         if (this.dataPicture.length <= NB_FILES_OPEN_AT_A_TIME) {
-            //threePictures = ;
+            this.createImage(this.dataPicture);
             return this.dataPicture;
         }
-        /* if (this.position > 0 && this.position <= this.dataPicture.length + 1 - NB_FILES_OPEN_AT_A_TIME) {
-            for (let index = this.position - 1; index < this.position - 1 + NB_FILES_OPEN_AT_A_TIME; index++) {
-                threePictures.push(this.dataPicture[index]);
-            }
-        }*/
+
         switch (this.position) {
             case 0:
                 threePictures.push(this.dataPicture[this.dataPicture.length - 1]);
