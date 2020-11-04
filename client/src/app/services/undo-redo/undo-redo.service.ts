@@ -43,8 +43,6 @@ export class UndoRedoService {
     // adds the latest  action to the undo stack.
     addUndo(action: AbsUndoRedo): void {
         this.listUndo.push(action);
-        console.log(this.listUndo);
-        // debugger;
         this.updateStatus();
     }
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
