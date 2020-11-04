@@ -20,7 +20,7 @@ export class PaintBucketService extends Tool {
     colorAttributs: number = 4; // r,g,b,a
     oldColor: RGBA;
     mouseOut: boolean = false;
-    tolerance: number;
+    tolerance: number = 0;
 
     // https://en.wikipedia.org/wiki/Flood_fill#:~:text=Flood%20fill%2C%20also%20called%20seed,in%20a%20multi%2Ddimensional%20array.
     // https://ben.akrin.com/?p=7888
@@ -47,7 +47,7 @@ export class PaintBucketService extends Tool {
 
         // if current pixel matches clicked color
         if (this.matchFillColor(originalColor, replacementColor)) {
-            debugger;
+            return;
         }
 
         while (pixelStack.length > 0) {
@@ -195,10 +195,10 @@ export class PaintBucketService extends Tool {
     }
 
     toleranceToRGBA(): number {
-        // Maximum tolerance of 99, Default to 0
+        // 255 is the maximum number for a single r, g, b or a
         // tslint:disable-next-line:no-magic-numbers
-        this.tolerance = !isNaN(this.tolerance) ? Math.min(Math.abs(Math.round(this.tolerance)), 100) : 0;
-        // tslint:disable-next-line:no-magic-numbers
+        if (this.tolerance === 0) return 0;
+        if (this.tolerance === 100) return 255;
         return (this.tolerance / MAX_TOLERANCE) * 255;
     }
 
