@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
 import { Tool } from '@app/classes/tool';
+import { PaintBucketAction } from '@app/classes/undo-redo/paint-bucket-action';
 import { Vec2 } from '@app/classes/vec2';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
 const MAX_TOLERANCE = 100;
 
@@ -13,7 +15,12 @@ const MAX_TOLERANCE = 100;
     providedIn: 'root',
 })
 export class PaintBucketService extends Tool {
-    constructor(drawingService: DrawingService, private colorService: ColorService, private cvsResizerService: CanvasResizerService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private cvsResizerService: CanvasResizerService,
+        private undoRedoService: UndoRedoService,
+    ) {
         super(drawingService);
     }
     radix: number = 16;
@@ -123,6 +130,10 @@ export class PaintBucketService extends Tool {
             }
         }
         this.drawingService.baseCtx.putImageData(pixels, 0, 0);
+        // undo-redo
+        const paintBucketAction = new PaintBucketAction(pixels, this.drawingService);
+        this.undoRedoService.addUndo(paintBucketAction);
+        this.undoRedoService.clearRedo();
     }
     /*tslint:enable:cyclomatic-complexity*/
 
@@ -185,6 +196,10 @@ export class PaintBucketService extends Tool {
         }
 
         this.drawingService.baseCtx.putImageData(pixels, 0, 0);
+        // undo-redo
+        const paintBucketAction = new PaintBucketAction(pixels, this.drawingService);
+        this.undoRedoService.addUndo(paintBucketAction);
+        this.undoRedoService.clearRedo();
     }
 
     PaintPixel(imageData: ImageData, pos: number): void {
@@ -221,9 +236,6 @@ export class PaintBucketService extends Tool {
         }
     }
 
-    onMouseOut(event: MouseEvent): void {
-        if (this.mouseDown) {
-            this.mouseOut = true;
-        }
-    }
+    // The rebounce aka onMouseUp even is there so undoredo knows when to deactivate
+    onMouseUp(event: MouseEvent): void {}
 }
