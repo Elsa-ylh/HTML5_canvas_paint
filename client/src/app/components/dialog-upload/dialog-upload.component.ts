@@ -11,7 +11,7 @@ const MAX_CHARACTER = 64;
     templateUrl: './dialog-upload.component.html',
     styleUrls: ['./dialog-upload.component.scss'],
 })
-export class DialogUpload implements OnInit {
+export class DialogUploadComponent implements OnInit {
     dataLabel: Label[] = [];
     textLabel: string = '';
     textName: string = '';

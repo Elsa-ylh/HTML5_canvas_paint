@@ -16,14 +16,14 @@ import { ClientServerCommunicationService } from '@app/services/client-server/cl
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { of } from 'rxjs';
-import { DialogUpload } from './dialog-upload.component';
+import { DialogUploadComponent } from './dialog-upload.component';
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
 // tslint:disable:no-unused-expression
 // tslint:disable:no-empty
 describe('DialogUpload', () => {
-    let component: DialogUpload;
-    let fixture: ComponentFixture<DialogUpload>;
+    let component: DialogUploadComponent;
+    let fixture: ComponentFixture<DialogUploadComponent>;
     let httpMock: HttpTestingController;
     const isDate: Date = new Date();
     let processedMessageSpy: jasmine.Spy<any>;
@@ -53,7 +53,7 @@ describe('DialogUpload', () => {
                 BrowserAnimationsModule,
                 MatButtonToggleModule,
             ],
-            declarations: [DialogUpload],
+            declarations: [DialogUploadComponent],
             providers: [
                 HttpClient,
                 {
@@ -79,7 +79,7 @@ describe('DialogUpload', () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(DialogUpload);
+        fixture = TestBed.createComponent(DialogUploadComponent);
         component = fixture.componentInstance;
         spyOn(component['clientServerComSvc'], 'savePicture').and.returnValue(of());
         httpMock = TestBed.inject(HttpTestingController);

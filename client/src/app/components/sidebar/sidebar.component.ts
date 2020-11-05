@@ -9,6 +9,7 @@ import { ToolUsed } from '@app/classes/tool';
 import { CarrouselPictureComponent } from '@app/components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DialogExportDrawingComponent } from '@app/components/dialog-export-locally/dialog-export-locally.component';
+import { DialogUploadComponent } from '@app/components/dialog-upload/dialog-upload.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -24,7 +25,6 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { DialogUpload } from '../dialog-upload/dialog-upload.component';
 
 @Component({
     selector: 'app-sidebar',
@@ -45,7 +45,7 @@ export class SidebarComponent {
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
     dialogLoadRef: MatDialogRef<CarrouselPictureComponent>;
-    dialogSaveRef: MatDialogRef<DialogUpload>;
+    dialogSaveRef: MatDialogRef<DialogUploadComponent>;
     exportDrawingRef: MatDialogRef<DialogExportDrawingComponent>;
     private isPencilChecked: boolean = false;
     private isEraserChecked: boolean = false;
