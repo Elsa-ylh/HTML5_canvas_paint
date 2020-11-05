@@ -132,10 +132,10 @@ export class DatabasePictureService {
             });
     }
     async delete(deleteId: string): Promise<boolean> {
-        const reponse = await this.collection.deleteOne({ _id: deleteId }).catch((err) => {
+        const response = await this.collection.deleteOne({ _id: deleteId }).catch((err) => {
             throw err;
         });
-        return reponse.result.n === 1;
+        return response.result.n === 1;
     }
 
     async addPicture(newpicture: CanvasInformation): Promise<boolean> {
