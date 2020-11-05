@@ -51,9 +51,6 @@ export class Server {
         }
     }
 
-    /**
-     * Se produit lorsque le serveur se met à écouter sur le port.
-     */
     private onListening(): void {
         const addr = this.server.address();
         // tslint:disable-next-line:no-non-null-assertion

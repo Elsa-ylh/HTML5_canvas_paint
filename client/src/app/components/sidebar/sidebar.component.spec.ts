@@ -81,7 +81,7 @@ describe('SidebarComponent', () => {
             eraserStub = new EraserService(drawingStub, undoRedoStub);
             lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
             dropperServiceStub = new DropperService(drawingStub, colorStub);
-            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub);
+            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub);
             selectionStub = new SelectionService(drawingStub);
             toolServiceStub = new ToolService(
                 pencilStub,
@@ -211,6 +211,22 @@ describe('SidebarComponent', () => {
         expect(component.isDialogOpen).toEqual(false);
     });
 
+    it('should export Drawing ', () => {
+        component.isDialogloadSaveEport = true;
+        const closedSubject = new Subject<any>();
+
+        const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
+        dialogRefMock.afterClosed.and.returnValue(closedSubject.asObservable());
+        dialogMock.open.and.returnValue(dialogRefMock);
+
+        component.exportDrawing();
+        expect(component.isDialogloadSaveEport).toEqual(false);
+
+        closedSubject.next();
+
+        expect(component.isDialogloadSaveEport).toEqual(true);
+    });
+
     it(' should create new drawing dialog', () => {
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
         component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
@@ -233,6 +249,23 @@ describe('SidebarComponent', () => {
 
         expect(component.isDialogloadSaveEport).toEqual(true);
     });
+
+    it('should open save server ', () => {
+        component.isDialogloadSaveEport = true;
+        const closedSubject = new Subject<any>();
+
+        const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
+        dialogRefMock.afterClosed.and.returnValue(closedSubject.asObservable());
+        dialogMock.open.and.returnValue(dialogRefMock);
+
+        component.openSaveServer();
+        expect(component.isDialogloadSaveEport).toEqual(false);
+
+        closedSubject.next();
+
+        expect(component.isDialogloadSaveEport).toEqual(true);
+    });
+
     it('should open writeTextDialogUserComponent', () => {
         const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
@@ -309,6 +342,14 @@ describe('SidebarComponent', () => {
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
     });
+
+    it('should pick paint bucket', () => {
+        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
+        component.pickPaintBucket();
+        expect(drawingStub.cursorUsed).toEqual(cursorName.default);
+        expect(switchToolSpy).toHaveBeenCalled();
+    });
+
     it('should pick dropper', () => {
         const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
         component.pickDropper();
@@ -452,6 +493,16 @@ describe('SidebarComponent', () => {
         expect(spyPickLine).toHaveBeenCalled();
     });
 
+    it('should call resetCheckButton and set isPaintBucketChecked to true when changePaintBucketMode is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.Pencil;
+        const event = new KeyboardEvent('window:keydown.b', {});
+        const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
+        window.dispatchEvent(event);
+        component.changePaintBucketMode(event);
+        expect(spyReset).toHaveBeenCalled();
+        expect(component.paintBucketChecked).toEqual(true);
+    });
+
     it(' should call resetCheckButton set isDropperChecked to true should call pickDropper', () => {
         toolServiceStub.currentToolName = ToolUsed.Pencil;
         const event = new KeyboardEvent('window:keydown.i', {});
@@ -509,6 +560,30 @@ describe('SidebarComponent', () => {
         component.selectAllCanvas(event);
         expect(spyPreventDefault).toHaveBeenCalled();
         expect(spySelectAllEllipse).toHaveBeenCalled();
+    });
+
+    it('should call openCarousel when clicking ctrl shift g', () => {
+        const event = new KeyboardEvent('window:keydown.control.shift.g', {});
+        const spyopenCarrouselKey = spyOn(component, 'openCarrousel').and.stub();
+        window.dispatchEvent(event);
+        component.openCarrouselKey(event);
+        expect(spyopenCarrouselKey).toHaveBeenCalled();
+    });
+
+    it('should call openSaveServer when clicking ctrl shift s', () => {
+        const event = new KeyboardEvent('window:keydown.control.shift.s', {});
+        const spyOpenSaveServerKey = spyOn(component, 'openSaveServer').and.stub();
+        window.dispatchEvent(event);
+        component.openSaveServerKey(event);
+        expect(spyOpenSaveServerKey).toHaveBeenCalled();
+    });
+
+    it('should call exportDrawing when clicking ctrl e', () => {
+        const event = new KeyboardEvent('window:keydown.control.shift.e', {});
+        const spyExportDrawingKey = spyOn(component, 'exportDrawing').and.stub();
+        window.dispatchEvent(event);
+        component.exportDrawingKey(event);
+        expect(spyExportDrawingKey).toHaveBeenCalled();
     });
 
     it('should call onLeftArrow  when clicking on the left arrow key when using selectRectangle', () => {

@@ -19,7 +19,7 @@ export class RectangleService extends Tool {
     square: boolean = false; // shift
     height: number;
     width: number;
-    mousePosition: Vec2; //
+    mousePosition: Vec2;
     canvasSelected: boolean; // quel canvas
     distanceX: number;
     distanceY: number;

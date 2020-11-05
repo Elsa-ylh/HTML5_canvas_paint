@@ -45,12 +45,12 @@ import { ColorComponent } from './components/color/color.component';
 import { CarrouselPictureComponent } from './components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from './components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DialogExportDrawingComponent } from './components/dialog-export-locally/dialog-export-locally.component';
+import { DialogUploadComponent } from './components/dialog-upload/dialog-upload.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { DropperColorComponent } from './components/dropper-color/dropper-color.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { PaintBucketColorComponent } from './components/paint-bucket-color/paint-bucket-color.component';
-import { SaveDialogComponent } from './components/save-dialog/save-dialog.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { WriteTextDialogUserGuideComponent } from './components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 
@@ -72,7 +72,7 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         ColorComponent,
         CarrouselPictureComponent,
         DropperColorComponent,
-        SaveDialogComponent,
+        DialogUploadComponent,
         PaintBucketColorComponent,
     ],
     imports: [
