@@ -1,11 +1,14 @@
 /* tslint:disable:no-unused-variable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { ResizeDirection } from '@app/classes/resize-direction';
 import { EraseAction } from '@app/classes/undo-redo/erase-actions';
+import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { CanvasResizerService } from '../canvas/canvas-resizer.service';
 
 describe('Service: UndoRedo', () => {
     let undoRedoStub: UndoRedoService;
@@ -13,9 +16,17 @@ describe('Service: UndoRedo', () => {
     let eraserStub: EraserService;
     let eraserActionStub: EraseAction;
 
-    let changesEraser: Vec2[] = [];
+    let resizeActionStub: ResizeCanvasAction;
+    let basecanvasAct: ResizeCanvasAction;
+    let resizeStub: CanvasResizerService;
+
+    let changes: Vec2[] = [];
     let color: string;
     let thickness: number;
+    let event: MouseEvent;
+    let resizeCtx: CanvasRenderingContext2D;
+    let baseCanvas: HTMLCanvasElement;
+    let resizeDirection: ResizeDirection;
 
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
@@ -25,20 +36,39 @@ describe('Service: UndoRedo', () => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
         eraserStub = new EraserService(drawingStub, undoRedoStub);
+        resizeStub = new CanvasResizerService(undoRedoStub);
 
-        changesEraser.push({ x: 5, y: 6 });
-        changesEraser.push({ x: 25, y: 15 });
+        changes.push({ x: 5, y: 6 });
+        changes.push({ x: 25, y: 15 });
         color = '#000000';
         /* tslint:disable:no-magic-numbers */
         thickness = 5;
 
-        eraserActionStub = new EraseAction(changesEraser, color, thickness, eraserStub, drawingStub);
+        event = {
+            offsetX: 25,
+            offsetY: 10,
+        } as MouseEvent;
+
+        resizeDirection = ResizeDirection.horizontal;
+        resizeActionStub = new ResizeCanvasAction(event, resizeCtx, baseCanvas, resizeDirection, resizeStub);
+        eraserActionStub = new EraseAction(changes, color, thickness, eraserStub, drawingStub);
+
+        basecanvasAct = new ResizeCanvasAction(event, baseStub, canvas, resizeDirection, resizeStub);
 
         canvas = canvasTestHelper.canvas;
         canvas.width = 100;
         canvas.height = 100;
+
+        baseCanvas = canvasTestHelper.canvas;
+        // tslint:disable:no-magic-numbers
+        baseCanvas.width = 50;
+        // tslint:disable:no-magic-numbers
+        baseCanvas.height = 50;
+
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+
+        resizeCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
 
         drawingStub.canvas = canvas;
         drawingStub.baseCtx = baseStub;
@@ -50,20 +80,74 @@ describe('Service: UndoRedo', () => {
                 { provide: UndoRedoService, useValue: undoRedoStub },
                 { provide: EraserService, useValue: eraserStub },
                 { provide: EraseAction, useValue: eraserActionStub },
+                { provide: ResizeCanvasAction, useValue: resizeActionStub },
+                { provide: CanvasResizerService, useValue: resizeStub },
+                { provide: CanvasResizerService, useValue: basecanvasAct },
             ],
         });
 
         undoRedoStub = TestBed.inject(UndoRedoService);
+        resizeStub = TestBed.inject(CanvasResizerService);
+
         eraserActionStub = TestBed.inject(EraseAction);
+        resizeActionStub = TestBed.inject(ResizeCanvasAction);
+        basecanvasAct = TestBed.inject(ResizeCanvasAction);
     });
 
     it('should be created', () => {
         expect(undoRedoStub).toBeTruthy();
     });
 
-    // it('should redo the lastest action and pushed into the undoList', () => {
-    //     const redoSpy = spyOn(undoRedoStub, 'redo').and.stub();
-    //     undoRedoStub.addUndo(eraserActionStub);
-    //     expect(redoSpy).toHaveBeenCalled();
+    it('should have the action pushed in the element', () => {
+        undoRedoStub.addUndo(resizeActionStub);
+        expect(resizeActionStub).toEqual(undoRedoStub['listUndo'][0]);
+    });
+
+    it('should call redo', () => {
+        const redoSpy = spyOn(undoRedoStub, 'redo').and.stub();
+        undoRedoStub.addUndo(eraserActionStub);
+        undoRedoStub['listRedo'].length = 1;
+        undoRedoStub.redo();
+        expect(redoSpy).toHaveBeenCalled();
+    });
+
+    it('element of listUndo should be the same as value of listredo after calling redo', () => {
+        const action = eraserActionStub;
+        undoRedoStub['listRedo'].length = 1;
+        undoRedoStub['listRedo'][0] = action;
+        undoRedoStub.redo();
+        expect(undoRedoStub['listUndo'][0]).toEqual(action);
+    });
+
+    it('element in listUndo should be the same as the most recent one in listRedo after calling undo for a resize canvas action', () => {
+        const action1 = resizeActionStub;
+        const spyApply = spyOn(resizeActionStub, 'apply');
+        undoRedoStub.addUndo(action1);
+        undoRedoStub.defaultCanvasAction = action1;
+        undoRedoStub.undo();
+        expect(undoRedoStub['listRedo'][0]).toEqual(action1);
+        expect(spyApply).toHaveBeenCalled();
+    });
+
+    it('element in listUndo should be the same as the listRedo when calling undo. Should make difference between differents actions', () => {
+        const actionEr = eraserActionStub;
+        const action1 = resizeActionStub;
+        undoRedoStub.addUndo(action1);
+        undoRedoStub.addUndo(actionEr);
+        undoRedoStub.defaultCanvasAction = resizeActionStub;
+        undoRedoStub.undo();
+        expect(undoRedoStub['listRedo'][0]).toEqual(actionEr);
+    });
+
+    // fit('should apply elements that are different types with the right methods', () => {
+    //     const actionEr = eraserActionStub;
+    //     const spyApplyEr = spyOn(eraserActionStub, 'apply').and.stub();
+    //     undoRedoStub.addUndo(actionEr);
+    //     undoRedoStub.addUndo(strokeActionStub);
+    //     debugger;
+    //     undoRedoStub.defaultCanvasAction = basecanvasAct;
+    //     undoRedoStub.undo();
+    //     expect(undoRedoStub['listRedo'][0]).toEqual(actionEr);
+    //     expect(spyApplyEr).toHaveBeenCalled();
     // });
 });
