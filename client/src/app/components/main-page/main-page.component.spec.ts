@@ -2,28 +2,23 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { MainPageComponent } from '@app/components/main-page/main-page.component';
-import { IndexService } from '@app/services/index/index.service';
-import { of } from 'rxjs';
-
-import SpyObj = jasmine.SpyObj;
+import { Subject } from 'rxjs';
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
-    let indexServiceSpy: SpyObj<IndexService>;
+    let dialogMock: jasmine.SpyObj<MatDialog>;
 
     beforeEach(
         waitForAsync(() => {
-            indexServiceSpy = jasmine.createSpyObj('IndexService', ['basicGet', 'basicPost']);
-            indexServiceSpy.basicGet.and.returnValue(of({ title: '', body: '' }));
-            indexServiceSpy.basicPost.and.returnValue(of());
+            dialogMock = jasmine.createSpyObj('dialogCreator', ['open']);
 
             TestBed.configureTestingModule({
                 imports: [
@@ -36,7 +31,10 @@ describe('MainPageComponent', () => {
                     HttpClientModule,
                 ],
                 declarations: [MainPageComponent, DialogCreateNewDrawingComponent],
-                providers: [{ provide: MatDialog, useValue: {} }],
+                providers: [
+                    { provide: MatDialog, useValue: dialogMock },
+                    { provide: MatDialogRef, useValue: {} },
+                ],
             }).compileComponents();
             TestBed.inject(MatDialog);
 
@@ -70,6 +68,28 @@ describe('MainPageComponent', () => {
 
         component.createNewDrawing();
         expect(component.newDrawingRef).toEqual(matdialogRef);
+    });
+
+    it('should set isDialogOpenSaveEport to true after closed', () => {
+        component.isDialogOpenSaveEport = false;
+        const closedSubject = new Subject<any>();
+
+        const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
+        dialogRefMock.afterClosed.and.returnValue(closedSubject.asObservable());
+        dialogMock.open.and.returnValue(dialogRefMock);
+
+        component.openCarrousel();
+        expect(component.isDialogOpenSaveEport).toEqual(true);
+
+        closedSubject.next();
+
+        expect(component.isDialogOpenSaveEport).toEqual(false);
+    });
+
+    it('should set isDialogOpenSaveEport to true after closed', () => {
+        component.isDialogOpenSaveEport = true;
+        component.openCarrousel();
+        expect(component.isDialogOpenSaveEport).toEqual(true);
     });
 
     it('should open warning message when opening "guide dutilisation"', () => {

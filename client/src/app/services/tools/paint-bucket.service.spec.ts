@@ -65,6 +65,12 @@ fdescribe('Service: PaintBucket', () => {
         expect(paintBucketService).toBeTruthy();
     });
 
+    it('should onMouseUp', () => {
+        const spy = spyOn<any>(paintBucketService, 'onMouseUp').and.callThrough();
+        paintBucketService.onMouseUp({} as MouseEvent);
+        expect(spy).toHaveBeenCalled();
+    });
+
     it('should call floodFill', () => {
         const mouseDownPos: Vec2 = { x: 10, y: 10 } as Vec2;
         paintBucketService['floodFill'](mouseDownPos.x, mouseDownPos.y, { red: 0, green: 0, blue: 0, alpha: 1 });

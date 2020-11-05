@@ -7,11 +7,11 @@ import { Message } from '@common/communication/message';
 const MIN_CHARACTER = 6;
 const MAX_CHARACTER = 64;
 @Component({
-    selector: 'app-save-dialog',
-    templateUrl: './save-dialog.component.html',
-    styleUrls: ['./save-dialog.component.scss'],
+    selector: 'app-dialog-upload',
+    templateUrl: './dialog-upload.component.html',
+    styleUrls: ['./dialog-upload.component.scss'],
 })
-export class SaveDialogComponent implements OnInit {
+export class DialogUploadComponent implements OnInit {
     dataLabel: Label[] = [];
     textLabel: string = '';
     textName: string = '';

@@ -1,4 +1,4 @@
-import { DatabasePicureService } from '@app/services/database-picture.service';
+import { DatabasePictureService } from '@app/services/database-picture.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { NextFunction, Request, Response, Router } from 'express';
@@ -11,7 +11,7 @@ const MAX_CHARACTER = 64;
 export class DataController {
     router: Router;
 
-    constructor(@inject(TYPES.DatabasePicureService) private databaseService: DatabasePicureService) {
+    constructor(@inject(TYPES.DatabasePictureService) private databaseService: DatabasePictureService) {
         this.configureRouter();
     }
     private configureRouter(): void {
@@ -37,7 +37,7 @@ export class DataController {
         });
         this.router.get('/all_labels', (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
-                .getAllLabel()
+                .getAllLabels()
                 .then((labelsInformation: Label[]) => {
                     const informationMessage: CanvasInformation = {
                         _id: 'list_of_all_labals',
@@ -99,7 +99,7 @@ export class DataController {
 
             if (sbody !== 'Error') {
                 this.databaseService
-                    .getPicturesLabals(labels)
+                    .getPicturesLabels(labels)
                     .then((canvasInfo: CanvasInformation[]) => {
                         res.json(canvasInfo);
                     })

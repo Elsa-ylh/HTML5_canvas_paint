@@ -43,7 +43,8 @@ export class UndoRedoService {
     // adds the latest  action to the undo stack.
     addUndo(action: AbsUndoRedo): void {
         this.listUndo.push(action);
-
+        console.log(this.listUndo);
+        // debugger;
         this.updateStatus();
     }
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
@@ -79,9 +80,13 @@ export class UndoRedoService {
         this.isUndoDisabled = this.listUndo.length === 0;
     }
 
-    // disactivate the buttons when drawing on the canvas
+    // deactivate the buttons when drawing on the canvas
     whileDrawingUndoRedo(event: MouseEvent): void {
         this.isUndoDisabled = true;
         this.isRedoDisabled = true;
+    }
+
+    activateUndo(event: MouseEvent): void {
+        this.isUndoDisabled = false;
     }
 }

@@ -1,5 +1,5 @@
 // tslint:disable:no-magic-numbers
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -15,6 +15,13 @@ const NB_FILES_OPEN_AT_A_TIME = 3;
     styleUrls: ['./dialog-carrousel-picture.component.scss'],
 })
 export class CarrouselPictureComponent implements OnInit {
+    constructor(
+        private clientServerComSvc: ClientServerCommunicationService,
+        private cvsResizerService: CanvasResizerService,
+        private drawingService: DrawingService,
+        private router: Router,
+        private dialogRef: MatDialogRef<CarrouselPictureComponent>, // private undoRedoService: UndoRedoService,
+    ) {}
     private dataPicture: CanvasInformation[] = [];
     private position: number = 0;
     dataLabel: Label[] = [];
@@ -22,14 +29,10 @@ export class CarrouselPictureComponent implements OnInit {
     selectedType: string = 'name';
     name: string;
     myDate: FormControl = new FormControl(new Date());
-
-    constructor(
-        private clientServerComSvc: ClientServerCommunicationService,
-        private cvsResizerService: CanvasResizerService,
-        private drawingService: DrawingService,
-        private router: Router,
-        private dialogRef: MatDialogRef<CarrouselPictureComponent>,
-    ) {}
+    threePictures: CanvasInformation[] = [];
+    @ViewChild('previewImage1', { static: false }) previewImage1: ElementRef<HTMLImageElement>;
+    @ViewChild('previewImage2', { static: false }) previewImage2: ElementRef<HTMLImageElement>;
+    @ViewChild('previewImage3', { static: false }) previewImage3: ElementRef<HTMLImageElement>;
 
     ngOnInit(): void {
         this.addAllData();
@@ -64,7 +67,6 @@ export class CarrouselPictureComponent implements OnInit {
         if (itList) {
             this.labelSelect.push(label);
         }
-        console.log(this.labelSelect.length);
         this.labelSelect.length === 0 ? this.addAllData() : this.setMessageLabel(this.labelSelect);
     }
     private setMessageLabel(labels: string[]): void {
@@ -72,11 +74,12 @@ export class CarrouselPictureComponent implements OnInit {
         for (let index = 0; index < labels.length; index++) {
             textLabel += index === labels.length - 1 ? labels[index] : labels[index] + ',';
         }
+        this.position = 0;
         const message: Message = { title: 'labels', body: textLabel };
         this.clientServerComSvc.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
-    getPicturesAll(): CanvasInformation[] {
-        return this.dataPicture;
+    getPicturesAll(): number {
+        return this.dataPicture.length;
     }
     setSearchCriteria(): void {
         switch (this.selectedType) {
@@ -92,81 +95,87 @@ export class CarrouselPictureComponent implements OnInit {
         this.position = 0;
     }
     prior(): void {
-        switch (this.position) {
-            case -1:
-                this.position = -1;
-                break;
-            case 0:
-                this.position = this.dataPicture.length - 1;
-                break;
-            default:
-                this.position--;
-                break;
-        }
+        if (this.position === 0) {
+            this.position = this.dataPicture.length - 1;
+        } else this.position--;
     }
     next(): void {
-        switch (this.position) {
-            case -1:
-                this.position = -1;
-                break;
-            case this.dataPicture.length - 1:
-                this.position = 0;
-                break;
-            default:
-                this.position++;
-                break;
-        }
+        if (this.position === this.dataPicture.length - 1) {
+            this.position = 0;
+        } else this.position++;
     }
 
     getPictures(): CanvasInformation[] {
-        let threePictures: CanvasInformation[] = [];
+        this.threePictures = [];
         if (this.dataPicture.length <= NB_FILES_OPEN_AT_A_TIME) {
-            threePictures = this.dataPicture;
-            this.position = -1;
+            this.threePictures = this.dataPicture;
+            this.createImage(this.threePictures);
+            return this.threePictures;
         }
-        if (this.position > 0 && this.position <= this.dataPicture.length + 1 - NB_FILES_OPEN_AT_A_TIME) {
-            for (let index = this.position - 1; index < this.position - 1 + NB_FILES_OPEN_AT_A_TIME; index++) {
-                threePictures.push(this.dataPicture[index]);
-            }
-        }
+
         switch (this.position) {
             case 0:
-                threePictures.push(this.dataPicture[this.dataPicture.length - 1]);
-                threePictures.push(this.dataPicture[this.position]);
-                threePictures.push(this.dataPicture[1]);
+                this.threePictures.push(this.dataPicture[this.dataPicture.length - 1]);
+                this.threePictures.push(this.dataPicture[this.position]);
+                this.threePictures.push(this.dataPicture[1]);
                 break;
             case this.dataPicture.length - 1:
-                threePictures.push(this.dataPicture[this.position - 1]);
-                threePictures.push(this.dataPicture[this.position]);
-                threePictures.push(this.dataPicture[0]);
-
+                this.threePictures.push(this.dataPicture[this.position - 1]);
+                this.threePictures.push(this.dataPicture[this.position]);
+                this.threePictures.push(this.dataPicture[0]);
                 break;
+            default:
+                this.threePictures.push(this.dataPicture[this.position - 1]);
+                this.threePictures.push(this.dataPicture[this.position]);
+                this.threePictures.push(this.dataPicture[this.position + 1]);
         }
-        this.createImage(threePictures);
-        return threePictures;
+        this.createImage(this.threePictures);
+        return this.threePictures;
     }
+
     private createImage(listCard: CanvasInformation[]): void {
-        listCard.forEach((element) => {
-            // let canvas = document.getElementById(element.id);
-            // let ctx = canvas.getContext('2d');
-        });
+        const nbpicture = listCard.length;
+        if (nbpicture >= 1) {
+            if (this.previewImage1 !== undefined) {
+                this.previewImage1.nativeElement.src = listCard[0].picture;
+            }
+        }
+        if (nbpicture >= 2) {
+            if (this.previewImage2 !== undefined) {
+                this.previewImage2.nativeElement.src = listCard[1].picture;
+            }
+        }
+        if (nbpicture >= 3) {
+            if (this.previewImage3 !== undefined) {
+                this.previewImage3.nativeElement.src = listCard[2].picture;
+            }
+        }
     }
+
     loadPicture(picture: CanvasInformation): void {
         if (confirm('load :' + picture.name)) {
             this.cvsResizerService.canvasSize.y = picture.height;
             this.cvsResizerService.canvasSize.x = picture.width;
             this.drawingService.convertBase64ToBaseCanvas(picture.picture);
+            /*const actionLoadImg = new LoadAction(picture.picture, picture.height, picture.width, this.drawingService, this.cvsResizerService);
+            this.undoRedoService.clearUndo();
+            this.undoRedoService.clearRedo();
+            this.undoRedoService.addUndo(actionLoadImg);*/
+
             this.dialogRef.close(true);
             this.router.navigate(['/editor']);
         }
     }
+
     deletePicture(picture: CanvasInformation): void {
         if (confirm('Suprimer : ' + picture.name)) {
             const deleteMassage: Message = { title: 'delete', body: picture._id };
             this.clientServerComSvc.deleteQuery(deleteMassage).subscribe((info) => this.messageDelite(info));
         }
     }
+
     messageDelite(message: Message): void {
         alert(message.body);
+        this.addAllData();
     }
 }

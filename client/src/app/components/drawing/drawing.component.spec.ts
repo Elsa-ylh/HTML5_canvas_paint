@@ -61,7 +61,7 @@ describe('DrawingComponent', () => {
             ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub);
             dropperStub = new DropperService(drawingStub, colorStub);
             polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub);
-            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub);
+            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub);
             selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
 
