@@ -55,8 +55,8 @@ export class SelectionEllipseService extends SelectionService {
 
     drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {
         if (this.isAllSelect) {
-            this.drawSelectionRect(ctx, mouseCoord);
             ctx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
+            this.drawSelectionRect(ctx, mouseCoord);
         } else {
             ctx.save();
             ctx.beginPath();

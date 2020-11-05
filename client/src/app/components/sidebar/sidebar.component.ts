@@ -273,7 +273,6 @@ export class SidebarComponent {
         this.isColorChecked = false;
         this.isPaintBucketChecked = false;
         this.isDropperChecked = false;
-        // this.isSelectionChecked = false;
         this.isSelectionEllipseChecked = false;
         this.isSelectionRectangleChecked = false;
     }
@@ -371,7 +370,6 @@ export class SidebarComponent {
     changeSelectionRectangleMode(event: KeyboardEvent): void {
         if (this.isDialogloadSaveEport) {
             this.resetCheckedButton();
-            // this.isSelectionChecked = true;
             this.isSelectionRectangleChecked = true;
             this.pickSelectionRectangle();
         }
@@ -380,7 +378,6 @@ export class SidebarComponent {
     @HostListener('window:keydown.s', ['$event']) changeSelectionEllipseMode(event: KeyboardEvent): void {
         if (this.isDialogloadSaveEport) {
             this.resetCheckedButton();
-            // this.isSelectionChecked = true;
             this.isSelectionEllipseChecked = true;
             this.pickSelectionEllipse();
         }
