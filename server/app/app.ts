@@ -29,7 +29,6 @@ export class Application {
     }
 
     bindRoutes(): void {
-        // Notre application utilise le routeur de notre API `Index`
         this.app.use('/api/data', this.dataController.router);
         this.errorHandling();
     }
