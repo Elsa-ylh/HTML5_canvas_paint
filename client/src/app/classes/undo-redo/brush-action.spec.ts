@@ -97,7 +97,7 @@ describe('BrushAction', () => {
         brushStub = TestBed.inject(BrushService);
     });
 
-    it('should stroke color and linewidth to be primary color and thicknessbrush', () => {
+    it('strokeColor and linewidth values must match with  primaryColor and thicknessbrush', () => {
         drawingStub.baseCtx.shadowColor = drawingStub.previewCtx.shadowColor = '#000000' as string;
         brushActionStub.apply();
         expect(drawingStub.baseCtx.strokeStyle).toEqual(primaryColor);

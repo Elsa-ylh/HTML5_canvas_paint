@@ -299,7 +299,7 @@ describe('SidebarComponent', () => {
         expect(drawingStub.previewCtx.lineWidth).toEqual(brushStub.pixelMinBrush);
     });
     it(' should pick brush and set previewCtx lineWidth', () => {
-        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         drawingStub.baseCtx.lineWidth = 20;
         brushStub.pixelMinBrush = 10;
         component.pickBrush(2);
@@ -309,61 +309,61 @@ describe('SidebarComponent', () => {
         expect(drawingStub.previewCtx.lineWidth).toEqual(drawingStub.baseCtx.lineWidth);
     });
     it('should pick line', () => {
-        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         component.pickLine();
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
         expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool1);
     });
     it('should pick rectangle', () => {
-        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         component.pickRectangle(SubToolselected.tool2);
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
         expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool2);
     });
     it('should pick ellipse', () => {
-        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         component.pickEllipse(1);
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
         expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool1);
     });
     it('should pick polygon', () => {
-        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         component.pickPolygon(1);
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
         expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool1);
     });
     it('should pick color', () => {
-        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         component.pickColor();
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
     });
 
     it('should pick paint bucket', () => {
-        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         component.pickPaintBucket();
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
     });
 
     it('should pick dropper', () => {
-        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         component.pickDropper();
         expect(drawingStub.cursorUsed).toEqual('pointer');
         expect(switchToolSpy).toHaveBeenCalled();
     });
     it('should pick selection rectangle', () => {
-        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         component.pickSelectionRectangle();
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
     });
     it('should pick selection ellipse', () => {
-        const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.callThrough();
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.callThrough();
         component.pickSelectionEllipse();
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
@@ -518,8 +518,8 @@ describe('SidebarComponent', () => {
     it(' should call resetCheckButton set isSelectionChecked and isSelectionRectangleChecked to true should call pickSelectionRect', () => {
         toolServiceStub.currentToolName = ToolUsed.Pencil;
         const event = new KeyboardEvent('window:keydown.r', {});
-        const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
-        const spyPickSelectionRect = spyOn(component, 'pickSelectionRectangle').and.callThrough();
+        const spyReset = spyOn(component, 'resetCheckedButton').and.stub();
+        const spyPickSelectionRect = spyOn(component, 'pickSelectionRectangle').and.stub();
         window.dispatchEvent(event);
         component.changeSelectionRectangleMode(event);
         expect(spyReset).toHaveBeenCalled();

@@ -108,11 +108,9 @@ export class PaintBucketService extends Tool {
                         if (!reachedLeft) {
                             pixelStack.push({ x: x - 1, y });
                             reachedLeft = true;
+                        } else if (reachedLeft) {
+                            reachedLeft = false;
                         }
-                        return;
-                    }
-                    if (reachedLeft) {
-                        reachedLeft = false;
                     }
                 }
 
@@ -128,15 +126,13 @@ export class PaintBucketService extends Tool {
                         if (!reachedRight) {
                             pixelStack.push({ x: x + 1, y });
                             reachedRight = true;
+                        } else if (reachedRight) {
+                            reachedRight = false;
                         }
-                        return;
                     }
-                    if (reachedRight) {
-                        reachedRight = false;
-                    }
-                }
 
-                linearCords += this.cvsResizerService.canvasSize.x * this.colorAttributes;
+                    linearCords += this.cvsResizerService.canvasSize.x * this.colorAttributes;
+                }
             }
         }
         this.drawingService.baseCtx.putImageData(pixels, 0, 0);
