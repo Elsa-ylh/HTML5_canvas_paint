@@ -1,39 +1,53 @@
 /* tslint:disable:no-unused-variable */
-
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { MouseButton } from '@app/classes/mouse-button';
-// import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { RGBA } from '@app/classes/rgba';
+import { Vec2 } from '@app/classes/vec2';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
-// import { CanvasResizerService } from '../canvas/canvas-resizer.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-describe('Service: PaintBucket', () => {
+fdescribe('Service: PaintBucket', () => {
     /*tslint:disable:no-any*/
-    let colorServiceSpy: jasmine.SpyObj<ColorService>;
+    /*tslint:disable:no-magic-numbers*/
+    let colorService: ColorService;
     let paintBucketService: PaintBucketService;
-    let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
     // tslint:disable-next-line:prefer-const
-    // let canvasReziserServiceSpy: jasmine.SpyObj<CanvasResizerService>;
+
+    let drawingService: DrawingService;
+    let undoRedoService: UndoRedoService;
+    let canvasReziserService: CanvasResizerService;
+
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+
     let mouseEventTest: MouseEvent;
     let hexToRGBASpy: jasmine.Spy<any>;
     let matchFillColorSpy: jasmine.Spy<any>;
     let floodFillSpy: jasmine.Spy<any>;
     let paintAllSimilarSpy: jasmine.Spy<any>;
-    let toleranceToRGBASpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'clearEffectTool']);
-        colorServiceSpy = jasmine.createSpyObj('ColorService', ['getprimaryColor', 'getsecondaryColor']);
+
+        drawingService = new DrawingService();
+
+        drawingService.canvas = canvasTestHelper.canvas;
+        drawingService.baseCtx = baseCtxStub;
+
+        undoRedoService = new UndoRedoService(drawingService);
+        canvasReziserService = new CanvasResizerService(undoRedoService);
+        colorService = new ColorService(drawingService);
+
         TestBed.configureTestingModule({
             providers: [
-                { provide: DrawingService, useValue: drawingServiceSpy },
-                { provide: ColorService, useValue: colorServiceSpy },
+                { provide: DrawingService, useValue: drawingService },
+                { provide: ColorService, useValue: colorService },
+                { provide: CanvasResizerService, useValue: canvasReziserService },
             ],
         });
         paintBucketService = TestBed.inject(PaintBucketService);
@@ -45,8 +59,6 @@ describe('Service: PaintBucket', () => {
         hexToRGBASpy = spyOn<any>(paintBucketService, 'hexToRGBA').and.callThrough();
         matchFillColorSpy = spyOn<any>(paintBucketService, 'matchFillColor').and.callThrough();
         floodFillSpy = spyOn<any>(paintBucketService, 'floodFill').and.callThrough();
-        paintAllSimilarSpy = spyOn<any>(paintBucketService, 'paintAllSimilar').and.callThrough();
-        toleranceToRGBASpy = spyOn<any>(paintBucketService, 'toleranceToRGBA').and.callThrough();
     });
 
     it('should be created', () => {
@@ -54,38 +66,101 @@ describe('Service: PaintBucket', () => {
     });
 
     it('should call floodFill', () => {
-        paintBucketService.floodFill(mouseEventTest.x, mouseEventTest.y, { red: 0, green: 0, blue: 0, alpha: 1 });
+        const mouseDownPos: Vec2 = { x: 10, y: 10 } as Vec2;
+        paintBucketService['floodFill'](mouseDownPos.x, mouseDownPos.y, { red: 0, green: 0, blue: 0, alpha: 1 });
         expect(floodFillSpy).toHaveBeenCalled();
     });
 
     it('should call matchFillColor', () => {
-        paintBucketService.matchFillColor({ red: 0, green: 0, blue: 0, alpha: 1 }, { red: 0, green: 0, blue: 0, alpha: 1 });
+        paintBucketService['matchFillColor']({ red: 0, green: 0, blue: 0, alpha: 1 }, { red: 0, green: 0, blue: 0, alpha: 1 });
         expect(matchFillColorSpy).toHaveBeenCalled();
     });
 
-    // it('matchFillColor should be false', () => {
-    //   paintBucketService.matchFillColor({ red: 1, green: 1, blue: 1, alpha: 1}, { red: 0, green: 0, blue: 0, alpha: 1})
-    //   expect(matchFillColorSpy).toBeFalsy();
-    // });
-
     it('should call hexToRGBA', () => {
-        paintBucketService.hexToRGBA('#000000');
+        paintBucketService['hexToRGBA']('#000000');
         expect(hexToRGBASpy).toHaveBeenCalled();
     });
 
     it('should call paintAllSimilar', () => {
-        paintBucketService.paintAllSimilar(mouseEventTest.x, mouseEventTest.y, { red: 0, green: 0, blue: 0, alpha: 1 });
+        canvasReziserService.canvasSize.x = 100;
+        canvasReziserService.canvasSize.y = 100;
+        paintAllSimilarSpy = spyOn<any>(paintBucketService, 'paintAllSimilar').and.callThrough();
+        paintBucketService['paintAllSimilar'](mouseEventTest.x, mouseEventTest.y, { red: 0, green: 0, blue: 0, alpha: 1 });
         expect(paintAllSimilarSpy).toHaveBeenCalled();
     });
 
-    it('should call toleranceToRGBASpy', () => {
-        paintBucketService.toleranceToRGBA();
+    it('should call toleranceToRGBASpy MIN_TOLERANCE', () => {
+        paintBucketService.tolerance = 0;
+        const toleranceToRGBASpy = spyOn<any>(paintBucketService, 'toleranceToRGBA').and.callThrough();
+        paintBucketService['toleranceToRGBA']();
         expect(toleranceToRGBASpy).toHaveBeenCalled();
     });
 
-    //   it('should call toleranceToRGBASpy', () => {
-    //     let minToleranceTest : number = 0;
-    //     minToleranceTest = paintBucketService.toleranceToRGBA();
-    //     expect(toleranceToRGBASpy).toEqual(0);
-    // });
+    it('should call toleranceToRGBASpy MAX_TOLERANCE', () => {
+        paintBucketService.tolerance = 255;
+        const toleranceToRGBASpy = spyOn<any>(paintBucketService, 'toleranceToRGBA').and.callThrough();
+        paintBucketService['toleranceToRGBA']();
+        expect(toleranceToRGBASpy).toHaveBeenCalled();
+    });
+
+    it('should call toleranceToRGBASpy other', () => {
+        paintBucketService.tolerance = 100;
+        const toleranceToRGBASpy = spyOn<any>(paintBucketService, 'toleranceToRGBA').and.callThrough();
+        paintBucketService['toleranceToRGBA']();
+        expect(toleranceToRGBASpy).toHaveBeenCalled();
+    });
+
+    it(' mouseDown should call floodFill on left click', () => {
+        const mouseEventLeftClick = {
+            offsetX: 25,
+            offsetY: 25,
+            button: MouseButton.Left,
+        } as MouseEvent;
+        paintBucketService.onMouseDown(mouseEventLeftClick);
+        expect(floodFillSpy).toHaveBeenCalled();
+    });
+
+    it(' mouseDown should call paintAllSimilar on right click', () => {
+        paintAllSimilarSpy = spyOn<any>(paintBucketService, 'paintAllSimilar').and.callThrough();
+        const mouseEventRightClick = {
+            offsetX: 25,
+            offsetY: 25,
+            button: MouseButton.Right,
+        } as MouseEvent;
+        paintBucketService.onMouseDown(mouseEventRightClick);
+        expect(paintAllSimilarSpy).toHaveBeenCalled();
+    });
+
+    it(' should floodFill a lake of something if clicked on the left edge', () => {
+        drawingService.canvas.width = 100;
+        drawingService.canvas.height = 100;
+        drawingService.clearCanvas(baseCtxStub);
+        baseCtxStub.fillStyle = colorService.primaryColor;
+        baseCtxStub.fillRect(100, 100, 0, 0);
+        const mouseDownPos = { x: 0, y: 0 } as Vec2;
+        paintBucketService['floodFill'](mouseDownPos.x, mouseDownPos.y, { red: 10, green: 10, blue: 10, alpha: 1 } as RGBA);
+        expect(floodFillSpy).toHaveBeenCalled();
+    });
+
+    it(' should floodFill a lake of something if clicked on the right edge', () => {
+        drawingService.canvas.width = 100;
+        drawingService.canvas.height = 100;
+        drawingService.clearCanvas(baseCtxStub);
+        baseCtxStub.fillStyle = colorService.primaryColor;
+        baseCtxStub.fillRect(100, 100, 0, 0);
+        const mouseDownPos = { x: 100, y: 100 } as Vec2;
+        paintBucketService['floodFill'](mouseDownPos.x, mouseDownPos.y, { red: 10, green: 10, blue: 10, alpha: 1 } as RGBA);
+        expect(floodFillSpy).toHaveBeenCalled();
+    });
+
+    it(' should floodFill a lake of something if clicked in the middle', () => {
+        drawingService.canvas.width = 100;
+        drawingService.canvas.height = 100;
+        drawingService.clearCanvas(baseCtxStub);
+        baseCtxStub.fillStyle = colorService.primaryColor;
+        baseCtxStub.fillRect(100, 100, 0, 0);
+        const mouseDownPos = { x: 10, y: 10 } as Vec2;
+        paintBucketService['floodFill'](mouseDownPos.x, mouseDownPos.y, { red: 10, green: 10, blue: 10, alpha: 1 } as RGBA);
+        expect(floodFillSpy).toHaveBeenCalled();
+    });
 });
