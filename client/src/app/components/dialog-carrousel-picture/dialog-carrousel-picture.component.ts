@@ -3,7 +3,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { LoadAction } from '@app/classes/undo-redo/load-action';
+// import { LoadAction } from '@app/classes/undo-redo/load-action';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -163,10 +163,10 @@ export class CarrouselPictureComponent implements OnInit {
             this.cvsResizerService.canvasSize.x = picture.width;
             this.drawingService.convertBase64ToBaseCanvas(picture.picture, true);
             // undo-Redo
-            const actionLoadImg = new LoadAction(picture.picture, picture.height, picture.width, this.drawingService, this.cvsResizerService);
-            this.undoRedoService.clearUndo();
-            this.undoRedoService.clearRedo();
-            this.undoRedoService.addUndo(actionLoadImg);
+            // const actionLoadImg = new LoadAction(picture.picture, picture.height, picture.width, this.drawingService, this.cvsResizerService);
+            // this.undoRedoService.clearUndo();
+            // this.undoRedoService.clearRedo();
+            // this.undoRedoService.addUndo(actionLoadImg);
 
             this.dialogRef.close(true);
             this.router.navigate(['/editor']);
