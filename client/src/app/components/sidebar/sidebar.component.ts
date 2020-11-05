@@ -127,7 +127,7 @@ export class SidebarComponent {
     openSaveServer(): void {
         if (this.isDialogloadSaveEport) {
             this.isDialogloadSaveEport = false;
-            this.dialogSaveRef = this.dialogCreator.open(DialogUpload, {
+            this.dialogSaveRef = this.dialogCreator.open(DialogUploadComponent, {
                 width: '90%',
                 height: '90%',
             });
