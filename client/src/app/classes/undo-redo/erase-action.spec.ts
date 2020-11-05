@@ -55,11 +55,10 @@ describe('EraseAction', () => {
         eraserStub = TestBed.inject(EraserService);
     });
 
-    it('should stroke color, shadow color and linewidth to be primary color, secondary color and thicknessbrush', () => {
+    it('strokeColor and linewidth must be equal to primaryColor and thickness of an eraserAction', () => {
         drawingStub.baseCtx.shadowColor = drawingStub.previewCtx.shadowColor = '#000000' as string;
         eraseActionStub.apply();
         expect(drawingStub.baseCtx.strokeStyle).toEqual(color);
-        // expect(drawingStub.baseCtx.shadowColor).toEqual(secondaryColor);
         expect(drawingStub.baseCtx.lineWidth).toEqual(thickness);
     });
 

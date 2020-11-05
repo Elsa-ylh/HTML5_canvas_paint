@@ -98,7 +98,7 @@ describe('Service: UndoRedo', () => {
         expect(undoRedoStub).toBeTruthy();
     });
 
-    it('should have the action pushed in the element', () => {
+    it('should push the action  in the listUndo', () => {
         undoRedoStub.addUndo(resizeActionStub);
         // tslint:disable:no-string-literal
         expect(resizeActionStub).toEqual(undoRedoStub['listUndo'][0]);
@@ -113,7 +113,7 @@ describe('Service: UndoRedo', () => {
         expect(redoSpy).toHaveBeenCalled();
     });
 
-    it('element of listUndo should be the same as value of listredo after calling redo', () => {
+    it('elements in listUndo should be the same as elements in listredo after calling redo', () => {
         const action = eraserActionStub;
         // tslint:disable:no-string-literal
         undoRedoStub['listRedo'].length = 1;
@@ -124,7 +124,7 @@ describe('Service: UndoRedo', () => {
         expect(undoRedoStub['listUndo'][0]).toEqual(action);
     });
 
-    it('element in listUndo should be the same as the most recent one in listRedo after calling undo for a resize canvas action', () => {
+    it('elements in listUndo should be the same as the most recent one in listRedo after calling undo for a resize canvas action', () => {
         const action1 = resizeActionStub;
         const spyApply = spyOn(resizeActionStub, 'apply');
         undoRedoStub.addUndo(action1);
@@ -135,7 +135,7 @@ describe('Service: UndoRedo', () => {
         expect(spyApply).toHaveBeenCalled();
     });
 
-    it('element in listUndo should be the same as the listRedo when calling undo. Should make difference between differents actions', () => {
+    it('elements in listUndo should be the same as elements in listRedo when calling undo. Should spot  different actions', () => {
         const actionEr = eraserActionStub;
         const action1 = resizeActionStub;
         undoRedoStub.addUndo(action1);
@@ -145,16 +145,4 @@ describe('Service: UndoRedo', () => {
         // tslint:disable:no-string-literal
         expect(undoRedoStub['listRedo'][0]).toEqual(actionEr);
     });
-
-    // fit('should apply elements that are different types with the right methods', () => {
-    //     const actionEr = eraserActionStub;
-    //     const spyApplyEr = spyOn(eraserActionStub, 'apply').and.stub();
-    //     undoRedoStub.addUndo(actionEr);
-    //     undoRedoStub.addUndo(strokeActionStub);
-    //     debugger;
-    //     undoRedoStub.defaultCanvasAction = basecanvasAct;
-    //     undoRedoStub.undo();
-    //     expect(undoRedoStub['listRedo'][0]).toEqual(actionEr);
-    //     expect(spyApplyEr).toHaveBeenCalled();
-    // });
 });

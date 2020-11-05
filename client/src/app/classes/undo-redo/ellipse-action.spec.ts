@@ -79,11 +79,10 @@ describe('EllipseAction', () => {
         ellipseStub = TestBed.inject(EllipseService);
     });
 
-    it('should stroke color, shadow color and lignwidth to be primary color, secondary color and thicknessbrush', () => {
+    it('strokeColor and linewidth must be equal to be primaryColor and thickness of an ellipseAction', () => {
         drawingStub.baseCtx.shadowColor = drawingStub.previewCtx.shadowColor = '#000000' as string;
         ellipseActionStub.apply();
         expect(drawingStub.baseCtx.strokeStyle).toEqual(primaryColor);
-        // expect(drawingStub.baseCtx.shadowColor).toEqual(secondaryColor);
         expect(drawingStub.baseCtx.lineWidth).toEqual(lineWidth);
     });
 

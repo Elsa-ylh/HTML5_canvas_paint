@@ -82,7 +82,7 @@ describe('RectangleAction', () => {
         rectStub = TestBed.inject(RectangleService);
     });
 
-    it('should stroke color and linewidth to be primary color and thickness', () => {
+    it('strokeColor and linewidth must be equal to primary color and thickness of rectangleAction', () => {
         drawingStub.baseCtx.shadowColor = drawingStub.previewCtx.shadowColor = '#000000' as string;
         rectangleActionStub.apply();
         expect(drawingStub.baseCtx.strokeStyle).toEqual(primaryColor);
