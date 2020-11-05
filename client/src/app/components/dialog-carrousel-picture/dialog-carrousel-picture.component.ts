@@ -55,6 +55,8 @@ export class CarrouselPictureComponent implements OnInit {
     }
     refresh(): void {
         this.addAllLabal();
+        this.labelSelect = [];
+        this.addAllData();
     }
     selectionLabel(label: string): void {
         let itList = true;
