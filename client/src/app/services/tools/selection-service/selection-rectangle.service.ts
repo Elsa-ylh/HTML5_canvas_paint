@@ -53,8 +53,8 @@ export class SelectionRectangleService extends SelectionService {
     }
 
     drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {
-        this.drawSelectionRect(ctx, mouseCoord);
         ctx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
+        this.drawSelectionRect(ctx, mouseCoord);
     }
 
     pasteSelection(position: Vec2, imageData: ImageData): void {

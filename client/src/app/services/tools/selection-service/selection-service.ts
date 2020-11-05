@@ -11,22 +11,28 @@ import { interval, Subscription, timer } from 'rxjs';
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
 // tslint:disable:no-empty
-// tslint:disable:no-magic-numbers
+// Ce fichier est plus grand que 350 lignes mais toutes les fonctions gérés
+// par ce service doivent se trouver dans ce fichier donc la ligne suivante est justifié
 // tslint:disable:max-file-line-count
 export class SelectionService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
     }
 
-    lineWidth: number = 1;
+    // initialization of local const
+    private pixelMouvement: number = 3;
+    private mouvementDelay: number = 100;
+    private minTimeMovement: number = 500;
+    private lineWidth: number = 1;
+    private modifSelectSquare: number = 10;
+    dottedSpace: number = 10;
+
     shiftPressed: boolean = false;
     height: number;
     width: number;
     mousePosition: Vec2;
     mouseMouvement: Vec2 = { x: 0, y: 0 };
-    dottedLineWidth: number = 2;
-    dottedSpace: number = 10;
-    modifSelectSquare: number = 10;
+
     imageData: ImageData;
     copyImageInitialPos: Vec2 = { x: 0, y: 0 };
     selectRectInitialPos: Vec2 = { x: 0, y: 0 };
@@ -297,7 +303,7 @@ export class SelectionService extends Tool {
         if (!this.drawingService.isPreviewCanvasBlank()) {
             this.clearSelection(this.selectRectInitialPos, this.width, this.height);
             if (!this.leftArrow) {
-                this.mouseMouvement.x -= 3;
+                this.mouseMouvement.x -= this.pixelMouvement;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
                     this.drawingService.previewCtx,
@@ -310,7 +316,7 @@ export class SelectionService extends Tool {
             }
             this.leftArrow = true;
             this.startTimer();
-            if (this.time >= 500) {
+            if (this.time >= this.minTimeMovement) {
                 this.moveSelectiontimerLeft();
             }
         }
@@ -320,7 +326,7 @@ export class SelectionService extends Tool {
         if (!this.drawingService.isPreviewCanvasBlank()) {
             this.clearSelection(this.selectRectInitialPos, this.width, this.height);
             if (!this.rightArrow) {
-                this.mouseMouvement.x += 3;
+                this.mouseMouvement.x += this.pixelMouvement;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
                 this.drawSelection(
@@ -334,7 +340,7 @@ export class SelectionService extends Tool {
             }
             this.rightArrow = true;
             this.startTimer();
-            if (this.time >= 500) {
+            if (this.time >= this.minTimeMovement) {
                 this.moveSelectiontimerRight();
             }
         }
@@ -344,7 +350,7 @@ export class SelectionService extends Tool {
         if (!this.drawingService.isPreviewCanvasBlank()) {
             this.clearSelection(this.selectRectInitialPos, this.width, this.height);
             if (!this.upArrow) {
-                this.mouseMouvement.y -= 3;
+                this.mouseMouvement.y -= this.pixelMouvement;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
                     this.drawingService.previewCtx,
@@ -357,7 +363,7 @@ export class SelectionService extends Tool {
             }
             this.upArrow = true;
             this.startTimer();
-            if (this.time >= 500) {
+            if (this.time >= this.minTimeMovement) {
                 this.moveSelectiontimerUp();
             }
         }
@@ -367,7 +373,7 @@ export class SelectionService extends Tool {
         if (!this.drawingService.isPreviewCanvasBlank()) {
             this.clearSelection(this.selectRectInitialPos, this.width, this.height);
             if (!this.downArrow) {
-                this.mouseMouvement.y += 3;
+                this.mouseMouvement.y += this.pixelMouvement;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
                     this.drawingService.previewCtx,
@@ -380,7 +386,7 @@ export class SelectionService extends Tool {
             }
             this.downArrow = true;
             this.startTimer();
-            if (this.time >= 500) {
+            if (this.time >= this.minTimeMovement) {
                 this.moveSelectiontimerDown();
             }
         }
@@ -397,15 +403,15 @@ export class SelectionService extends Tool {
     startTimer(): void {
         if (!this.timerStarted) {
             this.timerStarted = true;
-            const mainTimer = interval(100);
-            this.subscriptionTimer = mainTimer.subscribe(() => (this.time += 100));
+            const mainTimer = interval(this.mouvementDelay);
+            this.subscriptionTimer = mainTimer.subscribe(() => (this.time += this.mouvementDelay));
         }
     }
 
     moveSelectiontimerLeft(): void {
         if (!this.timerLeft) {
             this.timerLeft = true;
-            const timerMove = timer(100, 100);
+            const timerMove = timer(this.mouvementDelay, this.mouvementDelay);
             this.subscriptionMoveLeft = timerMove.subscribe(() => {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
@@ -416,7 +422,7 @@ export class SelectionService extends Tool {
                     },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
-                this.mouseMouvement.x -= 3;
+                this.mouseMouvement.x -= this.pixelMouvement;
             });
         }
     }
@@ -424,7 +430,7 @@ export class SelectionService extends Tool {
     moveSelectiontimerRight(): void {
         if (!this.timerRight) {
             this.timerRight = true;
-            const timerMove = timer(100, 100);
+            const timerMove = timer(this.mouvementDelay, this.mouvementDelay);
             this.subscriptionMoveRight = timerMove.subscribe(() => {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
@@ -435,7 +441,7 @@ export class SelectionService extends Tool {
                     },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
-                this.mouseMouvement.x += 3;
+                this.mouseMouvement.x += this.pixelMouvement;
             });
         }
     }
@@ -443,7 +449,7 @@ export class SelectionService extends Tool {
     moveSelectiontimerUp(): void {
         if (!this.timerUp) {
             this.timerUp = true;
-            const timerMove = timer(100, 100);
+            const timerMove = timer(this.mouvementDelay, this.mouvementDelay);
             this.subscriptionMoveUp = timerMove.subscribe(() => {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
@@ -454,7 +460,7 @@ export class SelectionService extends Tool {
                     },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
-                this.mouseMouvement.y -= 3;
+                this.mouseMouvement.y -= this.pixelMouvement;
             });
         }
     }
@@ -462,7 +468,7 @@ export class SelectionService extends Tool {
     moveSelectiontimerDown(): void {
         if (!this.timerDown) {
             this.timerDown = true;
-            const timerMove = timer(100, 100);
+            const timerMove = timer(this.mouvementDelay, this.mouvementDelay);
             this.subscriptionMoveDown = timerMove.subscribe(() => {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
@@ -473,7 +479,7 @@ export class SelectionService extends Tool {
                     },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
-                this.mouseMouvement.y += 3;
+                this.mouseMouvement.y += this.pixelMouvement;
             });
         }
     }

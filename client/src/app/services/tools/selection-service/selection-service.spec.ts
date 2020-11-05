@@ -291,19 +291,9 @@ describe('Service: SelectionService', () => {
         expect(service.height).toEqual(19);
     });
 
-    //   it(' drawPreviewRect should not draw a preview rectangle in the preview canvas if the mouse has not moved', () => {
-    //     service.mouseDownCoord = { x: 1, y: 1 };
-    //     service.mousePosition = { x: 1, y: 1 };
-    //     service.drawPreviewRect(service['drawingService'].previewCtx, false);
-
-    //     expect(service.width).not.toEqual(29);
-    //     expect(service.height).not.toEqual(19);
-    //  });
-
     it(' drawSelectionRect should draw a selection rectangle in the preview canvas', () => {
         service.width = 20;
         service.height = 20;
-        service.modifSelectSquare = 2;
         fillRectSpy = spyOn<any>(service['drawingService'].previewCtx, 'fillRect').and.callThrough();
         service.drawSelectionRect(service['drawingService'].previewCtx, { x: 1, y: 1 });
         expect(fillRectSpy).toHaveBeenCalled();
