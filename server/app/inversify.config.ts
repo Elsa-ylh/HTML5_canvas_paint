@@ -1,8 +1,6 @@
 import { DataController } from '@app/controllers/data.controller';
-import { DateController } from '@app/controllers/date.controller';
 import { IndexController } from '@app/controllers/index.controller';
-import { DatabasePicureService } from '@app/services/database-picture.service';
-import { DateService } from '@app/services/date.service';
+import { DatabasePictureService } from '@app/services/database-picture.service';
 import { IndexService } from '@app/services/index.service';
 import { Container } from 'inversify';
 import { Application } from './app';
@@ -17,9 +15,7 @@ export const containerBootstrapper: () => Promise<Container> = async () => {
     container.bind(TYPES.IndexController).to(IndexController);
     container.bind(TYPES.IndexService).to(IndexService);
 
-    container.bind(TYPES.DateController).to(DateController);
-    container.bind(TYPES.DateService).to(DateService);
     container.bind(TYPES.DataController).to(DataController);
-    container.bind(TYPES.DatabasePicureService).to(DatabasePicureService);
+    container.bind(TYPES.DatabasePictureService).to(DatabasePictureService);
     return container;
 };

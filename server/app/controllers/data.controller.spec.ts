@@ -1,6 +1,6 @@
 // tslint:disable: max-file-line-count
 import { Application } from '@app/app';
-import { DatabasePicureService } from '@app/services/database-picture.service';
+import { DatabasePictureService } from '@app/services/database-picture.service';
 import { TYPES } from '@app/types';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
@@ -11,9 +11,7 @@ import { Stubbed, testingContainer } from '../../test/test-utils';
 const HTTP_STATUS_OK = 200;
 const HTTP_STATUS_BAD_REQUEST_OK = 400;
 describe('Data Controller', () => {
-    // const baseMessageErreur = { title: 'Error', body: '' } as Message;
-
-    let dataService: Stubbed<DatabasePicureService>;
+    let dataService: Stubbed<DatabasePictureService>;
     let app: Express.Application;
     const isDate: Date = new Date('10/08/2020');
     const testCanvasInformationAdd = {
@@ -27,7 +25,7 @@ describe('Data Controller', () => {
     } as CanvasInformation;
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
-        container.rebind(TYPES.DatabasePicureService).toConstantValue({
+        container.rebind(TYPES.DatabasePictureService).toConstantValue({
             getPicturesLabals: sandbox.stub().resolves(testCanvasInformationAdd),
             getPictures: sandbox.stub().resolves(testCanvasInformationAdd),
             getAllLabel: sandbox.stub().resolves(testCanvasInformationAdd),
@@ -37,7 +35,7 @@ describe('Data Controller', () => {
             modifyPicture: sandbox.stub().resolves(undefined),
             delete: sandbox.stub().resolves(true),
         });
-        dataService = container.get(TYPES.DatabasePicureService);
+        dataService = container.get(TYPES.DatabasePictureService);
         app = container.get<Application>(TYPES.Application).app;
     });
 

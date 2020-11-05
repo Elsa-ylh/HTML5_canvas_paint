@@ -10,7 +10,7 @@ const HOURS_MIDNIGHT = 23;
 const MINUTE_MIDNIGHT = 59;
 const SECOND_MIDNIGHT = 59;
 @injectable()
-export class DatabasePicureService {
+export class DatabasePictureService {
     collection: Collection<CanvasInformation>;
 
     private options: MongoClientOptions = {

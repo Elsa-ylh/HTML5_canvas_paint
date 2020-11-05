@@ -2,10 +2,10 @@ import { CanvasInformation } from '@common/communication/canvas-information';
 import { expect } from 'chai';
 import { Db, MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { DatabasePicureService } from './database-picture.service';
+import { DatabasePictureService } from './database-picture.service';
 // tslint:disable:no-any
 describe('Database service', () => {
-    let databaseService: DatabasePicureService;
+    let databaseService: DatabasePictureService;
     let mongoServer: MongoMemoryServer;
     let db: Db;
     let client: MongoClient;
@@ -18,7 +18,7 @@ describe('Database service', () => {
     ] as CanvasInformation[];
 
     beforeEach(async () => {
-        databaseService = new DatabasePicureService();
+        databaseService = new DatabasePictureService();
 
         mongoServer = new MongoMemoryServer();
         const mongoUri = await mongoServer.getUri();
@@ -299,7 +299,6 @@ describe('Database service', () => {
             })
             .catch((err) => {
                 expect(err.message).to.equal('server is closed');
-                //console.log(err.message);
             });
     });
     it('test find modifyPicture', async () => {
