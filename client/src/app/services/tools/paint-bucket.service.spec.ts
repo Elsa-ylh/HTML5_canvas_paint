@@ -82,4 +82,10 @@ describe('Service: PaintBucket', () => {
         paintBucketService.toleranceToRGBA();
         expect(toleranceToRGBASpy).toHaveBeenCalled();
     });
+
+    //   it('should call toleranceToRGBASpy', () => {
+    //     let minToleranceTest : number = 0;
+    //     minToleranceTest = paintBucketService.toleranceToRGBA();
+    //     expect(toleranceToRGBASpy).toEqual(0);
+    // });
 });

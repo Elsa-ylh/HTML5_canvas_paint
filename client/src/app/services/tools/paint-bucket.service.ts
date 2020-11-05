@@ -27,7 +27,7 @@ export class PaintBucketService extends Tool {
 
     // the starting x and y means where the mouse was clicked down
     /*tslint:disable:cyclomatic-complexity*/
-    floodFill(x: number, y: number, replacementColor: RGBA): void {
+    private floodFill(x: number, y: number, replacementColor: RGBA): void {
         const pixelStack: Vec2[] = [];
         pixelStack.push({ x, y });
         const pixels: ImageData = this.drawingService.baseCtx.getImageData(
@@ -137,7 +137,7 @@ export class PaintBucketService extends Tool {
     /*tslint:enable:cyclomatic-complexity*/
 
     // transform #000000 in {red : 0, green : 0, blue : 0, alpha : 0}
-    hexToRGBA(hex: string): RGBA {
+    private hexToRGBA(hex: string): RGBA {
         // tslint:disable-next-line:no-magic-numbers
         const r: number = parseInt(hex.slice(1, 3), this.radix);
         // tslint:disable-next-line:no-magic-numbers
@@ -150,7 +150,7 @@ export class PaintBucketService extends Tool {
         return { red: r, green: g, blue: b, alpha: a };
     }
 
-    matchFillColor(currentColor: RGBA, targetColor: RGBA): boolean {
+    private matchFillColor(currentColor: RGBA, targetColor: RGBA): boolean {
         let matchFillColor = true;
         const tolerance = this.toleranceToRGBA();
         matchFillColor = matchFillColor && targetColor.red >= currentColor.red - tolerance && targetColor.red <= currentColor.red + tolerance;
@@ -160,7 +160,7 @@ export class PaintBucketService extends Tool {
         return matchFillColor;
     }
 
-    paintAllSimilar(x: number, y: number, replacementColor: RGBA): void {
+    private paintAllSimilar(x: number, y: number, replacementColor: RGBA): void {
         const pixels: ImageData = this.drawingService.baseCtx.getImageData(
             0,
             0,
@@ -200,7 +200,7 @@ export class PaintBucketService extends Tool {
         this.drawingService.baseCtx.putImageData(pixels, 0, 0);
     }
 
-    toleranceToRGBA(): number {
+    private toleranceToRGBA(): number {
         if (this.tolerance === MIN_TOLERANCE) return 0;
         // tslint:disable-next-line:no-magic-numbers
         if (this.tolerance === MAX_TOLERANCE) return 255;
