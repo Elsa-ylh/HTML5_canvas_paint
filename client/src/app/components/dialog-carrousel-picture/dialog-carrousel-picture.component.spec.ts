@@ -21,7 +21,7 @@ import { CarrouselPictureComponent } from './dialog-carrousel-picture.component'
 // tslint:disable:no-string-literal
 // tslint:disable:no-unused-expression
 // tslint:disable:no-magic-numbers
-fdescribe('CarrouselPictureComponent', () => {
+describe('CarrouselPictureComponent', () => {
     let component: CarrouselPictureComponent;
     let fixture: ComponentFixture<CarrouselPictureComponent>;
     let drawingStub: DrawingService;
@@ -136,7 +136,7 @@ fdescribe('CarrouselPictureComponent', () => {
 
     it('test getPicturesAll', () => {
         component['dataPicture'] = [testCanvasInformationAdd];
-        expect(component.getPicturesAll()[0].name).toEqual(testCanvasInformationAdd.name);
+        expect(component.getPicturesAll()).toEqual(1);
     });
     it('test selectionLabel', () => {
         spyOn(component['clientServerComSvc'], 'selectPictureWithLabel').and.returnValue(of([testCanvasInformationAdd]));

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 const NB_FILES_OPEN_AT_A_TIME = 3;
@@ -22,13 +23,14 @@ export class CarrouselPictureComponent implements OnInit {
     selectedType: string = 'name';
     name: string;
     myDate: FormControl = new FormControl(new Date());
-
+    threePictures: CanvasInformation[] = [];
     constructor(
         private clientServerComSvc: ClientServerCommunicationService,
         private cvsResizerService: CanvasResizerService,
         private drawingService: DrawingService,
         private router: Router,
         private dialogRef: MatDialogRef<CarrouselPictureComponent>,
+        private undoRedoService: UndoRedoService,
     ) {}
 
     ngOnInit(): void {
@@ -75,8 +77,8 @@ export class CarrouselPictureComponent implements OnInit {
         const message: Message = { title: 'labels', body: textLabel };
         this.clientServerComSvc.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
-    getPicturesAll(): CanvasInformation[] {
-        return this.dataPicture;
+    getPicturesAll(): number {
+        return this.dataPicture.length;
     }
     setSearchCriteria(): void {
         switch (this.selectedType) {
@@ -103,59 +105,76 @@ export class CarrouselPictureComponent implements OnInit {
     }
 
     getPictures(): CanvasInformation[] {
-        const threePictures: CanvasInformation[] = [];
+        this.threePictures = [];
         if (this.dataPicture.length <= NB_FILES_OPEN_AT_A_TIME) {
-            this.createImage(this.dataPicture);
-            return this.dataPicture;
+            this.threePictures = this.dataPicture;
+            this.createImage(this.threePictures);
+            return this.threePictures;
         }
 
         switch (this.position) {
             case 0:
-                threePictures.push(this.dataPicture[this.dataPicture.length - 1]);
-                threePictures.push(this.dataPicture[this.position]);
-                threePictures.push(this.dataPicture[1]);
+                this.threePictures.push(this.dataPicture[this.dataPicture.length - 1]);
+                this.threePictures.push(this.dataPicture[this.position]);
+                this.threePictures.push(this.dataPicture[1]);
                 break;
             case this.dataPicture.length - 1:
-                threePictures.push(this.dataPicture[this.position - 1]);
-                threePictures.push(this.dataPicture[this.position]);
-                threePictures.push(this.dataPicture[0]);
+                this.threePictures.push(this.dataPicture[this.position - 1]);
+                this.threePictures.push(this.dataPicture[this.position]);
+                this.threePictures.push(this.dataPicture[0]);
                 break;
             default:
-                threePictures.push(this.dataPicture[this.position - 1]);
-                threePictures.push(this.dataPicture[this.position]);
-                threePictures.push(this.dataPicture[this.position + 1]);
+                this.threePictures.push(this.dataPicture[this.position - 1]);
+                this.threePictures.push(this.dataPicture[this.position]);
+                this.threePictures.push(this.dataPicture[this.position + 1]);
         }
-        this.createImage(threePictures);
-        return threePictures;
+        this.createImage(this.threePictures);
+        return this.threePictures;
     }
-    @ViewChild('previewImage0', { static: false }) previewImage0: ElementRef<HTMLImageElement>;
     @ViewChild('previewImage1', { static: false }) previewImage1: ElementRef<HTMLImageElement>;
     @ViewChild('previewImage2', { static: false }) previewImage2: ElementRef<HTMLImageElement>;
-    // https://stackoverflow.com/questions/19262141/resize-image-with-javascript-canvas-smoothly
-    /*ngAfterViewInit(): void {
-        this.previewImage0.nativeElement.src = this.drawingService.convertBaseCanvasToBase64();
-    }*/
+    @ViewChild('previewImage3', { static: false }) previewImage3: ElementRef<HTMLImageElement>;
+
     private createImage(listCard: CanvasInformation[]): void {
-        this.previewImage0.nativeElement.src = this.drawingService.convertBaseCanvasToBase64();
-        this.previewImage1.nativeElement.src = this.drawingService.convertBaseCanvasToBase64();
-        this.previewImage2.nativeElement.src = this.drawingService.convertBaseCanvasToBase64();
+        const nbpicture = listCard.length;
+        if (nbpicture >= 1) {
+            if (this.previewImage1 !== undefined) {
+                this.previewImage1.nativeElement.src = listCard[0].picture;
+            }
+        }
+        if (nbpicture >= 2) {
+            if (this.previewImage2 !== undefined) {
+                this.previewImage2.nativeElement.src = listCard[1].picture;
+            }
+        }
+        if (nbpicture >= 3) {
+            if (this.previewImage3 !== undefined) {
+                this.previewImage3.nativeElement.src = listCard[2].picture;
+            }
+        }
     }
+
     loadPicture(picture: CanvasInformation): void {
         if (confirm('load :' + picture.name)) {
             this.cvsResizerService.canvasSize.y = picture.height;
             this.cvsResizerService.canvasSize.x = picture.width;
             this.drawingService.convertBase64ToBaseCanvas(picture.picture);
+            this.undoRedoService.clearRedo();
+            this.undoRedoService.clearUndo();
             this.dialogRef.close(true);
             this.router.navigate(['/editor']);
         }
     }
+
     deletePicture(picture: CanvasInformation): void {
         if (confirm('Suprimer : ' + picture.name)) {
             const deleteMassage: Message = { title: 'delete', body: picture._id };
             this.clientServerComSvc.deleteQuery(deleteMassage).subscribe((info) => this.messageDelite(info));
         }
     }
+
     messageDelite(message: Message): void {
         alert(message.body);
+        this.addAllData();
     }
 }
