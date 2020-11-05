@@ -16,14 +16,14 @@ import { ClientServerCommunicationService } from '@app/services/client-server/cl
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { of } from 'rxjs';
-import { SaveDialogComponent } from './save-dialog.component';
+import { DialogUpload } from './dialog-upload.component';
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
 // tslint:disable:no-unused-expression
 // tslint:disable:no-empty
-describe('SaveDialogComponent', () => {
-    let component: SaveDialogComponent;
-    let fixture: ComponentFixture<SaveDialogComponent>;
+describe('DialogUpload', () => {
+    let component: DialogUpload;
+    let fixture: ComponentFixture<DialogUpload>;
     let httpMock: HttpTestingController;
     const isDate: Date = new Date();
     let processedMessageSpy: jasmine.Spy<any>;
@@ -53,14 +53,13 @@ describe('SaveDialogComponent', () => {
                 BrowserAnimationsModule,
                 MatButtonToggleModule,
             ],
-            declarations: [SaveDialogComponent],
+            declarations: [DialogUpload],
             providers: [
                 HttpClient,
                 {
                     provide: ClientServerCommunicationService,
                     useValue: {
                         getAllLabel: () => labels,
-                        // subscribe: (info: any) => testCanvasInformationAdds,
                         resetDatas: () => '',
                         getInformation: () => testCanvasInformationAdds,
                         getElementResearch: () => testCanvasInformationAdds,
@@ -80,7 +79,7 @@ describe('SaveDialogComponent', () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(SaveDialogComponent);
+        fixture = TestBed.createComponent(DialogUpload);
         component = fixture.componentInstance;
         spyOn(component['clientServerComSvc'], 'savePicture').and.returnValue(of());
         httpMock = TestBed.inject(HttpTestingController);
