@@ -1,24 +1,63 @@
 <div>
-    <button mat-raised-button (click)="reset()">réinitialise tout</button>
-    <div *ngIf="!getPicturesAll().length"><p>Aucune image trouver changée le critère de recherche ou réinitialise</p></div>
+    <h1>Carrousel d'image</h1>
 </div>
-<div *ngIf="getPicturesAll().length">
-    <mat-grid-list cols="3" rowHeight="1:1">
-        <mat-grid-tile *ngFor="let pictureCarte of getPictures()">
+<div>
+    <button mat-raised-button (click)="reset()">réinitialise tout</button>
+    <div *ngIf="!getPicturesAll()"><p>Aucune image trouver changée le critère de recherche ou réinitialise</p></div>
+</div>
+<div *ngIf="getPicturesAll()">
+    <mat-grid-list cols="3" rowH eight="1:1">
+        <mat-grid-tile *ngIf="getPictures().length >= 1">
             <mat-card class="card-picture">
                 <mat-card-header>
-                    <mat-card-title>{{ pictureCarte.name }}</mat-card-title>
+                    <mat-card-title>{{ threePictures[0].name }}</mat-card-title>
                     <mat-card-subtitle>
-                        {{ pictureCarte.date }}
+                        {{ threePictures[0].date }}
                     </mat-card-subtitle>
                 </mat-card-header>
-                <img id="{{ pictureCarte._id }}" />
+                <img #previewImage1 />
                 <mat-card-content>
-                    <div *ngFor="let element of pictureCarte.labels"># {{ element.label }}</div>
+                    <div *ngFor="let element of threePictures[0].labels"># {{ element.label }}</div>
                 </mat-card-content>
                 <mat-card-actions>
-                    <button mat-button (click)="loadPicture(pictureCarte)">Charger</button>
-                    <button mat-button (click)="deletePicture(pictureCarte)">Supprimer</button>
+                    <button mat-button (click)="loadPicture(threePictures[0])">Charger</button>
+                    <button mat-button (click)="deletePicture(threePictures[0])">Supprimer</button>
+                </mat-card-actions>
+            </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile *ngIf="getPicturesAll() >= 2">
+            <mat-card class="card-picture">
+                <mat-card-header>
+                    <mat-card-title>{{ threePictures[1].name }}</mat-card-title>
+                    <mat-card-subtitle>
+                        {{ threePictures[1].date }}
+                    </mat-card-subtitle>
+                </mat-card-header>
+                <img #previewImage2 />
+                <mat-card-content>
+                    <div *ngFor="let element of threePictures[1].labels"># {{ element.label }}</div>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-button (click)="loadPicture(threePictures[1])">Charger</button>
+                    <button mat-button (click)="deletePicture(threePictures[1])">Supprimer</button>
+                </mat-card-actions>
+            </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile *ngIf="getPicturesAll() >= 3">
+            <mat-card class="card-picture">
+                <mat-card-header>
+                    <mat-card-title>{{ threePictures[2].name }}</mat-card-title>
+                    <mat-card-subtitle>
+                        {{ threePictures[2].date }}
+                    </mat-card-subtitle>
+                </mat-card-header>
+                <img #previewImage3 />
+                <mat-card-content>
+                    <div *ngFor="let element of threePictures[1].labels"># {{ element.label }}</div>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-button (click)="loadPicture(threePictures[2])">Charger</button>
+                    <button mat-button (click)="deletePicture(threePictures[2])">Supprimer</button>
                 </mat-card-actions>
             </mat-card>
         </mat-grid-tile>
