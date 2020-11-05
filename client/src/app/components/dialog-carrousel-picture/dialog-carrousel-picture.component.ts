@@ -158,7 +158,7 @@ export class CarrouselPictureComponent implements OnInit {
         if (confirm('load :' + picture.name)) {
             this.cvsResizerService.canvasSize.y = picture.height;
             this.cvsResizerService.canvasSize.x = picture.width;
-            this.drawingService.convertBase64ToBaseCanvas(picture.picture);
+            this.drawingService.convertBase64ToBaseCanvas(picture.picture, false);
             /*const actionLoadImg = new LoadAction(picture.picture, picture.height, picture.width, this.drawingService, this.cvsResizerService);
             this.undoRedoService.clearUndo();
             this.undoRedoService.clearRedo();

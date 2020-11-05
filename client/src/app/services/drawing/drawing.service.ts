@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { cursorName } from '@app/classes/cursor-name';
 import { Tool, ToolUsed } from '@app/classes/tool';
-
+import { timer } from 'rxjs';
+const ONESEC = 1000;
 @Injectable({
     providedIn: 'root',
 })
@@ -15,7 +16,7 @@ export class DrawingService {
     currentTool: Tool;
     cursorUsed: string = cursorName.default;
 
-    private image: HTMLImageElement = new Image();
+    private image: HTMLImageElement;
 
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -25,11 +26,24 @@ export class DrawingService {
         return this.canvas.toDataURL('image/png', 1.0);
     }
 
-    convertBase64ToBaseCanvas(base64: string): void {
+    // convertBase64ToBaseCanvas(base64: string): void {
+    //     this.image = new Image();
+    //     this.image.src = base64;
+    //     this.image.addEventListener('onload', () => {
+    //         this.baseCtx.drawImage(this.image, 0, 0);
+    //     });
+    // }
+    convertBase64ToBaseCanvas(base64: string, callback: boolean): void {
+        this.image = new Image();
         this.image.src = base64;
-        this.image.addEventListener('onload', () => {
+        this.image.onload = () => {
             this.baseCtx.drawImage(this.image, 0, 0);
-        });
+            callback = true;
+        };
+        timer(ONESEC);
+        this.image.onerror = (err) => {
+            callback = false;
+        };
     }
 
     // returns true if every pixel's uint32 representation is 0 (or "blank")

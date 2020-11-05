@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+// tslint:disable:no-string-literal
+// tslint:disable:no-magic-numbers
 describe('DrawingService', () => {
     let service: DrawingService;
 
@@ -11,9 +13,7 @@ describe('DrawingService', () => {
     beforeEach(() => {
         service = new DrawingService();
         canvas = canvasTestHelper.canvas;
-        // tslint:disable:no-magic-numbers
         canvas.width = 100;
-        // tslint:disable:no-magic-numbers
         canvas.height = 100;
         canvas = canvasTestHelper.canvas;
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -45,24 +45,23 @@ describe('DrawingService', () => {
     });
 
     it('isCanvasBlank should return false if canvas is not empty', () => {
-        // tslint:disable: no-magic-numbers
         service.baseCtx.fillRect(20, 20, 100, 100);
         expect(service.isCanvasBlank()).toEqual(false);
     });
 
     it('isPreviewCanvasBlank should return false if canvas is not empty', () => {
-        // tslint:disable: no-magic-numbers
         service.previewCtx.fillRect(20, 20, 100, 100);
         expect(service.isPreviewCanvasBlank()).toEqual(false);
     });
-    it('should call convertBase64ToCanvas on load', () => {
-        service.previewCtx.fillRect(20, 20, 100, 100);
-        const spy = spyOn(service.baseCtx, 'drawImage').and.stub();
-        service.convertBase64ToBaseCanvas('img');
-        const event = new Event('onload');
-        // tslint:disable:no-string-literal
-        service['image'].dispatchEvent(event);
 
-        expect(spy).toHaveBeenCalled();
+    it('should not call convertBase64ToCanvas on load', async () => {
+        service.previewCtx.fillRect(20, 20, 100, 100);
+        const event = new Event('onload');
+        const callBack = true;
+        service.convertBase64ToBaseCanvas('assets/apple.svg', callBack);
+        const spy = spyOn(service.baseCtx, 'drawImage').and.stub();
+        service['image'].dispatchEvent(event);
+        expect(spy).not.toHaveBeenCalled();
+        expect(callBack).toEqual(true);
     });
 });
