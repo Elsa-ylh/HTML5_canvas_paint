@@ -1,5 +1,6 @@
 /* tslint:disable:no-unused-variable */
-
+/* tslint:disable:no-string-literal */
+/* tslint:disable:no-magic-numbers */
 import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { EventOfTest } from '@app/classes/event-of-test';
