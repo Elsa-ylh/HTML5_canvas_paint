@@ -37,7 +37,7 @@ export class DataController {
         });
         this.router.get('/all_labels', (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
-                .getAllLabel()
+                .getAllLabels()
                 .then((labelsInformation: Label[]) => {
                     const informationMessage: CanvasInformation = {
                         _id: 'list_of_all_labals',

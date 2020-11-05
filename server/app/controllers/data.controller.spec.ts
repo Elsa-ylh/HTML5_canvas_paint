@@ -28,7 +28,7 @@ describe('Data Controller', () => {
         container.rebind(TYPES.DatabasePictureService).toConstantValue({
             getPicturesLabels: sandbox.stub().resolves(testCanvasInformationAdd),
             getPictures: sandbox.stub().resolves(testCanvasInformationAdd),
-            getAllLabel: sandbox.stub().resolves(testCanvasInformationAdd),
+            getAllLabels: sandbox.stub().resolves(testCanvasInformationAdd),
             getPicturesName: sandbox.stub().resolves(testCanvasInformationAdd),
             getPicturesDate: sandbox.stub().resolves(testCanvasInformationAdd),
             addPicture: sandbox.stub().resolves(undefined),
@@ -133,7 +133,7 @@ describe('Data Controller', () => {
             });
     });
     it('should get test error /all_labels', async () => {
-        dataService.getAllLabel.rejects(new Error('error in the service mongo'));
+        dataService.getAllLabels.rejects(new Error('error in the service mongo'));
         return supertest(app)
             .get('/api/data/all_labels')
             .send()
@@ -147,7 +147,7 @@ describe('Data Controller', () => {
     });
     it('should get test /all_label', async () => {
         const Labels: Label[] = [{ label: 'label1' }, { label: 'label2' }];
-        dataService.getAllLabel.resolves(Labels);
+        dataService.getAllLabels.resolves(Labels);
         return supertest(app)
             .get('/api/data/all_labels')
             .expect(HTTP_STATUS_OK)
@@ -413,7 +413,7 @@ describe('Data Controller', () => {
                 console.log('Error ' + err);
             });
     });
-    it('delite not request message', () => {
+    it('delete not request message', () => {
         // dataService.getPicturesLabels.rejects(new Error('error in the service'));
         return supertest(app)
             .post('/api/data/delete')
@@ -427,7 +427,7 @@ describe('Data Controller', () => {
                 console.log('Error ' + err);
             });
     });
-    it('delite', () => {
+    it('delete', () => {
         // dataService.getPicturesLabels.rejects(new Error('error in the service'));
         const message: Message = { title: '', body: '' };
         return supertest(app)
@@ -442,7 +442,7 @@ describe('Data Controller', () => {
                 console.log('Error ' + err);
             });
     });
-    it('delite', () => {
+    it('delete', () => {
         dataService.delete.rejects(new Error('error in the service'));
         const message: Message = { title: 'delete', body: 'ssss' };
         return supertest(app)
@@ -457,7 +457,7 @@ describe('Data Controller', () => {
                 console.log('Error ' + err);
             });
     });
-    it('delite success', () => {
+    it('delete success', () => {
         const message: Message = { title: 'delete', body: 'ssss' };
         return supertest(app)
             .post('/api/data/delete')
@@ -471,7 +471,7 @@ describe('Data Controller', () => {
                 console.log('Error ' + err);
             });
     });
-    it('delite success', () => {
+    it('delete success', () => {
         dataService.delete.resolves(false);
         const message: Message = { title: 'delete', body: 'ssss' };
         return supertest(app)
