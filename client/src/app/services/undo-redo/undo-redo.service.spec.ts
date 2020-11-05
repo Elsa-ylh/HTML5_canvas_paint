@@ -5,10 +5,10 @@ import { ResizeDirection } from '@app/classes/resize-direction';
 import { EraseAction } from '@app/classes/undo-redo/erase-actions';
 import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { Vec2 } from '@app/classes/vec2';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { CanvasResizerService } from '../canvas/canvas-resizer.service';
 
 describe('Service: UndoRedo', () => {
     let undoRedoStub: UndoRedoService;
@@ -20,7 +20,7 @@ describe('Service: UndoRedo', () => {
     let basecanvasAct: ResizeCanvasAction;
     let resizeStub: CanvasResizerService;
 
-    let changes: Vec2[] = [];
+    const changes: Vec2[] = [];
     let color: string;
     let thickness: number;
     let event: MouseEvent;
@@ -100,12 +100,14 @@ describe('Service: UndoRedo', () => {
 
     it('should have the action pushed in the element', () => {
         undoRedoStub.addUndo(resizeActionStub);
+        // tslint:disable:no-string-literal
         expect(resizeActionStub).toEqual(undoRedoStub['listUndo'][0]);
     });
 
     it('should call redo', () => {
         const redoSpy = spyOn(undoRedoStub, 'redo').and.stub();
         undoRedoStub.addUndo(eraserActionStub);
+        // tslint:disable:no-string-literal
         undoRedoStub['listRedo'].length = 1;
         undoRedoStub.redo();
         expect(redoSpy).toHaveBeenCalled();
@@ -113,9 +115,12 @@ describe('Service: UndoRedo', () => {
 
     it('element of listUndo should be the same as value of listredo after calling redo', () => {
         const action = eraserActionStub;
+        // tslint:disable:no-string-literal
         undoRedoStub['listRedo'].length = 1;
+        // tslint:disable:no-string-literal
         undoRedoStub['listRedo'][0] = action;
         undoRedoStub.redo();
+        // tslint:disable:no-string-literal
         expect(undoRedoStub['listUndo'][0]).toEqual(action);
     });
 
@@ -125,6 +130,7 @@ describe('Service: UndoRedo', () => {
         undoRedoStub.addUndo(action1);
         undoRedoStub.defaultCanvasAction = action1;
         undoRedoStub.undo();
+        // tslint:disable:no-string-literal
         expect(undoRedoStub['listRedo'][0]).toEqual(action1);
         expect(spyApply).toHaveBeenCalled();
     });
@@ -136,6 +142,7 @@ describe('Service: UndoRedo', () => {
         undoRedoStub.addUndo(actionEr);
         undoRedoStub.defaultCanvasAction = resizeActionStub;
         undoRedoStub.undo();
+        // tslint:disable:no-string-literal
         expect(undoRedoStub['listRedo'][0]).toEqual(actionEr);
     });
 
