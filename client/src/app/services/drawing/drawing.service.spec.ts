@@ -4,12 +4,28 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 describe('DrawingService', () => {
     let service: DrawingService;
 
+    let baseStub: CanvasRenderingContext2D;
+    let previewStub: CanvasRenderingContext2D;
+    let canvas: HTMLCanvasElement;
+
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        service = new DrawingService();
+        canvas = canvasTestHelper.canvas;
+        // tslint:disable:no-magic-numbers
+        canvas.width = 100;
+        // tslint:disable:no-magic-numbers
+        canvas.height = 100;
+        canvas = canvasTestHelper.canvas;
+        baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        service.canvas = canvas;
+        service.baseCtx = baseStub;
+        service.previewCtx = previewStub;
+        TestBed.configureTestingModule({
+            providers: [{ provide: DrawingService, useValue: service }],
+        });
+
         service = TestBed.inject(DrawingService);
-        service.canvas = canvasTestHelper.canvas;
-        service.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        service.previewCtx = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
     });
 
     it('should be created', () => {
