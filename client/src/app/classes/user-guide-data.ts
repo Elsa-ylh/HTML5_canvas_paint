@@ -17,7 +17,7 @@ export const dataUserGuide: UserGuide[] = [
         description:
             "Le carroussel de dessin vous permet d'accéder à vos précédents dessins sauvegardés sur le serveur. Vos dessins seront affichés sous forme de petites fiches comportant votre dessin, son nom et les étiquettes associées au dessin. Il vous est possible de filtrer le contenu du carrousel en spécifiant une ou plusieurs étiquettes.",
         gifPath: '',
-        screenshotPath: '',
+        screenshotPath: 'assets/user_guide/carroussel.png',
     },
     {
         title: 'Sauvegarde automatique et manuelle',
@@ -25,7 +25,7 @@ export const dataUserGuide: UserGuide[] = [
         description:
             "En tant qu'utilisateur, il vous est possible de sauvegarder vos dessins sur un serveur. Il vous faudra fournir un nom pour votre dessin et vous pouurez aussi rajouter des étiquettes (tags) valides afin de mieux répertorier votre dessin dans le serveur. Le format du dessin sauvegardé sera PNG.",
         gifPath: '',
-        screenshotPath: '',
+        screenshotPath: 'assets/user_guide/sauvegarde.png',
     },
     {
         title: 'Exportation',
@@ -33,7 +33,7 @@ export const dataUserGuide: UserGuide[] = [
         description:
             'La fonctionnalité Exportation offre de créer une image à partir de la surface de dessin et de l’exporter dans un des formats suivants : JPG ou PNG. Il vous faudra entrer un nom pour le fichier exporté. Si vous le souhaitez, plutôt que de sauvegarder localement votre dessin exporté, il vous est possible de l’envoyer par courriel. Il vous est aussi possible d’appliquer un filtre sur l’image avant que l’exportation ne soit effectuée parmiles  cinq filtres différents disponibles.',
         gifPath: '',
-        screenshotPath: '',
+        screenshotPath: 'assets/user_guide/exportation.png',
     },
 
     // Dessiner
@@ -100,7 +100,7 @@ export const dataUserGuide: UserGuide[] = [
         description:
             "Cet outil permet de dessiner des polygones. Il vous est possible de créer des polygones sur la surface de dessin en faisant des glisser-déposer. Le nombre de côtés peut être modifié (de 3 à 12) afin de tracé le polygone souhaité. De plus, il vous est possible de choisir entre trois types de polygones : contour (on ne dessine que les contours), plein (intérieur rempli sans contour) ou plein avec contour (on dessine l'intérieur et les contours). Aussi, vous pouvez modifier l'épaisseur des contours via la barre latérale secondaire. Il est possible d'utiliser la touche 3 de votre clavier afin de basculer directement sur l'outil polygone.",
         gifPath: '',
-        screenshotPath: '',
+        screenshotPath: 'assets/user_guide/polygone.PNG',
     },
     {
         title: 'Outils - Plume',
