@@ -15,6 +15,8 @@ export class DrawingService {
     currentTool: Tool;
     cursorUsed: string = cursorName.default;
 
+    private image = new Image();
+
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
@@ -24,11 +26,10 @@ export class DrawingService {
     }
 
     convertBase64ToBaseCanvas(base64: string): void {
-        const image = new Image();
-        image.src = base64;
-        image.onload = () => {
-            this.baseCtx.drawImage(image, 0, 0);
-        };
+        this.image.src = base64;
+        this.image.addEventListener('onload', () => {
+            this.baseCtx.drawImage(this.image, 0, 0);
+        });
     }
 
     // returns true if every pixel's uint32 representation is 0 (or "blank")
