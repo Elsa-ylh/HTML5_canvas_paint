@@ -14,7 +14,7 @@ export class UndoRedoService {
     private listRedo: AbsUndoRedo[] = [];
 
     constructor(private drawingService: DrawingService) {}
-    // function that redoes the latest undo.
+
     redo(): void {
         if (this.listRedo.length > 0) {
             const action = this.listRedo.pop();
@@ -23,28 +23,23 @@ export class UndoRedoService {
                 action.apply(); // applies the action
             }
         }
-
         this.updateStatus();
     }
 
     // allows to reset the listUndo after we redo something.
     clearUndo(): void {
         this.listUndo = [];
-
         this.updateStatus();
     }
     // allows to reset the listRedo
     clearRedo(): void {
         this.listRedo = [];
-
         this.updateStatus();
     }
 
     // adds the latest  action to the undo stack.
     addUndo(action: AbsUndoRedo): void {
         this.listUndo.push(action);
-        console.log(this.listUndo);
-        // debugger;
         this.updateStatus();
     }
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
@@ -70,7 +65,6 @@ export class UndoRedoService {
                 listOfResize[listOfResize.length - 1].apply();
             }
         }
-
         this.updateStatus();
     }
 

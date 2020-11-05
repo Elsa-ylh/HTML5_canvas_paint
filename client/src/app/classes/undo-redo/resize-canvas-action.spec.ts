@@ -14,10 +14,12 @@ describe('resizeCanvasAction', () => {
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
     let resizeStub: CanvasResizerService;
+
     let event: MouseEvent;
     let resizeCtx: CanvasRenderingContext2D;
     let baseCanvas: HTMLCanvasElement;
     let resizeDirection: ResizeDirection;
+
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;

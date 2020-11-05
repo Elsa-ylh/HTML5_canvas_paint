@@ -83,7 +83,7 @@ describe('PolygonAction', () => {
         polygonStub = TestBed.inject(PolygonService);
     });
 
-    it('should stroke color and lignwidth to be primary color and thickness', () => {
+    it('strokeColor and linewidth must be primary color and thickness of polygonAction', () => {
         drawingStub.baseCtx.shadowColor = drawingStub.previewCtx.shadowColor = '#000000' as string;
         polygonActionStub.apply();
         expect(drawingStub.baseCtx.strokeStyle).toEqual(primaryColor);

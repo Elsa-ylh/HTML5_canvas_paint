@@ -60,7 +60,7 @@ describe('StrokeAction', () => {
         pencilStub = TestBed.inject(PencilService);
     });
 
-    it('should call the right stroke color and linewidth', () => {
+    it('should call the right strokeColor and linewidth on baseCtx', () => {
         drawingStub.baseCtx.shadowColor = drawingStub.previewCtx.shadowColor = '#000000' as string;
         strokeActionStub.apply();
         expect(drawingStub.baseCtx.strokeStyle).toEqual(colorPencil);
