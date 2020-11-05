@@ -10,8 +10,8 @@ const HOURS_MIDNIGHT = 23;
 const MINUTE_MIDNIGHT = 59;
 const SECOND_MIDNIGHT = 59;
 @injectable()
-export class DatabasePicureService {
-    collection: Collection<CanvasInformation>;
+export class DatabasePictureService {
+    private collection: Collection<CanvasInformation>;
 
     private options: MongoClientOptions = {
         useNewUrlParser: true,
@@ -29,24 +29,24 @@ export class DatabasePicureService {
             });
     }
 
-    async getPicturesLabals(setLabels: string[]): Promise<CanvasInformation[]> {
+    async getPicturesLabels(setLabels: string[]): Promise<CanvasInformation[]> {
         if (setLabels[0] === 'Error') {
             return [{ _id: 'not catch the labels', name: 'Error', labels: [], width: 0, height: 0, date: new Date(), picture: '' }];
-        } else if (!setLabels.length) {
-            return this.getPictures();
-        } else {
-            return this.collection
-                .find({
-                    'labels.label': { $in: setLabels },
-                })
-                .toArray()
-                .then((picture: CanvasInformation[]) => {
-                    return picture;
-                })
-                .catch((error: Error) => {
-                    return [{ _id: error.message as string, name: 'Error', labels: [], width: 0, height: 0, date: new Date(), picture: '' }];
-                });
         }
+        if (!setLabels.length) {
+            return this.getPictures();
+        }
+        return this.collection
+            .find({
+                'labels.label': { $in: setLabels },
+            })
+            .toArray()
+            .then((picture: CanvasInformation[]) => {
+                return picture;
+            })
+            .catch((error: Error) => {
+                return [{ _id: error.message as string, name: 'Error', labels: [], width: 0, height: 0, date: new Date(), picture: '' }];
+            });
     }
 
     async getPictures(): Promise<CanvasInformation[]> {
@@ -60,17 +60,17 @@ export class DatabasePicureService {
                 throw error;
             });
     }
-    async getAllLabel(): Promise<Label[]> {
+    async getAllLabels(): Promise<Label[]> {
         try {
             const listLabels: Label[] = [];
-            const collectionPincture: CanvasInformation[] = await this.collection
+            const collectionPictures: CanvasInformation[] = await this.collection
                 .find({ 'labels.label': { $exists: true } })
                 .project({ 'labels.label': 1 })
                 .toArray()
                 .then((pictures: CanvasInformation[]) => {
                     return pictures;
                 });
-            collectionPincture.forEach((element) => {
+            collectionPictures.forEach((element) => {
                 element.labels.forEach((lable) => {
                     if (this.testLabelItsNotinList(listLabels, lable)) listLabels.push(lable);
                 });
@@ -81,14 +81,14 @@ export class DatabasePicureService {
         }
     }
     private testLabelItsNotinList(listLabels: Label[], label: Label): boolean {
-        let booltouver = true;
+        let isNotInTheList = true;
         for (let index = 0; index < listLabels.length; index++) {
             if (listLabels[index].label === label.label) {
-                booltouver = false;
+                isNotInTheList = false;
                 index = listLabels.length;
             }
         }
-        return booltouver;
+        return isNotInTheList;
     }
 
     async getPictureName(namePicture: string): Promise<CanvasInformation> {
@@ -113,16 +113,16 @@ export class DatabasePicureService {
             });
     }
     async getPicturesDate(datePicture: string): Promise<CanvasInformation[]> {
-        const stratDate = new Date(datePicture);
-        stratDate.setHours(0);
-        stratDate.setMinutes(0);
-        stratDate.setSeconds(0);
-        const endDate = new Date(stratDate);
+        const startDate = new Date(datePicture);
+        startDate.setHours(0);
+        startDate.setMinutes(0);
+        startDate.setSeconds(0);
+        const endDate = new Date(startDate);
         endDate.setHours(HOURS_MIDNIGHT);
         endDate.setMinutes(MINUTE_MIDNIGHT);
         endDate.setSeconds(SECOND_MIDNIGHT);
         return this.collection
-            .find({ date: { $gte: stratDate, $lte: endDate } })
+            .find({ date: { $gte: startDate, $lte: endDate } })
             .toArray()
             .then((picture: CanvasInformation[]) => {
                 return picture;
@@ -131,11 +131,11 @@ export class DatabasePicureService {
                 throw error;
             });
     }
-    async delete(deliteId: string): Promise<boolean> {
-        const reponse = await this.collection.deleteOne({ _id: deliteId }).catch((err) => {
+    async delete(deleteId: string): Promise<boolean> {
+        const response = await this.collection.deleteOne({ _id: deleteId }).catch((err) => {
             throw err;
         });
-        return reponse.result.n === 1;
+        return response.result.n === 1;
     }
 
     async addPicture(newpicture: CanvasInformation): Promise<boolean> {
@@ -159,9 +159,9 @@ export class DatabasePicureService {
             throw new Error('Invalid picture');
         }
     }
-    async modifyPicture(picture: CanvasInformation): Promise<boolean> {
-        if (this.validatePicture(picture)) {
-            const res = await this.collection.updateOne({ _id: picture._id }, { $set: picture }, { upsert: true }).catch((error: Error) => {
+    async modifyPicture(canvasInfo: CanvasInformation): Promise<boolean> {
+        if (this.validatePicture(canvasInfo)) {
+            const res = await this.collection.updateOne({ _id: canvasInfo._id }, { $set: canvasInfo }, { upsert: true }).catch((error: Error) => {
                 throw error;
             });
             return res.matchedCount === 1;
@@ -170,13 +170,8 @@ export class DatabasePicureService {
         }
     }
 
-    private validatePicture(cancas: CanvasInformation): boolean {
-        const boolTestCancas = cancas.picture !== '' && cancas.name !== '' && cancas.height >= 0 && cancas.width >= 0;
+    private validatePicture(canvasInfo: CanvasInformation): boolean {
+        const boolTestCancas = canvasInfo.picture !== '' && canvasInfo.name !== '' && canvasInfo.height >= 0 && canvasInfo.width >= 0;
         return boolTestCancas;
     }
-
-    /* private async validateName(idPicture: string): Promise<boolean> {
-        const picture = await this.getPictureName(idPicture);
-        return picture === null;
-    }*/
 }

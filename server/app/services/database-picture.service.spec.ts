@@ -2,10 +2,10 @@ import { CanvasInformation } from '@common/communication/canvas-information';
 import { expect } from 'chai';
 import { Db, MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { DatabasePicureService } from './database-picture.service';
+import { DatabasePictureService } from './database-picture.service';
 // tslint:disable:no-any
 describe('Database service', () => {
-    let databaseService: DatabasePicureService;
+    let databaseService: DatabasePictureService;
     let mongoServer: MongoMemoryServer;
     let db: Db;
     let client: MongoClient;
@@ -18,14 +18,14 @@ describe('Database service', () => {
     ] as CanvasInformation[];
 
     beforeEach(async () => {
-        databaseService = new DatabasePicureService();
+        databaseService = new DatabasePictureService();
 
         mongoServer = new MongoMemoryServer();
         const mongoUri = await mongoServer.getUri();
         client = await MongoClient.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });
 
         db = client.db(await mongoServer.getDbName());
-        databaseService.collection = db.collection('test');
+        databaseService['collection'] = db.collection('test');
         testCanvasInformationAdd = {
             _id: '',
             name: 'test5',
@@ -35,7 +35,7 @@ describe('Database service', () => {
             date: new Date('10/08/2020'),
             picture: 'test5',
         };
-        databaseService.collection.insertMany(allDataTest);
+        databaseService['collection'].insertMany(allDataTest);
         await databaseService.getPictures();
     });
 
@@ -48,27 +48,27 @@ describe('Database service', () => {
         expect(getImageData.length > 0).to.equal(true);
     });
 
-    it('hould getPicturesLabals not label return all data ', async () => {
+    it('should getPicturesLabels not label return all data ', async () => {
         const label: string[] = [];
-        const getImageData = await databaseService.getPicturesLabals(label);
+        const getImageData = await databaseService.getPicturesLabels(label);
         expect(getImageData.length).to.equal(4);
     });
 
-    it('should getPicturesLabals return null ', async () => {
+    it('should getPicturesLabels return null ', async () => {
         const label: string[] = ['a'];
-        const getImageData = await databaseService.getPicturesLabals(label);
+        const getImageData = await databaseService.getPicturesLabels(label);
         expect(getImageData.length).to.equal(0);
     });
 
-    it('should getPicturesLabals return 2 CanvasInformation ', async () => {
+    it('should getPicturesLabels return 2 CanvasInformation ', async () => {
         const label: string[] = ['label1'];
-        const getImagesData = await databaseService.getPicturesLabals(label);
+        const getImagesData = await databaseService.getPicturesLabels(label);
         expect(getImagesData.length).to.equal(2);
     });
 
-    it('should getPicturesLabals 2 labels return 3 CanvasInformation ', async () => {
+    it('should getPicturesLabels 2 labels return 3 CanvasInformation ', async () => {
         const label: string[] = ['label1', 'label2'];
-        const getImagesData = await databaseService.getPicturesLabals(label);
+        const getImagesData = await databaseService.getPicturesLabels(label);
         expect(getImagesData.length).to.equal(3);
     });
 
@@ -79,7 +79,7 @@ describe('Database service', () => {
     });
 
     it('should addPicture is not add collection', async () => {
-        const newPictError = {
+        const newPicError = {
             name: '',
             labels: [{ label: 'label2' }],
             width: 0,
@@ -89,16 +89,16 @@ describe('Database service', () => {
         } as CanvasInformation;
 
         await databaseService
-            .addPicture(newPictError)
-            .then((resol: any) => {
-                expect(resol).to.equal(new Error('Invalid picture'));
+            .addPicture(newPicError)
+            .then((result: any) => {
+                expect(result).to.equal(new Error('Invalid picture'));
             })
-            .catch((resol: Error) => {
-                expect(resol.message).to.equal('Invalid picture');
+            .catch((error: Error) => {
+                expect(error.message).to.equal('Invalid picture');
             });
     });
-    it('all many label but 3 diferant label', async () => {
-        await databaseService.collection.insertOne({
+    it('all many label but 3 different labels', async () => {
+        await databaseService['collection'].insertOne({
             name: 'test5',
             width: 0,
             height: 0,
@@ -107,55 +107,55 @@ describe('Database service', () => {
             picture: 'test5',
         } as CanvasInformation);
         await databaseService
-            .getAllLabel()
-            .then((resol: any) => {
-                expect(resol[0].label).to.equal('label1');
-                expect(resol[1].label).to.equal('label2');
-                expect(resol[2].label).to.equal('label3');
+            .getAllLabels()
+            .then((result: any) => {
+                expect(result[0].label).to.equal('label1');
+                expect(result[1].label).to.equal('label2');
+                expect(result[2].label).to.equal('label3');
             })
-            .catch((resol: Error) => {
-                console.log('errer test :' + resol.message);
+            .catch((error: Error) => {
+                console.log('errer test :' + error.message);
             });
     });
-    it('test get all label return two label', async () => {
+    it('test get all labels return two labels', async () => {
         await databaseService
-            .getAllLabel()
-            .then((resol: any) => {
-                expect(resol[0].label).to.equal('label1');
-                expect(resol[1].label).to.equal('label2');
+            .getAllLabels()
+            .then((result: any) => {
+                expect(result[0].label).to.equal('label1');
+                expect(result[1].label).to.equal('label2');
             })
-            .catch((resol: Error) => {
-                console.log('errer test :' + resol.message);
+            .catch((error: Error) => {
+                console.log('errer test :' + error.message);
             });
     });
     it('test error find getPictures', async () => {
         client.close();
         await databaseService
             .getPictures()
-            .then((req: any) => {
-                expect(req.name).to.equal('MongoError');
+            .then((result: any) => {
+                expect(result.name).to.equal('MongoError');
             })
-            .catch((relta: Error) => {
-                expect(relta.message).to.not.equal(NaN);
+            .catch((error: Error) => {
+                expect(error.message).to.not.equal(NaN);
             });
     });
 
-    it('test error find getPicturesLabals', async () => {
+    it('test error find getPicturesLabels', async () => {
         client.close();
         const label: string[] = ['label1'];
         await databaseService
-            .getPicturesLabals(label)
-            .then((req: any) => {
-                expect(req.name).to.equal('MongoError');
+            .getPicturesLabels(label)
+            .then((result: any) => {
+                expect(result.name).to.equal('MongoError');
             })
-            .catch((relta: Error) => {
-                expect(relta.message).to.not.equal(NaN);
+            .catch((error: Error) => {
+                expect(error.message).to.not.equal(NaN);
             });
     });
-    it('find getPicturesLabals labol si error', async () => {
+    it('find getPicturesLabels label ', async () => {
         const label: string[] = ['Error'];
-        const getImagesData = await databaseService.getPicturesLabals(label).catch((relta: Error) => {
-            expect(relta.message).to.not.equal(NaN);
+        const getImagesData = await databaseService.getPicturesLabels(label).catch((error: Error) => {
+            expect(error.message).to.not.equal(NaN);
         });
         expect(getImagesData[0].name).to.equal('Error');
     });
@@ -164,8 +164,8 @@ describe('Database service', () => {
         const label: string = 'label1';
         await databaseService
             .getPictureName(label)
-            .then((req: CanvasInformation) => {
-                expect(req.name).to.equal('MongoError');
+            .then((result: CanvasInformation) => {
+                expect(result.name).to.equal('MongoError');
             })
             .catch((error: Error) => {
                 expect(error.name).to.equal('MongoError');
@@ -176,19 +176,19 @@ describe('Database service', () => {
         client.close();
         await databaseService
             .addPicture(testCanvasInformationAdd)
-            .then((value: any) => {
-                expect(value.name).to.equal('Error');
+            .then((result: any) => {
+                expect(result.name).to.equal('Error');
             })
             .catch((error: unknown) => {
                 return error;
             });
     });
-    it('test error find getAllLabel', async () => {
+    it('test error find getAllLabels', async () => {
         client.close();
         await databaseService
-            .getAllLabel()
-            .then((value: any) => {
-                expect(value.name).to.equal('Error');
+            .getAllLabels()
+            .then((result: any) => {
+                expect(result.name).to.equal('Error');
             })
             .catch((error: unknown) => {
                 return error;
@@ -198,8 +198,8 @@ describe('Database service', () => {
         client.close();
         await databaseService
             .getPicturesDate('')
-            .then((value: any) => {
-                expect(value.name).to.equal('Error');
+            .then((result: any) => {
+                expect(result.name).to.equal('Error');
             })
             .catch((error: unknown) => {
                 return error;
@@ -209,8 +209,8 @@ describe('Database service', () => {
         client.close();
         await databaseService
             .getPicturesName('')
-            .then((value: any) => {
-                expect(value.name).to.equal('Error');
+            .then((result: any) => {
+                expect(result.name).to.equal('Error');
             })
             .catch((error: unknown) => {
                 return error;
@@ -219,8 +219,8 @@ describe('Database service', () => {
     it('test find getPicturesDate return []', async () => {
         await databaseService
             .getPicturesDate('')
-            .then((value: any) => {
-                expect(value).to.equal([]);
+            .then((result: any) => {
+                expect(result).to.equal([]);
             })
             .catch((error: unknown) => {
                 return error;
@@ -229,8 +229,8 @@ describe('Database service', () => {
     it('test find getPicturesName return []', async () => {
         await databaseService
             .getPicturesName('')
-            .then((value: any) => {
-                expect(value).to.equal([]);
+            .then((result: any) => {
+                expect(result).to.equal([]);
             })
             .catch((error: unknown) => {
                 return error;
@@ -239,9 +239,9 @@ describe('Database service', () => {
     it('test find getPicturesDate', async () => {
         await databaseService
             .getPicturesDate('10/08/2020')
-            .then((value: any) => {
-                expect(value[0]).to.equal('test3');
-                expect(value[1]).to.equal('test4');
+            .then((result: any) => {
+                expect(result[0]).to.equal('test3');
+                expect(result[1]).to.equal('test4');
             })
             .catch((error: unknown) => {
                 return error;
@@ -250,8 +250,8 @@ describe('Database service', () => {
     it('test find getPicturesName ', async () => {
         await databaseService
             .getPicturesName('test1')
-            .then((value: any) => {
-                expect(value[0].name).to.equal('test1');
+            .then((result: any) => {
+                expect(result[0].name).to.equal('test1');
             })
             .catch((error: unknown) => {
                 return error;
@@ -260,46 +260,45 @@ describe('Database service', () => {
     it('test find getPicturesName ', async () => {
         await databaseService
             .getPicturesName('test1')
-            .then((value: any) => {
-                expect(value[0].name).to.equal('test1');
+            .then((result: any) => {
+                expect(result[0].name).to.equal('test1');
             })
             .catch((error: unknown) => {
                 return error;
             });
     });
-    it('delite it good id return true', async () => {
+    it('delete good id return true', async () => {
         let getImageData: any[] = await databaseService.getPictures();
         if (getImageData.length) {
             await databaseService
                 .delete(getImageData[0]._id)
-                .then((bool: boolean) => {
-                    expect(bool).to.equal(true);
+                .then((result: boolean) => {
+                    expect(result).to.equal(true);
                 })
                 .catch((err: Error) => {
                     console.log(err.message);
                 });
         }
     });
-    it('delite not good id return false', async () => {
+    it('delete not good id return false', async () => {
         await databaseService
             .delete('')
-            .then((bool: boolean) => {
-                expect(bool).to.equal(false);
+            .then((result: boolean) => {
+                expect(result).to.equal(false);
             })
             .catch((err) => {
                 console.log(err.message);
             });
     });
-    it('delete errer mongodb close', async () => {
+    it('delete error mongodb close', async () => {
         client.close();
         await databaseService
             .delete('')
-            .then((bool: boolean) => {
-                expect(bool).to.equal(false);
+            .then((result: boolean) => {
+                expect(result).to.equal(false);
             })
             .catch((err) => {
                 expect(err.message).to.equal('server is closed');
-                //console.log(err.message);
             });
     });
     it('test find modifyPicture', async () => {
@@ -308,8 +307,8 @@ describe('Database service', () => {
         infoModif.name = modify;
         await databaseService
             .modifyPicture(infoModif)
-            .then((value: boolean) => {
-                expect(value).to.true;
+            .then((result: boolean) => {
+                expect(result).to.true;
             })
             .catch((error: unknown) => {
                 expect(error).to.true;
@@ -323,8 +322,8 @@ describe('Database service', () => {
         infoModif.name = modify;
         await databaseService
             .modifyPicture(infoModif)
-            .then((value: boolean) => {
-                expect(value).to.true;
+            .then((result: boolean) => {
+                expect(result).to.true;
             })
             .catch((error: unknown) => {
                 expect(error).to.equal('Error');
@@ -343,16 +342,15 @@ describe('Database service', () => {
         };
         await databaseService
             .modifyPicture(infoModif)
-            .then((value: boolean) => {
-                expect(value).to.false;
+            .then((result: boolean) => {
+                expect(result).to.false;
             })
             .catch((error: Error) => {
                 expect(error.message).to.equal('Topology is closed, please connect');
-                // return error;
             });
     });
 
-    it('test find modifyPicture erreur', async () => {
+    it('test find modifyPicture error', async () => {
         const infoModif: CanvasInformation = {
             _id: '',
             name: '',
@@ -364,8 +362,8 @@ describe('Database service', () => {
         };
         await databaseService
             .modifyPicture(infoModif)
-            .then((value: boolean) => {
-                expect(value).to.equal('Invalid picture');
+            .then((result: boolean) => {
+                expect(result).to.equal('Invalid picture');
             })
             .catch((error: Error) => {
                 expect(error.message).to.equal('Invalid picture');
