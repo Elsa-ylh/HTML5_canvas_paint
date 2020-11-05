@@ -3,9 +3,11 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { LoadAction } from '@app/classes/undo-redo/load-action';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 const NB_FILES_OPEN_AT_A_TIME = 3;
@@ -20,7 +22,8 @@ export class CarrouselPictureComponent implements OnInit {
         private cvsResizerService: CanvasResizerService,
         private drawingService: DrawingService,
         private router: Router,
-        private dialogRef: MatDialogRef<CarrouselPictureComponent>, // private undoRedoService: UndoRedoService,
+        private dialogRef: MatDialogRef<CarrouselPictureComponent>,
+        private undoRedoService: UndoRedoService,
     ) {}
     private dataPicture: CanvasInformation[] = [];
     private position: number = 0;
@@ -158,11 +161,12 @@ export class CarrouselPictureComponent implements OnInit {
         if (confirm('load :' + picture.name)) {
             this.cvsResizerService.canvasSize.y = picture.height;
             this.cvsResizerService.canvasSize.x = picture.width;
-            this.drawingService.convertBase64ToBaseCanvas(picture.picture, false);
-            /*const actionLoadImg = new LoadAction(picture.picture, picture.height, picture.width, this.drawingService, this.cvsResizerService);
+            this.drawingService.convertBase64ToBaseCanvas(picture.picture, true);
+            // undo-Redo
+            const actionLoadImg = new LoadAction(picture.picture, picture.height, picture.width, this.drawingService, this.cvsResizerService);
             this.undoRedoService.clearUndo();
             this.undoRedoService.clearRedo();
-            this.undoRedoService.addUndo(actionLoadImg);*/
+            this.undoRedoService.addUndo(actionLoadImg);
 
             this.dialogRef.close(true);
             this.router.navigate(['/editor']);
