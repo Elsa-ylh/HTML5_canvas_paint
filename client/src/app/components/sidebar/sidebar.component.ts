@@ -9,7 +9,7 @@ import { ToolUsed } from '@app/classes/tool';
 import { CarrouselPictureComponent } from '@app/components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DialogExportDrawingComponent } from '@app/components/dialog-export-locally/dialog-export-locally.component';
-import { SaveDialogComponent } from '@app/components/save-dialog/save-dialog.component';
+import { DialogUploadComponent } from '@app/components/dialog-upload/dialog-upload.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -45,7 +45,7 @@ export class SidebarComponent {
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
     dialogLoadRef: MatDialogRef<CarrouselPictureComponent>;
-    dialogSaveRef: MatDialogRef<SaveDialogComponent>;
+    dialogSaveRef: MatDialogRef<DialogUploadComponent>;
     exportDrawingRef: MatDialogRef<DialogExportDrawingComponent>;
     private isPencilChecked: boolean = false;
     private isEraserChecked: boolean = false;
@@ -127,7 +127,7 @@ export class SidebarComponent {
     openSaveServer(): void {
         if (this.isDialogloadSaveEport) {
             this.isDialogloadSaveEport = false;
-            this.dialogSaveRef = this.dialogCreator.open(SaveDialogComponent, {
+            this.dialogSaveRef = this.dialogCreator.open(DialogUploadComponent, {
                 width: '90%',
                 height: '90%',
             });
