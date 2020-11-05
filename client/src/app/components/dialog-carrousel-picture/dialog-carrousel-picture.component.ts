@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 const NB_FILES_OPEN_AT_A_TIME = 3;
@@ -16,6 +15,13 @@ const NB_FILES_OPEN_AT_A_TIME = 3;
     styleUrls: ['./dialog-carrousel-picture.component.scss'],
 })
 export class CarrouselPictureComponent implements OnInit {
+    constructor(
+        private clientServerComSvc: ClientServerCommunicationService,
+        private cvsResizerService: CanvasResizerService,
+        private drawingService: DrawingService,
+        private router: Router,
+        private dialogRef: MatDialogRef<CarrouselPictureComponent>, // private undoRedoService: UndoRedoService,
+    ) {}
     private dataPicture: CanvasInformation[] = [];
     private position: number = 0;
     dataLabel: Label[] = [];
@@ -24,14 +30,9 @@ export class CarrouselPictureComponent implements OnInit {
     name: string;
     myDate: FormControl = new FormControl(new Date());
     threePictures: CanvasInformation[] = [];
-    constructor(
-        private clientServerComSvc: ClientServerCommunicationService,
-        private cvsResizerService: CanvasResizerService,
-        private drawingService: DrawingService,
-        private router: Router,
-        private dialogRef: MatDialogRef<CarrouselPictureComponent>,
-        private undoRedoService: UndoRedoService,
-    ) {}
+    @ViewChild('previewImage1', { static: false }) previewImage1: ElementRef<HTMLImageElement>;
+    @ViewChild('previewImage2', { static: false }) previewImage2: ElementRef<HTMLImageElement>;
+    @ViewChild('previewImage3', { static: false }) previewImage3: ElementRef<HTMLImageElement>;
 
     ngOnInit(): void {
         this.addAllData();
@@ -131,9 +132,6 @@ export class CarrouselPictureComponent implements OnInit {
         this.createImage(this.threePictures);
         return this.threePictures;
     }
-    @ViewChild('previewImage1', { static: false }) previewImage1: ElementRef<HTMLImageElement>;
-    @ViewChild('previewImage2', { static: false }) previewImage2: ElementRef<HTMLImageElement>;
-    @ViewChild('previewImage3', { static: false }) previewImage3: ElementRef<HTMLImageElement>;
 
     private createImage(listCard: CanvasInformation[]): void {
         const nbpicture = listCard.length;
@@ -159,8 +157,11 @@ export class CarrouselPictureComponent implements OnInit {
             this.cvsResizerService.canvasSize.y = picture.height;
             this.cvsResizerService.canvasSize.x = picture.width;
             this.drawingService.convertBase64ToBaseCanvas(picture.picture);
-            this.undoRedoService.clearRedo();
+            /*const actionLoadImg = new LoadAction(picture.picture, picture.height, picture.width, this.drawingService, this.cvsResizerService);
             this.undoRedoService.clearUndo();
+            this.undoRedoService.clearRedo();
+            this.undoRedoService.addUndo(actionLoadImg);*/
+
             this.dialogRef.close(true);
             this.router.navigate(['/editor']);
         }

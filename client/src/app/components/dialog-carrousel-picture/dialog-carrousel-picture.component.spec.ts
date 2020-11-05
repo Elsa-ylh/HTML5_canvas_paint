@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { ElementRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -60,6 +61,7 @@ describe('CarrouselPictureComponent', () => {
     const messageSuccess = { title: 'string', body: 'string' } as Message;
     const testCanvasInformationAdds = [testCanvasInformationAdd];
     const labels: Label[] = [{ label: 'lable1' }, { label: 'label2' }];
+
     beforeEach(async () => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
@@ -77,6 +79,7 @@ describe('CarrouselPictureComponent', () => {
             declarations: [CarrouselPictureComponent],
             providers: [
                 HttpClient,
+                { provide: ElementRef, useValue: {} },
                 { provide: MatDialogRef, useValue: { close: () => '' } },
                 { provide: Router, useValue: { navigate: () => '' } },
                 { provide: CanvasResizerService, useValue: canvasResizerStub },
@@ -275,4 +278,8 @@ describe('CarrouselPictureComponent', () => {
         component.messageDelite(messageSuccess);
         expect(alertSpy).toHaveBeenCalledWith(messageSuccess.body);
     });
+    // it('shoutd createImage', () => {
+    //     component['dataPicture'] = allDataTest;
+    //     component.getPictures();
+    // });
 });
