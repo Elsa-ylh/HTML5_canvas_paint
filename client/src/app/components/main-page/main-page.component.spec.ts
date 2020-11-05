@@ -9,22 +9,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { MainPageComponent } from '@app/components/main-page/main-page.component';
-import { IndexService } from '@app/services/index/index.service';
-import { of, Subject } from 'rxjs';
-
-import SpyObj = jasmine.SpyObj;
+import { Subject } from 'rxjs';
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
-    let indexServiceSpy: SpyObj<IndexService>;
     let dialogMock: jasmine.SpyObj<MatDialog>;
 
     beforeEach(
         waitForAsync(() => {
-            indexServiceSpy = jasmine.createSpyObj('IndexService', ['basicGet', 'basicPost']);
-            indexServiceSpy.basicGet.and.returnValue(of({ title: '', body: '' }));
-            indexServiceSpy.basicPost.and.returnValue(of());
             dialogMock = jasmine.createSpyObj('dialogCreator', ['open']);
 
             TestBed.configureTestingModule({
