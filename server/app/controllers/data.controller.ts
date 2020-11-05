@@ -99,7 +99,7 @@ export class DataController {
 
             if (sbody !== 'Error') {
                 this.databaseService
-                    .getPicturesLabals(labels)
+                    .getPicturesLabels(labels)
                     .then((canvasInfo: CanvasInformation[]) => {
                         res.json(canvasInfo);
                     })

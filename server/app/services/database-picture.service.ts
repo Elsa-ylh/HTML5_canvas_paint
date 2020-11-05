@@ -29,7 +29,7 @@ export class DatabasePictureService {
             });
     }
 
-    async getPicturesLabals(setLabels: string[]): Promise<CanvasInformation[]> {
+    async getPicturesLabels(setLabels: string[]): Promise<CanvasInformation[]> {
         if (setLabels[0] === 'Error') {
             return [{ _id: 'not catch the labels', name: 'Error', labels: [], width: 0, height: 0, date: new Date(), picture: '' }];
         } else if (!setLabels.length) {

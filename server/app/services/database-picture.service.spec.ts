@@ -48,27 +48,27 @@ describe('Database service', () => {
         expect(getImageData.length > 0).to.equal(true);
     });
 
-    it('hould getPicturesLabals not label return all data ', async () => {
+    it('hould getPicturesLabels not label return all data ', async () => {
         const label: string[] = [];
-        const getImageData = await databaseService.getPicturesLabals(label);
+        const getImageData = await databaseService.getPicturesLabels(label);
         expect(getImageData.length).to.equal(4);
     });
 
-    it('should getPicturesLabals return null ', async () => {
+    it('should getPicturesLabels return null ', async () => {
         const label: string[] = ['a'];
-        const getImageData = await databaseService.getPicturesLabals(label);
+        const getImageData = await databaseService.getPicturesLabels(label);
         expect(getImageData.length).to.equal(0);
     });
 
-    it('should getPicturesLabals return 2 CanvasInformation ', async () => {
+    it('should getPicturesLabels return 2 CanvasInformation ', async () => {
         const label: string[] = ['label1'];
-        const getImagesData = await databaseService.getPicturesLabals(label);
+        const getImagesData = await databaseService.getPicturesLabels(label);
         expect(getImagesData.length).to.equal(2);
     });
 
-    it('should getPicturesLabals 2 labels return 3 CanvasInformation ', async () => {
+    it('should getPicturesLabels 2 labels return 3 CanvasInformation ', async () => {
         const label: string[] = ['label1', 'label2'];
-        const getImagesData = await databaseService.getPicturesLabals(label);
+        const getImagesData = await databaseService.getPicturesLabels(label);
         expect(getImagesData.length).to.equal(3);
     });
 
@@ -140,11 +140,11 @@ describe('Database service', () => {
             });
     });
 
-    it('test error find getPicturesLabals', async () => {
+    it('test error find getPicturesLabels', async () => {
         client.close();
         const label: string[] = ['label1'];
         await databaseService
-            .getPicturesLabals(label)
+            .getPicturesLabels(label)
             .then((req: any) => {
                 expect(req.name).to.equal('MongoError');
             })
@@ -152,9 +152,9 @@ describe('Database service', () => {
                 expect(relta.message).to.not.equal(NaN);
             });
     });
-    it('find getPicturesLabals labol si error', async () => {
+    it('find getPicturesLabels labol si error', async () => {
         const label: string[] = ['Error'];
-        const getImagesData = await databaseService.getPicturesLabals(label).catch((relta: Error) => {
+        const getImagesData = await databaseService.getPicturesLabels(label).catch((relta: Error) => {
             expect(relta.message).to.not.equal(NaN);
         });
         expect(getImagesData[0].name).to.equal('Error');
