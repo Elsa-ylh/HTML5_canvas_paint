@@ -15,7 +15,7 @@ export class DrawingService {
     currentTool: Tool;
     cursorUsed: string = cursorName.default;
 
-    private image = new Image();
+    private image: HTMLImageElement = new Image();
 
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
