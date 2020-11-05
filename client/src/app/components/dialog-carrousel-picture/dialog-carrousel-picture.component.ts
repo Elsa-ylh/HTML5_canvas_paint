@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 const NB_FILES_OPEN_AT_A_TIME = 3;
@@ -22,8 +21,7 @@ export class CarrouselPictureComponent implements OnInit {
         private cvsResizerService: CanvasResizerService,
         private drawingService: DrawingService,
         private router: Router,
-        private dialogRef: MatDialogRef<CarrouselPictureComponent>,
-        private undoRedoService: UndoRedoService,
+        private dialogRef: MatDialogRef<CarrouselPictureComponent>, // private undoRedoService: UndoRedoService,
     ) {}
     private dataPicture: CanvasInformation[] = [];
     private position: number = 0;
