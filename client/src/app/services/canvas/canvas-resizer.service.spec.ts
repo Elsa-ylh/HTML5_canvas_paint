@@ -7,7 +7,7 @@ import { MIN_CANVAS_SIZE, WORK_AREA_PADDING_SIZE } from '@app/classes/resize-can
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { CanvasResizerService } from './canvas-resizer.service';
 
-describe('Service: CanvasResizer', () => {
+fdescribe('Service: CanvasResizer', () => {
     // tslint:disable-next-line: no-any
     let changeResizeYSpy: jasmine.Spy<any>;
     // tslint:disable-next-line: no-any
@@ -91,18 +91,71 @@ describe('Service: CanvasResizer', () => {
         expect(numberResult).toEqual(events.mouseEventX499Y500.offsetY);
     });
 
+    it('changeResizeX inclusive value is good', () => {
+        const event: MouseEvent = { offsetX: 500, offsetY: 500 } as MouseEvent;
+        const numberResult: number = canvasResizerService['changeResizeX'](event, canvasResizerService);
+        expect(numberResult).toBe(event.offsetX);
+    });
+
     it('onResize is good vertical', () => {
+        canvasResizerService.isResizeDown = true;
         canvasResizerService.resizeDirection = ResizeDirection.vertical;
         canvasResizerService.onResize(events.mouseEventX499Y500, baseCtxStub);
     });
 
     it('onResize is good horizontal', () => {
+        canvasResizerService.isResizeDown = true;
         canvasResizerService.resizeDirection = ResizeDirection.horizontal;
         canvasResizerService.onResize(events.mouseEventX499Y500, baseCtxStub);
     });
 
     it('onResize is good verticalAndHorizontal', () => {
+        canvasResizerService.isResizeDown = true;
         canvasResizerService.resizeDirection = ResizeDirection.verticalAndHorizontal;
         canvasResizerService.onResize(events.mouseEventX499Y500, baseCtxStub);
+    });
+
+    it('changeCanvasY smaller than MIN_CANVAS_SIZE', () => {
+        const event: MouseEvent = { offsetX: 0, offsetY: MIN_CANVAS_SIZE } as MouseEvent;
+        canvasResizerService['changeCanvasY'](event);
+        expect(canvasResizerService.canvasSize.y).toBe(MIN_CANVAS_SIZE);
+    });
+
+    it('changeCanvasY greater than drawing area', () => {
+        canvasResizerService.resizeHeight = 1000;
+        const event: MouseEvent = { offsetX: 0, offsetY: 20000 } as MouseEvent;
+        canvasResizerService['changeCanvasY'](event);
+        expect(canvasResizerService.canvasSize.y).toBe(canvasResizerService.resizeHeight - WORK_AREA_PADDING_SIZE);
+    });
+
+    it('changeCanvasY to be in the respective area, not too small or too big', () => {
+        const event: MouseEvent = { offsetX: 0, offsetY: 500 } as MouseEvent;
+        canvasResizerService['changeCanvasY'](event);
+        expect(canvasResizerService.canvasSize.y).toBe(event.offsetY);
+    });
+
+    it('changeCanvasX smaller than MIN_CANVAS_SIZE', () => {
+        const event: MouseEvent = { offsetX: MIN_CANVAS_SIZE, offsetY: 0 } as MouseEvent;
+        canvasResizerService['changeCanvasX'](event);
+        expect(canvasResizerService.canvasSize.x).toBe(MIN_CANVAS_SIZE);
+    });
+
+    it('changeCanvasX greater than drawing area', () => {
+        canvasResizerService.resizeHeight = 1000;
+        const event: MouseEvent = { offsetX: 20000, offsetY: 20000 } as MouseEvent;
+        canvasResizerService['changeCanvasX'](event);
+        expect(canvasResizerService.canvasSize.x).toBe(canvasResizerService.resizeWidth - WORK_AREA_PADDING_SIZE);
+    });
+
+    it('changeCanvasX to be in the respective area, not too small or too big', () => {
+        const event: MouseEvent = { offsetX: 500, offsetY: 500 } as MouseEvent;
+        canvasResizerService['changeCanvasX'](event);
+        expect(canvasResizerService.canvasSize.x).toBe(event.offsetX);
+    });
+
+    it('onResizeOut has redirected to onResizeUp', () => {
+        const onResizeUpSpy = spyOn(canvasResizerService, 'onResizeUp');
+        canvasResizerService.onResizeOut({} as MouseEvent, baseCtxStub, canvasTestHelper.canvas);
+        expect(onResizeUpSpy).toHaveBeenCalled();
     });
 });
