@@ -1,5 +1,5 @@
 // tslint:disable:no-magic-numbers
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -128,11 +128,17 @@ export class CarrouselPictureComponent implements OnInit {
         this.createImage(threePictures);
         return threePictures;
     }
+    @ViewChild('previewImage0', { static: false }) previewImage0: ElementRef<HTMLImageElement>;
+    @ViewChild('previewImage1', { static: false }) previewImage1: ElementRef<HTMLImageElement>;
+    @ViewChild('previewImage2', { static: false }) previewImage2: ElementRef<HTMLImageElement>;
+    // https://stackoverflow.com/questions/19262141/resize-image-with-javascript-canvas-smoothly
+    /*ngAfterViewInit(): void {
+        this.previewImage0.nativeElement.src = this.drawingService.convertBaseCanvasToBase64();
+    }*/
     private createImage(listCard: CanvasInformation[]): void {
-        listCard.forEach((element) => {
-            // let canvas = document.getElementById(element.id);
-            // let ctx = canvas.getContext('2d');
-        });
+        this.previewImage0.nativeElement.src = this.drawingService.convertBaseCanvasToBase64();
+        this.previewImage1.nativeElement.src = this.drawingService.convertBaseCanvasToBase64();
+        this.previewImage2.nativeElement.src = this.drawingService.convertBaseCanvasToBase64();
     }
     loadPicture(picture: CanvasInformation): void {
         if (confirm('load :' + picture.name)) {

@@ -4,7 +4,7 @@
 </div>
 <div *ngIf="getPicturesAll().length">
     <mat-grid-list cols="3" rowHeight="1:1">
-        <mat-grid-tile *ngFor="let pictureCarte of getPictures()">
+        <mat-grid-tile *ngFor="let pictureCarte of getPictures(); let i = index">
             <mat-card class="card-picture">
                 <mat-card-header>
                     <mat-card-title>{{ pictureCarte.name }}</mat-card-title>
@@ -12,7 +12,7 @@
                         {{ pictureCarte.date }}
                     </mat-card-subtitle>
                 </mat-card-header>
-                <img id="{{ pictureCarte._id }}" />
+                <img id="previewImage+{{ i }}" />
                 <mat-card-content>
                     <div *ngFor="let element of pictureCarte.labels"># {{ element.label }}</div>
                 </mat-card-content>
