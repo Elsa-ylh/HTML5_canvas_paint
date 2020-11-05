@@ -10,7 +10,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-fdescribe('Service: PaintBucket', () => {
+describe('Service: PaintBucket', () => {
     /*tslint:disable:no-any*/
     /*tslint:disable:no-magic-numbers*/
     let colorService: ColorService;

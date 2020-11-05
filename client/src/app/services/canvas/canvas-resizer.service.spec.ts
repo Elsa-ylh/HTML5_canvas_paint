@@ -1,6 +1,7 @@
 /* tslint:disable:no-unused-variable */
 /* tslint:disable:no-string-literal */
 /* tslint:disable:no-magic-numbers */
+/* tslint:disable:no-any */
 import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { EventOfTest } from '@app/classes/event-of-test';
@@ -8,7 +9,7 @@ import { MIN_CANVAS_SIZE, WORK_AREA_PADDING_SIZE } from '@app/classes/resize-can
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { CanvasResizerService } from './canvas-resizer.service';
 
-fdescribe('Service: CanvasResizer', () => {
+describe('Service: CanvasResizer', () => {
     // tslint:disable-next-line: no-any
     let changeResizeYSpy: jasmine.Spy<any>;
     // tslint:disable-next-line: no-any
@@ -17,9 +18,18 @@ fdescribe('Service: CanvasResizer', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let conparativectxStub: CanvasRenderingContext2D;
     let events: EventOfTest;
+
+    let canvas: HTMLCanvasElement;
+    let resizeCanvas: HTMLCanvasElement;
+    let resizeCtx: CanvasRenderingContext2D;
+
     beforeEach(() => {
+        canvas = canvasTestHelper.canvas;
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         conparativectxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+
+        resizeCanvas = document.createElement('canvas');
+        resizeCtx = resizeCanvas.getContext('2d') as CanvasRenderingContext2D;
 
         TestBed.configureTestingModule({
             providers: [CanvasResizerService],
@@ -93,6 +103,7 @@ fdescribe('Service: CanvasResizer', () => {
     });
 
     it('changeResizeX inclusive value is good', () => {
+        canvasResizerService.resizeWidth = 1000;
         const event: MouseEvent = { offsetX: 500, offsetY: 500 } as MouseEvent;
         const numberResult: number = canvasResizerService['changeResizeX'](event, canvasResizerService);
         expect(numberResult).toBe(event.offsetX);
@@ -101,23 +112,30 @@ fdescribe('Service: CanvasResizer', () => {
     it('onResize is good vertical', () => {
         canvasResizerService.isResizeDown = true;
         canvasResizerService.resizeDirection = ResizeDirection.vertical;
+        const spy = spyOn<any>(canvasResizerService, 'onResize').and.callThrough();
         canvasResizerService.onResize(events.mouseEventX499Y500, baseCtxStub);
+        expect(spy).toHaveBeenCalled();
     });
 
     it('onResize is good horizontal', () => {
         canvasResizerService.isResizeDown = true;
         canvasResizerService.resizeDirection = ResizeDirection.horizontal;
+        const spy = spyOn<any>(canvasResizerService, 'onResize').and.callThrough();
         canvasResizerService.onResize(events.mouseEventX499Y500, baseCtxStub);
+        expect(spy).toHaveBeenCalled();
     });
 
     it('onResize is good verticalAndHorizontal', () => {
         canvasResizerService.isResizeDown = true;
         canvasResizerService.resizeDirection = ResizeDirection.verticalAndHorizontal;
+        const spy = spyOn<any>(canvasResizerService, 'onResize').and.callThrough();
         canvasResizerService.onResize(events.mouseEventX499Y500, baseCtxStub);
+        expect(spy).toHaveBeenCalled();
     });
 
     it('changeCanvasY smaller than MIN_CANVAS_SIZE', () => {
-        const event: MouseEvent = { offsetX: 0, offsetY: MIN_CANVAS_SIZE } as MouseEvent;
+        canvasResizerService.resizeHeight = 1000;
+        const event: MouseEvent = { offsetX: 0, offsetY: 0 } as MouseEvent;
         canvasResizerService['changeCanvasY'](event);
         expect(canvasResizerService.canvasSize.y).toBe(MIN_CANVAS_SIZE);
     });
@@ -136,7 +154,8 @@ fdescribe('Service: CanvasResizer', () => {
     });
 
     it('changeCanvasX smaller than MIN_CANVAS_SIZE', () => {
-        const event: MouseEvent = { offsetX: MIN_CANVAS_SIZE, offsetY: 0 } as MouseEvent;
+        canvasResizerService.resizeWidth = 1000;
+        const event: MouseEvent = { offsetX: 0, offsetY: 0 } as MouseEvent;
         canvasResizerService['changeCanvasX'](event);
         expect(canvasResizerService.canvasSize.x).toBe(MIN_CANVAS_SIZE);
     });
@@ -149,6 +168,7 @@ fdescribe('Service: CanvasResizer', () => {
     });
 
     it('changeCanvasX to be in the respective area, not too small or too big', () => {
+        canvasResizerService.resizeWidth = 1000;
         const event: MouseEvent = { offsetX: 500, offsetY: 500 } as MouseEvent;
         canvasResizerService['changeCanvasX'](event);
         expect(canvasResizerService.canvasSize.x).toBe(event.offsetX);
@@ -158,5 +178,30 @@ fdescribe('Service: CanvasResizer', () => {
         const onResizeUpSpy = spyOn(canvasResizerService, 'onResizeUp');
         canvasResizerService.onResizeOut({} as MouseEvent, baseCtxStub, canvasTestHelper.canvas);
         expect(onResizeUpSpy).toHaveBeenCalled();
+    });
+
+    it(' should onResizeUp vertical resize', () => {
+        canvasResizerService.isResizeDown = true;
+        canvasResizerService.resizeDirection = ResizeDirection.vertical;
+        const spy = spyOn<any>(canvasResizerService, 'onResizeUp').and.callThrough();
+        canvasResizerService.onResizeUp({} as MouseEvent, resizeCtx, canvas);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it(' should onResizeUp horizontal resize', () => {
+        canvasResizerService.isResizeDown = true;
+        canvasResizerService.resizeDirection = ResizeDirection.horizontal;
+        const spy = spyOn<any>(canvasResizerService, 'onResizeUp').and.callThrough();
+        canvasResizerService.onResizeUp({} as MouseEvent, resizeCtx, canvas);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it(' should onResizeUp vertical and horizontal resize', () => {
+        canvasResizerService.isResizeDown = true;
+        canvasResizerService.addToUndoRedo = true;
+        canvasResizerService.resizeDirection = ResizeDirection.verticalAndHorizontal;
+        const spy = spyOn<any>(canvasResizerService, 'onResizeUp').and.callThrough();
+        canvasResizerService.onResizeUp({} as MouseEvent, resizeCtx, canvas);
+        expect(spy).toHaveBeenCalled();
     });
 });
