@@ -39,4 +39,13 @@ describe('DrawingService', () => {
         service.previewCtx.fillRect(20, 20, 100, 100);
         expect(service.isPreviewCanvasBlank()).toEqual(false);
     });
+    it('should something', () => {
+        service.previewCtx.fillRect(20, 20, 100, 100);
+        const spy = spyOn(service.baseCtx, 'drawImage').and.stub();
+        service.convertBase64ToBaseCanvas('img');
+        let event = new Event('onload');
+        service['image'].dispatchEvent(event);
+
+        expect(spy).toHaveBeenCalled();
+    });
 });
