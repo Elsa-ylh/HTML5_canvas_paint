@@ -80,7 +80,7 @@ export class DialogUploadComponent implements OnInit {
         if (message === undefined) {
             alert('Sauvegarde : Échec \nAucune communication au serveur');
         } else {
-            alert('Sauvegarde :' + message.title + '\n' + message.body);
+            alert('Sauvegarde : ' + message.title + '\n' + message.body);
         }
 
         this.saveload = false;

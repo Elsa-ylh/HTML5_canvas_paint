@@ -37,25 +37,25 @@ export class CarrouselPictureComponent implements OnInit {
 
     ngOnInit(): void {
         this.addAllData();
-        this.addAllLabal();
+        this.addAllLabels();
     }
     private addAllData(): void {
         this.clientServerComSvc.getData().subscribe((info) => (this.dataPicture = info));
     }
 
-    private addAllLabal(): void {
+    private addAllLabels(): void {
         this.dataLabel = this.clientServerComSvc.getAllLabel();
     }
 
     reset(): void {
-        this.addAllLabal();
+        this.addAllLabels();
         this.addAllData();
         this.labelSelect = [];
         this.name = '';
         this.myDate = new FormControl(new Date());
     }
     refresh(): void {
-        this.addAllLabal();
+        this.addAllLabels();
         this.labelSelect = [];
         this.addAllData();
     }
@@ -172,7 +172,7 @@ export class CarrouselPictureComponent implements OnInit {
     }
 
     deletePicture(picture: CanvasInformation): void {
-        if (confirm('Suprimer : ' + picture.name)) {
+        if (confirm('Supprimer : ' + picture.name)) {
             const deleteMassage: Message = { title: 'delete', body: picture._id };
             this.clientServerComSvc.deleteQuery(deleteMassage).subscribe((info) => this.messageDelite(info));
         }
