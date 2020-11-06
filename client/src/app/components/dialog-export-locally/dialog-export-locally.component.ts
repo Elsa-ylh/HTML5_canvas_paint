@@ -107,7 +107,7 @@ export class DialogExportDrawingComponent implements AfterViewInit {
                     textImageFormat += '\n Filtre sepia';
                     break;
             }
-            if (confirm('Vous voulez saugarder ' + textImageFormat)) {
+            if (confirm('Voulez-vous sauvegarder ' + textImageFormat)) {
                 const finalImageCanvas = document.createElement('canvas');
                 const finalImageCtx = finalImageCanvas.getContext('2d') as CanvasRenderingContext2D;
 

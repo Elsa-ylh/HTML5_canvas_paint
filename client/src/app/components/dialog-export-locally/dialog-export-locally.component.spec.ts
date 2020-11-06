@@ -115,7 +115,7 @@ describe('DialogExportDrawingComponent', () => {
         const spyDownloadImage = spyOn<any>(component, 'downloadImage').and.callThrough();
         component.downloadImage();
         expect(spyDownloadImage).toHaveBeenCalled();
-        expect(confirmSpy).toHaveBeenCalledWith('Vous voulez saugarder ' + component.nameFormControl.value + '.png\n Filtre grayscale');
+        expect(confirmSpy).toHaveBeenCalledWith('Voulez-vous sauvegarder ' + component.nameFormControl.value + '.png\n Filtre grayscale');
     });
     it(' should downloadImage cancel', () => {
         confirmSpy.and.returnValue(true);
@@ -124,7 +124,7 @@ describe('DialogExportDrawingComponent', () => {
         const spyDownloadImage = spyOn<any>(component, 'downloadImage').and.callThrough();
         component.downloadImage();
         expect(spyDownloadImage).toHaveBeenCalled();
-        expect(confirmSpy).toHaveBeenCalledWith('Vous voulez saugarder test.png\n Filtre invert');
+        expect(confirmSpy).toHaveBeenCalledWith('Voulez-vous sauvegarder test.png\n Filtre invert');
     });
     it(' should downloadImage cancel', () => {
         confirmSpy.and.returnValue(true);
@@ -133,7 +133,7 @@ describe('DialogExportDrawingComponent', () => {
         const spyDownloadImage = spyOn<any>(component, 'downloadImage').and.callThrough();
         component.downloadImage();
         expect(spyDownloadImage).toHaveBeenCalled();
-        expect(confirmSpy).toHaveBeenCalledWith('Vous voulez saugarder default.png\n Filtre brightness');
+        expect(confirmSpy).toHaveBeenCalledWith('Voulez-vous sauvegarder default.png\n Filtre brightness');
     });
     it(' should downloadImage cancel', () => {
         confirmSpy.and.returnValue(true);
@@ -142,6 +142,6 @@ describe('DialogExportDrawingComponent', () => {
         const spyDownloadImage = spyOn<any>(component, 'downloadImage').and.callThrough();
         component.downloadImage();
         expect(spyDownloadImage).toHaveBeenCalled();
-        expect(confirmSpy).toHaveBeenCalledWith('Vous voulez saugarder default.png\n Filtre sepia');
+        expect(confirmSpy).toHaveBeenCalledWith('Voulez-vous sauvegarder default.png\n Filtre sepia');
     });
 });
