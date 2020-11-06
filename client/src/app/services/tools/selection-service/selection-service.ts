@@ -288,11 +288,11 @@ export class SelectionService extends Tool {
         return false;
     }
 
-    drawPreview(): void {}
+    protected drawPreview(): void {}
 
-    drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {}
+    protected drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {}
 
-    getImageURL(imgData: ImageData, width: number, height: number): string {
+    protected getImageURL(imgData: ImageData, width: number, height: number): string {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
         canvas.width = Math.abs(width);

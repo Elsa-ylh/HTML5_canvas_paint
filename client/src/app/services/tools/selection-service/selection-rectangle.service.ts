@@ -52,7 +52,7 @@ export class SelectionRectangleService extends SelectionService {
         this.inSelection = false;
     }
 
-    drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {
+    protected drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {
         ctx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
         this.drawSelectionRect(ctx, mouseCoord);
     }
@@ -61,7 +61,7 @@ export class SelectionRectangleService extends SelectionService {
         this.drawingService.baseCtx.putImageData(imageData, position.x, position.y);
     }
 
-    drawPreview(): void {
+    protected drawPreview(): void {
         this.drawPreviewRect(this.drawingService.previewCtx, this.shiftPressed);
     }
 

@@ -16,7 +16,7 @@ export class DialogUploadComponent implements OnInit {
     textLabel: string = '';
     textName: string = '';
     private labelSelect: string[] = [];
-    errerTextLabel: boolean = false;
+    errorTextLabel: boolean = false;
     saveload: boolean = false;
 
     constructor(
@@ -49,7 +49,7 @@ export class DialogUploadComponent implements OnInit {
         this.saveload = true;
         const nameResult = !this.checkName(this.textName);
         const labelResult = !this.checkLabel(this.textLabel);
-        this.errerTextLabel = !nameResult;
+        this.errorTextLabel = !nameResult;
         if (nameResult && labelResult) {
             const labelsSting: Label[] = [];
             if (this.textLabel !== '') {
@@ -78,9 +78,9 @@ export class DialogUploadComponent implements OnInit {
 
     processedMessage(message: Message): void {
         if (message === undefined) {
-            alert('Sauvegede : Échec \n aucune communication au server');
+            alert('Sauvegarde : Échec \nAucune communication au serveur');
         } else {
-            alert('Sauvegede :' + message.title + '\n' + message.body);
+            alert('Sauvegarde :' + message.title + '\n' + message.body);
         }
 
         this.saveload = false;

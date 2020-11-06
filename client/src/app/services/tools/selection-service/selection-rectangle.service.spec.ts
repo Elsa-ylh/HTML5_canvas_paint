@@ -140,7 +140,7 @@ describe('Service: SelectionRectangle', () => {
         putImageDataSpy = spyOn<any>(service['drawingService'].previewCtx, 'putImageData').and.callThrough();
 
         service.imageData = new ImageData(10, 10);
-        service.drawSelection(service['drawingService'].previewCtx, { x: 1, y: 1 }, { x: 1, y: 1 });
+        service['drawSelection'](service['drawingService'].previewCtx, { x: 1, y: 1 }, { x: 1, y: 1 });
         expect(drawSelectionRectSpy).toHaveBeenCalled();
         expect(putImageDataSpy).toHaveBeenCalled();
     });
@@ -149,7 +149,7 @@ describe('Service: SelectionRectangle', () => {
         putImageDataSpy = spyOn<any>(service['drawingService'].baseCtx, 'putImageData').and.callThrough();
 
         service.imageData = new ImageData(10, 10);
-        service.pasteSelection({ x: 1, y: 1 }, service.imageData);
+        service['pasteSelection']({ x: 1, y: 1 }, service.imageData);
         expect(putImageDataSpy).toHaveBeenCalled();
     });
 
@@ -157,13 +157,13 @@ describe('Service: SelectionRectangle', () => {
         drawPreviewRectSpy = spyOn<any>(service, 'drawPreviewRect').and.callThrough();
 
         service.shiftPressed = true;
-        service.drawPreview();
+        service['drawPreview']();
         expect(drawPreviewRectSpy).toHaveBeenCalled();
     });
 
     it(' clearSelection should put a white rectangle over a selection initial position', () => {
         fillRectSpy = spyOn<any>(service['drawingService'].baseCtx, 'fillRect').and.callThrough();
-        service.clearSelection({ x: 1, y: 1 }, 10, 10);
+        service['clearSelection']({ x: 1, y: 1 }, 10, 10);
         expect(fillRectSpy).toHaveBeenCalled();
     });
 

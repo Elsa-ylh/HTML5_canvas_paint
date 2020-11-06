@@ -53,7 +53,7 @@ export class SelectionEllipseService extends SelectionService {
         this.inSelection = false;
     }
 
-    drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {
+    protected drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {
         if (this.isAllSelect) {
             ctx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
             this.drawSelectionRect(ctx, mouseCoord);
@@ -89,7 +89,7 @@ export class SelectionEllipseService extends SelectionService {
         }
     }
 
-    drawPreview(): void {
+    protected drawPreview(): void {
         this.drawPreviewEllipse(this.drawingService.previewCtx);
     }
 
