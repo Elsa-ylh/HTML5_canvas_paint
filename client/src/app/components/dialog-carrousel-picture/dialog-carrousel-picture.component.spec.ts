@@ -35,6 +35,8 @@ describe('CarrouselPictureComponent', () => {
     let addAllLabelsSpy: jasmine.Spy<any>;
     let confirmSpy: jasmine.Spy<any>;
     let alertSpy: jasmine.Spy<any>;
+    let nextSpy: jasmine.Spy<any>;
+    let priorSpy: jasmine.Spy<any>;
     const testCanvasInformationAdd: CanvasInformation = {
         _id: '1111',
         name: 'test5',
@@ -278,5 +280,19 @@ describe('CarrouselPictureComponent', () => {
     it('should deletePicture', () => {
         component.messageDelite(messageSuccess);
         expect(alertSpy).toHaveBeenCalledWith(messageSuccess.body);
+    });
+
+    it('onLeftArrow should show previous pictures', () => {
+        const event = {} as KeyboardEvent;
+        priorSpy = spyOn<any>(component, 'prior').and.stub();
+        component.onLeftArrow(event);
+        expect(priorSpy).toHaveBeenCalled();
+    });
+
+    it('onRightArrow should show next pictures', () => {
+        const event = {} as KeyboardEvent;
+        nextSpy = spyOn(component, 'next').and.stub();
+        component.onRightArrow(event);
+        expect(nextSpy).toHaveBeenCalled();
     });
 });

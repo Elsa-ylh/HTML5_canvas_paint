@@ -57,11 +57,9 @@ describe('DrawingService', () => {
     it('should not call convertBase64ToCanvas on load', async () => {
         service.previewCtx.fillRect(20, 20, 100, 100);
         const event = new Event('onload');
-        const callBack = true;
-        service.convertBase64ToBaseCanvas('assets/apple.svg', callBack);
+        service.convertBase64ToBaseCanvas('assets/apple.svg');
         const spy = spyOn(service.baseCtx, 'drawImage').and.stub();
         service['image'].dispatchEvent(event);
         expect(spy).not.toHaveBeenCalled();
-        expect(callBack).toEqual(true);
     });
 });
