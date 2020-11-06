@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ElementRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -32,9 +32,11 @@ describe('CarrouselPictureComponent', () => {
     let httpMock: HttpTestingController;
     const isDate: Date = new Date();
     let addAllDataSpy: jasmine.Spy<any>;
-    let addAllLabalSpy: jasmine.Spy<any>;
+    let addAllLabelsSpy: jasmine.Spy<any>;
     let confirmSpy: jasmine.Spy<any>;
     let alertSpy: jasmine.Spy<any>;
+    let nextSpy: jasmine.Spy<any>;
+    let priorSpy: jasmine.Spy<any>;
     const testCanvasInformationAdd: CanvasInformation = {
         _id: '1111',
         name: 'test5',
@@ -75,6 +77,7 @@ describe('CarrouselPictureComponent', () => {
                 MatFormFieldModule,
                 MatOptionModule,
                 MatSelectModule,
+                FormsModule,
             ],
             declarations: [CarrouselPictureComponent],
             providers: [
@@ -112,7 +115,7 @@ describe('CarrouselPictureComponent', () => {
         httpMock = TestBed.inject(HttpTestingController);
 
         addAllDataSpy = spyOn<any>(component, 'addAllData').and.callThrough();
-        addAllLabalSpy = spyOn<any>(component, 'addAllLabal').and.callThrough();
+        addAllLabelsSpy = spyOn<any>(component, 'addAllLabels').and.callThrough();
     });
 
     afterEach(() => {
@@ -129,12 +132,12 @@ describe('CarrouselPictureComponent', () => {
     it('test reset', () => {
         component.reset();
         expect(addAllDataSpy).toHaveBeenCalled();
-        expect(addAllLabalSpy).toHaveBeenCalled();
+        expect(addAllLabelsSpy).toHaveBeenCalled();
     });
     it('test ngOnInit', () => {
         component.ngOnInit();
         expect(addAllDataSpy).toHaveBeenCalled();
-        expect(addAllLabalSpy).toHaveBeenCalled();
+        expect(addAllLabelsSpy).toHaveBeenCalled();
     });
 
     it('test getPicturesAll', () => {
@@ -169,9 +172,9 @@ describe('CarrouselPictureComponent', () => {
         component.selectionLabel(labels[0].label);
         expect(component['dataPicture'][0].name).toEqual(testCanvasInformationAdd.name);
     });
-    it('check if the refresh function call addAllLabel', () => {
+    it('check if the refresh function call addAllLabels', () => {
         component.refresh();
-        expect(component['addAllLabal']).toHaveBeenCalled;
+        expect(component['addAllLabels']).toHaveBeenCalled();
     });
     it('should setSearchCriteria ', () => {
         spyOn(component['clientServerComSvc'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
@@ -267,19 +270,29 @@ describe('CarrouselPictureComponent', () => {
     it('should deletePicture', () => {
         confirmSpy.and.returnValue(true);
         component.deletePicture(testCanvasInformationAdd);
-        expect(confirmSpy).toHaveBeenCalledWith('Suprimer : ' + testCanvasInformationAdd.name);
+        expect(confirmSpy).toHaveBeenCalledWith('Supprimer : ' + testCanvasInformationAdd.name);
     });
     it('should deletePicture', () => {
         confirmSpy.and.returnValue(false);
         component.deletePicture(allDataTest[0]);
-        expect(confirmSpy).toHaveBeenCalledWith('Suprimer : ' + allDataTest[0].name);
+        expect(confirmSpy).toHaveBeenCalledWith('Supprimer : ' + allDataTest[0].name);
     });
     it('should deletePicture', () => {
         component.messageDelite(messageSuccess);
         expect(alertSpy).toHaveBeenCalledWith(messageSuccess.body);
     });
-    // it('shoutd createImage', () => {
-    //     component['dataPicture'] = allDataTest;
-    //     component.getPictures();
-    // });
+
+    it('onLeftArrow should show previous pictures', () => {
+        const event = {} as KeyboardEvent;
+        priorSpy = spyOn<any>(component, 'prior').and.stub();
+        component.onLeftArrow(event);
+        expect(priorSpy).toHaveBeenCalled();
+    });
+
+    it('onRightArrow should show next pictures', () => {
+        const event = {} as KeyboardEvent;
+        nextSpy = spyOn(component, 'next').and.stub();
+        component.onRightArrow(event);
+        expect(nextSpy).toHaveBeenCalled();
+    });
 });

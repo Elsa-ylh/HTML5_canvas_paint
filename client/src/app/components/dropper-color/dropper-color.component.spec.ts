@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToolUsed } from '@app/classes/tool';
@@ -16,7 +17,15 @@ describe('DropperColorComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [DropperColorComponent],
-            imports: [MatGridListModule, MatButtonToggleModule, MatButtonModule, MatListModule, BrowserAnimationsModule, HttpClientModule],
+            imports: [
+                MatGridListModule,
+                MatIconModule,
+                MatButtonToggleModule,
+                MatButtonModule,
+                MatListModule,
+                BrowserAnimationsModule,
+                HttpClientModule,
+            ],
             providers: [{ provide: ColorService, useValue: {} }],
         }).compileComponents();
     });

@@ -43,7 +43,7 @@ export class UndoRedoService {
         this.updateStatus();
     }
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
-    undo(): void {
+    async undo(): Promise<void> {
         const action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
         if (action) {
             this.listRedo.push(action);

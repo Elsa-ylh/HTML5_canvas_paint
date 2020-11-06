@@ -144,7 +144,7 @@ describe('Service: SelectionRectangle', () => {
         service.isAllSelect = true;
         service.image = new Image();
         service.imageData = new ImageData(10, 10);
-        service.drawSelection(service['drawingService'].previewCtx, { x: 1, y: 1 }, { x: 1, y: 1 });
+        service['drawSelection'](service['drawingService'].previewCtx, { x: 1, y: 1 }, { x: 1, y: 1 });
         expect(putImageDataSpy).toHaveBeenCalled();
         expect(drawSelectionRectSpy).toHaveBeenCalled();
     });
@@ -156,7 +156,7 @@ describe('Service: SelectionRectangle', () => {
         service.isAllSelect = false;
         service.image = new Image();
         service.imageData = new ImageData(10, 10);
-        service.drawSelection(service['drawingService'].previewCtx, { x: 1, y: 1 }, { x: 1, y: 1 });
+        service['drawSelection'](service['drawingService'].previewCtx, { x: 1, y: 1 }, { x: 1, y: 1 });
         expect(drawImageSpy).toHaveBeenCalled();
         expect(drawEllipseSpy).toHaveBeenCalled();
     });
@@ -175,7 +175,7 @@ describe('Service: SelectionRectangle', () => {
         drawPreviewEllipseSpy = spyOn<any>(service, 'drawPreviewEllipse').and.callThrough();
 
         service.shiftPressed = true;
-        service.drawPreview();
+        service['drawPreview']();
         expect(drawPreviewEllipseSpy).toHaveBeenCalled();
     });
 
@@ -219,14 +219,14 @@ describe('Service: SelectionRectangle', () => {
     it(' clearSelection should put a white rectangle over a selection initial position and all the canvas is selected', () => {
         fillRectSpy = spyOn<any>(service['drawingService'].baseCtx, 'fillRect').and.callThrough();
         service.isAllSelect = true;
-        service.clearSelection({ x: 1, y: 1 }, 10, 10);
+        service['clearSelection']({ x: 1, y: 1 }, 10, 10);
         expect(fillRectSpy).toHaveBeenCalled();
     });
 
     it(' clearSelection should put a white ellipse over a selection initial position', () => {
         drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
         service.isAllSelect = false;
-        service.clearSelection({ x: 1, y: 1 }, 10, 10);
+        service['clearSelection']({ x: 1, y: 1 }, 10, 10);
         expect(drawEllipseSpy).toHaveBeenCalled();
     });
 

@@ -562,16 +562,16 @@ describe('SidebarComponent', () => {
         expect(spySelectAllEllipse).toHaveBeenCalled();
     });
 
-    it('should call openCarousel when clicking ctrl shift g', () => {
-        const event = new KeyboardEvent('window:keydown.control.shift.g', {});
+    it('should call openCarousel when clicking ctrl  g', () => {
+        const event = new KeyboardEvent('window:keydown.control.g', {});
         const spyopenCarrouselKey = spyOn(component, 'openCarrousel').and.stub();
         window.dispatchEvent(event);
         component.openCarrouselKey(event);
         expect(spyopenCarrouselKey).toHaveBeenCalled();
     });
 
-    it('should call openSaveServer when clicking ctrl shift s', () => {
-        const event = new KeyboardEvent('window:keydown.control.shift.s', {});
+    it('should call openSaveServer when clicking ctrl s', () => {
+        const event = new KeyboardEvent('window:keydown.control.s', {});
         const spyOpenSaveServerKey = spyOn(component, 'openSaveServer').and.stub();
         window.dispatchEvent(event);
         component.openSaveServerKey(event);
@@ -579,7 +579,7 @@ describe('SidebarComponent', () => {
     });
 
     it('should call exportDrawing when clicking ctrl e', () => {
-        const event = new KeyboardEvent('window:keydown.control.shift.e', {});
+        const event = new KeyboardEvent('window:keydown.control.e', {});
         const spyExportDrawingKey = spyOn(component, 'exportDrawing').and.stub();
         window.dispatchEvent(event);
         component.exportDrawingKey(event);

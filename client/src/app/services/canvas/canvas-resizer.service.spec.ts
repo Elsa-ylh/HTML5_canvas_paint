@@ -49,7 +49,7 @@ describe('Service: CanvasResizer', () => {
         canvasResizerService.resizeDirection = ResizeDirection.vertical;
     });
 
-    it('should creer', inject([CanvasResizerService], (service: CanvasResizerService) => {
+    it('should create', inject([CanvasResizerService], (service: CanvasResizerService) => {
         expect(service).toBeTruthy();
     }));
 

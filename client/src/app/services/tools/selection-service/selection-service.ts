@@ -9,10 +9,9 @@ import { interval, Subscription, timer } from 'rxjs';
     providedIn: 'root',
 })
 
-// Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
+// The below is justified because the methods are implemented by their children.
 // tslint:disable:no-empty
-// Ce fichier est plus grand que 350 lignes mais toutes les fonctions gérés
-// par ce service doivent se trouver dans ce fichier donc la ligne suivante est justifié
+// This file is larger than 350 lines but is entirely used by the methods.
 // tslint:disable:max-file-line-count
 export class SelectionService extends Tool {
     constructor(drawingService: DrawingService) {
@@ -57,7 +56,6 @@ export class SelectionService extends Tool {
     timerDown: boolean = false;
 
     onMouseDown(event: MouseEvent): void {
-        // initialisation of effects
         this.clearEffectTool();
         this.drawingService.previewCtx.lineWidth = this.lineWidth;
         this.drawingService.previewCtx.strokeStyle = 'black';
@@ -184,7 +182,7 @@ export class SelectionService extends Tool {
             if (shiftPressed) {
                 const distanceX = this.mousePosition.x - this.mouseDownCoord.x;
                 const distanceY = this.mousePosition.y - this.mouseDownCoord.y;
-                // width an height calcul while keeping position sign
+                // calculate width and height while keeping sign
                 this.height = Math.sign(distanceY) * Math.abs(Math.min(distanceX, distanceY));
                 this.width = Math.sign(distanceX) * Math.abs(Math.min(distanceX, distanceY));
             } else {
@@ -288,11 +286,11 @@ export class SelectionService extends Tool {
         return false;
     }
 
-    drawPreview(): void {}
+    protected drawPreview(): void {}
 
-    drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {}
+    protected drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {}
 
-    getImageURL(imgData: ImageData, width: number, height: number): string {
+    protected getImageURL(imgData: ImageData, width: number, height: number): string {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
         canvas.width = Math.abs(width);

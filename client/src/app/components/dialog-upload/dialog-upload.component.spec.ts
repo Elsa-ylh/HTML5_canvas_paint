@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -50,6 +51,7 @@ describe('DialogUpload', () => {
                 MatSelectModule,
                 MatFormFieldModule,
                 MatInputModule,
+                FormsModule,
                 BrowserAnimationsModule,
                 MatButtonToggleModule,
             ],

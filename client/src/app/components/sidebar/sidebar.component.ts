@@ -55,7 +55,6 @@ export class SidebarComponent {
     private isEllipseChecked: boolean = false;
     private isColorChecked: boolean = false;
     private isDropperChecked: boolean = false;
-    // private isSelectionChecked: boolean = false;
     private isSelectionEllipseChecked: boolean = false;
     private isSelectionRectangleChecked: boolean = false;
     private isPolygonChecked: boolean = false;
@@ -383,13 +382,16 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.control.shift.g', ['$event']) openCarrouselKey(event: KeyboardEvent): void {
+    @HostListener('window:keydown.control.g', ['$event']) openCarrouselKey(event: KeyboardEvent): void {
+        event.preventDefault();
         this.openCarrousel();
     }
-    @HostListener('window:keydown.control.shift.s', ['$event']) openSaveServerKey(event: KeyboardEvent): void {
+    @HostListener('window:keydown.control.s', ['$event']) openSaveServerKey(event: KeyboardEvent): void {
+        event.preventDefault();
         this.openSaveServer();
     }
-    @HostListener('window:keydown.control.shift.e', ['$event']) exportDrawingKey(event: KeyboardEvent): void {
+    @HostListener('window:keydown.control.e', ['$event']) exportDrawingKey(event: KeyboardEvent): void {
+        event.preventDefault();
         this.exportDrawing();
     }
     @HostListener('window:keydown.control.a', ['$event']) selectAllCanvas(event: KeyboardEvent): void {
@@ -470,6 +472,7 @@ export class SidebarComponent {
             this.selectionEllipseService.onUpArrowUp();
         }
     }
+
     @HostListener('window:keydown.control.z', ['$event'])
     callUndo(eventK: KeyboardEvent): void {
         if (!this.undoRedoService.isUndoDisabled) {

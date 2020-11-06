@@ -1,9 +1,9 @@
 <div>
-    <h1>Carrousel d'image</h1>
+    <h1>Carrousel d'images</h1>
 </div>
 <div>
     <button mat-raised-button (click)="reset()">réinitialise tout</button>
-    <div *ngIf="!getPicturesAll()"><p>Aucune image trouver changée le critère de recherche ou réinitialise</p></div>
+    <div *ngIf="!getPicturesAll()"><p>Aucune image retrouvée. Veuillez changer le critère de recherche ou tout réinitialiser.</p></div>
 </div>
 <div *ngIf="getPicturesAll()">
     <mat-grid-list cols="3" rowH eight="1:1">
@@ -89,7 +89,7 @@
 </div>
 <div>
     <h1>liste d'étiquettes</h1>
-    <p *ngIf="!dataLabel.length">appuyer sur le button "rafraichir la liste" étiquettes</p>
+    <p *ngIf="!dataLabel.length">Appuyer sur le button "rafraichir la liste" étiquettes</p>
     <button mat-raised-button (click)="refresh()">rafraichir la liste</button>
     <div>
         <mat-button-toggle
