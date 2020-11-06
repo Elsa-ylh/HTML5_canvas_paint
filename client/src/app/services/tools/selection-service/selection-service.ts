@@ -106,6 +106,10 @@ export class SelectionService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.mouseDown = false;
             this.inSelection = false;
+            this.copyImageInitialPos = { x: 0, y: 0 };
+            this.selectRectInitialPos = { x: 0, y: 0 };
+            this.mouseMouvement = { x: 0, y: 0 };
+
             if (this.timerDown) {
                 this.subscriptionMoveDown.unsubscribe();
             }
