@@ -14,6 +14,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -39,23 +40,40 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
+import { ColorErrorComponent } from './components/color-error/color-error.component';
 import { ColorComponent } from './components/color/color.component';
+import { CarrouselPictureComponent } from './components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from './components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DialogExportDrawingComponent } from './components/dialog-export-locally/dialog-export-locally.component';
+import { DialogUploadComponent } from './components/dialog-upload/dialog-upload.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
+import { DropperColorComponent } from './components/dropper-color/dropper-color.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
+import { PaintBucketColorComponent } from './components/paint-bucket-color/paint-bucket-color.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { WriteTextDialogUserGuideComponent } from './components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+
 @NgModule({
     declarations: [
         AppComponent,
-        EditorComponent,
-        SidebarComponent,
+        CarrouselPictureComponent,
+        ColorComponent,
+        ColorErrorComponent,
+        DialogCreateNewDrawingComponent,
         DrawingComponent,
+        DropperColorComponent,
+        EditorComponent,
         MainPageComponent,
         DialogCreateNewDrawingComponent,
+        DialogExportDrawingComponent,
+        SidebarComponent,
         WriteTextDialogUserGuideComponent,
         ColorComponent,
+        CarrouselPictureComponent,
+        DropperColorComponent,
+        DialogUploadComponent,
+        PaintBucketColorComponent,
     ],
     imports: [
         ReactiveFormsModule,
@@ -63,6 +81,7 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         BrowserModule,
         HttpClientModule,
         AppRoutingModule,
+        MatFormFieldModule,
         BrowserAnimationsModule,
         MatAutocompleteModule,
         MatBadgeModule,

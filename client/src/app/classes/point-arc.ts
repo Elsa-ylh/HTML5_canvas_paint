@@ -9,3 +9,8 @@ export class PointArc {
     radius: number;
     opacity: number;
 }
+
+export interface ColorBrush {
+    primaryColor: string;
+    secondaryColor: string;
+}

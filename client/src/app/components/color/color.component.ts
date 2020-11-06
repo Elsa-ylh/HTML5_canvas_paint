@@ -5,9 +5,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
 import { Vec2 } from '@app/classes/vec2';
+import { ColorErrorComponent } from '@app/components/color-error/color-error.component';
 import { ColorService, GradientStyle, LastColor } from '@app/services/color/color.service';
 
-// certaines parties du code a ete inspiree de l'auteur
 const SIZE_OPACITY = 207;
 const MAX_VALUE_RGB = 255;
 @Component({
@@ -19,29 +19,20 @@ const MAX_VALUE_RGB = 255;
 // The website mainly teach how to do the drawing with canvas2d the gradient
 // https://malcoded.com/posts/angular-color-picker/
 export class ColorComponent implements AfterViewInit {
-    // This will force the usage of the entire CSS width. It is a poor man's fix as I found nothing else.
-    // Please tolerate such heresy :)
-
-    // tslint:disable-next-line:no-magic-numbers
-    width: number = 207;
-    // tslint:disable-next-line:no-magic-numbers
-    squareHeight: number = 200;
-    // tslint:disable-next-line:no-magic-numbers
+    readonly WIDTH: number = 207;
+    readonly SQUARE_HEIGHT: number = 200;
     horizontalHeight: number = 20;
-    // tslint:disable-next-line:no-magic-numbers
-    positionSlider: number;
+    private positionSlider: number;
 
     @ViewChild('previewSquare') previewSquare: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('squarePalette') squareCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewHorizontal') previewHorizontal: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('horizontalPalette') horizontalCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('opacitySlider') opacitySliderCanvas: ElementRef<HTMLCanvasElement>; // to have an opacity slider
-    @ViewChild('opacitySliderPreview') opacitySliderPreview: ElementRef<HTMLCanvasElement>; // to have an opacity slider
-    @ViewChild('message', { static: false }) messageRGB: MatDialogRef<HTMLElement>;
-    @ViewChild('message', { static: false }) messageAlpha: MatDialogRef<HTMLElement>;
+    @ViewChild('opacitySliderPreview') opacitySliderPreview: ElementRef<HTMLCanvasElement>; // to have a hover
 
-    squareDimension: Vec2 = { x: this.width, y: this.squareHeight };
-    horizontalDimension: Vec2 = { x: this.width, y: this.horizontalHeight };
+    squareDimension: Vec2 = { x: this.WIDTH, y: this.SQUARE_HEIGHT };
+    horizontalDimension: Vec2 = { x: this.WIDTH, y: this.horizontalHeight };
 
     previewSquareCtx: CanvasRenderingContext2D;
     squareCtx: CanvasRenderingContext2D;
@@ -50,19 +41,21 @@ export class ColorComponent implements AfterViewInit {
     horizontalCtx: CanvasRenderingContext2D;
 
     opacitySliderCtx: CanvasRenderingContext2D;
-    previewopacitySliderCtx: CanvasRenderingContext2D;
+    previewOpacitySliderCtx: CanvasRenderingContext2D;
 
     lastColors: LastColor[];
 
     color: string;
+    message: MatDialogRef<ColorErrorComponent>;
 
     constructor(
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
         public colorService: ColorService,
         public matDialog: MatDialog,
+        public errorMsg: MatDialog,
     ) {
-        this.lastColors = this.colorService.getlastColors();
+        this.lastColors = this.colorService.getLastColors();
         this.iconRegistry.addSvgIcon('red', this.sanitizer.bypassSecurityTrustResourceUrl('assets/apple.svg'));
         this.iconRegistry.addSvgIcon('green', this.sanitizer.bypassSecurityTrustResourceUrl('assets/leaf.svg'));
         this.iconRegistry.addSvgIcon('blue', this.sanitizer.bypassSecurityTrustResourceUrl('assets/wave.svg'));
@@ -75,21 +68,36 @@ export class ColorComponent implements AfterViewInit {
 
         this.previewHorizontalCtx = this.previewHorizontal.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.horizontalCtx = this.horizontalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        // tslint:disable-next-line: use-isnan
+        if (this.colorService.colorStopperPosition.offsetX !== NaN) {
+            this.colorService.drawMovingStopper(
+                this.previewHorizontalCtx,
+                { x: this.WIDTH, y: this.horizontalHeight },
+                this.colorService.colorStopperPosition,
+            );
+        }
 
-        this.previewopacitySliderCtx = this.opacitySliderPreview.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.previewOpacitySliderCtx = this.opacitySliderPreview.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.opacitySliderCtx = this.opacitySliderCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        // tslint:disable-next-line: use-isnan
+        if (this.colorService.alphaStopperPosition.offsetX !== NaN) {
+            this.colorService.drawMovingStopper(
+                this.previewOpacitySliderCtx,
+                { x: this.WIDTH, y: this.horizontalHeight },
+                this.colorService.alphaStopperPosition,
+            );
+        }
 
         this.drawSquarePalette();
         this.drawHorizontalPalette();
         this.drawOpacitySlider();
     }
 
-    // change between primary and sec
     primaryClick(): void {
-        this.colorService.isclicked = true;
+        this.colorService.isClicked = true;
     }
     secondaryClick(): void {
-        this.colorService.isclicked = false;
+        this.colorService.isClicked = false;
     }
 
     drawSquarePalette(): void {
@@ -100,8 +108,7 @@ export class ColorComponent implements AfterViewInit {
     }
 
     drawOpacitySlider(): void {
-        // on cree la palette
-        this.colorService.drawPalette(this.opacitySliderCtx, this.horizontalDimension, GradientStyle.colortoColor);
+        this.colorService.drawPalette(this.opacitySliderCtx, this.horizontalDimension, GradientStyle.colorToColor);
     }
 
     onMouseOverSquare(event: MouseEvent): void {
@@ -110,31 +117,30 @@ export class ColorComponent implements AfterViewInit {
     }
 
     onMouseOverSquareClick(event: MouseEvent): void {
-        // palette
-        if (this.colorService.isclicked) {
+        if (this.colorService.isClicked) {
             this.colorService.primaryColor = this.colorService.previewColor;
             this.colorService.addLastColor(this.colorService.primaryColor);
         } else {
             this.colorService.secondaryColor = this.colorService.previewColor;
             this.colorService.addLastColor(this.colorService.secondaryColor);
         }
-        this.drawSquarePalette(); // cursor
+        this.drawSquarePalette();
         this.drawOpacitySlider();
     }
 
     onMouseOverHorizontalClick(event: MouseEvent): void {
-        // color slider
-        if (this.colorService.isclicked) {
+        if (this.colorService.isClicked) {
             this.colorService.primaryColor = this.colorService.previewColor;
             this.colorService.addLastColor(this.colorService.primaryColor);
         } else {
             this.colorService.secondaryColor = this.colorService.previewColor;
             this.colorService.addLastColor(this.colorService.secondaryColor);
         }
-        this.colorService.selectedColor = this.colorService.previewColor; // to update palette UI (primary + secondary).
-        this.colorService.drawMovingStopper(this.previewHorizontalCtx, { x: this.width, y: this.horizontalHeight }, event);
-        this.drawSquarePalette(); // updates the color palette
-        this.drawHorizontalPalette(); // updates the color slider cursors' position
+        this.colorService.selectedColor = this.colorService.previewColor;
+        this.colorService.colorStopperPosition = event;
+        this.colorService.drawMovingStopper(this.previewHorizontalCtx, { x: this.WIDTH, y: this.horizontalHeight }, event);
+        this.drawSquarePalette();
+        this.drawHorizontalPalette();
         this.drawOpacitySlider();
     }
 
@@ -145,7 +151,8 @@ export class ColorComponent implements AfterViewInit {
 
     onMouseOverOpacitySliderClick(event: MouseEvent): void {
         this.drawOpacitySlider();
-        this.colorService.drawMovingStopper(this.previewopacitySliderCtx, { x: this.width, y: this.horizontalHeight }, event);
+        this.colorService.alphaStopperPosition = event;
+        this.colorService.drawMovingStopper(this.previewOpacitySliderCtx, { x: this.WIDTH, y: this.horizontalHeight }, event);
         this.colorService.changeColorOpacity(this.findPositionSlider(event)); // change opacity via the slider.
     }
     onMouseLastColorClick(event: MouseEvent, clickedColor: LastColor): boolean {
@@ -159,12 +166,13 @@ export class ColorComponent implements AfterViewInit {
         }
         return true;
     }
-    // return the value between 0 to 1 of the opacity slider
+
     findPositionSlider(event: MouseEvent): number {
         const position = { x: event.offsetX, y: event.offsetY };
         this.positionSlider = 1 - position.x / SIZE_OPACITY;
         return this.positionSlider;
     }
+
     sendInput(rgb: RGBA): void {
         if (!rgb.red && !rgb.green && !rgb.blue && rgb.alpha >= 0 && rgb.alpha <= 1) {
             this.colorService.changeColorOpacity(rgb.alpha);
@@ -173,13 +181,13 @@ export class ColorComponent implements AfterViewInit {
             this.colorService.primaryColor = this.color;
             this.colorService.changeColorOpacity(rgb.alpha);
         } else {
-            this.openWarningMessage(this.messageRGB);
+            this.openWarningMessage();
         }
     }
-    // tslint:disable-next-line:no-any
-    openWarningMessage(templateRef: any): void {
-        this.matDialog.open(templateRef, {
-            width: '300px',
+
+    openWarningMessage(): void {
+        this.message = this.errorMsg.open(ColorErrorComponent, {
+            width: '300',
         });
     }
 }

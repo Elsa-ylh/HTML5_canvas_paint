@@ -3,11 +3,15 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { EraserService } from './eraser-service';
+import { EraserService } from '@app/services/tools/eraser-service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // tslint:disable:no-any
 describe('EraserService', () => {
     let service: EraserService;
+    let undoRedoStub: UndoRedoService;
+    let drawingStub: DrawingService;
+
     let mouseEvent: MouseEvent;
     let mouseEvent1: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -20,13 +24,17 @@ describe('EraserService', () => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        drawingStub = new DrawingService();
+        undoRedoStub = new UndoRedoService(drawingStub);
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+            providers: [
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: UndoRedoService, useValue: undoRedoStub },
+            ],
         });
         service = TestBed.inject(EraserService);
-        removeLineSpy = spyOn<any>(service, 'RemoveLine').and.callThrough();
-        // Configuration du spy du service
+        removeLineSpy = spyOn<any>(service, 'removeLine').and.callThrough();
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
@@ -62,7 +70,7 @@ describe('EraserService', () => {
         const mouseEventRClick = {
             offsetX: 8,
             offsetY: 35,
-            button: MouseButton.Middle, // TODO: Avoir ceci dans un enum accessible
+            button: MouseButton.Middle,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);

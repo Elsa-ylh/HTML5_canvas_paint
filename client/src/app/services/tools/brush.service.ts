@@ -1,38 +1,43 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
-import { PointArc } from '@app/classes/point-arc';
+import { ColorBrush, PointArc } from '@app/classes/point-arc';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
+import { BrushAction } from '@app/classes/undo-redo/brush-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-const motionDifference = 4; // le numbre va faire marcher le ThichBrush
+const motionDifference = 4;
 const citcle = Math.PI * 2;
 @Injectable({
     providedIn: 'root',
 })
 export class BrushService extends Tool {
     pixelMinBrush: number = 6;
-    lineWidth: number = this.pixelMinBrush;
-    pixelThickness: number = 4;
+    lineWidth: number = this.pixelMinBrush; //
+    pixelThickness: number = 4; //
     private lastPoint: Vec2;
-    private pathData: Vec2[];
-    private brush4Data: PointArc[];
+    private pathData: Vec2[]; //
+    private brush4Data: PointArc[]; //
     private mouseOut: boolean = false;
-    constructor(drawingService: DrawingService, private colorService: ColorService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
         this.clearPath();
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.witchBrush(this.subToolSelect);
+        this.switchBrush(this.subToolSelect, this.lineWidth, {
+            primaryColor: this.colorService.primaryColor,
+            secondaryColor: this.colorService.secondaryColor,
+        });
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             if (this.subToolSelect === SubToolselected.tool4) {
-                const point = new PointArc(this.mouseDownCoord, this.remdomInt(), Math.random());
+                const point = new PointArc(this.mouseDownCoord, this.randomInt(), Math.random());
                 this.brush4Data.push(point);
             } else {
                 this.pathData.push(this.mouseDownCoord);
@@ -45,14 +50,29 @@ export class BrushService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             if (this.subToolSelect === SubToolselected.tool4) {
-                const point = new PointArc(mousePosition, this.remdomInt(), Math.random());
+                const point = new PointArc(mousePosition, this.randomInt(), Math.random());
                 this.brush4Data.push(point);
                 this.drawBrushTool4(this.drawingService.baseCtx, this.brush4Data);
             } else {
                 this.pathData.push(mousePosition);
-                this.drawLine(this.drawingService.baseCtx, this.pathData);
+                this.drawLine(this.drawingService.baseCtx, this.pathData, this.subToolSelect);
             }
         }
+        // undo-redo
+        const primaryColorBrush = this.colorService.primaryColor;
+        const secondaryColorBrush = this.colorService.secondaryColor;
+        const brushAction = new BrushAction(
+            this.pathData,
+            this.brush4Data,
+            primaryColorBrush,
+            secondaryColorBrush,
+            this.lineWidth,
+            this.subToolSelect,
+            this,
+            this.drawingService,
+        );
+        this.undoRedoService.addUndo(brushAction);
+        this.undoRedoService.clearRedo();
         this.mouseDown = false;
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -61,15 +81,14 @@ export class BrushService extends Tool {
     onMouseMove(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.mouseDown && !this.mouseOut) {
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.clearPreviewCtx();
             if (this.subToolSelect === SubToolselected.tool4) {
-                const point = new PointArc(mousePosition, this.remdomInt(), Math.random());
+                const point = new PointArc(mousePosition, this.randomInt(), Math.random());
                 this.brush4Data.push(point);
                 this.drawBrushTool4(this.drawingService.previewCtx, this.brush4Data);
             } else {
                 this.pathData.push(mousePosition);
-                this.drawLine(this.drawingService.previewCtx, this.pathData);
+                this.drawLine(this.drawingService.previewCtx, this.pathData, this.subToolSelect);
             }
         } else if (this.mouseOut) {
             this.lastPoint = mousePosition;
@@ -80,12 +99,12 @@ export class BrushService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             if (this.subToolSelect === SubToolselected.tool4) {
-                const point = new PointArc(mousePosition, this.remdomInt(), Math.random());
+                const point = new PointArc(mousePosition, this.randomInt(), Math.random());
                 this.brush4Data.push(point);
                 this.drawBrushTool4(this.drawingService.baseCtx, this.brush4Data);
             } else {
                 this.pathData.push(mousePosition);
-                this.drawLine(this.drawingService.baseCtx, this.pathData);
+                this.drawLine(this.drawingService.baseCtx, this.pathData, this.subToolSelect);
             }
             this.clearPath();
             this.clearPreviewCtx();
@@ -96,7 +115,7 @@ export class BrushService extends Tool {
         if (this.mouseDown && this.mouseOut) {
             this.mouseDownCoord = this.lastPoint;
             if (this.subToolSelect === SubToolselected.tool4) {
-                const point = new PointArc(this.mouseDownCoord, this.remdomInt(), Math.random());
+                const point = new PointArc(this.mouseDownCoord, this.randomInt(), Math.random());
                 this.brush4Data.push(point);
             } else {
                 this.pathData.push(this.mouseDownCoord);
@@ -106,7 +125,8 @@ export class BrushService extends Tool {
         this.mouseOut = false;
     }
 
-    private drawBrushTool4(ctx: CanvasRenderingContext2D, path: PointArc[]): void {
+    drawBrushTool4(ctx: CanvasRenderingContext2D, path: PointArc[]): void {
+        const tempAlpha = ctx.globalAlpha;
         for (const point of path) {
             ctx.beginPath();
             ctx.globalAlpha = point.opacity;
@@ -114,10 +134,11 @@ export class BrushService extends Tool {
             ctx.fill();
             ctx.stroke();
         }
+        ctx.globalAlpha = tempAlpha;
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        switch (this.subToolSelect) {
+    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], subBrushTool: SubToolselected): void {
+        switch (subBrushTool) {
             case SubToolselected.tool1:
                 this.drawLinePattern(ctx, path);
                 break;
@@ -151,12 +172,9 @@ export class BrushService extends Tool {
             case SubToolselected.tool5:
                 this.drawLineBrush5(ctx, path);
                 break;
-            default:
-                window.alert('un problèment au niveau du fonctionnement du pinceau 4 produit ou ne pas un outil de pinceau');
-                break;
         }
     }
-    private drawLinePattern(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawLinePattern(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const px2 = 2;
         const dividerRadius = 3;
         const sizePx = ctx.lineWidth;
@@ -168,7 +186,6 @@ export class BrushService extends Tool {
         }
         ctx.stroke();
 
-        // le motif en forme de flaiche comment ici
         ctx.beginPath();
         ctx.lineWidth = px2;
         ctx.strokeStyle = this.colorService.secondaryColor;
@@ -192,7 +209,6 @@ export class BrushService extends Tool {
     private drawLineBrush5(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const sizePx = ctx.lineWidth;
-        // on divise par quatre pour que la grandeur maximal du diamétre soit le même que les autre tools pinceau
         ctx.lineWidth = sizePx / motionDifference;
         for (let index = 1; index <= sizePx; index += 1) {
             ctx.beginPath();
@@ -205,9 +221,10 @@ export class BrushService extends Tool {
         ctx.lineWidth = sizePx;
     }
 
-    private witchBrush(select: number): void {
-        this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.lineWidth;
-
+    switchBrush(select: number, lineWidth: number, color: ColorBrush): void {
+        this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = lineWidth;
+        this.colorService.primaryColor = color.primaryColor;
+        this.colorService.secondaryColor = color.secondaryColor;
         this.clearEffectTool();
         switch (select) {
             case SubToolselected.tool1:
@@ -217,8 +234,8 @@ export class BrushService extends Tool {
             case SubToolselected.tool2:
                 this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
                 this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
-                this.drawingService.baseCtx.shadowColor = this.colorService.secondaryColor;
-                this.drawingService.previewCtx.shadowColor = this.colorService.secondaryColor;
+                this.drawingService.baseCtx.shadowColor = color.secondaryColor;
+                this.drawingService.previewCtx.shadowColor = color.secondaryColor;
                 this.drawingService.baseCtx.shadowBlur = this.drawingService.baseCtx.lineWidth;
                 this.drawingService.previewCtx.shadowBlur = this.drawingService.baseCtx.lineWidth;
                 break;
@@ -247,18 +264,16 @@ export class BrushService extends Tool {
         this.brush4Data = [];
         this.mouseOut = false;
     }
-    private clearEffectTool(): void {
+    clearEffectTool(): void {
         this.drawingService.baseCtx.shadowColor = this.drawingService.previewCtx.shadowColor = 'rgba(0,0,0,0)';
         this.drawingService.baseCtx.strokeStyle = this.drawingService.previewCtx.strokeStyle = this.colorService.primaryColor;
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
-        this.drawingService.baseCtx.setLineDash([]); // reset
-        this.drawingService.previewCtx.setLineDash([]);
-        this.drawingService.baseCtx.globalAlpha = 1;
-        this.drawingService.previewCtx.globalAlpha = 1;
+        this.drawingService.baseCtx.setLineDash([0, 0]);
+        this.drawingService.previewCtx.setLineDash([0, 0]);
     }
-    private remdomInt(): number {
-        const min = this.drawingService.baseCtx.lineWidth / motionDifference; // le cercle vont avoir une grande entre le rayon et son quarte
-        const differnve = this.drawingService.baseCtx.lineWidth - min;
-        return Math.floor(Math.random() * differnve) + min;
+    private randomInt(): number {
+        const min = this.drawingService.baseCtx.lineWidth / motionDifference;
+        const difference = this.drawingService.baseCtx.lineWidth - min;
+        return Math.floor(Math.random() * difference) + min;
     }
 }

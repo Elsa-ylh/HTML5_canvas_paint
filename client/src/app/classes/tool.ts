@@ -10,7 +10,12 @@ export enum ToolUsed {
     Line = 4,
     Rectangle = 5,
     Ellipse = 6,
+    Polygon = 7,
+    PaintBucket = 8,
     Color = 1000,
+    Dropper = 1003,
+    SelectionRectangle = 10010,
+    SelectionEllipse = 10021,
 }
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
@@ -37,9 +42,9 @@ export abstract class Tool {
         return { x: event.offsetX, y: event.offsetY };
     }
 
-    OnShiftKeyDown(event: KeyboardEvent): void {}
+    onShiftKeyDown(event: KeyboardEvent): void {}
 
-    OnShiftKeyUp(event: KeyboardEvent): void {}
+    onShiftKeyUp(event: KeyboardEvent): void {}
 
     onDoubleClick(event: MouseEvent): void {}
 
@@ -51,6 +56,8 @@ export abstract class Tool {
         this.clearPath();
         this.clearPreviewCtx();
     }
+
+    protected clearEffectTool(): void {}
 
     protected clearPath(): void {}
     protected clearPreviewCtx(): void {}
