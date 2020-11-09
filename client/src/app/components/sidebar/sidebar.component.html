@@ -2,7 +2,7 @@
     <div class="toolbar">
         <div class="small-buttons">
             <mat-list class="tools-buttons">
-                <mat-button-toggle-group vertical="true">
+                <mat-button-toggle-group>
                     <mat-button-toggle (click)="pickPencil()" [checked]="pencilChecked" matTooltip="Outil crayon" matTooltipPosition="right">
                         <mat-icon>edit</mat-icon>
                     </mat-button-toggle>
@@ -230,12 +230,7 @@
                 <mat-grid-tile colspan="6"> Choisissez une forme de sélection</mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="4">
                     <mat-button-toggle-group vertical="true">
-                        <mat-button-toggle
-                            class="sub-button"
-                            mat-button
-                            color="primary"
-                            [checked]="true"
-                            (click)="pickSelectionRectangle()"
+                        <mat-button-toggle class="sub-button" mat-button color="primary" [checked]="true" (click)="pickSelectionRectangle()"
                             >Rectangle</mat-button-toggle
                         >
                         <mat-button-toggle
@@ -266,12 +261,7 @@
                             (click)="pickSelectionRectangle()"
                             >Rectangle</mat-button-toggle
                         >
-                        <mat-button-toggle
-                            class="sub-button"
-                            mat-button
-                            color="primary"
-                            [checked]="true"
-                            (click)="pickSelectionEllipse()"
+                        <mat-button-toggle class="sub-button" mat-button color="primary" [checked]="true" (click)="pickSelectionEllipse()"
                             >Ellipse</mat-button-toggle
                         >
                     </mat-button-toggle-group>
