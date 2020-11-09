@@ -15,6 +15,9 @@
                     <mat-button-toggle (click)="pickLine()" [checked]="lineChecked" matTooltip="Outil ligne" matTooltipPosition="right">
                         <mat-icon>horizontal_rule</mat-icon>
                     </mat-button-toggle>
+                    <mat-button-toggle (click)="pickText()" [checked]="textChecked" matTooltip="Outil Texte" matTooltipPosition="right">
+                        <mat-icon>Title</mat-icon>
+                    </mat-button-toggle>
                     <mat-button-toggle
                         (click)="pickRectangle(1)"
                         [checked]="rectangleChecked"
@@ -154,6 +157,18 @@
                 </mat-grid-tile>
             </mat-grid-list>
 
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Text">
+                <p id="tolerance">Choix de la taille de la police :</p>
+                <mat-slider
+                    thumbLabel
+                    [displayWith]="textService.formatLabel"
+                    tickInterval="1"
+                    min="0"
+                    max="100"
+                    [(ngModel)]="textService.sizeFont"
+                ></mat-slider>
+            </mat-grid-list>
+
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Rectangle">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
                 <mat-grid-tile colspan="6"> Choisissez un type de rectangle</mat-grid-tile>
@@ -230,12 +245,7 @@
                 <mat-grid-tile colspan="6"> Choisissez une forme de sélection</mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="4">
                     <mat-button-toggle-group vertical="true">
-                        <mat-button-toggle
-                            class="sub-button"
-                            mat-button
-                            color="primary"
-                            [checked]="true"
-                            (click)="pickSelectionRectangle()"
+                        <mat-button-toggle class="sub-button" mat-button color="primary" [checked]="true" (click)="pickSelectionRectangle()"
                             >Rectangle</mat-button-toggle
                         >
                         <mat-button-toggle
@@ -266,12 +276,7 @@
                             (click)="pickSelectionRectangle()"
                             >Rectangle</mat-button-toggle
                         >
-                        <mat-button-toggle
-                            class="sub-button"
-                            mat-button
-                            color="primary"
-                            [checked]="true"
-                            (click)="pickSelectionEllipse()"
+                        <mat-button-toggle class="sub-button" mat-button color="primary" [checked]="true" (click)="pickSelectionEllipse()"
                             >Ellipse</mat-button-toggle
                         >
                     </mat-button-toggle-group>
