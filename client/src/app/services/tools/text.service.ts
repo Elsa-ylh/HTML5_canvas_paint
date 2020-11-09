@@ -4,20 +4,17 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
-
 export class TextService extends Tool {
+    sizeFont: number = 0;
+    colorFont: string = this.colorService.primaryColor;
 
-  sizeFont: number = 0;
-  colorFont: string = this.colorService.primaryColor;
+    constructor(drawingService: DrawingService, private colorService: ColorService) {
+        super(drawingService);
+    }
 
-  constructor(drawingService: DrawingService, private colorService: ColorService) {
-    super(drawingService);
-  }
-
-  formatLabel(value: number): number {
-    return value;
-  }
-
+    formatLabel(value: number): number {
+        return value;
+    }
 }

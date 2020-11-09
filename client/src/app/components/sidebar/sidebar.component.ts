@@ -266,12 +266,12 @@ export class SidebarComponent {
     }
 
     pickText(): void {
-      this.drawingService.cursorUsed = 'text';
-      this.toolService.switchTool(ToolUsed.Text);
+        this.drawingService.cursorUsed = 'text';
+        this.toolService.switchTool(ToolUsed.Text);
     }
 
     get textChecked(): boolean {
-      return this.isTextChecked;
+        return this.isTextChecked;
     }
 
     resetCheckedButton(): void {
