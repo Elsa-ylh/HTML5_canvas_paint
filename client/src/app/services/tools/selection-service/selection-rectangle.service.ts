@@ -24,7 +24,6 @@ export class SelectionRectangleService extends SelectionService {
                     this.width = this.mousePosition.x - this.mouseDownCoord.x;
                 }
 
-                this.selectRectInitialPos = this.mouseDownCoord;
                 this.copyImageInitialPos = this.copySelection();
                 this.drawSelection(this.copyImageInitialPos);
             } else if (this.inSelection) {
@@ -52,9 +51,9 @@ export class SelectionRectangleService extends SelectionService {
         this.inSelection = false;
     }
 
-    protected drawSelection( imagePosition: Vec2): void {
+    protected drawSelection(imagePosition: Vec2): void {
         this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
-        this.drawSelectionRect( imagePosition, Math.abs(this.width), Math.abs(this.height));
+        this.drawSelectionRect(imagePosition, Math.abs(this.width), Math.abs(this.height));
     }
 
     pasteSelection(position: Vec2, imageData: ImageData): void {
@@ -80,7 +79,6 @@ export class SelectionRectangleService extends SelectionService {
             );
             // undo redo
             const selectRectAc = new SelectionRectAction(
-
                 { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 this.imageData,
                 this.copyImageInitialPos,

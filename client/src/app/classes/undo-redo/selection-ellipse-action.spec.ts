@@ -14,8 +14,7 @@ describe('SelectionEllipseAction', () => {
     let undoRedoStub: UndoRedoService;
     let selectionEllipseStub: SelectionEllipseService;
     let copyPosition: Vec2;
-    let selectionMove: Vec2;
-    let image: HTMLImageElement;
+    let imageData: ImageData;
     let selectionRect: Vec2;
     let width: number;
     let height: number;
@@ -24,11 +23,10 @@ describe('SelectionEllipseAction', () => {
     let canvas: HTMLCanvasElement;
 
     beforeEach(() => {
-        copyPosition = { x: 5, y: 5 };
-        selectionMove = { x: 9, y: 1 };
-        image = new Image();
-        selectionRect = { x: 6, y: 7 };
         // tslint:disable:no-magic-numbers
+        copyPosition = { x: 5, y: 5 };
+        imageData = new ImageData(10, 10);
+        selectionRect = { x: 6, y: 7 };
         width = 10;
         // tslint:disable:no-magic-numbers
         height = 10;
@@ -36,15 +34,7 @@ describe('SelectionEllipseAction', () => {
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
-        selectionEllipseActionStub = new SelectionEllipseAction(
-            copyPosition,
-            selectionMove,
-            image,
-            selectionRect,
-            width,
-            height,
-            selectionEllipseStub,
-        );
+        selectionEllipseActionStub = new SelectionEllipseAction(copyPosition, imageData, selectionRect, width, height, selectionEllipseStub);
         canvas = canvasTestHelper.canvas;
         // tslint:disable:no-magic-numbers
         canvas.width = 100;

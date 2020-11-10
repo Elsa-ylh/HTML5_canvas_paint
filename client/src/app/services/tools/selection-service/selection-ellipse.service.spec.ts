@@ -22,7 +22,6 @@ describe('Service: SelectionRectangle', () => {
     let putImageDataSpy: jasmine.Spy<any>;
     let drawEllipseSpy: jasmine.Spy<any>;
     let drawImageSpy: jasmine.Spy<any>;
-    let drawPreviewEllipseSpy: jasmine.Spy<any>;
     let ellipseSpy: jasmine.Spy<any>;
     let fillRectSpy: jasmine.Spy<any>;
     let clearSelectionSpy: jasmine.Spy<any>;
@@ -144,7 +143,7 @@ describe('Service: SelectionRectangle', () => {
         service.isAllSelect = true;
         service.image = new Image();
         service.imageData = new ImageData(10, 10);
-        service['drawSelection'](service['drawingService'].previewCtx, { x: 1, y: 1 }, { x: 1, y: 1 });
+        service['drawSelection']({ x: 1, y: 1 });
         expect(putImageDataSpy).toHaveBeenCalled();
         expect(drawSelectionRectSpy).toHaveBeenCalled();
     });
@@ -156,7 +155,7 @@ describe('Service: SelectionRectangle', () => {
         service.isAllSelect = false;
         service.image = new Image();
         service.imageData = new ImageData(10, 10);
-        service['drawSelection'](service['drawingService'].previewCtx, { x: 1, y: 1 }, { x: 1, y: 1 });
+        service['drawSelection']({ x: 1, y: 1 });
         expect(drawImageSpy).toHaveBeenCalled();
         expect(drawEllipseSpy).toHaveBeenCalled();
     });
@@ -167,28 +166,30 @@ describe('Service: SelectionRectangle', () => {
         service.isAllSelect = true;
         service.image = new Image();
         service.imageData = new ImageData(10, 10);
-        service.pasteSelection({ x: 1, y: 1 }, { x: 1, y: 1 }, service.image);
+        service.pasteSelection({ x: 1, y: 1 }, service.image, { x: 10, y: 10 });
         expect(putImageDataSpy).toHaveBeenCalled();
     });
 
     it(' drawPreview should draw a preview rectangle', () => {
-        drawPreviewEllipseSpy = spyOn<any>(service, 'drawPreviewEllipse').and.callThrough();
+        drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
 
         service.shiftPressed = true;
-        service['drawPreview']();
-        expect(drawPreviewEllipseSpy).toHaveBeenCalled();
-    });
-
-    it(' drawPreviewEllipse should draw a preview ellipse', () => {
-        drawPreviewEllipseSpy = spyOn<any>(service, 'drawPreviewEllipse').and.callThrough();
-
         service.mouseDownCoord = { x: 1, y: 1 };
-        service.mousePosition = { x: 30, y: 20 };
-        service.width = 20;
-        service.height = 20;
-        service.drawPreviewEllipse(service['drawingService'].previewCtx);
-        expect(drawPreviewEllipseSpy).toHaveBeenCalled();
+        service.mousePosition = { x: 10, y: 10 };
+        service['drawPreview']();
+        expect(drawEllipseSpy).toHaveBeenCalled();
     });
+
+    // it(' drawPreviewEllipse should draw a preview ellipse', () => {
+    //     drawPreviewEllipseSpy = spyOn<any>(service, 'drawPreviewEllipse').and.callThrough();
+
+    //     service.mouseDownCoord = { x: 1, y: 1 };
+    //     service.mousePosition = { x: 30, y: 20 };
+    //     service.width = 20;
+    //     service.height = 20;
+    //     service.drawPreviewEllipse(service['drawingService'].previewCtx);
+    //     expect(drawPreviewEllipseSpy).toHaveBeenCalled();
+    // });
 
     it(' drawEllipse should draw a circle if shift is pressed', () => {
         ellipseSpy = spyOn<any>(service['drawingService'].previewCtx, 'ellipse').and.callThrough();
@@ -235,7 +236,6 @@ describe('Service: SelectionRectangle', () => {
         clearSelectionSpy = spyOn<any>(service, 'clearSelection').and.callThrough();
 
         service.timerStarted = false;
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.mouseMouvement = { x: 5, y: 5 };
         service.width = 10;
         service.height = 10;
@@ -252,7 +252,6 @@ describe('Service: SelectionRectangle', () => {
         clearSelectionSpy = spyOn<any>(service, 'clearSelection').and.callThrough();
 
         service.timerStarted = true;
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.mouseMouvement = { x: 5, y: 5 };
         service.width = 10;
         service.height = 10;

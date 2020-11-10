@@ -111,7 +111,6 @@ describe('Service: SelectionService', () => {
         service.mouseDown = true;
         service.inSelection = true;
         service.mouseDownCoord = { x: 1, y: 1 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.mouseMouvement = { x: 20, y: 20 };
         service.copyImageInitialPos = { x: 1, y: 1 };
         service.onMouseMove(mouseEvent);
@@ -295,7 +294,7 @@ describe('Service: SelectionService', () => {
         service.width = 20;
         service.height = 20;
         fillRectSpy = spyOn<any>(service['drawingService'].previewCtx, 'fillRect').and.callThrough();
-        service.drawSelectionRect(service['drawingService'].previewCtx, { x: 1, y: 1 });
+        service.drawSelectionRect({ x: 1, y: 1 }, 10, 10);
         expect(fillRectSpy).toHaveBeenCalled();
     });
 
@@ -355,7 +354,6 @@ describe('Service: SelectionService', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         moveSelectiontimerLeftSpy = spyOn<any>(service, 'moveSelectiontimerLeft').and.callThrough();
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.copyImageInitialPos = { x: 1, y: 1 };
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         service.width = 20;
@@ -386,7 +384,6 @@ describe('Service: SelectionService', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         moveSelectiontimerLeftSpy = spyOn<any>(service, 'moveSelectiontimerLeft').and.callThrough();
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.copyImageInitialPos = { x: 1, y: 1 };
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         service.width = 20;
@@ -405,7 +402,6 @@ describe('Service: SelectionService', () => {
         moveSelectiontimerRightSpy = spyOn<any>(service, 'moveSelectiontimerRight').and.callThrough();
 
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.copyImageInitialPos = { x: 1, y: 1 };
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         service.width = 20;
@@ -436,7 +432,6 @@ describe('Service: SelectionService', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         moveSelectiontimerLeftSpy = spyOn<any>(service, 'moveSelectiontimerLeft').and.callThrough();
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.copyImageInitialPos = { x: 1, y: 1 };
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         service.width = 20;
@@ -455,7 +450,6 @@ describe('Service: SelectionService', () => {
         moveSelectiontimerUpSpy = spyOn<any>(service, 'moveSelectiontimerUp').and.callThrough();
 
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.copyImageInitialPos = { x: 1, y: 1 };
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         service.width = 20;
@@ -486,7 +480,6 @@ describe('Service: SelectionService', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         moveSelectiontimerLeftSpy = spyOn<any>(service, 'moveSelectiontimerLeft').and.callThrough();
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.copyImageInitialPos = { x: 1, y: 1 };
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         service.width = 20;
@@ -505,7 +498,6 @@ describe('Service: SelectionService', () => {
         moveSelectiontimerDownSpy = spyOn<any>(service, 'moveSelectiontimerDown').and.callThrough();
 
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.copyImageInitialPos = { x: 1, y: 1 };
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         service.width = 20;
@@ -536,7 +528,6 @@ describe('Service: SelectionService', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         moveSelectiontimerLeftSpy = spyOn<any>(service, 'moveSelectiontimerLeft').and.callThrough();
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.copyImageInitialPos = { x: 1, y: 1 };
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         service.width = 20;
@@ -566,7 +557,6 @@ describe('Service: SelectionService', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         service.timerLeft = false;
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.moveSelectiontimerLeft();
         expect(service.timerLeft).toEqual(true);
     });
@@ -575,7 +565,6 @@ describe('Service: SelectionService', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         service.timerLeft = true;
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.moveSelectiontimerLeft();
         expect(service.timerLeft).toEqual(true);
     });
@@ -584,7 +573,6 @@ describe('Service: SelectionService', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         service.timerRight = false;
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.moveSelectiontimerRight();
         expect(service.timerRight).toEqual(true);
     });
@@ -593,7 +581,6 @@ describe('Service: SelectionService', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         service.timerRight = true;
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.moveSelectiontimerRight();
         expect(service.timerRight).toEqual(true);
     });
@@ -602,7 +589,6 @@ describe('Service: SelectionService', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         service.timerUp = false;
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.moveSelectiontimerUp();
         expect(service.timerUp).toEqual(true);
     });
@@ -611,7 +597,6 @@ describe('Service: SelectionService', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         service.timerUp = true;
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.moveSelectiontimerUp();
         expect(service.timerUp).toEqual(true);
     });
@@ -620,7 +605,6 @@ describe('Service: SelectionService', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         service.timerDown = false;
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.moveSelectiontimerDown();
         expect(service.timerDown).toEqual(true);
     });
@@ -629,7 +613,6 @@ describe('Service: SelectionService', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         service.timerDown = true;
         service.mouseMouvement = { x: 10, y: 10 };
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.moveSelectiontimerDown();
         expect(service.timerDown).toEqual(true);
     });

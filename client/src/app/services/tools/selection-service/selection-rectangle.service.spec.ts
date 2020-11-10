@@ -140,7 +140,7 @@ describe('Service: SelectionRectangle', () => {
         putImageDataSpy = spyOn<any>(service['drawingService'].previewCtx, 'putImageData').and.callThrough();
 
         service.imageData = new ImageData(10, 10);
-        service['drawSelection'](service['drawingService'].previewCtx, { x: 1, y: 1 }, { x: 1, y: 1 });
+        service['drawSelection']({ x: 1, y: 1 });
         expect(drawSelectionRectSpy).toHaveBeenCalled();
         expect(putImageDataSpy).toHaveBeenCalled();
     });
@@ -172,7 +172,6 @@ describe('Service: SelectionRectangle', () => {
         clearSelectionSpy = spyOn<any>(service, 'clearSelection').and.callThrough();
 
         service.timerStarted = false;
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.mouseMouvement = { x: 5, y: 5 };
         service.width = 10;
         service.height = 10;
@@ -188,7 +187,6 @@ describe('Service: SelectionRectangle', () => {
         clearSelectionSpy = spyOn<any>(service, 'clearSelection').and.callThrough();
 
         service.timerStarted = true;
-        service.selectRectInitialPos = { x: 1, y: 1 };
         service.mouseMouvement = { x: 5, y: 5 };
         service.width = 10;
         service.height = 10;

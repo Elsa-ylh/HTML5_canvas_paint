@@ -15,9 +15,9 @@ export class SelectionEllipseAction extends AbsUndoRedo {
     }
 
     apply(): void {
-        let image = new Image();
+        const image = new Image();
         image.src = this.selectionEllService.getImageURL(this.imageData, this.width, this.height);
         this.selectionEllService.clearSelection(this.copyPosition, this.width, this.height);
-        this.selectionEllService.pasteSelection(this.pastePosition, image, {x:this.width, y:this.height});
+        this.selectionEllService.pasteSelection(this.pastePosition, image, { x: this.width, y: this.height });
     }
 }

@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { SelectionEllipseAction } from '@app/classes/undo-redo/selection-ellipse-action';
+import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { SelectionRectangleService } from './selection-rectangle.service';
 import { SelectionService } from './selection-service';
 
 @Injectable({
@@ -12,6 +14,8 @@ export class SelectionEllipseService extends SelectionService {
     constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService) {
         super(drawingService);
     }
+
+    ellipseRad: Vec2 = { x: 0, y: 0 };
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
@@ -23,25 +27,37 @@ export class SelectionEllipseService extends SelectionService {
                     this.height = this.mousePosition.y - this.mouseDownCoord.y;
                     this.width = this.mousePosition.x - this.mouseDownCoord.x;
                 }
-                this.selectRectInitialPos = this.mouseDownCoord;
                 this.copyImageInitialPos = this.copySelection();
                 this.drawSelection(this.copyImageInitialPos);
             } else if (this.inSelection) {
                 this.pasteSelection(
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                    this.image, {x: Math.abs(this.width), y: Math.abs(this.height)}
+                    this.image,
+                    { x: Math.abs(this.width), y: Math.abs(this.height) },
                 );
                 // undo redo
-                const selectEllipseAc = new SelectionEllipseAction(
-                    { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                    this.imageData,
-                    this.copyImageInitialPos,
-                    Math.abs(this.width),
-                    Math.abs(this.height),
-                    this,
-                );
-                console.log(this.image);
-                this.undoRedoService.addUndo(selectEllipseAc);
+                if (this.isAllSelect) {
+                    const selectionRectService = new SelectionRectangleService(this.drawingService, this.undoRedoService);
+                    const selectRectAc = new SelectionRectAction(
+                        { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
+                        this.imageData,
+                        this.copyImageInitialPos,
+                        Math.abs(this.width),
+                        Math.abs(this.height),
+                        selectionRectService,
+                    );
+                    this.undoRedoService.addUndo(selectRectAc);
+                } else {
+                    const selectEllipseAc = new SelectionEllipseAction(
+                        { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
+                        this.imageData,
+                        this.copyImageInitialPos,
+                        Math.abs(this.width),
+                        Math.abs(this.height),
+                        this,
+                    );
+                    this.undoRedoService.addUndo(selectEllipseAc);
+                }
                 this.undoRedoService.clearRedo();
                 this.isAllSelect = false;
                 this.mouseMouvement = { x: 0, y: 0 };
@@ -52,13 +68,13 @@ export class SelectionEllipseService extends SelectionService {
         this.inSelection = false;
     }
 
-    protected drawSelection( imagePosition: Vec2): void {
+    protected drawSelection(imagePosition: Vec2): void {
         if (this.isAllSelect) {
-          this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
+            this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
             this.drawSelectionRect(imagePosition, Math.abs(this.width), Math.abs(this.height));
         } else {
-          this.drawingService.previewCtx.save();
-          this.drawingService.previewCtx.beginPath();
+            this.drawingService.previewCtx.save();
+            this.drawingService.previewCtx.beginPath();
             this.drawEllipse(this.drawingService.previewCtx, imagePosition, Math.abs(this.width) / 2, Math.abs(this.height) / 2);
             this.drawingService.previewCtx.stroke();
             this.drawingService.previewCtx.clip();
@@ -68,7 +84,7 @@ export class SelectionEllipseService extends SelectionService {
         }
     }
 
-    pasteSelection(imageposition: Vec2, image: HTMLImageElement, size:Vec2): void {
+    pasteSelection(imageposition: Vec2, image: HTMLImageElement, size: Vec2): void {
         if (this.isAllSelect) {
             this.drawingService.baseCtx.putImageData(
                 this.imageData,
@@ -89,19 +105,18 @@ export class SelectionEllipseService extends SelectionService {
     }
 
     protected drawPreview(): void {
-      if (this.mouseDownCoord !== this.mousePosition) {
-        this.drawingService.previewCtx.setLineDash([this.dottedSpace, this.dottedSpace]);
-        this.drawPreviewRect(this.drawingService.previewCtx, false);
-        this.drawingService.previewCtx.beginPath();
-        this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.width / 2, this.height / 2);
-        this.drawingService.previewCtx.stroke();
-      }
+        if (this.mouseDownCoord !== this.mousePosition) {
+            this.drawingService.previewCtx.setLineDash([this.dottedSpace, this.dottedSpace]);
+            this.drawPreviewRect(this.drawingService.previewCtx, false);
+            this.drawingService.previewCtx.beginPath();
+            this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.width / 2, this.height / 2);
+            this.drawingService.previewCtx.stroke();
+        }
     }
 
-
     drawEllipse(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, radiusX: number, radiusY: number): void {
-        let centerX = 0;
-        let centerY = 0;
+        let centerX = 0 as number;
+        let centerY = 0 as number;
         centerX = mouseCoord.x + radiusX;
         centerY = mouseCoord.y + radiusY;
         if (!this.inSelection) {
@@ -135,18 +150,32 @@ export class SelectionEllipseService extends SelectionService {
             this.pasteSelection(
                 { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 this.image,
-                {x: Math.abs(this.width), y: Math.abs(this.height)}
+                { x: Math.abs(this.width), y: Math.abs(this.height) },
             );
             // undo-redo
-            const selectEllipseAc = new SelectionEllipseAction(
-                { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                this.imageData,
-                this.copyImageInitialPos,
-                Math.abs(this.width),
-                Math.abs(this.height),
-                this,
-            );
-            this.undoRedoService.addUndo(selectEllipseAc);
+            if (this.isAllSelect) {
+                const selectionRectService = new SelectionRectangleService(this.drawingService, this.undoRedoService);
+                const selectRectAc = new SelectionRectAction(
+                    { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
+                    this.imageData,
+                    this.copyImageInitialPos,
+                    Math.abs(this.width),
+                    Math.abs(this.height),
+                    selectionRectService,
+                );
+                this.undoRedoService.addUndo(selectRectAc);
+            } else {
+                const selectEllipseAc = new SelectionEllipseAction(
+                    { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
+                    this.imageData,
+                    this.copyImageInitialPos,
+                    Math.abs(this.width),
+                    Math.abs(this.height),
+                    this,
+                );
+                this.undoRedoService.addUndo(selectEllipseAc);
+            }
+
             this.undoRedoService.clearRedo();
             this.mouseMouvement = { x: 0, y: 0 };
         }
