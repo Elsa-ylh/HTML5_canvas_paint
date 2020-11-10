@@ -29,16 +29,18 @@ export class SelectionEllipseService extends SelectionService {
             } else if (this.inSelection) {
                 this.pasteSelection(
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                    this.image,
+                    this.image, {x: Math.abs(this.width), y: Math.abs(this.height)}
                 );
                 // undo redo
                 const selectEllipseAc = new SelectionEllipseAction(
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                    this.image,
-                    this.width,
-                    this.height,
+                    this.imageData,
+                    this.copyImageInitialPos,
+                    Math.abs(this.width),
+                    Math.abs(this.height),
                     this,
                 );
+                console.log(this.image);
                 this.undoRedoService.addUndo(selectEllipseAc);
                 this.undoRedoService.clearRedo();
                 this.isAllSelect = false;
@@ -66,7 +68,7 @@ export class SelectionEllipseService extends SelectionService {
         }
     }
 
-    pasteSelection(imageposition: Vec2, image: HTMLImageElement): void {
+    pasteSelection(imageposition: Vec2, image: HTMLImageElement, size:Vec2): void {
         if (this.isAllSelect) {
             this.drawingService.baseCtx.putImageData(
                 this.imageData,
@@ -77,7 +79,7 @@ export class SelectionEllipseService extends SelectionService {
             this.drawingService.baseCtx.save();
             this.drawingService.baseCtx.globalAlpha = 0;
             this.drawingService.baseCtx.beginPath();
-            this.drawEllipse(this.drawingService.baseCtx, imageposition,  Math.abs(this.width) / 2, Math.abs(this.height) / 2);
+            this.drawEllipse(this.drawingService.baseCtx, imageposition, size.x / 2, size.y / 2);
             this.drawingService.baseCtx.stroke();
             this.drawingService.baseCtx.clip();
             this.drawingService.baseCtx.globalAlpha = 1;
@@ -133,13 +135,15 @@ export class SelectionEllipseService extends SelectionService {
             this.pasteSelection(
                 { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 this.image,
+                {x: Math.abs(this.width), y: Math.abs(this.height)}
             );
             // undo-redo
             const selectEllipseAc = new SelectionEllipseAction(
                 { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                this.image,
-                this.width,
-                this.height,
+                this.imageData,
+                this.copyImageInitialPos,
+                Math.abs(this.width),
+                Math.abs(this.height),
                 this,
             );
             this.undoRedoService.addUndo(selectEllipseAc);

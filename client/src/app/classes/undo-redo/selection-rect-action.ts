@@ -4,9 +4,9 @@ import { SelectionRectangleService } from '@app/services/tools/selection-service
 
 export class SelectionRectAction extends AbsUndoRedo {
     constructor(
-        private copyPosition: Vec2,
-        private movedPosition: Vec2,
+        private pastePosition: Vec2,
         private image: ImageData,
+        private copyPosition: Vec2,
         private width: number,
         private height: number,
         private selectionRectService: SelectionRectangleService,
@@ -14,7 +14,7 @@ export class SelectionRectAction extends AbsUndoRedo {
         super();
     }
     apply(): void {
-        this.selectionRectService.clearSelection(this.movedPosition, this.width, this.height);
-        this.selectionRectService.pasteSelection(this.copyPosition, this.image);
+        this.selectionRectService.clearSelection(this.copyPosition, this.width, this.height);
+        this.selectionRectService.pasteSelection(this.pastePosition, this.image);
     }
 }

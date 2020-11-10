@@ -4,8 +4,9 @@ import { SelectionEllipseService } from '@app/services/tools/selection-service/s
 
 export class SelectionEllipseAction extends AbsUndoRedo {
     constructor(
+        private pastePosition: Vec2,
+        private imageData: ImageData,
         private copyPosition: Vec2,
-        private image: HTMLImageElement,
         private width: number,
         private height: number,
         private selectionEllService: SelectionEllipseService,
@@ -14,7 +15,9 @@ export class SelectionEllipseAction extends AbsUndoRedo {
     }
 
     apply(): void {
+        let image = new Image();
+        image.src = this.selectionEllService.getImageURL(this.imageData, this.width, this.height);
         this.selectionEllService.clearSelection(this.copyPosition, this.width, this.height);
-        this.selectionEllService.pasteSelection(this.copyPosition, this.image);
+        this.selectionEllService.pasteSelection(this.pastePosition, image, {x:this.width, y:this.height});
     }
 }

@@ -34,11 +34,11 @@ export class SelectionRectangleService extends SelectionService {
                 );
                 // undo redo
                 const selectRectAc = new SelectionRectAction(
-                    this.copyImageInitialPos,
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                     this.imageData,
-                    this.width,
-                    this.height,
+                    this.copyImageInitialPos,
+                    Math.abs(this.width),
+                    Math.abs(this.height),
                     this,
                 );
                 this.undoRedoService.addUndo(selectRectAc);
@@ -80,11 +80,12 @@ export class SelectionRectangleService extends SelectionService {
             );
             // undo redo
             const selectRectAc = new SelectionRectAction(
-              this.copyImageInitialPos,
+
                 { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 this.imageData,
-                this.width,
-                this.height,
+                this.copyImageInitialPos,
+                Math.abs(this.width),
+                Math.abs(this.height),
                 this,
             );
             this.undoRedoService.addUndo(selectRectAc);

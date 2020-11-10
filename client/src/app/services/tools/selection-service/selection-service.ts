@@ -285,7 +285,7 @@ export class SelectionService extends Tool {
 
     protected drawSelection( imagePosition: Vec2): void {}
 
-    protected getImageURL(imgData: ImageData, width: number, height: number): string {
+    getImageURL(imgData: ImageData, width: number, height: number): string {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
         canvas.width = Math.abs(width);
