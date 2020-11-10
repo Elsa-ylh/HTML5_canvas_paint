@@ -158,33 +158,7 @@
             </mat-grid-list>
 
             <mat-grid-list class="select" cols="6" *ngSwitchCase="toolUsed.Text">
-                <mat-grid-tile colspan="6"></mat-grid-tile>
-                <mat-form-field colspan="6" appearance="fill">
-                  <mat-label>Taille de la police : </mat-label>
-                  <mat-select [(ngModel)]="textService.sizeFont">
-                      <mat-option *ngFor="let size of textService.possibleSizeFont " [value]="size">
-                          {{ size }}
-                      </mat-option>
-                  </mat-select>
-              </mat-form-field>
-
-                <mat-grid-tile colspan="6"></mat-grid-tile>
-                <mat-form-field colspan="6" appearance="fill">
-                  <mat-label>Choix de la police : </mat-label>
-                  <mat-select [(ngModel)]="textService.sizeFont">
-                      <mat-option *ngFor="let font of textService.possibleFont " [value]="font">
-                          {{ font }}
-                      </mat-option>
-                  </mat-select>
-              </mat-form-field>
-                <mat-grid-tile colspan="6"> Choisissez la position du texte</mat-grid-tile>
-                <mat-grid-tile colspan="6" rowspan="4">
-              <mat-button-toggle-group vertical="true">
-              <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickText()"><mat-icon>align_horizontal_center</mat-icon></mat-button-toggle>
-              <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickText()"><mat-icon>align_horizontal_left</mat-icon></mat-button-toggle>
-              <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickText()"><mat-icon>align_horizontal_right</mat-icon></mat-button-toggle>
-            </mat-button-toggle-group>
-            </mat-grid-tile>
+                <app-write-text-option></app-write-text-option>
             </mat-grid-list>
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Rectangle">
@@ -211,7 +185,7 @@
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Ellipse">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="4">
-                <mat-grid-tile colspan="6"> Choisissez un type d'ellipse</mat-grid-tile>
+                    <mat-grid-tile colspan="6"> Choisissez un type d'ellipse</mat-grid-tile>
 
                     <mat-button-toggle-group vertical="true">
                         <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickEllipse(1)">Plein</mat-button-toggle>
