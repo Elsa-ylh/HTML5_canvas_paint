@@ -31,8 +31,8 @@
 </div>
 <div>
     <mat-label> Choisissez effet du texte</mat-label>
-    <mat-button-toggle-group vertical="true">
-        <button mat-raised-button><strong>Gras</strong></button>
-        <button mat-raised-button><i>Italique</i></button>
-    </mat-button-toggle-group>
+    <div>
+        <mat-button-toggle id="btn-bold" (click)="pickText()"><strong>Gras</strong></mat-button-toggle>
+        <mat-button-toggle id="btn-italic" (click)="pickText()"><i>Italique</i></mat-button-toggle>
+    </div>
 </div>
