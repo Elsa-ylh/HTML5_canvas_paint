@@ -4,13 +4,13 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-
+const CINQANT = 50;
 @Injectable({
     providedIn: 'root',
 })
 export class TextService extends Tool {
     sizeFont: number = 0;
-    fontStyle : string;
+    fontStyle: string;
     colorFont: string = this.colorService.primaryColor;
     // tslint:disable-next-line:no-magic-numbers
     possibleSizeFont: number[] = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
@@ -20,12 +20,12 @@ export class TextService extends Tool {
     mouseOut: boolean = false;
     mousePosition: Vec2;
     canvasSelected: boolean;
-    text_title : string = "Overlay text";
-    imageLoader : HTMLElement | null = document.getElementById('imageLoader');
-    img : HTMLImageElement = new Image();
-    //imageLoader.addEventListener('change', handleImage, false);
+    textTitle: string = 'Overlay text';
+    imageLoader: HTMLElement | null = document.getElementById('imageLoader');
+    img: HTMLImageElement = new Image();
+    // imageLoader.addEventListener('change', handleImage, false);
 
-    //xwindow.addEventListener('load', DrawPlaceholder)
+    // xwindow.addEventListener('load', DrawPlaceholder)
 
     constructor(drawingService: DrawingService, private colorService: ColorService) {
         super(drawingService);
@@ -36,69 +36,67 @@ export class TextService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-      this.mouseDown = event.button === MouseButton.Left;
-      this.clearEffectTool();
-      if (this.mouseEnter) {
-          this.onMouseUp(event);
-      }
-      if (this.mouseDown) {
-          this.mouseDownCoord = this.getPositionFromMouse(event);
-      }
-      this.mousePosition = this.mouseDownCoord;
-  }
-
-  onMouseUp(event: MouseEvent): void {
-      if (this.mouseDown) {
-          const mousePosition = this.getPositionFromMouse(event);
-          this.mousePosition = mousePosition;
-          this.canvasSelected = true;
+        this.mouseDown = event.button === MouseButton.Left;
+        this.clearEffectTool();
+        if (this.mouseEnter) {
+            this.onMouseUp(event);
         }
-      }
+        if (this.mouseDown) {
+            this.mouseDownCoord = this.getPositionFromMouse(event);
+        }
+        this.mousePosition = this.mouseDownCoord;
+    }
 
-  onMouseMove(event: MouseEvent): void {
-      if (this.mouseDown) {
-          const mousePosition = this.getPositionFromMouse(event);
-          this.mousePosition = mousePosition;
-          this.drawingService.clearCanvas(this.drawingService.previewCtx);
-          this.canvasSelected = false;
-      }
-  }
+    onMouseUp(event: MouseEvent): void {
+        if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.mousePosition = mousePosition;
+            this.canvasSelected = true;
+        }
+    }
 
-  onMouseOut(event: MouseEvent): void {
-      if (this.mouseDown) {
-          this.mouseOut = true;
-      }
-  }
+    onMouseMove(event: MouseEvent): void {
+        if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.mousePosition = mousePosition;
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.canvasSelected = false;
+        }
+    }
 
-  onMouseEnter(event: MouseEvent): void {
-      if (this.mouseOut) {
-          this.mouseEnter = true;
-      }
-      this.mouseOut = false;
-  }
+    onMouseOut(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.mouseOut = true;
+        }
+    }
 
+    onMouseEnter(event: MouseEvent): void {
+        if (this.mouseOut) {
+            this.mouseEnter = true;
+        }
+        this.mouseOut = false;
+    }
 
- DrawOverlay(img : HTMLImageElement) : void {
-    this.drawingService.previewCtx.fillStyle = 'rgba(30, 144, 255, 0.4)';
-    this.drawingService.previewCtx.fillRect(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
-}
+    DrawOverlay(img: HTMLImageElement): void {
+        this.drawingService.previewCtx.fillStyle = 'rgba(30, 144, 255, 0.4)';
+        this.drawingService.previewCtx.fillRect(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+    }
 
- DrawText() : void {
-  this.drawingService.baseCtx.fillStyle = "white";
-  this.drawingService.baseCtx.textBaseline = 'middle';
-  this.drawingService.baseCtx.font = "50px 'Montserrat'";
-  this.drawingService.baseCtx.fillText(this.text_title, 50, 50);
-}
+    DrawText(): void {
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.textBaseline = 'middle';
+        this.drawingService.baseCtx.font = "50px 'Montserrat'";
+        this.drawingService.baseCtx.fillText(this.textTitle, CINQANT, CINQANT); // pour fix le lint
+    }
 
-// DynamicText(img : HTMLImageElement) : void {
-//   let ctx : CanvasRenderingContext2D= this.drawingService.baseCtx;
-//   ctx.canvas.addEventListener('keyup', function() {
-//     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-//     DrawOverlay(img);
-//     DrawText();
-//     text_title = this.value;
-//     ctx.fillText(text_title, 50, 50);
-//   });
-// }
-
+    // DynamicText(img : HTMLImageElement) : void {
+    //   let ctx : CanvasRenderingContext2D= this.drawingService.baseCtx;
+    //   ctx.canvas.addEventListener('keyup', function() {
+    //     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //     DrawOverlay(img);
+    //     DrawText();
+    //     textTitle = this.value;
+    //     ctx.fillText(textTitle, 50, 50);
+    //   });
+    // }
 }

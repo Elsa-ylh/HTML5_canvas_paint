@@ -35,6 +35,7 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
+import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Observable, Subject } from 'rxjs';
 import { SidebarComponent } from './sidebar.component';
@@ -64,6 +65,7 @@ describe('SidebarComponent', () => {
     let selectionEllipseStub: SelectionEllipseService;
     let undoRedoStub: UndoRedoService;
     let selectionStub: SelectionService;
+    let textServiceStub: TextService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -83,6 +85,7 @@ describe('SidebarComponent', () => {
             dropperServiceStub = new DropperService(drawingStub, colorStub);
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub);
             selectionStub = new SelectionService(drawingStub);
+            textServiceStub = new TextService(drawingStub, colorStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -95,6 +98,7 @@ describe('SidebarComponent', () => {
                 paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
+                textServiceStub,
             );
 
             selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);

@@ -7,8 +7,16 @@ import { TextService } from '@app/services/tools/text.service';
     styleUrls: ['./write-text-option.component.scss'],
 })
 export class WriteTextOptionComponent implements OnInit {
+    private itItalic: boolean;
+    private itBold: boolean;
     constructor(public textService: TextService) {}
 
-    ngOnInit(): void {}
-    pickText(): void {}
+    ngOnInit(): void {
+        this.itBold = false;
+        this.itItalic = false;
+    }
+    pickText(): void {
+        this.itItalic = !this.itItalic;
+        this.itBold = !this.itBold;
+    }
 }
