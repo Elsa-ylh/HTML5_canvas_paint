@@ -25,19 +25,16 @@ export class SelectionEllipseService extends SelectionService {
                 }
                 this.selectRectInitialPos = this.mouseDownCoord;
                 this.copyImageInitialPos = this.copySelection();
-                this.drawSelection(this.drawingService.previewCtx, this.mouseDownCoord, this.copyImageInitialPos);
+                this.drawSelection(this.copyImageInitialPos);
             } else if (this.inSelection) {
                 this.pasteSelection(
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                    { x: this.selectRectInitialPos.x + this.mouseMouvement.x, y: this.selectRectInitialPos.y + this.mouseMouvement.y },
                     this.image,
                 );
                 // undo redo
                 const selectEllipseAc = new SelectionEllipseAction(
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                    { x: this.selectRectInitialPos.x + this.mouseMouvement.x, y: this.selectRectInitialPos.y + this.mouseMouvement.y },
                     this.image,
-                    this.selectRectInitialPos,
                     this.width,
                     this.height,
                     this,
@@ -53,23 +50,23 @@ export class SelectionEllipseService extends SelectionService {
         this.inSelection = false;
     }
 
-    protected drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {
+    protected drawSelection( imagePosition: Vec2): void {
         if (this.isAllSelect) {
-            ctx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
-            this.drawSelectionRect(ctx, mouseCoord);
+          this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
+            this.drawSelectionRect(imagePosition, Math.abs(this.width), Math.abs(this.height));
         } else {
-            ctx.save();
-            ctx.beginPath();
-            this.drawEllipse(ctx, mouseCoord, this.width / 2, this.height / 2);
-            ctx.stroke();
-            ctx.clip();
-            ctx.drawImage(this.image, imagePosition.x, imagePosition.y);
-            ctx.restore();
-            this.drawSelectionRect(ctx, mouseCoord);
+          this.drawingService.previewCtx.save();
+          this.drawingService.previewCtx.beginPath();
+            this.drawEllipse(this.drawingService.previewCtx, imagePosition, Math.abs(this.width) / 2, Math.abs(this.height) / 2);
+            this.drawingService.previewCtx.stroke();
+            this.drawingService.previewCtx.clip();
+            this.drawingService.previewCtx.drawImage(this.image, imagePosition.x, imagePosition.y);
+            this.drawingService.previewCtx.restore();
+            this.drawSelectionRect(imagePosition, Math.abs(this.width), Math.abs(this.height));
         }
     }
 
-    pasteSelection(imageposition: Vec2, selectRectInitialPos: Vec2, image: HTMLImageElement): void {
+    pasteSelection(imageposition: Vec2, image: HTMLImageElement): void {
         if (this.isAllSelect) {
             this.drawingService.baseCtx.putImageData(
                 this.imageData,
@@ -80,7 +77,7 @@ export class SelectionEllipseService extends SelectionService {
             this.drawingService.baseCtx.save();
             this.drawingService.baseCtx.globalAlpha = 0;
             this.drawingService.baseCtx.beginPath();
-            this.drawEllipse(this.drawingService.baseCtx, selectRectInitialPos, this.width / 2, this.height / 2);
+            this.drawEllipse(this.drawingService.baseCtx, imageposition,  Math.abs(this.width) / 2, Math.abs(this.height) / 2);
             this.drawingService.baseCtx.stroke();
             this.drawingService.baseCtx.clip();
             this.drawingService.baseCtx.globalAlpha = 1;
@@ -90,18 +87,15 @@ export class SelectionEllipseService extends SelectionService {
     }
 
     protected drawPreview(): void {
-        this.drawPreviewEllipse(this.drawingService.previewCtx);
+      if (this.mouseDownCoord !== this.mousePosition) {
+        this.drawingService.previewCtx.setLineDash([this.dottedSpace, this.dottedSpace]);
+        this.drawPreviewRect(this.drawingService.previewCtx, false);
+        this.drawingService.previewCtx.beginPath();
+        this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.width / 2, this.height / 2);
+        this.drawingService.previewCtx.stroke();
+      }
     }
 
-    drawPreviewEllipse(ctx: CanvasRenderingContext2D): void {
-        if (this.mouseDownCoord !== this.mousePosition) {
-            ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
-            this.drawPreviewRect(ctx, false);
-            ctx.beginPath();
-            this.drawEllipse(ctx, this.mouseDownCoord, this.width / 2, this.height / 2);
-            ctx.stroke();
-        }
-    }
 
     drawEllipse(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, radiusX: number, radiusY: number): void {
         let centerX = 0;
@@ -135,18 +129,15 @@ export class SelectionEllipseService extends SelectionService {
     pasteArrowSelection(): void {
         if (!this.timerStarted) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.clearSelection(this.selectRectInitialPos, this.width, this.height);
+            this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
             this.pasteSelection(
                 { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                { x: this.selectRectInitialPos.x + this.mouseMouvement.x, y: this.selectRectInitialPos.y + this.mouseMouvement.y },
                 this.image,
             );
             // undo-redo
             const selectEllipseAc = new SelectionEllipseAction(
                 { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                { x: this.selectRectInitialPos.x + this.mouseMouvement.x, y: this.selectRectInitialPos.y + this.mouseMouvement.y },
                 this.image,
-                this.selectRectInitialPos,
                 this.width,
                 this.height,
                 this,

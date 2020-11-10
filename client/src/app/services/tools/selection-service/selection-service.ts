@@ -82,13 +82,8 @@ export class SelectionService extends Tool {
             if (this.inSelection) {
                 this.mouseMouvement.x = mousePosition.x - this.mouseDownCoord.x;
                 this.mouseMouvement.y = mousePosition.y - this.mouseDownCoord.y;
-                this.clearSelection(this.selectRectInitialPos, this.width, this.height);
+                this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
                 this.drawSelection(
-                    this.drawingService.previewCtx,
-                    {
-                        x: this.selectRectInitialPos.x + this.mouseMouvement.x,
-                        y: this.selectRectInitialPos.y + this.mouseMouvement.y,
-                    },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
             } else {
@@ -105,7 +100,7 @@ export class SelectionService extends Tool {
             this.mouseDown = false;
             this.inSelection = false;
             this.copyImageInitialPos = { x: 0, y: 0 };
-            this.selectRectInitialPos = { x: 0, y: 0 };
+            //  this.selectRectInitialPos = { x: 0, y: 0 };
             this.mouseMouvement = { x: 0, y: 0 };
 
             if (this.timerDown) {
@@ -171,9 +166,9 @@ export class SelectionService extends Tool {
         this.mouseDownCoord = { x: 1, y: 1 };
         this.mousePosition = { x: this.width, y: this.height };
         this.copyImageInitialPos = { x: 0, y: 0 };
-        this.selectRectInitialPos = { x: 0, y: 0 };
+        // this.selectRectInitialPos = { x: 0, y: 0 };
         this.imageData = this.drawingService.baseCtx.getImageData(0, 0, this.width, this.height);
-        this.drawSelection(this.drawingService.previewCtx, { x: 0, y: 0 }, { x: 0, y: 0 });
+        this.drawSelection({ x: 0, y: 0 });
     }
 
     drawPreviewRect(ctx: CanvasRenderingContext2D, shiftPressed: boolean): void {
@@ -193,58 +188,58 @@ export class SelectionService extends Tool {
         }
     }
 
-    drawSelectionRect(ctx: CanvasRenderingContext2D, mouseDownCoord: Vec2): void {
-        ctx.strokeRect(mouseDownCoord.x, mouseDownCoord.y, this.width, this.height);
-        ctx.setLineDash([]);
-        ctx.fillRect(
-            mouseDownCoord.x + this.width / 2 - this.modifSelectSquare / 2,
+    drawSelectionRect( mouseDownCoord: Vec2, width:number, height: number): void {
+      this.drawingService.previewCtx.strokeRect(mouseDownCoord.x, mouseDownCoord.y, width, height);
+      this.drawingService.previewCtx.setLineDash([]);
+      this.drawingService.previewCtx.fillRect(
+            mouseDownCoord.x + width / 2 - this.modifSelectSquare / 2,
             mouseDownCoord.y - this.modifSelectSquare / 2,
             this.modifSelectSquare,
             this.modifSelectSquare,
         );
-        ctx.fillRect(
+        this.drawingService.previewCtx.fillRect(
             mouseDownCoord.x - this.modifSelectSquare / 2,
-            mouseDownCoord.y + this.height / 2 - this.modifSelectSquare / 2,
+            mouseDownCoord.y + height / 2 - this.modifSelectSquare / 2,
             this.modifSelectSquare,
             this.modifSelectSquare,
         );
-        ctx.fillRect(
-            mouseDownCoord.x + this.width / 2 - this.modifSelectSquare / 2,
-            mouseDownCoord.y + this.height - this.modifSelectSquare / 2,
+        this.drawingService.previewCtx.fillRect(
+            mouseDownCoord.x + width / 2 - this.modifSelectSquare / 2,
+            mouseDownCoord.y + height - this.modifSelectSquare / 2,
             this.modifSelectSquare,
             this.modifSelectSquare,
         );
-        ctx.fillRect(
-            mouseDownCoord.x + this.width - this.modifSelectSquare / 2,
-            mouseDownCoord.y + this.height / 2 - this.modifSelectSquare / 2,
+        this.drawingService.previewCtx.fillRect(
+            mouseDownCoord.x + width - this.modifSelectSquare / 2,
+            mouseDownCoord.y + height / 2 - this.modifSelectSquare / 2,
             this.modifSelectSquare,
             this.modifSelectSquare,
         );
-        ctx.fillRect(
+        this.drawingService.previewCtx.fillRect(
             mouseDownCoord.x - this.modifSelectSquare / 2,
             mouseDownCoord.y - this.modifSelectSquare / 2,
             this.modifSelectSquare,
             this.modifSelectSquare,
         );
-        ctx.fillRect(
-            mouseDownCoord.x + this.width - this.modifSelectSquare / 2,
+        this.drawingService.previewCtx.fillRect(
+            mouseDownCoord.x + width - this.modifSelectSquare / 2,
             mouseDownCoord.y - this.modifSelectSquare / 2,
             this.modifSelectSquare,
             this.modifSelectSquare,
         );
-        ctx.fillRect(
+        this.drawingService.previewCtx.fillRect(
             mouseDownCoord.x - this.modifSelectSquare / 2,
-            mouseDownCoord.y + this.height - this.modifSelectSquare / 2,
+            mouseDownCoord.y + height - this.modifSelectSquare / 2,
             this.modifSelectSquare,
             this.modifSelectSquare,
         );
-        ctx.fillRect(
-            mouseDownCoord.x + this.width - this.modifSelectSquare / 2,
-            mouseDownCoord.y + this.height - this.modifSelectSquare / 2,
+        this.drawingService.previewCtx.fillRect(
+            mouseDownCoord.x + width - this.modifSelectSquare / 2,
+            mouseDownCoord.y + height - this.modifSelectSquare / 2,
             this.modifSelectSquare,
             this.modifSelectSquare,
         );
-        ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
+        this.drawingService.previewCtx.setLineDash([this.dottedSpace, this.dottedSpace]);
     }
 
     copySelection(): Vec2 {
@@ -288,7 +283,7 @@ export class SelectionService extends Tool {
 
     protected drawPreview(): void {}
 
-    protected drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {}
+    protected drawSelection( imagePosition: Vec2): void {}
 
     protected getImageURL(imgData: ImageData, width: number, height: number): string {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
@@ -303,16 +298,11 @@ export class SelectionService extends Tool {
 
     onLeftArrow(): void {
         if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.clearSelection(this.selectRectInitialPos, this.width, this.height);
+            this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
             if (!this.leftArrow) {
                 this.mouseMouvement.x -= this.pixelMouvement;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
-                    this.drawingService.previewCtx,
-                    {
-                        x: this.selectRectInitialPos.x + this.mouseMouvement.x,
-                        y: this.selectRectInitialPos.y + this.mouseMouvement.y,
-                    },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
             }
@@ -326,17 +316,12 @@ export class SelectionService extends Tool {
 
     onRightArrow(): void {
         if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.clearSelection(this.selectRectInitialPos, this.width, this.height);
+          this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
             if (!this.rightArrow) {
                 this.mouseMouvement.x += this.pixelMouvement;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
                 this.drawSelection(
-                    this.drawingService.previewCtx,
-                    {
-                        x: this.selectRectInitialPos.x + this.mouseMouvement.x,
-                        y: this.selectRectInitialPos.y + this.mouseMouvement.y,
-                    },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
             }
@@ -350,16 +335,11 @@ export class SelectionService extends Tool {
 
     onUpArrow(): void {
         if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.clearSelection(this.selectRectInitialPos, this.width, this.height);
+          this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
             if (!this.upArrow) {
                 this.mouseMouvement.y -= this.pixelMouvement;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
-                    this.drawingService.previewCtx,
-                    {
-                        x: this.selectRectInitialPos.x + this.mouseMouvement.x,
-                        y: this.selectRectInitialPos.y + this.mouseMouvement.y,
-                    },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
             }
@@ -373,16 +353,11 @@ export class SelectionService extends Tool {
 
     onDownArrow(): void {
         if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.clearSelection(this.selectRectInitialPos, this.width, this.height);
+          this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
             if (!this.downArrow) {
                 this.mouseMouvement.y += this.pixelMouvement;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
-                    this.drawingService.previewCtx,
-                    {
-                        x: this.selectRectInitialPos.x + this.mouseMouvement.x,
-                        y: this.selectRectInitialPos.y + this.mouseMouvement.y,
-                    },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
             }
@@ -417,11 +392,6 @@ export class SelectionService extends Tool {
             this.subscriptionMoveLeft = timerMove.subscribe(() => {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
-                    this.drawingService.previewCtx,
-                    {
-                        x: this.selectRectInitialPos.x + this.mouseMouvement.x,
-                        y: this.selectRectInitialPos.y + this.mouseMouvement.y,
-                    },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
                 this.mouseMouvement.x -= this.pixelMouvement;
@@ -436,11 +406,6 @@ export class SelectionService extends Tool {
             this.subscriptionMoveRight = timerMove.subscribe(() => {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
-                    this.drawingService.previewCtx,
-                    {
-                        x: this.selectRectInitialPos.x + this.mouseMouvement.x,
-                        y: this.selectRectInitialPos.y + this.mouseMouvement.y,
-                    },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
                 this.mouseMouvement.x += this.pixelMouvement;
@@ -455,11 +420,6 @@ export class SelectionService extends Tool {
             this.subscriptionMoveUp = timerMove.subscribe(() => {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
-                    this.drawingService.previewCtx,
-                    {
-                        x: this.selectRectInitialPos.x + this.mouseMouvement.x,
-                        y: this.selectRectInitialPos.y + this.mouseMouvement.y,
-                    },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
                 this.mouseMouvement.y -= this.pixelMouvement;
@@ -474,11 +434,6 @@ export class SelectionService extends Tool {
             this.subscriptionMoveDown = timerMove.subscribe(() => {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection(
-                    this.drawingService.previewCtx,
-                    {
-                        x: this.selectRectInitialPos.x + this.mouseMouvement.x,
-                        y: this.selectRectInitialPos.y + this.mouseMouvement.y,
-                    },
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 );
                 this.mouseMouvement.y += this.pixelMouvement;

@@ -26,7 +26,7 @@ export class SelectionRectangleService extends SelectionService {
 
                 this.selectRectInitialPos = this.mouseDownCoord;
                 this.copyImageInitialPos = this.copySelection();
-                this.drawSelection(this.drawingService.previewCtx, this.mouseDownCoord, this.copyImageInitialPos);
+                this.drawSelection(this.copyImageInitialPos);
             } else if (this.inSelection) {
                 this.pasteSelection(
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
@@ -34,9 +34,9 @@ export class SelectionRectangleService extends SelectionService {
                 );
                 // undo redo
                 const selectRectAc = new SelectionRectAction(
+                    this.copyImageInitialPos,
                     { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                     this.imageData,
-                    this.selectRectInitialPos,
                     this.width,
                     this.height,
                     this,
@@ -52,9 +52,9 @@ export class SelectionRectangleService extends SelectionService {
         this.inSelection = false;
     }
 
-    protected drawSelection(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, imagePosition: Vec2): void {
-        ctx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
-        this.drawSelectionRect(ctx, mouseCoord);
+    protected drawSelection( imagePosition: Vec2): void {
+        this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
+        this.drawSelectionRect( imagePosition, Math.abs(this.width), Math.abs(this.height));
     }
 
     pasteSelection(position: Vec2, imageData: ImageData): void {
@@ -73,16 +73,16 @@ export class SelectionRectangleService extends SelectionService {
     pasteArrowSelection(): void {
         if (!this.timerStarted) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.clearSelection(this.selectRectInitialPos, this.width, this.height);
+            this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
             this.pasteSelection(
                 { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 this.imageData,
             );
             // undo redo
             const selectRectAc = new SelectionRectAction(
+              this.copyImageInitialPos,
                 { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
                 this.imageData,
-                this.selectRectInitialPos,
                 this.width,
                 this.height,
                 this,
