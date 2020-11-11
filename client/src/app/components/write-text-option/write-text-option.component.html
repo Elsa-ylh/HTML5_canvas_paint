@@ -9,7 +9,7 @@
 
 <mat-form-field appearance="fill">
     <mat-label>Choix de la police : </mat-label>
-    <mat-select [(ngModel)]="textService.sizeFont">
+    <mat-select [(ngModel)]="textService.fontStyle">
         <mat-option *ngFor="let font of textService.possibleFont" [value]="font">
             {{ font }}
         </mat-option>

@@ -4,14 +4,14 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-const CINQANT = 50;
+
 @Injectable({
     providedIn: 'root',
 })
 export class TextService extends Tool {
-    sizeFont: number = 0;
-    fontStyle: string;
-    colorFont: string = this.colorService.primaryColor;
+    // tslint:disable-next-line:no-magic-numbers
+    sizeFont: number = 8; // minimal font size possible
+    fontStyle: string = 'Montserrat';
     // tslint:disable-next-line:no-magic-numbers
     possibleSizeFont: number[] = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
     // font size allowed for text -> autorized disable magical number
@@ -23,6 +23,7 @@ export class TextService extends Tool {
     textTitle: string = 'Overlay text';
     imageLoader: HTMLElement | null = document.getElementById('imageLoader');
     img: HTMLImageElement = new Image();
+    keyHistory: string = '';
     // imageLoader.addEventListener('change', handleImage, false);
 
     // xwindow.addEventListener('load', DrawPlaceholder)
@@ -45,6 +46,7 @@ export class TextService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
         this.mousePosition = this.mouseDownCoord;
+        this.drawText();
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -77,26 +79,42 @@ export class TextService extends Tool {
         this.mouseOut = false;
     }
 
-    DrawOverlay(img: HTMLImageElement): void {
-        this.drawingService.previewCtx.fillStyle = 'rgba(30, 144, 255, 0.4)';
-        this.drawingService.previewCtx.fillRect(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+    getSize(): number {
+        return this.sizeFont;
     }
 
-    DrawText(): void {
-        this.drawingService.baseCtx.fillStyle = 'white';
+    getFont(): string {
+        return this.fontStyle;
+    }
+
+    drawText(): void {
+        this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // text color
+        this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
+        console.log(this.colorService.primaryColor);
         this.drawingService.baseCtx.textBaseline = 'middle';
-        this.drawingService.baseCtx.font = "50px 'Montserrat'";
-        this.drawingService.baseCtx.fillText(this.textTitle, CINQANT, CINQANT); // pour fix le lint
+        // this.drawingService.baseCtx.font = "50px 'Calibri'";
+        this.drawingService.baseCtx.font = (this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
+        this.drawingService.baseCtx.textBaseline = 'bottom';
+        this.drawingService.baseCtx.fillText(this.textTitle, this.mouseDownCoord.x, this.mouseDownCoord.y);
     }
 
-    // DynamicText(img : HTMLImageElement) : void {
-    //   let ctx : CanvasRenderingContext2D= this.drawingService.baseCtx;
-    //   ctx.canvas.addEventListener('keyup', function() {
-    //     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    //     DrawOverlay(img);
-    //     DrawText();
-    //     textTitle = this.value;
-    //     ctx.fillText(textTitle, 50, 50);
-    //   });
-    // }
+    addletter(letter: string): void {
+        window.addEventListener('keyup', this.keyUpHandler, true);
+        this.keyHistory += letter;
+        // tslint:disable-next-line:no-magic-numbers
+        this.drawingService.baseCtx.clearRect(0, 0, 300, 300);
+        // tslint:disable-next-line:no-magic-numbers
+        this.drawingService.baseCtx.fillText(this.keyHistory, 20, 20);
+    }
+
+    keyUpHandler(event: KeyboardEvent): void {
+        const letters = 'abcdefghijklmnopqrstuvwxyz';
+        const key = (event.key as unknown) as number;
+        // tslint:disable-next-line:no-magic-numbers
+        if (key > 64 && key < 91) {
+            // tslint:disable-next-line:no-magic-numbers
+            const letter = letters.substring(key - 64, key - 65);
+            this.addletter(letter);
+        }
+    }
 }
