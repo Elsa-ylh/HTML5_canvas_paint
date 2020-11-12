@@ -31,14 +31,21 @@ mat-slider {
     width: 90%;
 }
 
-mat-button-toggle-group {
+.tools-group {
     flex-wrap: wrap;
+}
+
+.fix-crayan {
+    margin-left: 1px;
 }
 
 .tools-buttons {
     position: relative;
     height: auto;
-    margin-top: -8px;
+    //margin-top: -8px;
+}
+.bottom-button {
+    text-align: left;
 }
 
 .miscellaneous-buttons {

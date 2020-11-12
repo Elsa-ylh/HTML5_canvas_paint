@@ -2,8 +2,14 @@
     <div class="toolbar">
         <div class="small-buttons">
             <mat-list class="tools-buttons">
-                <mat-button-toggle-group>
-                    <mat-button-toggle (click)="pickPencil()" [checked]="pencilChecked" matTooltip="Outil crayon" matTooltipPosition="right">
+                <mat-button-toggle-group class="tools-group">
+                    <mat-button-toggle
+                        class="fix-crayan"
+                        (click)="pickPencil()"
+                        [checked]="pencilChecked"
+                        matTooltip="Outil crayon"
+                        matTooltipPosition="right"
+                    >
                         <mat-icon>edit</mat-icon>
                     </mat-button-toggle>
                     <mat-button-toggle (click)="pickEraser()" [checked]="eraserChecked" matTooltip="Outil efface" matTooltipPosition="right">
@@ -57,43 +63,46 @@
                     </mat-button-toggle>
                 </mat-button-toggle-group>
             </mat-list>
-            <mat-list class="miscellaneous-buttons">
-                <button
-                    mat-button
-                    matTooltip="Annuler"
-                    matTooltipPosition="right"
-                    (click)="undoRedoService.undo()"
-                    [disabled]="undoRedoService.isUndoDisabled"
-                >
-                    <mat-icon> undo </mat-icon>
-                </button>
-                <button
-                    mat-button
-                    matTooltip="Refaire"
-                    matTooltipPosition="right"
-                    (click)="undoRedoService.redo()"
-                    [disabled]="undoRedoService.isRedoDisabled"
-                >
-                    <mat-icon> redo </mat-icon>
-                </button>
-                <mat-button-toggle-group vertical="true">
-                    <mat-button-toggle (click)="openSaveServer()" matTooltip="Téléverser vers le serveur" matTooltipPosition="right">
-                        <mat-icon>cloud_upload</mat-icon>
-                    </mat-button-toggle>
-                    <mat-button-toggle (click)="openCarrousel()" matTooltip="Télécharger du serveur" matTooltipPosition="right">
-                        <mat-icon>cloud_download</mat-icon>
-                    </mat-button-toggle>
-                    <mat-button-toggle (click)="exportDrawing()" matTooltip="Exportation locale" matTooltipPosition="right">
-                        <mat-icon>save</mat-icon>
-                    </mat-button-toggle>
-                    <mat-button-toggle appearance="radio" (click)="createNewDrawing()" matTooltip="Nouveau dessin" matTooltipPosition="right">
-                        <mat-icon>add</mat-icon>
-                    </mat-button-toggle>
-                    <mat-button-toggle (click)="openUserGuide()" matTooltip="Guide d'utilisation" matTooltipPosition="right">
-                        <mat-icon>article</mat-icon>
-                    </mat-button-toggle>
-                </mat-button-toggle-group>
-            </mat-list>
+
+            <div class="bottom-button">
+                <mat-list class="miscellaneous-buttons">
+                    <button
+                        mat-button
+                        matTooltip="Annuler"
+                        matTooltipPosition="right"
+                        (click)="undoRedoService.undo()"
+                        [disabled]="undoRedoService.isUndoDisabled"
+                    >
+                        <mat-icon> undo </mat-icon>
+                    </button>
+                    <button
+                        mat-button
+                        matTooltip="Refaire"
+                        matTooltipPosition="right"
+                        (click)="undoRedoService.redo()"
+                        [disabled]="undoRedoService.isRedoDisabled"
+                    >
+                        <mat-icon> redo </mat-icon>
+                    </button>
+                    <mat-button-toggle-group vertical="true">
+                        <mat-button-toggle (click)="openSaveServer()" matTooltip="Téléverser vers le serveur" matTooltipPosition="right">
+                            <mat-icon>cloud_upload</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle (click)="openCarrousel()" matTooltip="Télécharger du serveur" matTooltipPosition="right">
+                            <mat-icon>cloud_download</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle (click)="exportDrawing()" matTooltip="Exportation locale" matTooltipPosition="right">
+                            <mat-icon>save</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle appearance="radio" (click)="createNewDrawing()" matTooltip="Nouveau dessin" matTooltipPosition="right">
+                            <mat-icon>add</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle (click)="openUserGuide()" matTooltip="Guide d'utilisation" matTooltipPosition="right">
+                            <mat-icon>article</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+                </mat-list>
+            </div>
         </div>
     </div>
     <div class="toolbar">
@@ -170,9 +179,9 @@
                 <mat-grid-tile colspan="6">
                     <mat-slider min="1" max="50" step="1" [(ngModel)]="rectangleService.lineWidth"></mat-slider>
                 </mat-grid-tile>
-                <mat-grid-tile colspan="6"
-                    ><samp>épaisseur du contour: {{ rectangleService.lineWidth }}px</samp></mat-grid-tile
-                >
+                <mat-grid-tile colspan="6">
+                    épaisseur du contour : <samp> {{ rectangleService.lineWidth }} </samp>px
+                </mat-grid-tile>
             </mat-grid-list>
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Ellipse">
@@ -230,17 +239,18 @@
                 <mat-grid-tile colspan="6"> Choisissez une forme de sélection</mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="4">
                     <mat-button-toggle-group vertical="true">
-                        <mat-button-toggle class="sub-button" mat-button color="primary" [checked]="true" (click)="pickSelectionRectangle()"
-                            >Rectangle</mat-button-toggle
-                        >
+                        <mat-button-toggle class="sub-button" mat-button color="primary" [checked]="true" (click)="pickSelectionRectangle()">
+                            Rectangle
+                        </mat-button-toggle>
                         <mat-button-toggle
                             class="sub-button"
                             mat-button
                             color="primary"
                             [checked]="selectionEllipseChecked"
                             (click)="pickSelectionEllipse()"
-                            >Ellipse</mat-button-toggle
                         >
+                            Ellipse
+                        </mat-button-toggle>
                     </mat-button-toggle-group>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6">
