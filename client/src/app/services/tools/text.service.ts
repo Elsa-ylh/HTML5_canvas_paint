@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
+import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
+import { ToolGeneralInfo } from '@app/classes/tool-general-info';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -24,6 +26,8 @@ export class TextService extends Tool {
     imageLoader: HTMLElement | null = document.getElementById('imageLoader');
     img: HTMLImageElement = new Image();
     keyHistory: string = '';
+    fontStyleBold: boolean = false;
+    fontStyleItalic: boolean = false;
     // imageLoader.addEventListener('change', handleImage, false);
 
     // xwindow.addEventListener('load', DrawPlaceholder)
@@ -79,22 +83,54 @@ export class TextService extends Tool {
         this.mouseOut = false;
     }
 
-    getSize(): number {
+    private getSize(): number {
         return this.sizeFont;
     }
 
-    getFont(): string {
+    private getFont(): string {
         return this.fontStyle;
+    }
+
+    setBold(bold: boolean): void {
+        this.fontStyleBold = bold;
+    }
+
+    setItalic(italic: boolean): void {
+        this.fontStyleItalic = italic;
+    }
+
+    private getItalic(): string {
+        return this.fontStyleItalic ? 'italic ' : '';
+    }
+
+    private getBold(): string {
+        return this.fontStyleBold ? 'bold ' : '';
+    }
+
+    selectTextPosition(generalInfo: ToolGeneralInfo): void {
+        if (generalInfo.canvasSelected) {
+            switch (generalInfo.selectSubTool) {
+                case SubToolselected.tool1: {
+                    this.drawingService.baseCtx.textAlign = 'center';
+                    break;
+                }
+                case SubToolselected.tool2: {
+                    this.drawingService.baseCtx.textAlign = 'left';
+                    break;
+                }
+                case SubToolselected.tool3: {
+                    this.drawingService.baseCtx.textAlign = 'right';
+                    break;
+                }
+            }
+        }
     }
 
     drawText(): void {
         this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // text color
         this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
-        console.log(this.colorService.primaryColor);
-        this.drawingService.baseCtx.textBaseline = 'middle';
         // this.drawingService.baseCtx.font = "50px 'Calibri'";
-        this.drawingService.baseCtx.font = (this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
-        this.drawingService.baseCtx.textBaseline = 'bottom';
+        this.drawingService.baseCtx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
         this.drawingService.baseCtx.fillText(this.textTitle, this.mouseDownCoord.x, this.mouseDownCoord.y);
     }
 
