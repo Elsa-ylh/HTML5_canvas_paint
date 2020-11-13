@@ -4,7 +4,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 
 export class LoadAction extends AbsUndoRedo {
     constructor(
-        private picture: string,
+        private picture: CanvasImageSource,
         private height: number,
         private width: number,
         private drawingService: DrawingService,
@@ -16,6 +16,6 @@ export class LoadAction extends AbsUndoRedo {
     apply(): void {
         this.canvasResizerService.canvasSize.x = this.width;
         this.canvasResizerService.canvasSize.y = this.height;
-        this.drawingService.convertBase64ToBaseCanvas(this.picture);
+        this.drawingService.baseCtx.drawImage(this.picture, 0, 0);
     }
 }
