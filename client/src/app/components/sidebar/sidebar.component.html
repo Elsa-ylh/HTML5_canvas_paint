@@ -61,6 +61,10 @@
                     >
                         <mat-icon>crop_free</mat-icon>
                     </mat-button-toggle>
+
+                    <mat-button-toggle (click)="pickSprayer()" [checked]="sprayChecked" matTooltip="Sélection l'aerosol" matTooltipPosition="right">
+                        <mat-icon>blur_on</mat-icon>
+                    </mat-button-toggle>
                 </mat-button-toggle-group>
             </mat-list>
 

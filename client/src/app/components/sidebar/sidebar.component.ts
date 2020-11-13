@@ -59,6 +59,7 @@ export class SidebarComponent {
     private isSelectionRectangleChecked: boolean = false;
     private isPolygonChecked: boolean = false;
     private isPaintBucketChecked: boolean = false;
+    private isSprayChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -262,6 +263,15 @@ export class SidebarComponent {
         return this.isSelectionEllipseChecked;
     }
 
+    pickSprayer(): void {
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.Spray);
+    }
+
+    get sprayChecked(): boolean {
+        return this.isSprayChecked;
+    }
+
     resetCheckedButton(): void {
         this.isPencilChecked = false;
         this.isEraserChecked = false;
@@ -274,6 +284,7 @@ export class SidebarComponent {
         this.isDropperChecked = false;
         this.isSelectionEllipseChecked = false;
         this.isSelectionRectangleChecked = false;
+        this.isSprayChecked = false;
     }
 
     checkboxChangeToggle(args: MatCheckboxChange): void {
