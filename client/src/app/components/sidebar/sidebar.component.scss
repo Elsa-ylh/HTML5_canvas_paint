@@ -1,5 +1,5 @@
 .sidebar {
-    min-width: 276px;
+    min-width: 326px;
 }
 
 .toolbar {
@@ -16,7 +16,7 @@
     justify-content: space-between;
     align-items: center;
     min-height: 100vh;
-    width: 50px;
+    width: 100px;
 }
 
 .attributes {
@@ -31,14 +31,26 @@ mat-slider {
     width: 90%;
 }
 
+.tools-group {
+    flex-wrap: wrap;
+}
+
+.fix-crayan {
+    margin-left: 1px;
+}
+
 .tools-buttons {
     position: relative;
     height: auto;
-    margin-top: -7px;
+    //margin-top: -8px;
+}
+.bottom-button {
+    text-align: left;
 }
 
 .miscellaneous-buttons {
     position: relative;
+    width: 100px;
 }
 
 .sub-button {
