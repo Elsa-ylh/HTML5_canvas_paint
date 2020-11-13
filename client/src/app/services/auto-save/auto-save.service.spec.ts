@@ -7,7 +7,7 @@ import { AutoSaveService } from './auto-save.service';
 const KEY_SAVE_CANVAS = 'KeySaveCanvas';
 const KEY_SAVE_WIDTH = 'KeySaveWidth';
 const KEY_SAVE_HEIGHT = 'KeySaveHeight';
-fdescribe('AutoSaveService', () => {
+describe('AutoSaveService', () => {
     let service: AutoSaveService;
     const vec2: Vec2 = { x: 5, y: 6 };
     beforeEach(() => {
@@ -55,16 +55,16 @@ fdescribe('AutoSaveService', () => {
         const bool = service.getUpload();
         expect(bool).toEqual(true);
     });
-    it('element localStorage getUpload false ', () => {
+    it('element localStorage getUpload true ', () => {
         window.localStorage.clear();
         window.localStorage.setItem(KEY_SAVE_CANVAS, 'a');
-        window.localStorage.setItem(KEY_SAVE_WIDTH, 'b');
-        window.localStorage.setItem(KEY_SAVE_HEIGHT, 'c');
-        service.check();
-        console.log(service['canvas']);
-        console.log(service['width']);
-        console.log(service['height']);
+        window.localStorage.setItem(KEY_SAVE_WIDTH, '6');
+        window.localStorage.setItem(KEY_SAVE_HEIGHT, '5');
+
         const bool = service.getUpload();
-        expect(bool).toEqual(false);
+        expect(service['canvas']).toEqual('a');
+        expect(service['width']).toEqual('6');
+        expect(service['height']).toEqual('5');
+        expect(bool).toEqual(true);
     });
 });
