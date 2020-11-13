@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ToolUsed } from '@app/classes/tool';
 import { ToolService } from '@app/services/tool-service';
 import { TextService } from '@app/services/tools/text.service';
@@ -46,5 +46,27 @@ export class WriteTextOptionComponent implements OnInit {
 
     resetCheckedButton(): void {
         this.isTextChecked = false;
+    }
+
+    @HostListener('window:keydown.ArrowLeft', ['$event']) onLeftArrow(event: KeyboardEvent): void {
+        console.log('arrowLeft');
+    }
+
+    @HostListener('window:keydown.ArrowRight', ['$event']) onRightArrow(event: KeyboardEvent): void {
+        console.log('arrowRight');
+    }
+    @HostListener('window:keydown.Enter', ['$event']) onEnter(event: KeyboardEvent): void {
+        console.log('enter');
+    }
+
+    @HostListener('window:keydown.Delete', ['$event']) onDelete(event: KeyboardEvent): void {
+        console.log('delete');
+    }
+    @HostListener('window:keydown.Escape', ['$event']) onEscape(event: KeyboardEvent): void {
+        console.log('escape');
+    }
+
+    @HostListener('window:keydown.Backspace', ['$event']) onBackSpace(event: KeyboardEvent): void {
+        console.log('backSpace');
     }
 }

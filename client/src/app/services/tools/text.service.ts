@@ -28,6 +28,9 @@ export class TextService extends Tool {
     keyHistory: string = '';
     fontStyleBold: boolean = false;
     fontStyleItalic: boolean = false;
+    height: number;
+    width: number;
+    lineWidth: number = 1;
     // imageLoader.addEventListener('change', handleImage, false);
 
     // xwindow.addEventListener('load', DrawPlaceholder)
@@ -50,7 +53,6 @@ export class TextService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
         this.mousePosition = this.mouseDownCoord;
-        this.drawText();
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -126,12 +128,53 @@ export class TextService extends Tool {
         }
     }
 
-    drawText(): void {
+    drawTextTest(): void {
         this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // text color
         this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
         // this.drawingService.baseCtx.font = "50px 'Calibri'";
         this.drawingService.baseCtx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
         this.drawingService.baseCtx.fillText(this.textTitle, this.mouseDownCoord.x, this.mouseDownCoord.y);
+    }
+
+    drawPreviewRect(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mousePosition: Vec2): void {
+        if (this.drawingService.previewCtx === ctx) {
+            if (mousePosition.x > mouseDownPos.x && mousePosition.y > mouseDownPos.y) {
+                ctx.strokeRect(
+                    mouseDownPos.x - this.lineWidth / 2,
+                    mouseDownPos.y - this.lineWidth / 2,
+                    this.width + this.lineWidth,
+                    this.height + this.lineWidth,
+                );
+                return;
+            }
+            if (mousePosition.x < mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
+                ctx.strokeRect(
+                    mouseDownPos.x + this.lineWidth / 2,
+                    mouseDownPos.y + this.lineWidth / 2,
+                    this.width - this.lineWidth,
+                    this.height - this.lineWidth,
+                );
+                return;
+            }
+            if (mousePosition.x > mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
+                ctx.strokeRect(
+                    mouseDownPos.x - this.lineWidth / 2,
+                    mouseDownPos.y + this.lineWidth / 2,
+                    this.width + this.lineWidth,
+                    this.height - this.lineWidth,
+                );
+                return;
+            }
+            if (mousePosition.x < mouseDownPos.x && mousePosition.y > mouseDownPos.y) {
+                ctx.strokeRect(
+                    mouseDownPos.x + this.lineWidth / 2,
+                    mouseDownPos.y - this.lineWidth / 2,
+                    this.width - this.lineWidth,
+                    this.height + this.lineWidth,
+                );
+                return;
+            }
+        }
     }
 
     addletter(letter: string): void {

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ToolUsed } from '@app/classes/tool';
 import { ToolService } from '@app/services/tool-service';
 // import { ToolService } from '@app/services/tool-service';
 
@@ -8,12 +9,13 @@ import { ToolService } from '@app/services/tool-service';
     styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent {
-    constructor(public toolService: ToolService) {}
+    constructor(private toolService: ToolService) {}
     /* onMouseUp(event: MouseEvent): void {
         this.toolService.currentTool.onMouseUp(event);
     } */
+
     onMouseDown(event: MouseEvent): void {
-        this.toolService.currentTool.onMouseDown(event);
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) this.toolService.currentTool.onMouseDown(event);
         // this.undoRedoService.whileDrawingUndoRedo(event);
     }
 }
