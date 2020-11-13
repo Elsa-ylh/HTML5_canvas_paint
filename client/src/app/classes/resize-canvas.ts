@@ -1,7 +1,7 @@
 export const MIN_CANVAS_SIZE = 250;
 export const WORK_AREA_PADDING_SIZE = 100;
 export const SIDEBAR_WIDTH = 226;
-export const ICON_WIDTH = 50;
+export const ICON_WIDTH = 100;
 
 // tslint:disable-next-line:no-magic-numbers
 export const RESIZE_MIDDLE_LOWER_PROPORTION = 1 / 3;

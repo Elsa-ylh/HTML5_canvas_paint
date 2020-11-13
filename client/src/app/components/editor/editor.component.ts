@@ -15,7 +15,9 @@ export class EditorComponent {
     } */
 
     onMouseDown(event: MouseEvent): void {
-        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) this.toolService.currentTool.onMouseDown(event);
+        if (this.toolService.currentToolName === ToolUsed.Text) {
+            this.toolService.currentTool.onMouseDown(event);
+        }
         // this.undoRedoService.whileDrawingUndoRedo(event);
     }
 }

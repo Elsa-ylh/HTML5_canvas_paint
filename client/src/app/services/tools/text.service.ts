@@ -6,6 +6,16 @@ import { ToolGeneralInfo } from '@app/classes/tool-general-info';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { RectangleService } from './rectangle.service';
+
+// tslint:disable:deprecation
+// const STROKECOLOR: string = "#000000";
+const SPACE = 32;
+const ARROWUP = 37;
+const ARROWDOWN = 38;
+const ARROWLEFT = 39;
+const ARROWRIGHT = 40;
+const DEL = 126;
 
 @Injectable({
     providedIn: 'root',
@@ -23,19 +33,23 @@ export class TextService extends Tool {
     mousePosition: Vec2;
     canvasSelected: boolean;
     textTitle: string = 'Overlay text';
-    imageLoader: HTMLElement | null = document.getElementById('imageLoader');
-    img: HTMLImageElement = new Image();
-    keyHistory: string = '';
+    keyHistory: string[] = [];
     fontStyleBold: boolean = false;
     fontStyleItalic: boolean = false;
     height: number;
     width: number;
-    lineWidth: number = 1;
+    private lineWidth: number = 2;
+    textValue: string = 'initial value';
+    log: string = '';
+    writeOnCanvas: boolean = false;
+    distanceX: number;
+    distanceY: number;
+
     // imageLoader.addEventListener('change', handleImage, false);
 
     // xwindow.addEventListener('load', DrawPlaceholder)
 
-    constructor(drawingService: DrawingService, private colorService: ColorService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private rectangleService: RectangleService) {
         super(drawingService);
     }
 
@@ -44,15 +58,24 @@ export class TextService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
-        this.clearEffectTool();
-        if (this.mouseEnter) {
-            this.onMouseUp(event);
+        if (!this.mouseDown) {
+            this.mouseDown = event.button === MouseButton.Left;
+
+            this.clearEffectTool();
+            console.log(this.mouseEnter + '  ' + this.mouseOut + '  ' + this.mouseDown);
+            if (this.mouseEnter && !this.mouseOut && this.mouseDown && !this.writeOnCanvas) {
+                this.rectangleService.clearEffectTool();
+                this.mouseDownCoord = this.getPositionFromMouse(event);
+                this.mousePosition = this.mouseDownCoord;
+
+                // this.drawTextTest();
+            }
         }
-        if (this.mouseDown) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);
+        if (this.writeOnCanvas) {
+            // this.baseCtx
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.writeOnCanvas = false;
         }
-        this.mousePosition = this.mouseDownCoord;
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -60,28 +83,41 @@ export class TextService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.mousePosition = mousePosition;
             this.canvasSelected = true;
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
+            this.mouseDown = false;
+            this.writeOnCanvas = true;
         }
+        this.mouseDown = false;
+        console.log('onMouseUp');
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
+        if (this.mouseDown && this.mouseEnter && !this.mouseOut) {
             const mousePosition = this.getPositionFromMouse(event);
             this.mousePosition = mousePosition;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.height = mousePosition.y - this.mouseDownCoord.y;
+            this.width = mousePosition.x - this.mouseDownCoord.x;
+            this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
             this.canvasSelected = false;
         }
     }
 
-    onMouseOut(event: MouseEvent): void {
-        if (this.mouseDown) {
-            this.mouseOut = true;
+    onDoubleClick(event: MouseEvent): void {
+        if ((this.mouseEnter || this.mouseOut) && this.writeOnCanvas) {
+            console.log('test');
+            this.writeOnCanvas = false;
         }
     }
 
+    onMouseOut(event: MouseEvent): void {
+        this.mouseEnter = false;
+        this.mouseOut = true;
+    }
+
     onMouseEnter(event: MouseEvent): void {
-        if (this.mouseOut) {
-            this.mouseEnter = true;
-        }
+        this.mouseEnter = true;
         this.mouseOut = false;
     }
 
@@ -128,14 +164,6 @@ export class TextService extends Tool {
         }
     }
 
-    drawTextTest(): void {
-        this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // text color
-        this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
-        // this.drawingService.baseCtx.font = "50px 'Calibri'";
-        this.drawingService.baseCtx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
-        this.drawingService.baseCtx.fillText(this.textTitle, this.mouseDownCoord.x, this.mouseDownCoord.y);
-    }
-
     drawPreviewRect(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mousePosition: Vec2): void {
         if (this.drawingService.previewCtx === ctx) {
             if (mousePosition.x > mouseDownPos.x && mousePosition.y > mouseDownPos.y) {
@@ -177,23 +205,38 @@ export class TextService extends Tool {
         }
     }
 
+    drawTextTest(): void {
+        this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // text color
+        this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
+        // this.drawingService.baseCtx.font = "50px 'Calibri'";
+        this.drawingService.baseCtx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
+        this.drawingService.baseCtx.fillText(this.textTitle, this.mouseDownCoord.x, this.mouseDownCoord.y, this.width);
+    }
+
     addletter(letter: string): void {
-        window.addEventListener('keyup', this.keyUpHandler, true);
-        this.keyHistory += letter;
-        // tslint:disable-next-line:no-magic-numbers
-        this.drawingService.baseCtx.clearRect(0, 0, 300, 300);
-        // tslint:disable-next-line:no-magic-numbers
-        this.drawingService.baseCtx.fillText(this.keyHistory, 20, 20);
+        this.keyHistory.push(letter);
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
+        let textPreview = '';
+        this.keyHistory.forEach((element) => {
+            textPreview += element;
+        });
+        this.drawingService.previewCtx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
+        this.drawingService.previewCtx.fillText(textPreview, this.mouseDownCoord.x, this.mouseDownCoord.y, this.width);
     }
 
     keyUpHandler(event: KeyboardEvent): void {
-        const letters = 'abcdefghijklmnopqrstuvwxyz';
-        const key = (event.key as unknown) as number;
-        // tslint:disable-next-line:no-magic-numbers
-        if (key > 64 && key < 91) {
-            // tslint:disable-next-line:no-magic-numbers
-            const letter = letters.substring(key - 64, key - 65);
-            this.addletter(letter);
+        if (this.writeOnCanvas) {
+            if (
+                event.keyCode >= SPACE &&
+                event.keyCode < DEL &&
+                event.keyCode !== ARROWLEFT &&
+                event.keyCode !== ARROWDOWN &&
+                event.keyCode !== ARROWRIGHT &&
+                event.keyCode !== ARROWUP
+            ) {
+                this.addletter(event.key.toString());
+            }
         }
     }
 }

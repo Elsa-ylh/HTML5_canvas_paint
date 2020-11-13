@@ -48,6 +48,11 @@ export class WriteTextOptionComponent implements OnInit {
         this.isTextChecked = false;
     }
 
+    @HostListener('window:keydown', ['$event']) keyUpHandler(event: KeyboardEvent): void {
+        this.textService.keyUpHandler(event);
+        console.log('tout les touceh');
+    }
+
     @HostListener('window:keydown.ArrowLeft', ['$event']) onLeftArrow(event: KeyboardEvent): void {
         console.log('arrowLeft');
     }

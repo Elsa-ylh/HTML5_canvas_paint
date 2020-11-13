@@ -1,7 +1,7 @@
-<div class="container" (mouseup)="onMouseDown($event)" >
-    <app-sidebar></app-sidebar>
+<div class="container" >
+    <app-sidebar (mouseup)="onMouseDown($event)" ></app-sidebar>
     <div class="drawing-container">
         <app-drawing class="drawing" tabindex="0"></app-drawing>
-        <!-- (mouseup)="onMouseUp($event)"-->
+        <!-- (mouseup)="onMouseUp($event)" -->
     </div>
 </div>
