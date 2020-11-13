@@ -27,13 +27,10 @@ export class AutoSaveService {
     }
 
     check(): boolean {
-        try {
-            this.canvas = this.myStorage.getItem(KEY_SAVE_CANVAS);
-            this.width = this.myStorage.getItem(KEY_SAVE_WIDTH);
-            this.height = this.myStorage.getItem(KEY_SAVE_HEIGHT);
-        } catch {
-            return false;
-        }
+        this.canvas = this.myStorage.getItem(KEY_SAVE_CANVAS);
+        this.width = this.myStorage.getItem(KEY_SAVE_WIDTH);
+        this.height = this.myStorage.getItem(KEY_SAVE_HEIGHT);
+
         if (
             this.canvas === null ||
             this.canvas === undefined ||
@@ -51,18 +48,15 @@ export class AutoSaveService {
         if (!this.check()) {
             return false;
         }
-        try {
-            const widthNb = Number(this.width);
-            const heightNb = Number(this.height);
-            if (widthNb === NaN || heightNb === NaN || this.canvas === null || this.canvas === undefined) {
-                return false;
-            }
-            this.drawingService.convertBase64ToBaseCanvas(this.canvas);
-            this.canvasResizer.canvasSize.x = widthNb;
-            this.canvasResizer.canvasSize.y = heightNb;
-        } catch {
+        const widthNb = Number(this.width);
+        const heightNb = Number(this.height);
+        if (isNaN(widthNb) || isNaN(heightNb) || this.canvas === null || this.canvas === undefined) {
             return false;
         }
+        this.drawingService.convertBase64ToBaseCanvas(this.canvas);
+        this.canvasResizer.canvasSize.x = widthNb;
+        this.canvasResizer.canvasSize.y = heightNb;
+
         return true;
     }
 }
