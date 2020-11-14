@@ -131,6 +131,7 @@ export class DatabasePictureService {
                 throw error;
             });
     }
+
     async delete(deleteId: string): Promise<boolean> {
         const response = await this.collection.deleteOne({ _id: deleteId }).catch((err) => {
             throw err;
@@ -159,6 +160,7 @@ export class DatabasePictureService {
             throw new Error('Invalid picture');
         }
     }
+
     async modifyPicture(canvasInfo: CanvasInformation): Promise<boolean> {
         if (this.validatePicture(canvasInfo)) {
             const response = await this.collection

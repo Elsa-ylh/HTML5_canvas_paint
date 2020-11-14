@@ -1,4 +1,5 @@
 import { DataController } from '@app/controllers/data.controller';
+import { EmailController } from '@app/controllers/email.controller';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
@@ -11,7 +12,10 @@ export class Application {
     private readonly internalError: number = 500;
     app: express.Application;
 
-    constructor(@inject(TYPES.DataController) private dataController: DataController) {
+    constructor(
+        @inject(TYPES.DataController) private dataController: DataController,
+        @inject(TYPES.EmailController) private emailController: EmailController,
+    ) {
         this.app = express();
 
         this.config();
@@ -30,6 +34,7 @@ export class Application {
 
     bindRoutes(): void {
         this.app.use('/api/data', this.dataController.router);
+        this.app.use('/api/email', this.emailController.router);
         this.errorHandling();
     }
 
