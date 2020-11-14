@@ -43,7 +43,6 @@ export class SprayService extends Tool {
         for (let i = this.density; i--; ) {
             const angle = this.generateRandomValue(0, Math.PI * 2);
             const radius = this.generateRandomValue(0, 30);
-            this.drawingService.baseCtx.globalAlpha = Math.random();
             this.drawingService.baseCtx.fillRect(
                 this.position.x + radius * Math.cos(angle),
                 this.position.y + radius * Math.sin(angle),
