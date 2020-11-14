@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
+import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
@@ -15,24 +17,27 @@ export class SprayService extends Tool {
     }
 
     private density: number = 40;
-    private clicked: boolean = false;
     private currentColor: string;
+    position: Vec2;
+    private time: number;
 
     generateRandomValue(min: number, max: number): number {
         return Math.random() * (max - min) + min;
     }
 
     onMouseUp(event: MouseEvent): void {
-        this.clicked = false;
+        this.mouseDown = false;
     }
 
-    onMouseMove(event: MouseEvent): void {
-        if (this.clicked === true) {
-            this.transform(event);
-        }
+    loopTransform(time: number): void {
+        const callback = () => {
+            this.transform();
+        };
+        setTimeout(callback, time);
     }
 
-    transform(event: MouseEvent): void {
+    transform(): void {
+        this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
         this.currentColor = this.colorService.primaryColor;
         this.drawingService.baseCtx.fillStyle = this.currentColor;
         for (let i = this.density; i--; ) {
@@ -40,17 +45,29 @@ export class SprayService extends Tool {
             const radius = this.generateRandomValue(0, 30);
             this.drawingService.baseCtx.globalAlpha = Math.random();
             this.drawingService.baseCtx.fillRect(
-                event.offsetX + radius * Math.cos(angle),
-                event.offsetY + radius * Math.sin(angle),
+                this.position.x + radius * Math.cos(angle),
+                this.position.y + radius * Math.sin(angle),
                 this.generateRandomValue(1, 2),
                 this.generateRandomValue(1, 2),
             );
         }
+        if (this.mouseDown) {
+            this.time = 50;
+            this.loopTransform(this.time);
+        }
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.clicked = true;
-        this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
-        this.transform(event);
+        this.mouseDown = event.button === MouseButton.Left;
+        this.position = { x: event.offsetX, y: event.offsetY };
+        this.transform();
+    }
+
+    onMouseMove(event: MouseEvent): void {
+        this.position = { x: event.offsetX, y: event.offsetY };
+        if (this.mouseDown) {
+            this.time = 3000;
+            this.loopTransform(this.time);
+        }
     }
 }
