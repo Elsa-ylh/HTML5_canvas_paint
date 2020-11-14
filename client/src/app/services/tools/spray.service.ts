@@ -33,7 +33,10 @@ export class SprayService extends Tool {
         const callback = () => {
             this.transform();
         };
-        setTimeout(callback, time);
+        const timer = setTimeout(callback, time);
+        if (this.mouseDown == false) {
+            clearTimeout(timer);
+        }
     }
 
     transform(): void {
@@ -42,7 +45,7 @@ export class SprayService extends Tool {
         this.drawingService.baseCtx.fillStyle = this.currentColor;
         for (let i = this.density; i--; ) {
             const angle = this.generateRandomValue(0, Math.PI * 2);
-            const radius = this.generateRandomValue(0, 30);
+            const radius = this.generateRandomValue(0, 30); // the max interval is the diameter of the zone
             this.drawingService.baseCtx.fillRect(
                 this.position.x + radius * Math.cos(angle),
                 this.position.y + radius * Math.sin(angle),
@@ -65,7 +68,7 @@ export class SprayService extends Tool {
     onMouseMove(event: MouseEvent): void {
         this.position = { x: event.offsetX, y: event.offsetY };
         if (this.mouseDown) {
-            this.time = 3000;
+            this.time = 250;
             this.loopTransform(this.time);
         }
     }
