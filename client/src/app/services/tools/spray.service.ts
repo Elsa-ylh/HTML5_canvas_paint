@@ -20,12 +20,14 @@ export class SprayService extends Tool {
     private currentColor: string;
     position: Vec2;
     private time: number;
+    private timer: ReturnType<typeof setTimeout>;
 
     generateRandomValue(min: number, max: number): number {
         return Math.random() * (max - min) + min;
     }
 
     onMouseUp(event: MouseEvent): void {
+        clearTimeout(this.timer);
         this.mouseDown = false;
     }
 
@@ -33,10 +35,7 @@ export class SprayService extends Tool {
         const callback = () => {
             this.transform();
         };
-        const timer = setTimeout(callback, time);
-        if (this.mouseDown == false) {
-            clearTimeout(timer);
-        }
+        this.timer = setTimeout(callback, time);
     }
 
     transform(): void {
@@ -54,7 +53,7 @@ export class SprayService extends Tool {
             );
         }
         if (this.mouseDown) {
-            this.time = 50;
+            this.time = 200;
             this.loopTransform(this.time);
         }
     }
@@ -68,7 +67,7 @@ export class SprayService extends Tool {
     onMouseMove(event: MouseEvent): void {
         this.position = { x: event.offsetX, y: event.offsetY };
         if (this.mouseDown) {
-            this.time = 250;
+            this.time = 200;
             this.loopTransform(this.time);
         }
     }
