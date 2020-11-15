@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { MouseButton } from '@app/classes/mouse-button';
 import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -13,27 +14,33 @@ export class SelectionRectangleService extends SelectionService {
         super(drawingService);
     }
 
-    onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.mousePosition = mousePosition;
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            if (this.mouseDownCoord.x !== this.mousePosition.x && this.mouseDownCoord.y !== this.mousePosition.y && !this.inSelection) {
-                if (!this.shiftPressed) {
-                    this.height = this.mousePosition.y - this.mouseDownCoord.y;
-                    this.width = this.mousePosition.x - this.mouseDownCoord.x;
-                }
+    onMouseDown(event: MouseEvent): void {
+        this.clearEffectTool();
+        this.drawingService.previewCtx.lineWidth = this.lineWidth;
+        this.drawingService.previewCtx.strokeStyle = 'black';
+        this.drawingService.previewCtx.fillStyle = 'black';
 
-                this.copyImageInitialPos = this.copySelection();
-                this.drawSelection(this.copyImageInitialPos);
-            } else if (this.inSelection) {
-                this.pasteSelection(
-                    { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                    this.imageData,
-                );
+        this.mouseDown = event.button === MouseButton.Left;
+
+        if (this.mouseDown) {
+            if (this.startingPos && this.endingPos) {
+                this.inSelection = this.isInsideSelection(this.getPositionFromMouse(event));
+            }
+
+            this.mouseDownCoord = this.getPositionFromMouse(event);
+
+            // for drawing preview
+            if (this.drawingService.isPreviewCanvasBlank()) {
+                this.startingPos = this.mouseDownCoord;
+
+                // for  pasting selection
+            } else if (!this.inSelection && !this.drawingService.isPreviewCanvasBlank()) {
+                // paste image
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.pasteSelection(this.imagePosition, this.imageData);
                 // undo redo
                 const selectRectAc = new SelectionRectAction(
-                    { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
+                    this.imagePosition,
                     this.imageData,
                     this.copyImageInitialPos,
                     Math.abs(this.width),
@@ -44,11 +51,49 @@ export class SelectionRectangleService extends SelectionService {
                 this.undoRedoService.clearRedo();
                 this.mouseMouvement = { x: 0, y: 0 };
                 this.isAllSelect = false;
+                this.endingPos = this.startingPos = this.mouseDownCoord;
             }
         }
+    }
+
+    onKeyEscape(event: KeyboardEvent): void {
+        // paste image
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        if (this.mouseDown) {
+            this.imagePosition = { x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y };
+        }
+        this.pasteSelection(this.imagePosition, this.imageData);
+        // undo redo
+        const selectRectAc = new SelectionRectAction(
+            this.imagePosition,
+            this.imageData,
+            this.copyImageInitialPos,
+            Math.abs(this.width),
+            Math.abs(this.height),
+            this,
+        );
+        this.undoRedoService.addUndo(selectRectAc);
+        this.undoRedoService.clearRedo();
+        this.mouseMouvement = { x: 0, y: 0 };
+        this.isAllSelect = false;
+        this.endingPos = this.startingPos = this.mouseDownCoord;
 
         this.mouseDown = false;
-        this.inSelection = false;
+        if (this.timerDown) {
+            this.subscriptionMoveDown.unsubscribe();
+        }
+        if (this.timerLeft) {
+            this.subscriptionMoveLeft.unsubscribe();
+        }
+        if (this.timerRight) {
+            this.subscriptionMoveRight.unsubscribe();
+        }
+        if (this.timerUp) {
+            this.subscriptionMoveUp.unsubscribe();
+        }
+        if (this.timerStarted) {
+            this.subscriptionTimer.unsubscribe();
+        }
     }
 
     protected drawSelection(imagePosition: Vec2): void {
@@ -99,7 +144,14 @@ export class SelectionRectangleService extends SelectionService {
             if (this.timerLeft) {
                 this.subscriptionMoveLeft.unsubscribe();
             }
-            this.pasteArrowSelection();
+            this.imagePosition = { x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y };
+            // this.pasteArrowSelection();
+            this.startingPos.x = this.startingPos.x + this.mouseMouvement.x;
+            this.startingPos.y = this.startingPos.y + this.mouseMouvement.y;
+            this.endingPos.x = this.endingPos.x + this.mouseMouvement.x;
+            this.endingPos.y = this.endingPos.y + this.mouseMouvement.y;
+
+            this.mouseMouvement = { x: 0, y: 0 };
             this.timerLeft = false;
         }
     }
@@ -111,7 +163,14 @@ export class SelectionRectangleService extends SelectionService {
             if (this.timerRight) {
                 this.subscriptionMoveRight.unsubscribe();
             }
-            this.pasteArrowSelection();
+            this.imagePosition = { x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y };
+            // this.pasteArrowSelection();
+            this.startingPos.x = this.startingPos.x + this.mouseMouvement.x;
+            this.startingPos.y = this.startingPos.y + this.mouseMouvement.y;
+            this.endingPos.x = this.endingPos.x + this.mouseMouvement.x;
+            this.endingPos.y = this.endingPos.y + this.mouseMouvement.y;
+
+            this.mouseMouvement = { x: 0, y: 0 };
             this.timerRight = false;
         }
     }
@@ -123,7 +182,14 @@ export class SelectionRectangleService extends SelectionService {
             if (this.timerUp) {
                 this.subscriptionMoveUp.unsubscribe();
             }
-            this.pasteArrowSelection();
+            this.imagePosition = { x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y };
+            // this.pasteArrowSelection();
+            this.startingPos.x = this.startingPos.x + this.mouseMouvement.x;
+            this.startingPos.y = this.startingPos.y + this.mouseMouvement.y;
+            this.endingPos.x = this.endingPos.x + this.mouseMouvement.x;
+            this.endingPos.y = this.endingPos.y + this.mouseMouvement.y;
+
+            this.mouseMouvement = { x: 0, y: 0 };
             this.timerUp = false;
         }
     }
@@ -135,7 +201,14 @@ export class SelectionRectangleService extends SelectionService {
             if (this.timerDown) {
                 this.subscriptionMoveDown.unsubscribe();
             }
-            this.pasteArrowSelection();
+            this.imagePosition = { x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y };
+            // this.pasteArrowSelection();
+            this.startingPos.x = this.startingPos.x + this.mouseMouvement.x;
+            this.startingPos.y = this.startingPos.y + this.mouseMouvement.y;
+            this.endingPos.x = this.endingPos.x + this.mouseMouvement.x;
+            this.endingPos.y = this.endingPos.y + this.mouseMouvement.y;
+
+            this.mouseMouvement = { x: 0, y: 0 };
             this.timerDown = false;
         }
     }
