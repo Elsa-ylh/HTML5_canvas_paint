@@ -14,7 +14,6 @@ describe('loadAction', () => {
     let undoRedoStub: UndoRedoService;
     let resizeStub: CanvasResizerService;
 
-    let picture: string;
     let height: number;
     let width: number;
 
@@ -30,14 +29,13 @@ describe('loadAction', () => {
         const converter = document.createElement('canvas');
         const converterCtx = converter.getContext('2d') as CanvasRenderingContext2D;
         converterCtx.drawImage(pictureImage, height, width);
-        picture = converter.toDataURL();
 
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         resizeStub = new CanvasResizerService(undoRedoStub);
 
-        loadActionStub = new LoadAction(picture, height, width, drawingStub, resizeStub);
+        loadActionStub = new LoadAction(pictureImage, height, width, drawingStub, resizeStub);
 
         canvas = canvasTestHelper.canvas;
         // tslint:disable:no-magic-numbers
@@ -66,9 +64,9 @@ describe('loadAction', () => {
         drawingStub = TestBed.inject(DrawingService);
     });
 
-    it('should call convertBase64ToBaseCanvas', () => {
-        const convertBaseSpy = spyOn(drawingStub, 'convertBase64ToBaseCanvas').and.stub();
+    it('should call onResize', () => {
+        const onResizeSpy = spyOn(resizeStub, 'onResize').and.stub();
         loadActionStub.apply();
-        expect(convertBaseSpy).toHaveBeenCalled();
+        expect(onResizeSpy).toHaveBeenCalled();
     });
 });
