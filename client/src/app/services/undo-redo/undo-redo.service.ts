@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
+import { LoadAction } from '@app/classes/undo-redo/load-action';
 import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
@@ -10,11 +11,12 @@ export class UndoRedoService {
     isUndoDisabled: boolean = true; // to disactivate the option to redo-redo. diabled=true (cant undo-red0 when app loads)
     isRedoDisabled: boolean = true;
     defaultCanvasAction: ResizeCanvasAction; // will be instanciated when canvas is ngAfterViewInit
+    private firstLoadedImage: LoadAction;
     private listUndo: AbsUndoRedo[] = [];
     private listRedo: AbsUndoRedo[] = [];
 
     constructor(private drawingService: DrawingService) {}
-
+    // private canvasResizeService: CanvasResizerService
     redo(): void {
         if (this.listRedo.length > 0) {
             const action = this.listRedo.pop();
@@ -42,14 +44,25 @@ export class UndoRedoService {
         this.listUndo.push(action);
         this.updateStatus();
     }
+
+    // to load an image from the caroussel
+    loadImage(action: LoadAction): void {
+        this.firstLoadedImage = action;
+    }
+
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
-    async undo(): Promise<void> {
+    async undo() {
         const action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
         if (action) {
             this.listRedo.push(action);
             const listOfResize: AbsUndoRedo[] = [];
 
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
+            //this.drawingService.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            if (this.firstLoadedImage) {
+                await this.firstLoadedImage.apply();
+            } else {
+                this.drawingService.clearCanvas(this.drawingService.baseCtx);
+            }
             // reapply the currents elements (without the removed one)
             for (const element of this.listUndo) {
                 if (element instanceof ResizeCanvasAction) {

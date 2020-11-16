@@ -169,7 +169,8 @@ export class CarrouselPictureComponent implements OnInit {
             const actionLoadImg = new LoadAction(image, loadedPicture.height, loadedPicture.width, this.drawingService, this.cvsResizerService);
             this.undoRedoService.clearUndo();
             this.undoRedoService.clearRedo();
-            this.undoRedoService.addUndo(actionLoadImg);
+            // this.undoRedoService.addUndo(actionLoadImg);
+            this.undoRedoService.loadImage(actionLoadImg);
 
             this.dialogRef.close(true);
             this.router.navigate(['/editor']);
