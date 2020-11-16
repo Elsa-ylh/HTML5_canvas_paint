@@ -26,8 +26,7 @@ export class LoadAction extends AbsUndoRedo {
         let event = { offsetX: this.width, offsetY: this.height } as MouseEvent;
         this.canvasResizerService.resizeDirection = ResizeDirection.verticalAndHorizontal;
         this.canvasResizerService.onResize(event, this.drawingService.baseCtx);
-    }
-    applyImage(): void {
+        //  this.canvasResizerService;
         this.drawingService.baseCtx.drawImage(this.picture, 0, 0);
     }
 }
