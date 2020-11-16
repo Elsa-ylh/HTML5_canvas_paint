@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ToolUsed } from '@app/classes/tool';
+import { ToolService } from '@app/services/tool-service';
 // import { ToolService } from '@app/services/tool-service';
 
 @Component({
@@ -7,8 +9,16 @@ import { Component } from '@angular/core';
     styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent {
-    /* constructor(public toolService: ToolService) {}
-    onMouseUp(event: MouseEvent): void {
+    constructor(private toolService: ToolService) {}
+    /* onMouseUp(event: MouseEvent): void {
         this.toolService.currentTool.onMouseUp(event);
     } */
+
+    onMouseDown(event: MouseEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Text)
+         {
+            this.toolService.currentTool.onDoubleClick(event);
+        }
+        // this.undoRedoService.whileDrawingUndoRedo(event);
+    }
 }

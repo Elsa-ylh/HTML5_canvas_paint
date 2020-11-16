@@ -7,7 +7,7 @@ export const dataUserGuide: UserGuide[] = [
         title: 'Créer ou continuer dessin',
         isTool: 'Divers',
         description:
-            "En tant qu'utilisateur, il vous est possible de créer un nouveau dessin en cliquant sur Créer nouveau dessin dans la page d'acceuil ou bien sur l'icône + en bas à droite de votre écran lorsque vous vous trouvez sur la vue dessin. Il est aussi possible d'utiliser le raccourci clavier Ctrl + O afin de créer un nouveau dessin. Si jamais vous pressez accidentellement le bouton créer nouveau dessin, un message de confirmation apparaitra afin de vous puissiez soit revenir à votre dessin actuel ou en recommencer un nouveau.",
+            "En tant qu'utilisateur, il vous est possible de créer un nouveau dessin en cliquant sur Créer nouveau dessin dans la page d'acceuil ou bien sur l'icône + en bas à droite de votre écran lorsque vous vous trouvez sur la vue dessin. Il est aussi possible d'utiliser le raccourci clavier Ctrl + O afin de créer un nouveau dessin. Si jamais vous pressez accidentellement le bouton créer nouveau dessin, un message de confirmation apparaitra afin de vous puissiez soit revenir à votre dessin actuel ou en recommencer un nouveau. Il vous est aussi possible de récupérer le dessin sauvegardé automatiquement le plus à jour. L'option de continuer un dessin est seulement vivible si un dessin a été sauvegardé par l'application.",
         gifPath: '',
         screenshotPath: 'assets/user_guide/newdraw.png',
     },
@@ -28,7 +28,7 @@ export const dataUserGuide: UserGuide[] = [
         screenshotPath: 'assets/user_guide/sauvegarde.png',
     },
     {
-        title: 'Exportation',
+        title: 'Exportation - Envoi par courriel',
         isTool: 'Divers',
         description:
             'La fonctionnalité Exportation offre de créer une image à partir de la surface de dessin et de l’exporter dans un des formats suivants : JPG ou PNG. Il vous faudra entrer un nom pour le fichier exporté. Si vous le souhaitez, plutôt que de sauvegarder localement votre dessin exporté, il vous est possible de l’envoyer par courriel. Il vous est aussi possible d’appliquer un filtre sur l’image avant que l’exportation ne soit effectuée parmiles  cinq filtres différents disponibles.',
@@ -110,6 +110,8 @@ export const dataUserGuide: UserGuide[] = [
         gifPath: '',
         screenshotPath: '',
     },
+
+    // Selection
     {
         title: 'Outils de sélection',
         isTool: 'Dessiner',
@@ -122,10 +124,35 @@ export const dataUserGuide: UserGuide[] = [
         title: 'Manipulation de sélection',
         isTool: 'Dessiner',
         description:
-            'Des manipulations peuvent faire en sorte que la sélection se retrouve, en partie ou en tout, en dehors de la surface de dessin. Il vous est possible de déplacer une sélection en utilisant votre souris ou les touches directionnelles de votre clavier.',
+            "Des manipulations peuvent faire en sorte que la sélection se retrouve, en partie ou en tout, en dehors de la surface de dessin. Il vous est possible de déplacer une sélection en utilisant votre souris ou les touches directionnelles de votre clavier. Les fonctions couper,copier et coller sont disponibles ainsi que l'option supprimer.",
         gifPath: 'assets/user_guide/move-selection.gif',
         screenshotPath: '',
     },
+    {
+        title: "Rotation d'une sélection",
+        isTool: 'Dessiner',
+        description:
+            'Pour faire pivoter une sélection, il vous suffit d’utiliser votre roulette de souris. De plus, une sélection pivote autour de son centre. À chaque cran de roulette, une rotation de 15 degrées est effectuée. Toutefois, si vous maitenez la touche ALT enfoncée, la rotation sera de 1 degré.',
+        gifPath: '',
+        screenshotPath: '',
+    },
+    {
+        title: "Redimensionnement d'une sélection",
+        isTool: 'Dessiner',
+        description:
+            "En tant qu'utilisateur, vous pouvez redimensionner une sélection à l'aide des 8 points de contrôle. Si vous maintenez la touche Shift appuyée pendant le déplacement d’un point de contrôle de coin, celui-ci ne pourra se déplacer que sur la droite passant par lui-même et son coin opposé : le redimensionnement n’altèrera pas le rapport d’aspect de la sélection. Il vous est possible de produire un effet mirroir en déplaçant le point de contrôle de l'autre côté de son opposé.",
+        gifPath: '',
+        screenshotPath: '',
+    },
+    {
+        title: 'Sélection par baguette magique',
+        isTool: 'Dessiner',
+        description:
+            'La baguette magique offre les mêmes modes d’opération que l’outil sceau de peinture : pour le mode pixels contigus (clic gauche de votre souris), une sélection sera formée avec la région de pixels. Celle-ci sera délimitée par un contour de sélection qui sera lui-même encadré par une boite englobante. Dans le cas du mode pixels non contigus (clic droit de votre souris), la sélection sera formée d’un ou plusieurs groupes de pixels disjoints.',
+        gifPath: '',
+        screenshotPath: '',
+    },
+
     {
         title: 'Palette de couleur',
         isTool: 'Dessiner',
@@ -138,7 +165,7 @@ export const dataUserGuide: UserGuide[] = [
         title: 'Outils - Sceau de peinture',
         isTool: 'Dessiner',
         description:
-            "Cet outil permet d’effectuer un « remplissage » qui colore une ou plusieurs étendues de pixels en fonction de leur couleur. L’outil peut s’utiliser selon deux modes d’opérations : « pixels contigus » et « pixels non contigus ». Il est possible de sélectionner l'outil Sceau de Peinture avec la touche B.",
+            "Cet outil permet d’effectuer un « remplissage » qui colore une ou plusieurs étendues de pixels en fonction de leur couleur. L’outil peut s’utiliser selon deux modes d’opérations : « pixels contigus » (clic gauche) et « pixels non contigus » (clic droit). Il est possible de sélectionner l'outil Sceau de Peinture avec la touche B.",
         gifPath: 'assets/user_guide/paint-bucket.gif',
         screenshotPath: '',
     },
@@ -169,10 +196,37 @@ export const dataUserGuide: UserGuide[] = [
     {
         title: 'Magnétisme',
         isTool: 'Dessiner',
-        description: 'Cette fonctionnalité sera implémentée lors du sprint 2.',
+        description:
+            "Lorsque vous choisissez d'activer cette option , chaque fois qu’une boite englobante est déplacée à l’aide de la souris celle-ci se « collera » ou s’alignera sur la ligne de grille la plus près. Vous pouvez choisir le point utilisé pour l'alignement sur la grille parmi les 9 points suivants : un des quatre points de contrôle, un des quatre coins de la boîte englobante ou le centre de la boîte. Cette option peut être activée / désactivée avec la touche M.",
         gifPath: '',
         screenshotPath: '',
     },
+    {
+        title: 'Étampe',
+        isTool: 'Dessiner',
+        description:
+            "Cet outil vous permet d’apposer de petites images sur votre dessin. Pour l’utiliser, il vous suffit d'effectuer un simple clic du bouton gauche à l’endroit où vous désirez apposer l’image. Le clic doit être fait sur la surface de dessin. Il est possible d'apposer une image partiellement. La barre latérale secondaire vous permet de configurer le facteur de mise à échelle de l’étampe, l'angle d’orientation de l’étampe (en degrés) et le choix d’image.",
+        gifPath: '',
+        screenshotPath: '',
+    },
+    {
+        title: 'Texte',
+        isTool: 'Dessiner',
+        description:
+            "Cet outil vous permet d’écrire des chaines de caractères sur la surface de dessin. Pendant l’édition du texte, il vous est possible de vous déplacer dans le texte avec les touches directionnelles (flèches) du clavier ainsi que de supprimer avec la touche de retour arrière (Backspace) ou la touche de suppression (Delete). Pour terminer la création de votre texte, il vous suffit de cliquer à l’extérieur la zone de création ou de sélectionner un autre outil. Attention, toute partie de votre texte se trouvant en dehors de la surface de dessin sera perdue. Le panneau d’attributs vous permet de modifier votre texte avec les configurations suivantes : police du texte, taille de la police, texte en gras et/ou italique et alignement du texte : gauche, centre, droit. La touche T vous permet de sélectionner l'outil texte. ",
+        gifPath: '',
+        screenshotPath: '',
+    },
+    {
+        title: 'Aérosol',
+        isTool: 'Dessiner',
+        description:
+            'Cet outil simule un effet de peinture en aérosol : un jet de peinture est vaporisé sous le pointeur de la souris lorsque le bouton est enfoncé. La barre latérale secondaire vous permet de modifier les attributs suivants : le nombre d’émissions par seconde, le diamètre du jet en pixels et le diamètre des gouttelettes composant le jet',
+        gifPath: '',
+        screenshotPath: '',
+    },
+
+    // Raccourcis clavier
     {
         title: 'Aide - Raccourcis clavier',
         isTool: 'Raccourcis clavier',
