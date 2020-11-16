@@ -11,12 +11,13 @@ export class UndoRedoService {
     isUndoDisabled: boolean = true; // to disactivate the option to redo-redo. diabled=true (cant undo-red0 when app loads)
     isRedoDisabled: boolean = true;
     defaultCanvasAction: ResizeCanvasAction; // will be instanciated when canvas is ngAfterViewInit
+    isloadImg: boolean = false;
     private firstLoadedImage: LoadAction;
     private listUndo: AbsUndoRedo[] = [];
     private listRedo: AbsUndoRedo[] = [];
 
     constructor(private drawingService: DrawingService) {}
-    // private canvasResizeService: CanvasResizerService
+
     redo(): void {
         if (this.listRedo.length > 0) {
             const action = this.listRedo.pop();
@@ -31,6 +32,7 @@ export class UndoRedoService {
     // allows to reset the listUndo after we redo something.
     clearUndo(): void {
         this.listUndo = [];
+        this.isloadImg = false;
         this.updateStatus();
     }
     // allows to reset the listRedo
@@ -48,17 +50,17 @@ export class UndoRedoService {
     // to load an image from the caroussel
     loadImage(action: LoadAction): void {
         this.firstLoadedImage = action;
+        this.isloadImg = true;
     }
 
     // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
-    async undo() {
+    async undo(): Promise<void> {
         const action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
         if (action) {
             this.listRedo.push(action);
             const listOfResize: AbsUndoRedo[] = [];
 
-            //this.drawingService.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            if (this.firstLoadedImage) {
+            if (this.isloadImg) {
                 await this.firstLoadedImage.apply();
             } else {
                 this.drawingService.clearCanvas(this.drawingService.baseCtx);
@@ -72,9 +74,10 @@ export class UndoRedoService {
                 }
             }
 
-            if (listOfResize.length === 0) {
+            if (listOfResize.length === 0 && !this.isloadImg) {
                 this.defaultCanvasAction.apply();
-            } else {
+            }
+            if (listOfResize.length > 0) {
                 listOfResize[listOfResize.length - 1].apply();
             }
         }
