@@ -25,6 +25,7 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { DialogExportEmailComponent } from '../dialog-export-email/dialog-export-email.component';
 
 @Component({
     selector: 'app-sidebar',
@@ -47,6 +48,7 @@ export class SidebarComponent {
     dialogLoadRef: MatDialogRef<CarrouselPictureComponent>;
     dialogSaveRef: MatDialogRef<DialogUploadComponent>;
     exportDrawingRef: MatDialogRef<DialogExportDrawingComponent>;
+    exportEmailRef: MatDialogRef<DialogExportEmailComponent>;
     private isPencilChecked: boolean = false;
     private isEraserChecked: boolean = false;
     private isBrushChecked: boolean = false;
@@ -59,6 +61,7 @@ export class SidebarComponent {
     private isSelectionRectangleChecked: boolean = false;
     private isPolygonChecked: boolean = false;
     private isPaintBucketChecked: boolean = false;
+    private isEmailDialogOpened: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -100,6 +103,16 @@ export class SidebarComponent {
             this.exportDrawingRef = this.dialogCreator.open(DialogExportDrawingComponent);
             this.isDialogloadSaveEport = false;
             this.exportDrawingRef.afterClosed().subscribe(() => {
+                this.isDialogloadSaveEport = true;
+            });
+        }
+    }
+
+    exportEmail(): void {
+        if (this.isDialogloadSaveEport) {
+            this.exportEmailRef = this.dialogCreator.open(DialogExportEmailComponent);
+            this.isDialogloadSaveEport = false;
+            this.exportEmailRef.afterClosed().subscribe(() => {
                 this.isDialogloadSaveEport = true;
             });
         }

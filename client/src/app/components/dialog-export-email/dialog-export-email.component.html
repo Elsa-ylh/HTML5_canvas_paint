@@ -1,1 +1,21 @@
-<p>dialog-export-email works!</p>
+<div>
+    <h1>Exporter par courriel</h1>
+</div>
+<mat-dialog-content>
+    <mat-button-toggle-group name="imageType">
+        <mat-button-toggle (click)="checkJPG()">JPG</mat-button-toggle>
+        <mat-button-toggle (click)="checkPNG()">PNG</mat-button-toggle>
+    </mat-button-toggle-group>
+    <br />
+    <mat-button-toggle-group name="filterType">
+        <mat-button-toggle (click)="checkNone()">Aucun</mat-button-toggle>
+        <mat-button-toggle (click)="checkFirst()">Brouillard</mat-button-toggle>
+        <mat-button-toggle (click)="checkSecond()">Gris</mat-button-toggle>
+        <mat-button-toggle (click)="checkThird()">Inversion</mat-button-toggle>
+        <mat-button-toggle (click)="checkFourth()">Lumineux</mat-button-toggle>
+        <mat-button-toggle (click)="checkFifth()">Sépia</mat-button-toggle>
+    </mat-button-toggle-group>
+    <br />
+    <img #previewImage />
+    <br />
+</mat-dialog-content>
