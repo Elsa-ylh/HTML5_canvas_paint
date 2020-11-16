@@ -5,9 +5,6 @@ import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
-// tslint:disable:no-any
-// tslint:disable:no-magic-numbers
-
 @Injectable({
     providedIn: 'root',
 })
