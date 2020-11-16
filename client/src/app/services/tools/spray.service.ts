@@ -19,23 +19,25 @@ export class SprayService extends Tool {
     private density: number = 40;
     private currentColor: string;
     position: Vec2;
-    private time: number;
-    private timer: ReturnType<typeof setTimeout>;
+    private time: number = 300;
+    private timer: ReturnType<typeof setInterval>;
+    private minAngle: number = 0;
+    private maxAngle: number = Math.PI * 2;
+    private minLength: number = 0;
+    private maxLength: number = 30;
+    private radiusX: number = 1;
+    private radiusY: number = 1;
+    private rotation: number = 0;
+    private beginAngle: number = 0;
+    private endAngle: number = 2 * Math.PI;
 
     generateRandomValue(min: number, max: number): number {
         return Math.random() * (max - min) + min;
     }
 
     onMouseUp(event: MouseEvent): void {
-        clearTimeout(this.timer);
+        clearInterval(this.timer);
         this.mouseDown = false;
-    }
-
-    loopTransform(time: number): void {
-        const callback = () => {
-            this.transform();
-        };
-        this.timer = setTimeout(callback, time);
     }
 
     transform(): void {
@@ -43,32 +45,32 @@ export class SprayService extends Tool {
         this.currentColor = this.colorService.primaryColor;
         this.drawingService.baseCtx.fillStyle = this.currentColor;
         for (let i = this.density; i--; ) {
-            const angle = this.generateRandomValue(0, Math.PI * 2);
-            const radius = this.generateRandomValue(0, 30); // the max interval is the diameter of the zone
-            this.drawingService.baseCtx.fillRect(
-                this.position.x + radius * Math.cos(angle),
-                this.position.y + radius * Math.sin(angle),
-                this.generateRandomValue(1, 2),
-                this.generateRandomValue(1, 2),
+            const angle = this.generateRandomValue(this.minAngle, this.maxAngle);
+            const radius = this.generateRandomValue(this.minLength, this.maxLength); // the max interval is the diameter of the zone
+            this.drawingService.baseCtx.beginPath();
+            this.drawingService.baseCtx.ellipse(
+                this.position.x + radius * Math.cos(angle), // the center of drop in x axis depends on random angle
+                this.position.y + radius * Math.sin(angle), // the center of drop in y axis depends on random angle
+                this.radiusX,
+                this.radiusY,
+                this.rotation,
+                this.beginAngle,
+                this.endAngle,
             );
-        }
-        if (this.mouseDown) {
-            this.time = 200;
-            this.loopTransform(this.time);
+            this.drawingService.baseCtx.fill();
         }
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         this.position = { x: event.offsetX, y: event.offsetY };
-        this.transform();
+        const callback = () => {
+            this.transform();
+        };
+        this.timer = setInterval(callback, this.time);
     }
 
     onMouseMove(event: MouseEvent): void {
         this.position = { x: event.offsetX, y: event.offsetY };
-        if (this.mouseDown) {
-            this.time = 200;
-            this.loopTransform(this.time);
-        }
     }
 }
