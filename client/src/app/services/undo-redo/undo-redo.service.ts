@@ -60,6 +60,7 @@ export class UndoRedoService {
             //this.drawingService.clearRect(0, 0, this.canvas.width, this.canvas.height);
             if (this.firstLoadedImage) {
                 await this.firstLoadedImage.apply();
+                listOfResize.push(this.firstLoadedImage);
             } else {
                 this.drawingService.clearCanvas(this.drawingService.baseCtx);
             }
