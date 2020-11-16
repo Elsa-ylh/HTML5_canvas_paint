@@ -61,7 +61,7 @@ export class SidebarComponent {
     private isSelectionRectangleChecked: boolean = false;
     private isPolygonChecked: boolean = false;
     private isPaintBucketChecked: boolean = false;
-    private isEmailDialogOpened: boolean = false;
+    // private isEmailDialogOpened: boolean = false;
 
     constructor(
         public drawingService: DrawingService,

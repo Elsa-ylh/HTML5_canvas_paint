@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Filter } from '@app/classes/filter';
 import { ImageFormat } from '@app/classes/image-format';
@@ -9,7 +9,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     templateUrl: './dialog-export-email.component.html',
     styleUrls: ['./dialog-export-email.component.scss'],
 })
-export class DialogExportEmailComponent {
+export class DialogExportEmailComponent implements AfterViewInit {
     private whichExportType: ImageFormat = ImageFormat.PNG;
     private whichFilter: Filter = Filter.NONE;
 
@@ -74,5 +74,12 @@ export class DialogExportEmailComponent {
     checkFifth(): void {
         this.whichFilter = Filter.SEPIA;
         this.previewImage.nativeElement.style.filter = 'sepia(50)';
+    }
+
+    exportToEmail(): void {
+        this.whichExportType;
+        this.whichFilter;
+        this.filterString;
+        this.imageFormatString;
     }
 }
