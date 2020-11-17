@@ -2,6 +2,7 @@ import { EmailService } from '@app/services/email.service';
 import { Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
+import { Email } from '@common/communication/email';
 
 export const EVERYTHING_IS_FINE = 200;
 @injectable()
@@ -26,16 +27,12 @@ export class EmailController {
     }
     private configureRouter(): void {
         this.router = Router();
-        this.router.post('/email', async (req: Request, res: Response) => {
+        this.router.post('/', async (req: Request, res: Response) => {
             // everything in async await promise
 
-            // verify email is valid
-            const email = req.body.to;
-            let isEmailValid = await this.emailService.isEmailValid(email);
-            if (!isEmailValid) {
-                console.error('The email sent to the backend, is invalid, please try again.');
-                return;
-            }
+            const emailBody: Email = req.body as Email;
+
+            console.log(emailBody);
 
             // verify image is valid
             // const image = req.body.payload;

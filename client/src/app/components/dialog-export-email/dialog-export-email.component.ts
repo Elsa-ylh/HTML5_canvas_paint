@@ -130,11 +130,23 @@ export class DialogExportEmailComponent implements AfterViewInit {
 
                 // https://stackoverflow.com/a/62189458
                 const base64image = finalImageCanvas.toDataURL();
-                const binaryImage = atob(base64image);
-                const blob = new Blob([binaryImage], { type: 'image/jpeg' });
-                const file = new File([blob], this.nameFormControl.value, { type: 'image/jpeg' });
 
-                this.clientServerService.sendEmail(this.emailFormControl.value, file);
+                // https://gist.github.com/Klerith/e22c546d433226c47cedb4307846bb64
+                const byteString = atob(base64image.split(',')[1]);
+
+                const ab = new ArrayBuffer(byteString.length);
+                const ia = new Uint8Array(ab);
+
+                for (let i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i);
+                }
+                const blob = new Blob([ab], { type: 'image/jpeg' });
+
+                const file = new File([blob], this.nameFormControl.value + '.jpg', { type: 'image/jpeg' });
+
+                this.clientServerService.sendEmail(this.emailFormControl.value, file).subscribe((feedback) => {
+                    console.log(feedback);
+                });
             }
         }
     }

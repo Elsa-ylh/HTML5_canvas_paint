@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Email } from '@common/communication/email';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { Observable, of } from 'rxjs';
@@ -62,7 +63,7 @@ export class ClientServerCommunicationService {
     }
 
     // https://jasonwatmore.com/post/2019/11/21/angular-http-post-request-examples
-    sendEmail(email: string, payload: File): Observable<Message> {
-        return this.http.post<Message>(this.HTTP_SERVE_LOCAL_EMAIL, { to: email, payload: payload });
+    sendEmail(email: string, payload: File): Observable<string> {
+        return this.http.post<string>(this.HTTP_SERVE_LOCAL_EMAIL, { to: email, payload: payload } as Email);
     }
 }
