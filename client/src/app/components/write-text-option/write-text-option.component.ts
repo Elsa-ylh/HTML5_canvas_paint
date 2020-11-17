@@ -1,6 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ToolUsed } from '@app/classes/tool';
-import { ToolService } from '@app/services/tool-service';
 import { TextService } from '@app/services/tools/text.service';
 
 @Component({
@@ -14,18 +13,13 @@ export class WriteTextOptionComponent implements OnInit {
     private isTextChecked: boolean = false;
     // tslint:disable-next-line: typedef
     toolUsed = ToolUsed;
-    constructor(public textService: TextService, private toolService: ToolService) {}
+    constructor(public textService: TextService) {}
 
     ngOnInit(): void {
         this.itBold = false;
         this.itItalic = false;
     }
-    /*
-    pickText(): void {
-      this.drawingService.cursorUsed = 'text';
-      this.toolService.switchTool(ToolUsed.Text);
-  }
-*/
+
     get textChecked(): boolean {
         return this.isTextChecked;
     }
@@ -40,8 +34,9 @@ export class WriteTextOptionComponent implements OnInit {
     }
 
     pickFontStyle(subTool: number): void {
-        this.toolService.switchTool(ToolUsed.Text);
-        this.toolService.currentTool.subToolSelect = subTool;
+        // this.toolService.switchTool(ToolUsed.Text);
+        // this.toolService.currentTool.subToolSelect = subTool;
+        this.textService.selectTextPosition(subTool);
     }
 
     resetCheckedButton(): void {
@@ -64,8 +59,10 @@ export class WriteTextOptionComponent implements OnInit {
         this.textService.arrowRight();
         console.log('arrowRight');
     }
+
     @HostListener('window:keydown.Enter', ['$event']) onEnter(event: KeyboardEvent): void {
         event.preventDefault();
+        this.textService.enter();
         console.log('enter');
     }
 
@@ -74,6 +71,7 @@ export class WriteTextOptionComponent implements OnInit {
         this.textService.clearEffectTool();
         console.log('escape');
     }
+
     @HostListener('window:keydown.Delete', ['$event']) onDelete(event: KeyboardEvent): void {
         event.preventDefault();
         this.textService.delete();

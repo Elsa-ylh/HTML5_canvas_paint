@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
-import { ToolGeneralInfo } from '@app/classes/tool-general-info';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -11,7 +10,7 @@ import { RectangleService } from './rectangle.service';
 // https://css-tricks.com/snippets/javascript/javascript-keycodes/
 
 // tslint:disable:deprecation
-// const STROKECOLOR: string = "#000000";
+const STROKECOLOR = '#000000';
 const SPACE = 32;
 const ARROWUP = 37;
 const ARROWDOWN = 38;
@@ -50,6 +49,7 @@ export class TextService extends Tool {
     writeOnCanvas: boolean = false;
     distanceX: number;
     distanceY: number;
+    private textAlign: number = 2;
 
     // imageLoader.addEventListener('change', handleImage, false);
 
@@ -92,6 +92,8 @@ export class TextService extends Tool {
             this.writeOnCanvas = true;
         }
         // this.mouseDown = false;
+        console.log('x : ', this.distanceX);
+        console.log('y : ', this.distanceY);
         console.log('onMouseUp');
     }
 
@@ -136,10 +138,12 @@ export class TextService extends Tool {
 
     setBold(bold: boolean): void {
         this.fontStyleBold = bold;
+        this.previewText();
     }
 
     setItalic(italic: boolean): void {
         this.fontStyleItalic = italic;
+        this.previewText();
     }
 
     private getItalic(): string {
@@ -150,58 +154,66 @@ export class TextService extends Tool {
         return this.fontStyleBold ? 'bold ' : '';
     }
 
-    selectTextPosition(generalInfo: ToolGeneralInfo): void {
-        if (generalInfo.canvasSelected) {
-            switch (generalInfo.selectSubTool) {
-                case SubToolselected.tool1: {
-                    this.drawingService.baseCtx.textAlign = 'center';
-                    break;
-                }
-                case SubToolselected.tool2: {
-                    this.drawingService.baseCtx.textAlign = 'left';
-                    break;
-                }
-                case SubToolselected.tool3: {
-                    this.drawingService.baseCtx.textAlign = 'right';
-                    break;
-                }
+    selectTextPosition(subTool: number): void {
+        this.textAlign = subTool;
+        switch (subTool) {
+            case SubToolselected.tool1: {
+                this.drawingService.previewCtx.textAlign = 'center';
+                this.drawingService.baseCtx.textAlign = 'center';
+                break;
+            }
+            case SubToolselected.tool2: {
+                this.drawingService.previewCtx.textAlign = 'left';
+                this.drawingService.baseCtx.textAlign = 'left';
+                break;
+            }
+            case SubToolselected.tool3: {
+                this.drawingService.previewCtx.textAlign = 'right';
+                this.drawingService.baseCtx.textAlign = 'right';
+                break;
             }
         }
+        this.previewText();
     }
 
-    drawPreviewRect(ctx: CanvasRenderingContext2D, mouseDownPos: Vec2, mousePosition: Vec2): void {
+    drawPreviewRect(ctx: CanvasRenderingContext2D, mouseDownCoord: Vec2, mousePosition: Vec2): void {
+        this.distanceX = mousePosition.x - mouseDownCoord.x;
+        this.distanceY = mousePosition.y - mouseDownCoord.y;
+        ctx.strokeStyle = STROKECOLOR;
+        ctx.fillStyle = STROKECOLOR;
+        ctx.lineWidth = this.lineWidth;
         if (this.drawingService.previewCtx === ctx) {
-            if (mousePosition.x > mouseDownPos.x && mousePosition.y > mouseDownPos.y) {
+            if (mousePosition.x > mouseDownCoord.x && mousePosition.y > mouseDownCoord.y) {
                 ctx.strokeRect(
-                    mouseDownPos.x - this.lineWidth / 2,
-                    mouseDownPos.y - this.lineWidth / 2,
+                    mouseDownCoord.x - this.lineWidth / 2,
+                    mouseDownCoord.y - this.lineWidth / 2,
                     this.width + this.lineWidth,
                     this.height + this.lineWidth,
                 );
                 return;
             }
-            if (mousePosition.x < mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
+            if (mousePosition.x < mouseDownCoord.x && mousePosition.y < mouseDownCoord.y) {
                 ctx.strokeRect(
-                    mouseDownPos.x + this.lineWidth / 2,
-                    mouseDownPos.y + this.lineWidth / 2,
+                    mouseDownCoord.x + this.lineWidth / 2,
+                    mouseDownCoord.y + this.lineWidth / 2,
                     this.width - this.lineWidth,
                     this.height - this.lineWidth,
                 );
                 return;
             }
-            if (mousePosition.x > mouseDownPos.x && mousePosition.y < mouseDownPos.y) {
+            if (mousePosition.x > mouseDownCoord.x && mousePosition.y < mouseDownCoord.y) {
                 ctx.strokeRect(
-                    mouseDownPos.x - this.lineWidth / 2,
-                    mouseDownPos.y + this.lineWidth / 2,
+                    mouseDownCoord.x - this.lineWidth / 2,
+                    mouseDownCoord.y + this.lineWidth / 2,
                     this.width + this.lineWidth,
                     this.height - this.lineWidth,
                 );
                 return;
             }
-            if (mousePosition.x < mouseDownPos.x && mousePosition.y > mouseDownPos.y) {
+            if (mousePosition.x < mouseDownCoord.x && mousePosition.y > mouseDownCoord.y) {
                 ctx.strokeRect(
-                    mouseDownPos.x + this.lineWidth / 2,
-                    mouseDownPos.y - this.lineWidth / 2,
+                    mouseDownCoord.x + this.lineWidth / 2,
+                    mouseDownCoord.y - this.lineWidth / 2,
                     this.width - this.lineWidth,
                     this.height + this.lineWidth,
                 );
@@ -222,8 +234,7 @@ export class TextService extends Tool {
             const element = this.stack[index];
             textPreview += element;
         }
-        this.drawingService.baseCtx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
-        this.drawingService.baseCtx.fillText(textPreview, this.mouseDownCoord.x, this.mouseDownCoord.y, this.width);
+        this.position(this.drawingService.baseCtx, textPreview, this.textAlign);
     }
 
     addletter(letter: string): void {
@@ -243,8 +254,29 @@ export class TextService extends Tool {
             const element = this.stack[index];
             textPreview += element;
         }
-        this.drawingService.previewCtx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
-        this.drawingService.previewCtx.fillText(textPreview, this.mouseDownCoord.x, this.mouseDownCoord.y, this.width);
+        this.position(this.drawingService.previewCtx, textPreview, this.textAlign);
+    }
+
+    private xTop(width: number): number {
+        return (this.mouseDownCoord.x < this.mousePosition.x ? this.mouseDownCoord.x : this.mousePosition.x) + width;
+    }
+
+    private yTop(): number {
+        return (this.mouseDownCoord.y < this.mousePosition.y ? this.mouseDownCoord.y : this.mousePosition.y) + this.sizeFont;
+    }
+    private position(ctx: CanvasRenderingContext2D, text: string, align: number): void {
+        ctx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
+        switch (align) {
+            case SubToolselected.tool1:
+                ctx.fillText(text, this.xTop(this.width / 2), this.yTop(), this.width);
+                break;
+            case SubToolselected.tool2:
+                ctx.fillText(text, this.xTop(0), this.yTop(), this.width);
+                break;
+            case SubToolselected.tool3:
+                ctx.fillText(text, this.xTop(this.width), this.yTop(), this.width);
+                break;
+        }
     }
 
     arrowLeft(): void {
@@ -253,22 +285,30 @@ export class TextService extends Tool {
         }
         this.previewText();
     }
+
     arrowRight(): void {
         if (this.stack.length) {
             this.keyHistory.push(this.stack.pop() as string);
         }
         this.previewText();
     }
+
     backspace(): void {
         if (this.keyHistory.length) {
             this.keyHistory.pop();
         }
         this.previewText();
     }
+
     delete(): void {
         if (this.stack.length) {
             this.stack.pop();
         }
+        this.previewText();
+    }
+
+    enter(): void {
+        this.keyHistory.push('\n');
         this.previewText();
     }
 
@@ -289,6 +329,7 @@ export class TextService extends Tool {
                 }
         }
     }
+
     clearEffectTool(): void {
         this.keyHistory = [];
         this.stack = [];
