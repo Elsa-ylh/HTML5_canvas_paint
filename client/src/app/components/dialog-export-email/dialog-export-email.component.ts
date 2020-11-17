@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Filter } from '@app/classes/filter';
 import { ImageFormat } from '@app/classes/image-format';
+import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Component({
@@ -14,6 +15,7 @@ export class DialogExportEmailComponent implements AfterViewInit {
     private whichFilter: Filter = Filter.NONE;
 
     nameFormControl: FormControl;
+    emailFormControl: FormControl;
 
     private filterString: Map<Filter, string> = new Map([
         [Filter.BLUR, 'blur(4px)'],
@@ -28,8 +30,9 @@ export class DialogExportEmailComponent implements AfterViewInit {
         [ImageFormat.JPG, '.jpg'],
     ]);
 
-    constructor(private drawingService: DrawingService) {
+    constructor(private drawingService: DrawingService, private clientServerService: ClientServerCommunicationService) {
         this.nameFormControl = new FormControl('default', Validators.pattern('^[a-zA-Z]{1,63}$'));
+        this.emailFormControl = new FormControl('exemple@email.com', Validators.email);
     }
 
     @ViewChild('previewImage', { static: false }) previewImage: ElementRef<HTMLImageElement>;
@@ -81,5 +84,58 @@ export class DialogExportEmailComponent implements AfterViewInit {
         this.whichFilter;
         this.filterString;
         this.imageFormatString;
+        this.clientServerService;
+
+        if (this.nameFormControl.valid && this.emailFormControl.valid) {
+            let textImageFormat: string = this.nameFormControl.value;
+            switch (this.whichExportType) {
+                case ImageFormat.PNG:
+                    textImageFormat += '.png';
+                    break;
+                case ImageFormat.JPG:
+                    textImageFormat += '.jpg';
+                    break;
+            }
+            switch (this.whichFilter) {
+                case Filter.NONE:
+                    textImageFormat += '\n Aucun filtre';
+                    break;
+                case Filter.BLUR:
+                    textImageFormat += '\n Filtre blur';
+                    break;
+                case Filter.BRIGHTNESS:
+                    textImageFormat += '\n Filtre brightness';
+                    break;
+                case Filter.GRAYSCALE:
+                    textImageFormat += '\n Filtre grayscale';
+                    break;
+                case Filter.INVERT:
+                    textImageFormat += '\n Filtre invert';
+                    break;
+                case Filter.SEPIA:
+                    textImageFormat += '\n Filtre sepia';
+                    break;
+            }
+            if (confirm("Voulez-vous envoyer l'image " + textImageFormat + ' au courriel ' + this.emailFormControl.value + ' ?')) {
+                const finalImageCanvas = document.createElement('canvas');
+                const finalImageCtx = finalImageCanvas.getContext('2d') as CanvasRenderingContext2D;
+
+                finalImageCanvas.width = this.drawingService.canvas.width;
+                finalImageCanvas.height = this.drawingService.canvas.height;
+
+                finalImageCtx.filter = this.filterString.get(this.whichFilter) as string;
+                finalImageCtx.drawImage(this.previewImage.nativeElement, 0, 0);
+
+                this.nameFormControl.value + this.imageFormatString.get(this.whichExportType);
+
+                // https://stackoverflow.com/a/62189458
+                const base64image = finalImageCanvas.toDataURL();
+                const binaryImage = atob(base64image);
+                const blob = new Blob([binaryImage], { type: 'image/jpeg' });
+                const file = new File([blob], this.nameFormControl.value, { type: 'image/jpeg' });
+
+                this.clientServerService.sendEmail(this.emailFormControl.value, file);
+            }
+        }
     }
 }

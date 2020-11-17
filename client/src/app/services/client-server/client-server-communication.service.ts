@@ -9,6 +9,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class ClientServerCommunicationService {
     private readonly HTTP_SERVE_LOCAL: string = 'http://localhost:3000/api/data';
+    private readonly HTTP_SERVE_LOCAL_EMAIL: string = 'http://localhost:3000/api/email';
     private information: CanvasInformation;
     constructor(private http: HttpClient) {}
 
@@ -58,5 +59,10 @@ export class ClientServerCommunicationService {
     }
     deleteQuery(message: Message): Observable<Message> {
         return this.http.post<Message>(this.HTTP_SERVE_LOCAL + '/delete', message).pipe(catchError(this.handleError<Message>('basicPost')));
+    }
+
+    // https://jasonwatmore.com/post/2019/11/21/angular-http-post-request-examples
+    sendEmail(email: string, payload: File): Observable<Message> {
+        return this.http.post<Message>(this.HTTP_SERVE_LOCAL_EMAIL, { to: email, payload: payload });
     }
 }

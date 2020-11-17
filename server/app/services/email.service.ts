@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
+import * as FormData from 'form-data';
 import { injectable } from 'inversify';
 import 'reflect-metadata';
-import FormData = require('form-data');
 
 @injectable()
 export class EmailService {
@@ -18,7 +18,7 @@ export class EmailService {
         });
     }
 
-    async sendEmail(emailAndImage: FormData): Promise<boolean> {
+    async sendEmail(emailAndImage: FormData): Promise<void> {
         return new Promise(() => {
             axios({
                 method: 'post',
