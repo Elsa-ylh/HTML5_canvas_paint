@@ -95,7 +95,7 @@ describe('BrushAction', () => {
                 { provide: UndoRedoService, useValue: undoRedoStub },
                 { provide: BrushService, useValue: brushStub },
                 { provide: BrushAction, useValue: brushActionStub },
-                { provide: AutomaticSaveService, useValue: { save: () => {} } },
+                { provide: AutomaticSaveService, useValue: { save: () => '' } },
             ],
         });
         brushActionStub = TestBed.inject(BrushAction);

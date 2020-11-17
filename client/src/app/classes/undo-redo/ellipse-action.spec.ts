@@ -77,7 +77,7 @@ describe('EllipseAction', () => {
                 { provide: UndoRedoService, useValue: undoRedoStub },
                 { provide: EllipseService, useValue: ellipseStub },
                 { provide: EllipseAction, useValue: ellipseActionStub },
-                { provide: AutomaticSaveService, useValue: { save: () => {} } },
+                { provide: AutomaticSaveService, useValue: { save: () => '' } },
             ],
         });
         ellipseActionStub = TestBed.inject(EllipseAction);

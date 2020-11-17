@@ -23,9 +23,12 @@ export class AutomaticSaveService {
         const vec2: Vec2 = this.canvasResizer.canvasSize;
         try {
             this.myStorage.setItem(KEY_SAVE_CANVAS, this.drawingService.convertBaseCanvasToBase64());
-            this.myStorage.setItem(KEY_SAVE_WIDTH, vec2.x.toString());
-            this.myStorage.setItem(KEY_SAVE_HEIGHT, vec2.y.toString());
-        } catch (error) {}
+        } catch (error) {
+            this.myStorage.setItem(KEY_SAVE_CANVAS, '');
+        }
+
+        this.myStorage.setItem(KEY_SAVE_WIDTH, vec2.x.toString());
+        this.myStorage.setItem(KEY_SAVE_HEIGHT, vec2.y.toString());
     }
     loadSave(image: string, width: number, height: number): void {
         this.myStorage.setItem(KEY_SAVE_CANVAS, image);

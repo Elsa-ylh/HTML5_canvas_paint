@@ -32,7 +32,7 @@ describe('Service: Ellipse', () => {
             providers: [
                 { provide: DrawingService, useValue: drawServiceSpy },
                 { provide: ColorService, useValue: colorServiceSpy },
-                { provide: AutomaticSaveService, useValue: { save: () => {} } },
+                { provide: AutomaticSaveService, useValue: { save: () => '' } },
             ],
         });
         service = TestBed.inject(EllipseService);

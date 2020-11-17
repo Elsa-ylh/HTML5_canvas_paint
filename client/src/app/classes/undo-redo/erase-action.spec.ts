@@ -3,6 +3,7 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { EraseAction } from '@app/classes/undo-redo/erase-actions';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -23,7 +24,7 @@ describe('EraseAction', () => {
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
-
+    let canvasResizerStub: CanvasResizerService;
     beforeEach(() => {
         changesEraser.push({ x: 5, y: 6 });
         changesEraser.push({ x: 25, y: 15 });
@@ -31,6 +32,8 @@ describe('EraseAction', () => {
         thickness = 5;
 
         drawingStub = new DrawingService();
+        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
         eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
 
         eraseActionStub = new EraseAction(changesEraser, color, thickness, eraserStub, drawingStub);

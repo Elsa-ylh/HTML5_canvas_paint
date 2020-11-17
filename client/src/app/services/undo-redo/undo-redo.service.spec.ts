@@ -5,11 +5,11 @@ import { ResizeDirection } from '@app/classes/resize-direction';
 import { EraseAction } from '@app/classes/undo-redo/erase-actions';
 import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { AutomaticSaveService } from '../automatic-save/automatic-save.service';
 
 describe('Service: UndoRedo', () => {
     let undoRedoStub: UndoRedoService;

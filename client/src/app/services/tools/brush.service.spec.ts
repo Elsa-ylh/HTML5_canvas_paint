@@ -29,7 +29,7 @@ describe('BrushService', () => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: DrawingService, useValue: drawServiceSpy },
-                { provide: AutomaticSaveService, useValue: { save: () => {} } },
+                { provide: AutomaticSaveService, useValue: { save: () => '' } },
             ],
         });
         service = TestBed.inject(BrushService);

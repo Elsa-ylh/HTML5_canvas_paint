@@ -7,6 +7,8 @@ import { AutomaticSaveService } from './automatic-save.service';
 const KEY_SAVE_CANVAS = 'KeySaveCanvas';
 const KEY_SAVE_WIDTH = 'KeySaveWidth';
 const KEY_SAVE_HEIGHT = 'KeySaveHeight';
+// tslint:disable:no-any
+// tslint:disable:no-string-literal
 describe('AutomaticSaveService', () => {
     let service: AutomaticSaveService;
     const vec2: Vec2 = { x: 5, y: 6 };
