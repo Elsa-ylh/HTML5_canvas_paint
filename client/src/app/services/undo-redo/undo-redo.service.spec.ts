@@ -9,6 +9,7 @@ import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.servic
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { AutomaticSaveService } from '../automatic-save/automatic-save.service';
 
 describe('Service: UndoRedo', () => {
     let undoRedoStub: UndoRedoService;
@@ -27,6 +28,7 @@ describe('Service: UndoRedo', () => {
     let resizeCtx: CanvasRenderingContext2D;
     let baseCanvas: HTMLCanvasElement;
     let resizeDirection: ResizeDirection;
+    let autoSaveStub: AutomaticSaveService;
 
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
@@ -35,8 +37,9 @@ describe('Service: UndoRedo', () => {
     beforeEach(() => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
-        eraserStub = new EraserService(drawingStub, undoRedoStub);
         resizeStub = new CanvasResizerService(undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(resizeStub, drawingStub);
+        eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
 
         changes.push({ x: 5, y: 6 });
         changes.push({ x: 25, y: 15 });

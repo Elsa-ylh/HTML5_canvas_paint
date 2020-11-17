@@ -3,6 +3,7 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from './brush.service';
 
@@ -26,7 +27,10 @@ describe('BrushService', () => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+            providers: [
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: AutomaticSaveService, useValue: { save: () => {} } },
+            ],
         });
         service = TestBed.inject(BrushService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();

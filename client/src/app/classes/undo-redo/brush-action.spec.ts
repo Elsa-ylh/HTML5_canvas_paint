@@ -4,6 +4,8 @@ import { PointArc } from '@app/classes/point-arc';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { BrushAction } from '@app/classes/undo-redo/brush-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -28,9 +30,9 @@ describe('BrushAction', () => {
     let vec2: Vec2 = { x: 0, y: 0 };
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
-
+    let autoSaveStub: AutomaticSaveService;
     let canvas: HTMLCanvasElement;
-
+    let canvasResizerStub: CanvasResizerService;
     beforeEach(() => {
         // tslint:disable:no-magic-numbers
         vec2.x = 5;
@@ -48,9 +50,11 @@ describe('BrushAction', () => {
         const pt2 = new PointArc(vec2, 12, 1);
         brushPointData.push(pt1, pt2);
         drawingStub = new DrawingService();
+        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        brushStub = new BrushService(drawingStub, colorStub, undoRedoStub);
+        brushStub = new BrushService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
         brushActionStub = new BrushAction(
             changesBrush,
             brushPointData,
@@ -91,6 +95,7 @@ describe('BrushAction', () => {
                 { provide: UndoRedoService, useValue: undoRedoStub },
                 { provide: BrushService, useValue: brushStub },
                 { provide: BrushAction, useValue: brushActionStub },
+                { provide: AutomaticSaveService, useValue: { save: () => {} } },
             ],
         });
         brushActionStub = TestBed.inject(BrushAction);

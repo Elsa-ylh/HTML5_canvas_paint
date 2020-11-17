@@ -3,6 +3,8 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { EllipseAction } from '@app/classes/undo-redo/ellipse-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
@@ -23,12 +25,12 @@ describe('EllipseAction', () => {
     let lineWidth: number;
     let shiftPressed: boolean;
     let selectSubTool: SubToolselected;
-
+    let autoSaveStub: AutomaticSaveService;
     let canvasSelected: boolean;
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
-
+    let canvasResizerStub: CanvasResizerService;
     beforeEach(() => {
         mousePosition = { x: 5, y: 6 };
         mouseDownCord = { x: 25, y: 15 };
@@ -41,7 +43,9 @@ describe('EllipseAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub);
+        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
         ellipseActionStub = new EllipseAction(
             mousePosition,
@@ -73,6 +77,7 @@ describe('EllipseAction', () => {
                 { provide: UndoRedoService, useValue: undoRedoStub },
                 { provide: EllipseService, useValue: ellipseStub },
                 { provide: EllipseAction, useValue: ellipseActionStub },
+                { provide: AutomaticSaveService, useValue: { save: () => {} } },
             ],
         });
         ellipseActionStub = TestBed.inject(EllipseAction);

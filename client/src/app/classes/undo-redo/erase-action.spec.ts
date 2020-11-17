@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { EraseAction } from '@app/classes/undo-redo/erase-actions';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -17,6 +18,7 @@ describe('EraseAction', () => {
     let changesEraser: Vec2[] = [];
     let color: string;
     let thickness: number;
+    let autoSaveStub: AutomaticSaveService;
 
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
@@ -29,7 +31,7 @@ describe('EraseAction', () => {
         thickness = 5;
 
         drawingStub = new DrawingService();
-        eraserStub = new EraserService(drawingStub, undoRedoStub);
+        eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
 
         eraseActionStub = new EraseAction(changesEraser, color, thickness, eraserStub, drawingStub);
 
