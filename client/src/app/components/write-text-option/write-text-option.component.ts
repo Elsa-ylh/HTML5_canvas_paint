@@ -49,29 +49,40 @@ export class WriteTextOptionComponent implements OnInit {
     }
 
     @HostListener('window:keydown', ['$event']) keyUpHandler(event: KeyboardEvent): void {
+        event.preventDefault();
         this.textService.keyUpHandler(event);
-        console.log('tout les touceh');
     }
 
     @HostListener('window:keydown.ArrowLeft', ['$event']) onLeftArrow(event: KeyboardEvent): void {
+        event.preventDefault();
+        this.textService.arrowLeft();
         console.log('arrowLeft');
     }
 
     @HostListener('window:keydown.ArrowRight', ['$event']) onRightArrow(event: KeyboardEvent): void {
+        event.preventDefault();
+        this.textService.arrowRight();
         console.log('arrowRight');
     }
     @HostListener('window:keydown.Enter', ['$event']) onEnter(event: KeyboardEvent): void {
+        event.preventDefault();
         console.log('enter');
     }
 
-    @HostListener('window:keydown.Delete', ['$event']) onDelete(event: KeyboardEvent): void {
-        console.log('delete');
-    }
     @HostListener('window:keydown.Escape', ['$event']) onEscape(event: KeyboardEvent): void {
+        event.preventDefault();
+        this.textService.clearEffectTool();
         console.log('escape');
+    }
+    @HostListener('window:keydown.Delete', ['$event']) onDelete(event: KeyboardEvent): void {
+        event.preventDefault();
+        this.textService.delete();
+        console.log('delete');
     }
 
     @HostListener('window:keydown.Backspace', ['$event']) onBackSpace(event: KeyboardEvent): void {
+        event.preventDefault();
+        this.textService.backspace();
         console.log('backSpace');
     }
 }

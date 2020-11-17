@@ -8,6 +8,8 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from './rectangle.service';
 
+// https://css-tricks.com/snippets/javascript/javascript-keycodes/
+
 // tslint:disable:deprecation
 // const STROKECOLOR: string = "#000000";
 const SPACE = 32;
@@ -15,7 +17,10 @@ const ARROWUP = 37;
 const ARROWDOWN = 38;
 const ARROWLEFT = 39;
 const ARROWRIGHT = 40;
-const DEL = 126;
+const DEL = 56;
+const F1 = 112;
+const F12 = 123;
+const ZERO = 48;
 
 @Injectable({
     providedIn: 'root',
@@ -34,6 +39,7 @@ export class TextService extends Tool {
     canvasSelected: boolean;
     textTitle: string = 'Overlay text';
     keyHistory: string[] = [];
+    stack: string[] = [];
     fontStyleBold: boolean = false;
     fontStyleItalic: boolean = false;
     height: number;
@@ -58,23 +64,20 @@ export class TextService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        if (!this.mouseDown) {
-            this.mouseDown = event.button === MouseButton.Left;
-
-            this.clearEffectTool();
-            console.log(this.mouseEnter + '  ' + this.mouseOut + '  ' + this.mouseDown);
-            if (this.mouseEnter && !this.mouseOut && this.mouseDown && !this.writeOnCanvas) {
-                this.rectangleService.clearEffectTool();
-                this.mouseDownCoord = this.getPositionFromMouse(event);
-                this.mousePosition = this.mouseDownCoord;
-
-                // this.drawTextTest();
-            }
+        this.mouseDown = event.button === MouseButton.Left;
+        console.log(this.mouseEnter + '  ' + this.mouseOut + '  ' + this.mouseDown);
+        if (this.mouseEnter && !this.mouseOut && this.mouseDown && !this.writeOnCanvas) {
+            this.rectangleService.clearEffectTool();
+            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.mousePosition = this.mouseDownCoord;
         }
         if (this.writeOnCanvas) {
             // this.baseCtx
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawText();
             this.writeOnCanvas = false;
+            this.clearEffectTool();
+            this.mouseDownCoord = this.getPositionFromMouse(event);
+            // this.mousePosition=this.mouseDownCoord={x:0,y:0};
         }
     }
 
@@ -88,7 +91,7 @@ export class TextService extends Tool {
             this.mouseDown = false;
             this.writeOnCanvas = true;
         }
-        this.mouseDown = false;
+        // this.mouseDown = false;
         console.log('onMouseUp');
     }
 
@@ -112,8 +115,10 @@ export class TextService extends Tool {
     }
 
     onMouseOut(event: MouseEvent): void {
-        this.mouseEnter = false;
-        this.mouseOut = true;
+        if (this.mouseDown) {
+            this.mouseOut = true;
+            // this.mouseEnter = false;
+        }
     }
 
     onMouseEnter(event: MouseEvent): void {
@@ -205,38 +210,88 @@ export class TextService extends Tool {
         }
     }
 
-    drawTextTest(): void {
+    drawText(): void {
         this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // text color
         this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
         // this.drawingService.baseCtx.font = "50px 'Calibri'";
+        let textPreview = '';
+        this.keyHistory.forEach((element) => {
+            textPreview += element;
+        });
+        for (let index = this.stack.length - 1; index >= 0; index--) {
+            const element = this.stack[index];
+            textPreview += element;
+        }
         this.drawingService.baseCtx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
-        this.drawingService.baseCtx.fillText(this.textTitle, this.mouseDownCoord.x, this.mouseDownCoord.y, this.width);
+        this.drawingService.baseCtx.fillText(textPreview, this.mouseDownCoord.x, this.mouseDownCoord.y, this.width);
     }
 
     addletter(letter: string): void {
         this.keyHistory.push(letter);
+        this.previewText();
+    }
+
+    private previewText(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
         let textPreview = '';
         this.keyHistory.forEach((element) => {
             textPreview += element;
         });
+        textPreview += '|';
+        for (let index = this.stack.length - 1; index >= 0; index--) {
+            const element = this.stack[index];
+            textPreview += element;
+        }
         this.drawingService.previewCtx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
         this.drawingService.previewCtx.fillText(textPreview, this.mouseDownCoord.x, this.mouseDownCoord.y, this.width);
+    }
+
+    arrowLeft(): void {
+        if (this.keyHistory.length) {
+            this.stack.push(this.keyHistory.pop() as string);
+        }
+        this.previewText();
+    }
+    arrowRight(): void {
+        if (this.stack.length) {
+            this.keyHistory.push(this.stack.pop() as string);
+        }
+        this.previewText();
+    }
+    backspace(): void {
+        if (this.keyHistory.length) {
+            this.keyHistory.pop();
+        }
+        this.previewText();
+    }
+    delete(): void {
+        if (this.stack.length) {
+            this.stack.pop();
+        }
+        this.previewText();
     }
 
     keyUpHandler(event: KeyboardEvent): void {
         if (this.writeOnCanvas) {
             if (
-                event.keyCode >= SPACE &&
-                event.keyCode < DEL &&
-                event.keyCode !== ARROWLEFT &&
-                event.keyCode !== ARROWDOWN &&
-                event.keyCode !== ARROWRIGHT &&
-                event.keyCode !== ARROWUP
-            ) {
-                this.addletter(event.key.toString());
-            }
+                event.keyCode === SPACE ||
+                (event.keyCode >= ZERO &&
+                    event.keyCode !== DEL &&
+                    event.keyCode !== ARROWLEFT &&
+                    event.keyCode !== ARROWDOWN &&
+                    event.keyCode !== ARROWRIGHT &&
+                    event.keyCode !== ARROWUP)
+            )
+                if (event.keyCode < F1 || event.keyCode > F12) {
+                    this.addletter(event.key.toString());
+                    console.log(event.keyCode);
+                }
         }
+    }
+    clearEffectTool(): void {
+        this.keyHistory = [];
+        this.stack = [];
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 }
