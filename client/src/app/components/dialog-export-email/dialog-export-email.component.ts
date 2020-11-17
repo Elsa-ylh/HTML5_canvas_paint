@@ -80,11 +80,7 @@ export class DialogExportEmailComponent implements AfterViewInit {
     }
 
     exportToEmail(): void {
-        this.whichExportType;
-        this.whichFilter;
-        this.filterString;
         this.imageFormatString;
-        this.clientServerService;
 
         if (this.nameFormControl.valid && this.emailFormControl.valid) {
             let textImageFormat: string = this.nameFormControl.value;
@@ -126,27 +122,20 @@ export class DialogExportEmailComponent implements AfterViewInit {
                 finalImageCtx.filter = this.filterString.get(this.whichFilter) as string;
                 finalImageCtx.drawImage(this.previewImage.nativeElement, 0, 0);
 
-                this.nameFormControl.value + this.imageFormatString.get(this.whichExportType);
+                // this.nameFormControl.value + this.imageFormatString.get(this.whichExportType);
 
-                // https://stackoverflow.com/a/62189458
-                const base64image = finalImageCanvas.toDataURL();
+                const base64image = finalImageCanvas.toDataURL('image/jpeg');
 
-                // https://gist.github.com/Klerith/e22c546d433226c47cedb4307846bb64
-                const byteString = atob(base64image.split(',')[1]);
-
-                const ab = new ArrayBuffer(byteString.length);
-                const ia = new Uint8Array(ab);
-
-                for (let i = 0; i < byteString.length; i++) {
-                    ia[i] = byteString.charCodeAt(i);
-                }
-                const blob = new Blob([ab], { type: 'image/jpeg' });
-
-                const file = new File([blob], this.nameFormControl.value + '.jpg', { type: 'image/jpeg' });
-
-                this.clientServerService.sendEmail(this.emailFormControl.value, file).subscribe((feedback) => {
-                    console.log(feedback);
-                });
+                // https://stackoverflow.com/a/47497249
+                fetch(base64image)
+                    .then((res) => res.blob())
+                    .then((blob) => {
+                        const file = new File([blob], this.nameFormControl.value, { type: 'image/png' });
+                        console.log(file);
+                        this.clientServerService.sendEmail(this.emailFormControl.value, file).subscribe((feedback) => {
+                            console.log(feedback);
+                        });
+                    });
             }
         }
     }
