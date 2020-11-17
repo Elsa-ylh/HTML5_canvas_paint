@@ -2,13 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
 import { CanvasResizerService } from '../canvas/canvas-resizer.service';
 import { DrawingService } from '../drawing/drawing.service';
-import { AutoSaveService } from './auto-save.service';
+import { AutomaticSaveService } from './automatic-save.service';
 
 const KEY_SAVE_CANVAS = 'KeySaveCanvas';
 const KEY_SAVE_WIDTH = 'KeySaveWidth';
 const KEY_SAVE_HEIGHT = 'KeySaveHeight';
-describe('AutoSaveService', () => {
-    let service: AutoSaveService;
+describe('AutomaticSaveService', () => {
+    let service: AutomaticSaveService;
     const vec2: Vec2 = { x: 5, y: 6 };
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -25,7 +25,7 @@ describe('AutoSaveService', () => {
                 },
             ],
         });
-        service = TestBed.inject(AutoSaveService);
+        service = TestBed.inject(AutomaticSaveService);
     });
 
     it('should be created', () => {

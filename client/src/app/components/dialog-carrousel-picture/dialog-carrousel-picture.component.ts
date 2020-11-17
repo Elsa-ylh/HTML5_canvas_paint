@@ -4,6 +4,7 @@ import { FormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoadAction } from '@app/classes/undo-redo/load-action';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 // import { LoadAction } from '@app/classes/undo-redo/load-action';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
@@ -25,6 +26,7 @@ export class CarrouselPictureComponent implements OnInit {
         private router: Router,
         private dialogRef: MatDialogRef<CarrouselPictureComponent>,
         private undoRedoService: UndoRedoService,
+        private automaticSaveSer: AutomaticSaveService,
     ) {}
     private dataPicture: CanvasInformation[] = [];
     private position: number = 0;
@@ -164,6 +166,7 @@ export class CarrouselPictureComponent implements OnInit {
             this.cvsResizerService.canvasSize.x = loadedPicture.width;
             this.drawingService.convertBase64ToBaseCanvas(loadedPicture.picture);
             // undo-Redo
+
             const actionLoadImg = new LoadAction(
                 loadedPicture.picture,
                 loadedPicture.height,
@@ -171,10 +174,13 @@ export class CarrouselPictureComponent implements OnInit {
                 this.drawingService,
                 this.cvsResizerService,
             );
+
             this.undoRedoService.clearUndo();
             this.undoRedoService.clearRedo();
             this.undoRedoService.addUndo(actionLoadImg);
-
+            console.log('test');
+            this.automaticSaveSer.loadSave(loadedPicture.picture, loadedPicture.width, loadedPicture.height);
+            console.log('test2');
             this.dialogRef.close(true);
             this.router.navigate(['/editor']);
         }

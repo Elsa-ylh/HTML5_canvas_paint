@@ -6,6 +6,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { AutomaticSaveService } from '../automatic-save/automatic-save.service';
 
 @Injectable({
     providedIn: 'root',
@@ -17,7 +18,12 @@ export class PencilService extends Tool {
     private intiColor: string;
     private alpha: number = this.colorService.primaryColorTransparency;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private undoRedoService: UndoRedoService,
+        private automaticSaveSer: AutomaticSaveService,
+    ) {
         super(drawingService);
         this.clearPath();
     }
@@ -65,6 +71,7 @@ export class PencilService extends Tool {
         this.undoRedoService.addUndo(actionPencil);
         this.undoRedoService.clearRedo();
         this.clearPath();
+        this.automaticSaveSer.save();
     }
 
     onMouseMove(event: MouseEvent): void {

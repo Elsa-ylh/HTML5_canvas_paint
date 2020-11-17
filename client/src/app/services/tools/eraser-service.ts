@@ -5,6 +5,7 @@ import { EraseAction } from '@app/classes/undo-redo/erase-actions';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { AutomaticSaveService } from '../automatic-save/automatic-save.service';
 
 @Injectable({
     providedIn: 'root',
@@ -13,7 +14,7 @@ export class EraserService extends Tool {
     private pathData: Vec2[];
     private color: string = '#ffffff';
     eraserWidth: number = 5;
-    constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService) {
+    constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService, private automaticSaveSer: AutomaticSaveService) {
         super(drawingService);
         this.clearPath();
     }
@@ -54,6 +55,7 @@ export class EraserService extends Tool {
         this.undoRedoService.clearRedo();
         this.clearPath();
         this.mouseDown = false;
+        this.automaticSaveSer.save();
     }
 
     onMouseMove(event: MouseEvent): void {

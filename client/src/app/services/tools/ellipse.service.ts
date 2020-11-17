@@ -8,6 +8,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { AutomaticSaveService } from '../automatic-save/automatic-save.service';
 
 @Injectable({
     providedIn: 'root',
@@ -28,7 +29,12 @@ export class EllipseService extends Tool {
     mouseOut: boolean = false;
     canvasSelected: boolean; // quel canvas
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private undoRedoService: UndoRedoService,
+        private automaticSaveSer: AutomaticSaveService,
+    ) {
         super(drawingService);
     }
 
@@ -190,6 +196,7 @@ export class EllipseService extends Tool {
                     break;
             }
         }
+        this.automaticSaveSer.save();
     }
 
     clearEffectTool(): void {

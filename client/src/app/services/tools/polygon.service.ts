@@ -8,6 +8,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { AutomaticSaveService } from '../automatic-save/automatic-save.service';
 
 @Injectable({
     providedIn: 'root',
@@ -31,7 +32,12 @@ export class PolygonService extends Tool {
     // tslint:disable-next-line:no-magic-numbers
     possibleNbSides: number[] = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; // numbers of sides allowed for polygon -> autorized disable magical number
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private undoRedoService: UndoRedoService,
+        private automaticSaveSer: AutomaticSaveService,
+    ) {
         super(drawingService);
     }
 
@@ -245,6 +251,7 @@ export class PolygonService extends Tool {
             ctx.arc(this.mouseDownCoord.x, this.mouseDownCoord.y, this.radius + this.lineWidth / 2, 0, 2 * Math.PI, false);
             ctx.stroke();
         }
+        this.automaticSaveSer.save();
     }
 
     clearEffectTool(): void {

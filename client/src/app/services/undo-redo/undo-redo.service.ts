@@ -66,6 +66,7 @@ export class UndoRedoService {
             }
         }
         this.updateStatus();
+        // this.automaticSaveSer.save();
     }
 
     // Controls the buttons of redo-undo
