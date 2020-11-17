@@ -15,7 +15,7 @@ export class EditorComponent {
     } */
 
     onMouseDown(event: MouseEvent): void {
-        if (this.toolService.currentToolName === ToolUsed.Text) {
+        if (this.toolService.currentToolName === ToolUsed.NONE) {
             this.toolService.currentTool.onDoubleClick(event);
         }
         // this.undoRedoService.whileDrawingUndoRedo(event);
