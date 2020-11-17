@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
-import { CanvasResizerService } from '../canvas/canvas-resizer.service';
-import { DrawingService } from '../drawing/drawing.service';
-import { AutomaticSaveService } from './automatic-save.service';
+import { AutomaticSaveService } from '@app/servoces/automatic/automatic-save.service';
+import { CanvasResizerService } from '@app/servoces/canvas/canvas-resizer.service';
+import { DrawingService } from '@app/servoces/drawing/drawing.service';
 
 const KEY_SAVE_CANVAS = 'KeySaveCanvas';
 const KEY_SAVE_WIDTH = 'KeySaveWidth';
@@ -62,9 +62,9 @@ describe('AutomaticSaveService', () => {
         window.localStorage.setItem(KEY_SAVE_HEIGHT, '5');
 
         const bool = service.getUpload();
-        expect(service['canvas']).toEqual('a');
-        expect(service['width']).toEqual('6');
-        expect(service['height']).toEqual('5');
+        expect(service.canvas).toEqual('a');
+        expect(service.width).toEqual('6');
+        expect(service.height).toEqual('5');
         expect(bool).toEqual(true);
     });
 });

@@ -3,10 +3,10 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
 import { StrokeAction } from '@app/classes/undo-redo/stroke-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { AutomaticSaveService } from '../automatic-save/automatic-save.service';
 
 @Injectable({
     providedIn: 'root',
