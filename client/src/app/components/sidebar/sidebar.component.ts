@@ -497,4 +497,13 @@ export class SidebarComponent {
             this.undoRedoService.redo();
         }
     }
+
+    @HostListener('window:keydown.a', ['$event'])
+    changeSprayMode(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isSprayChecked = true;
+            this.pickSprayer();
+        }
+    }
 }

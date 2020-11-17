@@ -65,7 +65,7 @@ describe('SidebarComponent', () => {
     let selectionEllipseStub: SelectionEllipseService;
     let undoRedoStub: UndoRedoService;
     let selectionStub: SelectionService;
-    let sprayService: SprayService;
+    let sprayStub: SprayService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -85,6 +85,7 @@ describe('SidebarComponent', () => {
             dropperServiceStub = new DropperService(drawingStub, colorStub);
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub);
             selectionStub = new SelectionService(drawingStub);
+            sprayStub = new SprayService(drawingStub, colorStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -97,7 +98,7 @@ describe('SidebarComponent', () => {
                 paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
-                sprayService,
+                sprayStub,
             );
 
             selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
@@ -154,6 +155,7 @@ describe('SidebarComponent', () => {
                     { provide: Observable, useValue: {} },
                     { provide: SelectionService, useValue: selectionStub },
                     { provide: UndoRedoService, useValue: undoRedoStub },
+                    { provide: SprayService, useValue: sprayStub },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);
@@ -371,6 +373,12 @@ describe('SidebarComponent', () => {
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
     });
+    it('should pick sprayer', () => {
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.callThrough();
+        component.pickSprayer();
+        expect(drawingStub.cursorUsed).toEqual(cursorName.default);
+        expect(switchToolSpy).toHaveBeenCalled();
+    });
     it('should set all checked to false', () => {
         component.resetCheckedButton();
         expect(component.pencilChecked).toEqual(false);
@@ -386,6 +394,7 @@ describe('SidebarComponent', () => {
         expect(component.selectionEllipseChecked).toEqual(false);
         expect(component.selectionEllipseChecked).toEqual(false);
         expect(component.selectionRectangleChecked).toEqual(false);
+        expect(component.sprayChecked).toEqual(false);
     });
 
     it('should set subtoolselected as tool 2', () => {
@@ -781,5 +790,14 @@ describe('SidebarComponent', () => {
         window.dispatchEvent(event);
         component.callRedo(event);
         expect(spyRedo).toHaveBeenCalled();
+    });
+
+    it('should change to spray mode if a is pressed', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new KeyboardEvent('window:keydown.a', {});
+        const spySprayer = spyOn(component, 'pickSprayer').and.stub();
+        window.dispatchEvent(event);
+        component.changeSprayMode(event);
+        expect(spySprayer).toHaveBeenCalled();
     });
 });
