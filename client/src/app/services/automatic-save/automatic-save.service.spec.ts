@@ -57,6 +57,7 @@ describe('AutomaticSaveService', () => {
         const bool = service.getUpload();
         expect(bool).toEqual(true);
     });
+
     it('element localStorage getUpload true ', () => {
         window.localStorage.clear();
         window.localStorage.setItem(KEY_SAVE_CANVAS, 'a');
@@ -68,5 +69,31 @@ describe('AutomaticSaveService', () => {
         expect(service['width']).toEqual('6');
         expect(service['height']).toEqual('5');
         expect(bool).toEqual(true);
+    });
+
+    it('element localStorage getUpload false width it text not number ', () => {
+        window.localStorage.clear();
+        window.localStorage.setItem(KEY_SAVE_CANVAS, 'b');
+        window.localStorage.setItem(KEY_SAVE_WIDTH, 'a');
+        window.localStorage.setItem(KEY_SAVE_HEIGHT, '5');
+
+        const bool = service.getUpload();
+        expect(service['canvas']).toEqual('b');
+        expect(service['width']).toEqual('a');
+        expect(service['height']).toEqual('5');
+        expect(bool).toEqual(false);
+    });
+
+    it('element localStorage getUpload false height it text not number ', () => {
+        window.localStorage.clear();
+        window.localStorage.setItem(KEY_SAVE_CANVAS, 'b');
+        window.localStorage.setItem(KEY_SAVE_WIDTH, '5');
+        window.localStorage.setItem(KEY_SAVE_HEIGHT, 'a');
+
+        const bool = service.getUpload();
+        expect(service['canvas']).toEqual('b');
+        expect(service['width']).toEqual('5');
+        expect(service['height']).toEqual('a');
+        expect(bool).toEqual(false);
     });
 });
