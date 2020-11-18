@@ -10,6 +10,7 @@ import { RectangleService } from './rectangle.service';
 // https://css-tricks.com/snippets/javascript/javascript-keycodes/
 
 // tslint:disable:deprecation
+// tslint:disable:max-file-line-count
 const STROKECOLOR = '#000000';
 const SPACE = 32;
 const ARROWUP = 37;
@@ -20,6 +21,7 @@ const DEL = 56;
 const F1 = 112;
 const F12 = 123;
 const ZERO = 48;
+const DOTTEDSPACE = 10;
 
 @Injectable({
     providedIn: 'root',
@@ -27,11 +29,11 @@ const ZERO = 48;
 export class TextService extends Tool {
     // tslint:disable-next-line:no-magic-numbers
     sizeFont: number = 8; // minimal font size possible
-    fontStyle: string = 'Montserrat';
+    fontStyle: string = 'Times New Roman';
     // tslint:disable-next-line:no-magic-numbers
     possibleSizeFont: number[] = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
     // font size allowed for text -> autorized disable magical number
-    possibleFont: string[] = ['Times New Roman', 'Calibri', 'Open Sans', 'Montserrat', 'Playfair Display'];
+    possibleFont: string[] = ['Times New Roman', 'Calibri', 'Courier New', 'Verdana', 'Impact'];
     mouseEnter: boolean = false;
     mouseOut: boolean = false;
     mousePosition: Vec2;
@@ -182,6 +184,7 @@ export class TextService extends Tool {
         ctx.strokeStyle = STROKECOLOR;
         ctx.fillStyle = STROKECOLOR;
         ctx.lineWidth = this.lineWidth;
+        ctx.setLineDash([DOTTEDSPACE, DOTTEDSPACE]);
         if (this.drawingService.previewCtx === ctx) {
             if (mousePosition.x > mouseDownCoord.x && mousePosition.y > mouseDownCoord.y) {
                 ctx.strokeRect(
@@ -226,13 +229,33 @@ export class TextService extends Tool {
         this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // text color
         this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
         // this.drawingService.baseCtx.font = "50px 'Calibri'";
-        let textPreview = '';
+        const textPreview: string[] = [];
+        let indexLine = 0;
+        textPreview[indexLine] = '';
         this.keyHistory.forEach((element) => {
-            textPreview += element;
+            if (element === '\n') {
+                textPreview.push('');
+                indexLine++;
+            } else {
+                if (!this.checkWidthText(this.drawingService.baseCtx, textPreview[indexLine] + element)) {
+                    textPreview.push('');
+                    indexLine++;
+                }
+                textPreview[indexLine] += element;
+            }
         });
         for (let index = this.stack.length - 1; index >= 0; index--) {
             const element = this.stack[index];
-            textPreview += element;
+            if (element === '\n') {
+                textPreview.push('');
+                indexLine++;
+            } else {
+                if (!this.checkWidthText(this.drawingService.baseCtx, textPreview[indexLine] + element)) {
+                    textPreview.push('');
+                    indexLine++;
+                }
+                textPreview[indexLine] += element;
+            }
         }
         this.position(this.drawingService.baseCtx, textPreview, this.textAlign);
     }
@@ -245,14 +268,34 @@ export class TextService extends Tool {
     private previewText(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
-        let textPreview = '';
+        const textPreview: string[] = [];
+        let indexLine = 0;
+        textPreview[indexLine] = '';
         this.keyHistory.forEach((element) => {
-            textPreview += element;
+            if (element === '\n') {
+                textPreview.push('');
+                indexLine++;
+            } else {
+                if (!this.checkWidthText(this.drawingService.previewCtx, textPreview[indexLine] + element)) {
+                    textPreview.push('');
+                    indexLine++;
+                }
+                textPreview[indexLine] += element;
+            }
         });
-        textPreview += '|';
+        textPreview[indexLine] += '|';
         for (let index = this.stack.length - 1; index >= 0; index--) {
             const element = this.stack[index];
-            textPreview += element;
+            if (element === '\n') {
+                textPreview.push('');
+                indexLine++;
+            } else {
+                if (!this.checkWidthText(this.drawingService.previewCtx, textPreview[indexLine] + element)) {
+                    textPreview.push('');
+                    indexLine++;
+                }
+                textPreview[indexLine] += element;
+            }
         }
         this.position(this.drawingService.previewCtx, textPreview, this.textAlign);
     }
@@ -264,17 +307,46 @@ export class TextService extends Tool {
     private yTop(): number {
         return (this.mouseDownCoord.y < this.mousePosition.y ? this.mouseDownCoord.y : this.mousePosition.y) + this.sizeFont;
     }
-    private position(ctx: CanvasRenderingContext2D, text: string, align: number): void {
+
+    private checkWidthText(ctx: CanvasRenderingContext2D, text: string): boolean {
+        return Math.abs(ctx.measureText(text).width) < Math.abs(this.width);
+    }
+    private checkHeightText(nbLineBreak: number): boolean {
+        return (nbLineBreak + 1) * this.sizeFont < Math.abs(this.height);
+    }
+
+    private position(ctx: CanvasRenderingContext2D, texts: string[], align: number): void {
+        console.log('rec width', this.width);
+        texts.forEach((element) => {
+            console.log('text width', ctx.measureText(element).width);
+        });
+
         ctx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
+        let lineBreak = 0;
         switch (align) {
             case SubToolselected.tool1:
-                ctx.fillText(text, this.xTop(this.width / 2), this.yTop(), this.width);
+                texts.forEach((element) => {
+                    if (this.checkHeightText(lineBreak)) {
+                        ctx.fillText(element, this.xTop(this.width / 2), this.yTop() + lineBreak * this.sizeFont, Math.abs(this.width));
+                        lineBreak++;
+                    }
+                });
                 break;
             case SubToolselected.tool2:
-                ctx.fillText(text, this.xTop(0), this.yTop(), this.width);
+                texts.forEach((element) => {
+                    if (this.checkHeightText(lineBreak)) {
+                        ctx.fillText(element, this.xTop(0), this.yTop() + lineBreak * this.sizeFont, Math.abs(this.width));
+                        lineBreak++;
+                    }
+                });
                 break;
             case SubToolselected.tool3:
-                ctx.fillText(text, this.xTop(this.width), this.yTop(), this.width);
+                texts.forEach((element) => {
+                    if (this.checkHeightText(lineBreak)) {
+                        ctx.fillText(element, this.xTop(this.width), this.yTop() + lineBreak * this.sizeFont, Math.abs(this.width));
+                        lineBreak++;
+                    }
+                });
                 break;
         }
     }
