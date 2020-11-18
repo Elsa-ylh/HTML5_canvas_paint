@@ -2,7 +2,7 @@ import { EmailService } from '@app/services/email.service';
 import { Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
-import * as FormData from 'form-data';
+// import * as FormData from 'form-data';
 
 export const EVERYTHING_IS_FINE = 200;
 @injectable()
@@ -28,7 +28,7 @@ export class EmailController {
             console.log(req.body.email);
             console.log(req.files[0]);
 
-            const fileReader = new window.FileReader();
+            /*
             fileReader.readAsArrayBuffer(req.files[0]);
             fileReader.onload = (ev) => {
                 const result = ev.target?.result;
@@ -39,8 +39,8 @@ export class EmailController {
 
                 this.emailService.sendEmail(formData);
 
-                res.status(EVERYTHING_IS_FINE).send("Si le courriel existe, l'image devrait se rendre au courriel dans un instant.");
             }
+            */
 
             // verify image is valid
             // const image = req.body.payload;
@@ -48,6 +48,8 @@ export class EmailController {
             // send out the request by Axios
 
             // console log the result of the sent out email
+
+            res.status(EVERYTHING_IS_FINE).send("Si le courriel existe, l'image devrait se rendre au courriel dans un instant.");
 
         });
     }

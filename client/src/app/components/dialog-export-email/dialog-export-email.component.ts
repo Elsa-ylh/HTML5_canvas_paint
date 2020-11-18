@@ -135,7 +135,7 @@ export class DialogExportEmailComponent implements AfterViewInit {
                         const formData = new FormData();
 
                         const email = 'lithai357@gmail.com';
-                        formData.append('example.png', blob);
+                        formData.append('image', blob, this.nameFormControl.value + '.png');
                         formData.append('email', this.emailFormControl.value);
 
 
