@@ -230,11 +230,16 @@ describe('BrushService', () => {
         service.onMouseUp(mouseEvent1);
         expect(drawLineSpy).toHaveBeenCalled();
     });
-    it('Mouse exit et over de canvas not downMasse ', () => {
+    it('Mouse exit and over canvas not downMasse ', () => {
         service.subToolSelect = SubToolselected.tool4;
         service.onMouseDown(mouseEvent1);
         service.onMouseOut(mouseEvent);
         service.onMouseEnter(mouseEvent);
         expect(drawBrushToolSpy).toHaveBeenCalled();
+    });
+    it('onMouseEnter ', () => {
+        service['mouseOut'] = true;
+        service['mouseDown'] = true;
+        service.onMouseEnter(mouseEvent);
     });
 });
