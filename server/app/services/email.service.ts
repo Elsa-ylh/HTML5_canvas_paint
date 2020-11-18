@@ -5,11 +5,11 @@ import 'reflect-metadata';
 
 @injectable()
 export class EmailService {
-    private readonly url = 'http://log2990.step.polymtl.ca/email?address_validation\n=true&quick_return=true&dry_run=false';
-    private readonly x_team_key = '42e98715-06d2-4f68-a853-e3fa5f7f9151';
+    private readonly url: string = 'http://log2990.step.polymtl.ca/email?address_validation\n=true&quick_return=true&dry_run=false';
+    private readonly xTeamKey: string = '42e98715-06d2-4f68-a853-e3fa5f7f9151';
 
     // https://regexr.com/3e48o
-    private readonly emailRegexValidation = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+    private readonly emailRegexValidation: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
 
     async isEmailValid(email: string): Promise<boolean> {
         return new Promise(() => {
@@ -24,7 +24,7 @@ export class EmailService {
                 method: 'post',
                 url: this.url,
                 headers: {
-                    'x-team-key': this.x_team_key,
+                    'x-team-key': this.xTeamKey,
                     ...emailAndImage.getHeaders(),
                 },
                 data: emailAndImage,

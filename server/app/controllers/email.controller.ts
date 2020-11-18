@@ -1,8 +1,9 @@
 import { EmailService } from '@app/services/email.service';
 import { Request, Response, Router } from 'express';
+import * as FormData from 'form-data';
+import * as fs from 'fs';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
-// import * as FormData from 'form-data';
 
 export const EVERYTHING_IS_FINE = 200;
 @injectable()
@@ -18,7 +19,7 @@ export class EmailController {
         data.append('to', email);
         data.append('payload', fs.createReadStream('D:/Desktop/yolo.png'));
         */
-       this.emailService;
+        this.emailService;
     }
     private configureRouter(): void {
         this.router = Router();
@@ -28,29 +29,24 @@ export class EmailController {
             console.log(req.body.email);
             console.log(req.files[0]);
 
-            /*
-            fileReader.readAsArrayBuffer(req.files[0]);
-            fileReader.onload = (ev) => {
-                const result = ev.target?.result;
-                const formData = new FormData();
-                formData.append('to', req.body.email);
-                const fs = require('fs');
-                formData.append('payload', fs.createReadStream(result));
+            const newlyUploadImagePath = req.files[0].path;
+            console.log(newlyUploadImagePath);
 
-                this.emailService.sendEmail(formData);
+            fs.rename(newlyUploadImagePath, newlyUploadImagePath + '.png', (err) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Successfully renamed the directory.');
 
-            }
-            */
+                    const formData = new FormData();
+                    formData.append('to', 'lithai357@gmail.com');
+                    formData.append('payload', fs.createReadStream(newlyUploadImagePath + '.png'));
 
-            // verify image is valid
-            // const image = req.body.payload;
+                    this.emailService.sendEmail(formData);
 
-            // send out the request by Axios
-
-            // console log the result of the sent out email
-
-            res.status(EVERYTHING_IS_FINE).send("Si le courriel existe, l'image devrait se rendre au courriel dans un instant.");
-
+                    res.status(EVERYTHING_IS_FINE).send("Si le courriel existe, l'image devrait se rendre au courriel dans un instant.");
+                }
+            });
         });
     }
 }
