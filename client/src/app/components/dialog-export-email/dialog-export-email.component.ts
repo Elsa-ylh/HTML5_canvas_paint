@@ -4,7 +4,7 @@ import { Filter } from '@app/classes/filter';
 import { ImageFormat } from '@app/classes/image-format';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import * as FormData from 'form-data'; 
+import * as FormData from 'form-data';
 
 @Component({
     selector: 'app-dialog-export-email',
@@ -134,12 +134,9 @@ export class DialogExportEmailComponent implements AfterViewInit {
                     .then((blob) => {
                         const formData = new FormData();
 
-                        const email = 'lithai357@gmail.com';
                         formData.append('image', blob, this.nameFormControl.value + '.png');
                         formData.append('email', this.emailFormControl.value);
-
-
-                        this.clientServerService.sendEmail(email, formData).then((res) => {
+                        this.clientServerService.sendEmail(formData).then((res) => {
                             console.log(res);
                         });
                     });

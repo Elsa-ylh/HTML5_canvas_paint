@@ -65,7 +65,7 @@ export class ClientServerCommunicationService {
     }
 
     // https://jasonwatmore.com/post/2019/11/21/angular-http-post-request-examples
-    async sendEmail(email: string, formData: FormData): Promise<AxiosResponse<void>> {
+    async sendEmail(formData: FormData): Promise<AxiosResponse<void>> {
         return axios.post(this.HTTP_SERVE_LOCAL_EMAIL, formData, {});
     }
 }
