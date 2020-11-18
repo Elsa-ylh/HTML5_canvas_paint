@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+
 const KEY_SAVE_CANVAS = 'KeySaveCanvas';
 const KEY_SAVE_WIDTH = 'KeySaveWidth';
 const KEY_SAVE_HEIGHT = 'KeySaveHeight';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -30,6 +32,7 @@ export class AutomaticSaveService {
         this.myStorage.setItem(KEY_SAVE_WIDTH, vec2.x.toString());
         this.myStorage.setItem(KEY_SAVE_HEIGHT, vec2.y.toString());
     }
+
     loadSave(image: string, width: number, height: number): void {
         this.myStorage.setItem(KEY_SAVE_CANVAS, image);
         this.myStorage.setItem(KEY_SAVE_WIDTH, width.toString());
