@@ -53,6 +53,8 @@ import { MainPageComponent } from './components/main-page/main-page.component';
 import { PaintBucketColorComponent } from './components/paint-bucket-color/paint-bucket-color.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { WriteTextDialogUserGuideComponent } from './components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+import { SprayComponent } from './components/spray/spray.component';
+import { SprayWarningComponent } from './components/spray-warning/spray-warning.component';
 
 @NgModule({
     declarations: [
@@ -74,6 +76,8 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         DropperColorComponent,
         DialogUploadComponent,
         PaintBucketColorComponent,
+        SprayComponent,
+        SprayWarningComponent,
     ],
     imports: [
         ReactiveFormsModule,

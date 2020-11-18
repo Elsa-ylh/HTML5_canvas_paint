@@ -13,10 +13,10 @@ export class SprayService extends Tool {
         super(drawingService);
     }
 
-    private density: number = 40;
+    private density: number = 40; // number of drop per second
     private currentColor: string;
     position: Vec2;
-    private time: number = 300;
+    private time: number = 50;
     private timer: ReturnType<typeof setInterval>;
     private minAngle: number = 0;
     private maxAngle: number = Math.PI * 2;
@@ -69,5 +69,9 @@ export class SprayService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         this.position = { x: event.offsetX, y: event.offsetY };
+    }
+
+    setDensity(nbEmission: number): void {
+        this.density = nbEmission;
     }
 }
