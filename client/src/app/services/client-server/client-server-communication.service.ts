@@ -4,6 +4,9 @@ import { CanvasInformation, Label } from '@common/communication/canvas-informati
 import { Message } from '@common/communication/message';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import * as FormData from 'form-data'; 
+import axios, { AxiosResponse } from 'axios';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -62,7 +65,9 @@ export class ClientServerCommunicationService {
     }
 
     // https://jasonwatmore.com/post/2019/11/21/angular-http-post-request-examples
-    sendEmail(body: FormData): Observable<string> {
-        return this.http.post<string>(this.HTTP_SERVE_LOCAL_EMAIL, { body: FormData });
+    sendEmail(formData: FormData): Promise<AxiosResponse<any>> {
+        return axios.post(this.HTTP_SERVE_LOCAL_EMAIL, formData, {headers: {
+            'Content-Type': 'image/png'
+          }});
     }
 }

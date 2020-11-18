@@ -4,6 +4,7 @@ import { Filter } from '@app/classes/filter';
 import { ImageFormat } from '@app/classes/image-format';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import * as FormData from 'form-data'; 
 
 @Component({
     selector: 'app-dialog-export-email',
@@ -127,13 +128,16 @@ export class DialogExportEmailComponent implements AfterViewInit {
                 const base64image = finalImageCanvas.toDataURL('image/jpeg');
 
                 // https://stackoverflow.com/a/47497249
+                // https://github.com/axios/axios/issues/710#issuecomment-409213073
                 fetch(base64image)
                     .then((res) => res.blob())
                     .then((blob) => {
-                        const file = new File([blob], this.nameFormControl.value, { type: 'image/png' });
-                        console.log(file);
-                        this.clientServerService.sendEmail(this.emailFormControl.value, file).subscribe((feedback) => {
-                            console.log(feedback);
+                        const formData = new FormData();
+
+                        formData.append('example.png', blob);
+
+                        this.clientServerService.sendEmail(formData).then((res) => {
+                            console.log(res);
                         });
                     });
             }

@@ -17,13 +17,14 @@ export class EmailController {
         data.append('to', email);
         data.append('payload', fs.createReadStream('D:/Desktop/yolo.png'));
         */
+       this.emailService;
     }
     private configureRouter(): void {
         this.router = Router();
         this.router.post('/', async (req: Request, res: Response) => {
             // everything in async await promise
 
-            console.log(req.body);
+            console.log(req.params);
 
             // verify image is valid
             // const image = req.body.payload;
