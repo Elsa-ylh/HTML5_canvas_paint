@@ -27,12 +27,11 @@ const DOTTEDSPACE = 10;
     providedIn: 'root',
 })
 export class TextService extends Tool {
-    // tslint:disable-next-line:no-magic-numbers
-    sizeFont: number = 8; // minimal font size possible
     fontStyle: string = 'Times New Roman';
     // tslint:disable-next-line:no-magic-numbers
     possibleSizeFont: number[] = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
-    // font size allowed for text -> autorized disable magical number
+    // different font sizes allowed for text -> autorized disable magical number
+    sizeFont: number = this.possibleSizeFont[0];
     possibleFont: string[] = ['Times New Roman', 'Calibri', 'Courier New', 'Verdana', 'Impact'];
     mouseEnter: boolean = false;
     mouseOut: boolean = false;
@@ -53,10 +52,6 @@ export class TextService extends Tool {
     distanceY: number;
     private textAlign: number = 2;
 
-    // imageLoader.addEventListener('change', handleImage, false);
-
-    // xwindow.addEventListener('load', DrawPlaceholder)
-
     constructor(drawingService: DrawingService, private colorService: ColorService, private rectangleService: RectangleService) {
         super(drawingService);
     }
@@ -67,19 +62,16 @@ export class TextService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-        console.log(this.mouseEnter + '  ' + this.mouseOut + '  ' + this.mouseDown);
         if (this.mouseEnter && !this.mouseOut && this.mouseDown && !this.writeOnCanvas) {
             this.rectangleService.clearEffectTool();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.mousePosition = this.mouseDownCoord;
         }
         if (this.writeOnCanvas) {
-            // this.baseCtx
             this.drawText();
             this.writeOnCanvas = false;
             this.clearEffectTool();
             this.mouseDownCoord = this.getPositionFromMouse(event);
-            // this.mousePosition=this.mouseDownCoord={x:0,y:0};
         }
     }
 
@@ -94,9 +86,6 @@ export class TextService extends Tool {
             this.writeOnCanvas = true;
         }
         // this.mouseDown = false;
-        console.log('x : ', this.distanceX);
-        console.log('y : ', this.distanceY);
-        console.log('onMouseUp');
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -108,13 +97,6 @@ export class TextService extends Tool {
             this.width = mousePosition.x - this.mouseDownCoord.x;
             this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
             this.canvasSelected = false;
-        }
-    }
-
-    onDoubleClick(event: MouseEvent): void {
-        if ((this.mouseEnter || this.mouseOut) && this.writeOnCanvas) {
-            console.log('test');
-            this.writeOnCanvas = false;
         }
     }
 
@@ -228,7 +210,6 @@ export class TextService extends Tool {
     drawText(): void {
         this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // text color
         this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
-        // this.drawingService.baseCtx.font = "50px 'Calibri'";
         const textPreview: string[] = [];
         let indexLine = 0;
         textPreview[indexLine] = '';
@@ -316,11 +297,6 @@ export class TextService extends Tool {
     }
 
     private position(ctx: CanvasRenderingContext2D, texts: string[], align: number): void {
-        console.log('rec width', this.width);
-        texts.forEach((element) => {
-            console.log('text width', ctx.measureText(element).width);
-        });
-
         ctx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
         let lineBreak = 0;
         switch (align) {
