@@ -17,6 +17,7 @@ import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { FeatherService } from '@app/services/tools/feather.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
@@ -59,6 +60,7 @@ export class SidebarComponent {
     private isSelectionRectangleChecked: boolean = false;
     private isPolygonChecked: boolean = false;
     private isPaintBucketChecked: boolean = false;
+    private isFeatherChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -78,11 +80,13 @@ export class SidebarComponent {
         public undoRedoService: UndoRedoService,
         public selectionRectangleService: SelectionRectangleService,
         public selectionEllipseService: SelectionEllipseService,
+        public featherService: FeatherService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
         this.iconRegistry.addSvgIcon('polygon', this.sanitizer.bypassSecurityTrustResourceUrl('assets/polygon.svg'));
         this.iconRegistry.addSvgIcon('paint-bucket', this.sanitizer.bypassSecurityTrustResourceUrl('assets/paint-bucket.svg'));
+        this.iconRegistry.addSvgIcon('feather', this.sanitizer.bypassSecurityTrustResourceUrl('assets/feather.svg'));
     }
 
     clearCanvas(): void {
@@ -262,6 +266,15 @@ export class SidebarComponent {
         return this.isSelectionEllipseChecked;
     }
 
+    pickFeather(): void {
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.Feather);
+    }
+
+    get selectionFeatherChecked(): boolean {
+        return this.isFeatherChecked;
+    }
+
     resetCheckedButton(): void {
         this.isPencilChecked = false;
         this.isEraserChecked = false;
@@ -274,6 +287,7 @@ export class SidebarComponent {
         this.isDropperChecked = false;
         this.isSelectionEllipseChecked = false;
         this.isSelectionRectangleChecked = false;
+        this.isFeatherChecked = false;
     }
 
     checkboxChangeToggle(args: MatCheckboxChange): void {
@@ -484,6 +498,15 @@ export class SidebarComponent {
     callRedo(eventK: KeyboardEvent): void {
         if (!this.undoRedoService.isRedoDisabled) {
             this.undoRedoService.redo();
+        }
+    }
+
+    @HostListener('window:keydown.p', ['$event'])
+    changeFeatherMode(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
+            this.resetCheckedButton();
+            this.isFeatherChecked = true;
+            this.pickFeather();
         }
     }
 }
