@@ -136,6 +136,7 @@ describe('SidebarComponent', () => {
                     HttpClientModule,
                 ],
                 providers: [
+                    { provide: AutomaticSaveService, useValue: { save: () => '' } },
                     { provide: DrawingService, useValue: drawingStub },
                     { provide: ToolService, useValue: toolServiceStub },
                     { provide: RectangleService, useValue: rectangleStub },
@@ -784,18 +785,14 @@ describe('SidebarComponent', () => {
     });
 
     it('should call btnCallRedo', () => {
-        const spySave = spyOn(autoSaveStub, 'save').and.stub();
         const spyRedo = spyOn(undoRedoStub, 'redo').and.stub();
         component.btnCallRedo();
-        expect(spySave).toHaveBeenCalled();
         expect(spyRedo).toHaveBeenCalled();
     });
 
     it('should call btnCallUndo', () => {
-        const spySave = spyOn(autoSaveStub, 'save').and.stub();
         const spyUndo = spyOn(undoRedoStub, 'undo').and.stub();
         component.btnCallUndo();
-        expect(spySave).toHaveBeenCalled();
         expect(spyUndo).toHaveBeenCalled();
     });
 });
