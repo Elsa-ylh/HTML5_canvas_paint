@@ -94,7 +94,7 @@ export class SidebarComponent {
             this.newDrawingRef.afterClosed().subscribe(() => {
                 this.isDialogOpen = false;
             });
-            this.automaticSaveSer.save();
+            this.automaticSaveService.save();
         }
     }
 
@@ -105,7 +105,7 @@ export class SidebarComponent {
             this.exportDrawingRef.afterClosed().subscribe(() => {
                 this.isDialogloadSaveEport = true;
             });
-            this.automaticSaveSer.save();
+            this.automaticSaveService.save();
         }
     }
 
@@ -113,7 +113,7 @@ export class SidebarComponent {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
         this.undoRedoService.clearRedo();
         this.undoRedoService.clearUndo();
-        this.automaticSaveSer.save();
+        this.automaticSaveService.save();
     }
 
     openCarrousel(): void {
@@ -287,12 +287,12 @@ export class SidebarComponent {
 
     btnCallRedo(): void {
         this.undoRedoService.redo();
-        this.automaticSaveSer.save();
+        this.automaticSaveService.save();
     }
 
     btnCallUndo(): void {
         this.undoRedoService.undo();
-        this.automaticSaveSer.save();
+        this.automaticSaveService.save();
     }
 
     // keybind control o for new drawing
