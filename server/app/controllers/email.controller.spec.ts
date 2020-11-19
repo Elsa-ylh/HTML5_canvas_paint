@@ -23,14 +23,15 @@ describe('Email controller', () => {
         emailService = container.get(TYPES.EmailService);
         app = container.get<Application>(TYPES.Application).app;
     });
-    it('should return ', async () => {
+    it('should undefined', async () => {
         emailService.isEmailValid.resolves(false);
         emailService.isContentValid.resolves(false);
         return supertest(app)
             .post('/api/email')
             .expect(400)
             .then((response: any) => {
-                expect(response.body).to.deep.equal("Le courriel fourni n'est pas d'un format valide. Le courriel doit être style abc@email.com");
+                expect(response.body).to.deep.equal("Votre requête a besoin d'un courriel.");
             });
     });
+    it('', async () => {});
 });
