@@ -81,8 +81,6 @@ export class DialogExportEmailComponent implements AfterViewInit {
     }
 
     exportToEmail(): void {
-        this.imageFormatString;
-
         if (this.nameFormControl.valid && this.emailFormControl.valid) {
             let textImageFormat: string = this.nameFormControl.value;
             switch (this.whichExportType) {
@@ -123,9 +121,7 @@ export class DialogExportEmailComponent implements AfterViewInit {
                 finalImageCtx.filter = this.filterString.get(this.whichFilter) as string;
                 finalImageCtx.drawImage(this.previewImage.nativeElement, 0, 0);
 
-                // this.nameFormControl.value + this.imageFormatString.get(this.whichExportType);
-
-                const base64image = finalImageCanvas.toDataURL('image/png');
+                const base64image = finalImageCanvas.toDataURL('image/' + this.imageFormatString.get(this.whichExportType));
 
                 // https://stackoverflow.com/a/47497249
                 // https://github.com/axios/axios/issues/710#issuecomment-409213073
@@ -134,7 +130,7 @@ export class DialogExportEmailComponent implements AfterViewInit {
                     .then((blob) => {
                         const formData = new FormData();
 
-                        formData.append('image', blob, this.nameFormControl.value + '.png');
+                        formData.append('image', blob, this.nameFormControl.value + this.imageFormatString.get(this.whichExportType));
                         formData.append('email', this.emailFormControl.value);
                         this.clientServerService.sendEmail(formData).then((res) => {
                             console.log(res);

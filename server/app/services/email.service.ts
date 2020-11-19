@@ -12,10 +12,12 @@ export class EmailService {
     private readonly emailRegexValidation: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
 
     async isEmailValid(email: string): Promise<boolean> {
-        return new Promise(() => {
-            if (email.match(this.emailRegexValidation)) return true;
-            return false;
-        });
+        if (email.match(this.emailRegexValidation)) return true;
+        return false;
+    }
+
+    async isContentValid(imagePath: string): Promise<boolean> {
+        return true;
     }
 
     async sendEmail(emailAndImage: FormData): Promise<void> {

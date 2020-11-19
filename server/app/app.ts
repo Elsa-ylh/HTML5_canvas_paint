@@ -4,9 +4,9 @@ import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
-import * as multer from 'multer';
 import { inject, injectable } from 'inversify';
 import * as logger from 'morgan';
+import * as multer from 'multer';
 import { TYPES } from './types';
 @injectable()
 export class Application {
@@ -32,8 +32,8 @@ export class Application {
         this.app.use(cookieParser());
         this.app.use(cors());
 
-        // this is to handle form data aka HTML5 File
-        this.app.use(multer({dest:'./uploads/'}).any());
+        // this is to handle form data aka HTML5 File or images
+        this.app.use(multer({ dest: './uploads/' }).any());
     }
 
     bindRoutes(): void {
