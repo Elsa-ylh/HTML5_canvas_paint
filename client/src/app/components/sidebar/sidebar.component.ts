@@ -79,7 +79,7 @@ export class SidebarComponent {
         public undoRedoService: UndoRedoService,
         public selectionRectangleService: SelectionRectangleService,
         public selectionEllipseService: SelectionEllipseService,
-        private automaticSaveSer: AutomaticSaveService,
+        private automaticSaveService: AutomaticSaveService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
@@ -479,7 +479,7 @@ export class SidebarComponent {
     callUndo(eventK: KeyboardEvent): void {
         if (!this.undoRedoService.isUndoDisabled) {
             this.undoRedoService.undo();
-            this.automaticSaveSer.save();
+            this.automaticSaveService.save();
         }
     }
 
@@ -487,7 +487,7 @@ export class SidebarComponent {
     callRedo(eventK: KeyboardEvent): void {
         if (!this.undoRedoService.isRedoDisabled) {
             this.undoRedoService.redo();
-            this.automaticSaveSer.save();
+            this.automaticSaveService.save();
         }
     }
 }

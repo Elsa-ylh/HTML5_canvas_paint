@@ -32,7 +32,7 @@ export class LineService extends Tool {
         drawingService: DrawingService,
         private colorService: ColorService,
         private undoRedoService: UndoRedoService,
-        private automaticSaveSer: AutomaticSaveService,
+        private automaticSaveService: AutomaticSaveService,
     ) {
         super(drawingService);
     }
@@ -139,7 +139,7 @@ export class LineService extends Tool {
         this.clearPath();
         this.clearEffectTool();
         this.mouseDown = false;
-        this.automaticSaveSer.save();
+        this.automaticSaveService.save();
     }
 
     onKeyEscape(event: KeyboardEvent): void {

@@ -23,7 +23,7 @@ export class DropperService extends Tool {
     private currentColor: string;
     circleCtx: CanvasRenderingContext2D;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private automaticSaveSer: AutomaticSaveService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private automaticSaveService: AutomaticSaveService) {
         super(drawingService);
     }
 
@@ -54,7 +54,7 @@ export class DropperService extends Tool {
         this.currentColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.drawingService.baseCtx));
         this.shapeCircle(this.currentColor);
         this.shapePreview(this.currentColor);
-        this.automaticSaveSer.save();
+        this.automaticSaveService.save();
     }
     shapeCircle(color: string): void {
         this.circlePositionX = this.circleWidth;
