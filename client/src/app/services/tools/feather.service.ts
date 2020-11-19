@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
+import { FeatherAction } from '@app/classes/undo-redo/feather-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-// import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-// private undoRedoService: UndoRedoService
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 const motionDifference = 4;
 
 @Injectable({
@@ -14,9 +14,10 @@ const motionDifference = 4;
 export class FeatherService extends Tool {
     private pathData: Vec2[]; //
     private lineWidth = 2;
+    private primaryColor: string;
     // private mouseOut: boolean = false;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
     }
 
@@ -24,8 +25,10 @@ export class FeatherService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
+            this.primaryColor = this.colorService.primaryColor;
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
+            this.cleanPaintGrout();
         }
     }
     onMouseMove(event: MouseEvent): void {
@@ -44,6 +47,11 @@ export class FeatherService extends Tool {
             this.drawFeather(this.drawingService.baseCtx, this.pathData);
         }
         this.mouseDown = false;
+        // undo- redo
+        const featherAction = new FeatherAction(this.pathData, this.primaryColor, this.drawingService, this);
+        this.undoRedoService.addUndo(featherAction);
+        this.undoRedoService.clearRedo();
+
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
@@ -51,6 +59,7 @@ export class FeatherService extends Tool {
     drawFeather(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
         this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
+        this.drawingService.baseCtx.strokeStyle = this.primaryColor;
         ctx.beginPath();
         const sizePx = this.lineWidth;
         ctx.lineWidth = sizePx / motionDifference;
