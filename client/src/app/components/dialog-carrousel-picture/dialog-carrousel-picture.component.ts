@@ -164,16 +164,12 @@ export class CarrouselPictureComponent implements OnInit {
             this.cvsResizerService.canvasSize.x = loadedPicture.width;
             this.drawingService.convertBase64ToBaseCanvas(loadedPicture.picture);
             // undo-Redo
-            const actionLoadImg = new LoadAction(
-                loadedPicture.picture,
-                loadedPicture.height,
-                loadedPicture.width,
-                this.drawingService,
-                this.cvsResizerService,
-            );
+            const image = new Image();
+            image.src = loadedPicture.picture;
+            const actionLoadImg = new LoadAction(image, loadedPicture.height, loadedPicture.width, this.drawingService, this.cvsResizerService);
             this.undoRedoService.clearUndo();
             this.undoRedoService.clearRedo();
-            this.undoRedoService.addUndo(actionLoadImg);
+            this.undoRedoService.loadImage(actionLoadImg);
 
             this.dialogRef.close(true);
             this.router.navigate(['/editor']);
