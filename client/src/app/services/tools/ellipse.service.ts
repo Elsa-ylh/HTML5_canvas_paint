@@ -33,7 +33,7 @@ export class EllipseService extends Tool {
         drawingService: DrawingService,
         private colorService: ColorService,
         private undoRedoService: UndoRedoService,
-        private automaticSaveSer: AutomaticSaveService,
+        private automaticSaveService: AutomaticSaveService,
     ) {
         super(drawingService);
     }
@@ -196,7 +196,7 @@ export class EllipseService extends Tool {
                     break;
             }
         }
-        this.automaticSaveSer.save();
+        this.automaticSaveService.save();
     }
 
     clearEffectTool(): void {

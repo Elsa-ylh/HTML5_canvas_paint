@@ -17,8 +17,8 @@ export class MainPageComponent {
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     dialogLoadRef: MatDialogRef<CarrouselPictureComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
-    constructor(public dialogCreator: MatDialog, private router: Router, private automaticSaveSer: AutomaticSaveService) {
-        this.onGoingDrawing = this.automaticSaveSer.check();
+    constructor(public dialogCreator: MatDialog, private router: Router, private automaticSaveService: AutomaticSaveService) {
+        this.onGoingDrawing = this.automaticSaveService.check();
     }
 
     createNewDrawing(): void {
@@ -50,7 +50,7 @@ export class MainPageComponent {
         });
     }
     continueDrawing(): void {
-        this.automaticSaveSer.getUpload();
+        this.automaticSaveService.getUpload();
         this.router.navigate(['/editor']);
     }
 }

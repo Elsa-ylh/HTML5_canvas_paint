@@ -26,7 +26,7 @@ export class CarrouselPictureComponent implements OnInit {
         private router: Router,
         private dialogRef: MatDialogRef<CarrouselPictureComponent>,
         private undoRedoService: UndoRedoService,
-        private automaticSaveSer: AutomaticSaveService,
+        private automaticSaveService: AutomaticSaveService,
     ) {}
     private dataPicture: CanvasInformation[] = [];
     private position: number = 0;
@@ -172,7 +172,7 @@ export class CarrouselPictureComponent implements OnInit {
             this.undoRedoService.clearUndo();
             this.undoRedoService.clearRedo();
             this.undoRedoService.loadImage(actionLoadImg);
-            this.automaticSaveSer.loadSave(loadedPicture.picture, loadedPicture.width, loadedPicture.height);
+            this.automaticSaveService.loadSave(loadedPicture.picture, loadedPicture.width, loadedPicture.height);
             this.dialogRef.close(true);
             this.router.navigate(['/editor']);
         }

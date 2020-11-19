@@ -31,7 +31,7 @@ export class RectangleService extends Tool {
         drawingService: DrawingService,
         private colorService: ColorService,
         private undoRedoService: UndoRedoService,
-        private automaticSaveSer: AutomaticSaveService,
+        private automaticSaveService: AutomaticSaveService,
     ) {
         super(drawingService);
     }
@@ -240,6 +240,6 @@ export class RectangleService extends Tool {
                     break;
             }
         }
-        this.automaticSaveSer.save();
+        this.automaticSaveService.save();
     }
 }

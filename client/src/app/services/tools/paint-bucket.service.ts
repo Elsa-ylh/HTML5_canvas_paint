@@ -22,7 +22,7 @@ export class PaintBucketService extends Tool {
         private colorService: ColorService,
         private cvsResizerService: CanvasResizerService,
         private undoRedoService: UndoRedoService,
-        private automaticSaveSer: AutomaticSaveService,
+        private automaticSaveService: AutomaticSaveService,
     ) {
         super(drawingService);
     }
@@ -142,7 +142,7 @@ export class PaintBucketService extends Tool {
         const paintBucketAction = new PaintBucketAction(pixels, this.drawingService);
         this.undoRedoService.addUndo(paintBucketAction);
         this.undoRedoService.clearRedo();
-        this.automaticSaveSer.save();
+        this.automaticSaveService.save();
     }
     /*tslint:enable:cyclomatic-complexity*/
 

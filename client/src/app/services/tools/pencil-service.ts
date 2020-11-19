@@ -22,7 +22,7 @@ export class PencilService extends Tool {
         drawingService: DrawingService,
         private colorService: ColorService,
         private undoRedoService: UndoRedoService,
-        private automaticSaveSer: AutomaticSaveService,
+        private automaticSaveService: AutomaticSaveService,
     ) {
         super(drawingService);
         this.clearPath();
@@ -71,7 +71,7 @@ export class PencilService extends Tool {
         this.undoRedoService.addUndo(actionPencil);
         this.undoRedoService.clearRedo();
         this.clearPath();
-        this.automaticSaveSer.save();
+        this.automaticSaveService.save();
     }
 
     onMouseMove(event: MouseEvent): void {

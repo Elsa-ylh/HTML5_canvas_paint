@@ -27,7 +27,7 @@ export class BrushService extends Tool {
         drawingService: DrawingService,
         private colorService: ColorService,
         private undoRedoService: UndoRedoService,
-        private automaticSaveSer: AutomaticSaveService,
+        private automaticSaveService: AutomaticSaveService,
     ) {
         super(drawingService);
         this.clearPath();
@@ -141,7 +141,7 @@ export class BrushService extends Tool {
             ctx.stroke();
         }
         ctx.globalAlpha = tempAlpha;
-        this.automaticSaveSer.save();
+        this.automaticSaveService.save();
     }
 
     drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], subBrushTool: SubToolselected): void {
@@ -180,7 +180,7 @@ export class BrushService extends Tool {
                 this.drawLineBrush5(ctx, path);
                 break;
         }
-        this.automaticSaveSer.save();
+        this.automaticSaveService.save();
     }
     drawLinePattern(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const px2 = 2;

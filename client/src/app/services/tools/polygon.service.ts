@@ -36,7 +36,7 @@ export class PolygonService extends Tool {
         drawingService: DrawingService,
         private colorService: ColorService,
         private undoRedoService: UndoRedoService,
-        private automaticSaveSer: AutomaticSaveService,
+        private automaticSaveService: AutomaticSaveService,
     ) {
         super(drawingService);
     }
@@ -251,7 +251,7 @@ export class PolygonService extends Tool {
             ctx.arc(this.mouseDownCoord.x, this.mouseDownCoord.y, this.radius + this.lineWidth / 2, 0, 2 * Math.PI, false);
             ctx.stroke();
         }
-        this.automaticSaveSer.save();
+        this.automaticSaveService.save();
     }
 
     clearEffectTool(): void {

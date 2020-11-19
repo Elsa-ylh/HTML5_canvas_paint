@@ -14,7 +14,7 @@ export class EraserService extends Tool {
     private pathData: Vec2[];
     private color: string = '#ffffff';
     eraserWidth: number = 5;
-    constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService, private automaticSaveSer: AutomaticSaveService) {
+    constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService, private automaticSaveService: AutomaticSaveService) {
         super(drawingService);
         this.clearPath();
     }
@@ -55,7 +55,7 @@ export class EraserService extends Tool {
         this.undoRedoService.clearRedo();
         this.clearPath();
         this.mouseDown = false;
-        this.automaticSaveSer.save();
+        this.automaticSaveService.save();
     }
 
     onMouseMove(event: MouseEvent): void {
