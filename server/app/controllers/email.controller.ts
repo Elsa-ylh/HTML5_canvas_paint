@@ -9,6 +9,7 @@ export const EVERYTHING_IS_FINE = 200;
 export const BAD_EMAIL = 412;
 export const IMAGE_EXTENSION_NOT_SAME_AS_BINARY = 412;
 export const ALL_OTHER_ERRORS = 500;
+
 @injectable()
 export class EmailController {
     router: Router;
@@ -20,8 +21,14 @@ export class EmailController {
         this.router = Router();
         this.router.post('/', async (req: Request, res: Response) => {
             const email = req.body.email;
-            const expressImageName = req.files[0].path;
-            const properImageName = req.files[0].originalname;
+
+            // Gitlab CI has difficulty finding the MulterFile type, we will leave it as is as an exception.
+
+            // tslint:disable-next-line:no-any
+            const expressImageName = (req as any).files[0].path as string;
+
+            // tslint:disable-next-line:no-any
+            const properImageName = (req as any).files[0].originalname as string;
 
             const isEmailValid = await this.emailService.isEmailValid(email);
             if (!isEmailValid) {
