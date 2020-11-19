@@ -70,7 +70,7 @@
                         mat-button
                         matTooltip="Annuler"
                         matTooltipPosition="right"
-                        (click)="undoRedoService.undo()"
+                        (click)="btnCallUndo()"
                         [disabled]="undoRedoService.isUndoDisabled"
                     >
                         <mat-icon> undo </mat-icon>
@@ -79,7 +79,7 @@
                         mat-button
                         matTooltip="Refaire"
                         matTooltipPosition="right"
-                        (click)="undoRedoService.redo()"
+                        (click)="btnCallRedo()"
                         [disabled]="undoRedoService.isRedoDisabled"
                     >
                         <mat-icon> redo </mat-icon>

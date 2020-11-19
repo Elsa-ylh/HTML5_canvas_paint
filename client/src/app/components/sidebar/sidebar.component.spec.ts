@@ -782,4 +782,20 @@ describe('SidebarComponent', () => {
         component.callRedo(event);
         expect(spyRedo).toHaveBeenCalled();
     });
+
+    it('should call btnCallRedo', () => {
+        const spySave = spyOn(autoSaveStub, 'save').and.stub();
+        const spyRedo = spyOn(undoRedoStub, 'redo').and.stub();
+        component.btnCallRedo();
+        expect(spySave).toHaveBeenCalled();
+        expect(spyRedo).toHaveBeenCalled();
+    });
+
+    it('should call btnCallUndo', () => {
+        const spySave = spyOn(autoSaveStub, 'save').and.stub();
+        const spyUndo = spyOn(undoRedoStub, 'undo').and.stub();
+        component.btnCallUndo();
+        expect(spySave).toHaveBeenCalled();
+        expect(spyUndo).toHaveBeenCalled();
+    });
 });

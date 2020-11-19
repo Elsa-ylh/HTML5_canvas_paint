@@ -94,6 +94,7 @@ export class SidebarComponent {
             this.newDrawingRef.afterClosed().subscribe(() => {
                 this.isDialogOpen = false;
             });
+            this.automaticSaveSer.save();
         }
     }
 
@@ -104,6 +105,7 @@ export class SidebarComponent {
             this.exportDrawingRef.afterClosed().subscribe(() => {
                 this.isDialogloadSaveEport = true;
             });
+            this.automaticSaveSer.save();
         }
     }
 
@@ -111,6 +113,7 @@ export class SidebarComponent {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
         this.undoRedoService.clearRedo();
         this.undoRedoService.clearUndo();
+        this.automaticSaveSer.save();
     }
 
     openCarrousel(): void {
@@ -280,6 +283,16 @@ export class SidebarComponent {
 
     checkboxChangeToggle(args: MatCheckboxChange): void {
         this.toolService.currentTool.subToolSelect = args.checked ? SubToolselected.tool2 : SubToolselected.tool1;
+    }
+
+    btnCallRedo(): void {
+        this.undoRedoService.redo();
+        this.automaticSaveSer.save();
+    }
+
+    btnCallUndo(): void {
+        this.undoRedoService.undo();
+        this.automaticSaveSer.save();
     }
 
     // keybind control o for new drawing
