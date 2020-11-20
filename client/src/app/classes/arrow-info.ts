@@ -1,16 +1,13 @@
 import { Subscription } from 'rxjs';
 
-const PIXELMOUVEMENT = 3;
-const MOUVEMENTDELAY = 100;
+export const PIXELMOUVEMENT = 3;
+export const MOUVEMENTDELAY = 100;
 export class ArrowInfo {
-
-  constructor() {
-    this.arrowPressed = false;
-    this.timerStarted = false;
-
-  }
-
-  arrowPressed: boolean;
-  subscription: Subscription;
-  timerStarted: boolean;
+    constructor() {
+        this.timerStarted = false;
+        this.arrowPressed = false;
+    }
+    arrowPressed: boolean;
+    subscription: Subscription;
+    timerStarted: boolean;
 }

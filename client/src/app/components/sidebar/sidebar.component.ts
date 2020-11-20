@@ -486,4 +486,41 @@ export class SidebarComponent {
             this.undoRedoService.redo();
         }
     }
+
+    @HostListener('window:keydown.control.c', ['$event']) copySelection(event: KeyboardEvent): void {
+        event.preventDefault();
+        console.log('copy event');
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.copyImage();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.copyImage();
+        }
+    }
+
+    @HostListener('window:keydown.control.x', ['$event']) cutSelection(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.cutImage();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.cutImage();
+        }
+    }
+
+    @HostListener('window:keydown.control.v', ['$event']) pasteSelection(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.pasteImage();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.pasteImage();
+        }
+    }
+
+    @HostListener('window:keydown.Delete', ['$event']) delSelection(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.selectionRectangleService.deleteImage();
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.selectionEllipseService.deleteImage();
+        }
+    }
 }

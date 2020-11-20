@@ -16,6 +16,7 @@ describe('SelectionEllipseAction', () => {
     let copyPosition: Vec2;
     let imageData: ImageData;
     let selectionRect: Vec2;
+    let ellipseRad: Vec2;
     let width: number;
     let height: number;
     let baseStub: CanvasRenderingContext2D;
@@ -27,6 +28,7 @@ describe('SelectionEllipseAction', () => {
         copyPosition = { x: 5, y: 5 };
         imageData = new ImageData(10, 10);
         selectionRect = { x: 6, y: 7 };
+        ellipseRad = { x: 5, y: 5 };
         width = 10;
         // tslint:disable:no-magic-numbers
         height = 10;
@@ -34,7 +36,15 @@ describe('SelectionEllipseAction', () => {
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
-        selectionEllipseActionStub = new SelectionEllipseAction(copyPosition, imageData, selectionRect, width, height, selectionEllipseStub);
+        selectionEllipseActionStub = new SelectionEllipseAction(
+            copyPosition,
+            imageData,
+            selectionRect,
+            width,
+            height,
+            selectionEllipseStub,
+            ellipseRad,
+        );
         canvas = canvasTestHelper.canvas;
         // tslint:disable:no-magic-numbers
         canvas.width = 100;

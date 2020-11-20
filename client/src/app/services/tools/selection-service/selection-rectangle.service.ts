@@ -23,6 +23,7 @@ export class SelectionRectangleService extends SelectionService {
         this.mouseDown = event.button === MouseButton.Left;
 
         if (this.mouseDown) {
+            // check if mouse is inside selection
             if (this.startingPos && this.endingPos) {
                 this.inSelection = this.isInsideSelection(this.getPositionFromMouse(event));
             }
@@ -51,7 +52,8 @@ export class SelectionRectangleService extends SelectionService {
                 this.undoRedoService.clearRedo();
                 this.mouseMouvement = { x: 0, y: 0 };
                 this.isAllSelect = false;
-                this.endingPos = this.startingPos = this.mouseDownCoord;
+                this.endingPos = this.mouseDownCoord;
+                this.startingPos = this.mouseDownCoord;
             }
         }
     }
@@ -59,9 +61,18 @@ export class SelectionRectangleService extends SelectionService {
     onKeyEscape(event: KeyboardEvent): void {
         // paste image
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        if (this.mouseDown) {
+
+        // if the user is pressing escape while moving the selection
+        if (
+            this.mouseDown ||
+            this.leftArrow.arrowPressed ||
+            this.rightArrow.arrowPressed ||
+            this.upArrow.arrowPressed ||
+            this.downArrow.arrowPressed
+        ) {
             this.imagePosition = { x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y };
         }
+        // paste image
         this.pasteSelection(this.imagePosition, this.imageData);
         // undo redo
         const selectRectAc = new SelectionRectAction(
@@ -79,17 +90,17 @@ export class SelectionRectangleService extends SelectionService {
         this.endingPos = this.startingPos = this.mouseDownCoord;
 
         this.mouseDown = false;
-        if (this.timerDown) {
-            this.subscriptionMoveDown.unsubscribe();
+        if (this.downArrow.timerStarted) {
+            this.downArrow.subscription.unsubscribe();
         }
-        if (this.timerLeft) {
-            this.subscriptionMoveLeft.unsubscribe();
+        if (this.leftArrow.timerStarted) {
+            this.leftArrow.subscription.unsubscribe();
         }
-        if (this.timerRight) {
-            this.subscriptionMoveRight.unsubscribe();
+        if (this.rightArrow.timerStarted) {
+            this.rightArrow.subscription.unsubscribe();
         }
-        if (this.timerUp) {
-            this.subscriptionMoveUp.unsubscribe();
+        if (this.upArrow.timerStarted) {
+            this.upArrow.subscription.unsubscribe();
         }
         if (this.timerStarted) {
             this.subscriptionTimer.unsubscribe();
@@ -114,102 +125,75 @@ export class SelectionRectangleService extends SelectionService {
         this.drawingService.baseCtx.fillRect(position.x, position.y, width, height);
     }
 
-    pasteArrowSelection(): void {
-        if (!this.timerStarted) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
-            this.pasteSelection(
-                { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                this.imageData,
-            );
-            // undo redo
-            const selectRectAc = new SelectionRectAction(
-                { x: this.copyImageInitialPos.x + this.mouseMouvement.x, y: this.copyImageInitialPos.y + this.mouseMouvement.y },
-                this.imageData,
-                this.copyImageInitialPos,
-                Math.abs(this.width),
-                Math.abs(this.height),
-                this,
-            );
-            this.undoRedoService.addUndo(selectRectAc);
-            this.undoRedoService.clearRedo();
-            this.mouseMouvement = { x: 0, y: 0 };
-        }
-    }
-
     onLeftArrowUp(): void {
         if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.leftArrow = false;
+            this.leftArrow.arrowPressed = false;
             this.resetTimer();
-            if (this.timerLeft) {
-                this.subscriptionMoveLeft.unsubscribe();
+            if (this.leftArrow.timerStarted) {
+                this.leftArrow.subscription.unsubscribe();
             }
+
+            // changing image position
             this.imagePosition = { x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y };
-            // this.pasteArrowSelection();
-            this.startingPos.x = this.startingPos.x + this.mouseMouvement.x;
-            this.startingPos.y = this.startingPos.y + this.mouseMouvement.y;
-            this.endingPos.x = this.endingPos.x + this.mouseMouvement.x;
-            this.endingPos.y = this.endingPos.y + this.mouseMouvement.y;
+            this.startingPos = { x: this.startingPos.x + this.mouseMouvement.x, y: this.startingPos.y + this.mouseMouvement.y };
+            this.endingPos = { x: this.endingPos.x + this.mouseMouvement.x, y: this.endingPos.y + this.mouseMouvement.y };
 
             this.mouseMouvement = { x: 0, y: 0 };
-            this.timerLeft = false;
+            this.leftArrow.timerStarted = false;
         }
     }
 
     onRightArrowUp(): void {
         if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.rightArrow = false;
+            this.rightArrow.arrowPressed = false;
             this.resetTimer();
-            if (this.timerRight) {
-                this.subscriptionMoveRight.unsubscribe();
+            if (this.rightArrow.timerStarted) {
+                this.rightArrow.subscription.unsubscribe();
             }
+
+            // changing image position
             this.imagePosition = { x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y };
-            // this.pasteArrowSelection();
-            this.startingPos.x = this.startingPos.x + this.mouseMouvement.x;
-            this.startingPos.y = this.startingPos.y + this.mouseMouvement.y;
-            this.endingPos.x = this.endingPos.x + this.mouseMouvement.x;
-            this.endingPos.y = this.endingPos.y + this.mouseMouvement.y;
+            this.startingPos = { x: this.startingPos.x + this.mouseMouvement.x, y: this.startingPos.y + this.mouseMouvement.y };
+            this.endingPos = { x: this.endingPos.x + this.mouseMouvement.x, y: this.endingPos.y + this.mouseMouvement.y };
 
             this.mouseMouvement = { x: 0, y: 0 };
-            this.timerRight = false;
+            this.rightArrow.timerStarted = false;
         }
     }
 
     onUpArrowUp(): void {
         if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.upArrow = false;
+            this.upArrow.arrowPressed = false;
             this.resetTimer();
-            if (this.timerUp) {
-                this.subscriptionMoveUp.unsubscribe();
+            if (this.upArrow.timerStarted) {
+                this.upArrow.subscription.unsubscribe();
             }
+
+            // changing image position
             this.imagePosition = { x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y };
-            // this.pasteArrowSelection();
-            this.startingPos.x = this.startingPos.x + this.mouseMouvement.x;
-            this.startingPos.y = this.startingPos.y + this.mouseMouvement.y;
-            this.endingPos.x = this.endingPos.x + this.mouseMouvement.x;
-            this.endingPos.y = this.endingPos.y + this.mouseMouvement.y;
+            this.startingPos = { x: this.startingPos.x + this.mouseMouvement.x, y: this.startingPos.y + this.mouseMouvement.y };
+            this.endingPos = { x: this.endingPos.x + this.mouseMouvement.x, y: this.endingPos.y + this.mouseMouvement.y };
 
             this.mouseMouvement = { x: 0, y: 0 };
-            this.timerUp = false;
+            this.upArrow.timerStarted = false;
         }
     }
 
     onDownArrowUp(): void {
         if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.downArrow = false;
+            this.downArrow.arrowPressed = false;
             this.resetTimer();
-            if (this.timerDown) {
-                this.subscriptionMoveDown.unsubscribe();
+            if (this.downArrow.timerStarted) {
+                this.downArrow.subscription.unsubscribe();
             }
+
+            // changing image position
             this.imagePosition = { x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y };
-            // this.pasteArrowSelection();
-            this.startingPos.x = this.startingPos.x + this.mouseMouvement.x;
-            this.startingPos.y = this.startingPos.y + this.mouseMouvement.y;
-            this.endingPos.x = this.endingPos.x + this.mouseMouvement.x;
-            this.endingPos.y = this.endingPos.y + this.mouseMouvement.y;
+            this.startingPos = { x: this.startingPos.x + this.mouseMouvement.x, y: this.startingPos.y + this.mouseMouvement.y };
+            this.endingPos = { x: this.endingPos.x + this.mouseMouvement.x, y: this.endingPos.y + this.mouseMouvement.y };
 
             this.mouseMouvement = { x: 0, y: 0 };
-            this.timerDown = false;
+            this.downArrow.timerStarted = false;
         }
     }
 }
