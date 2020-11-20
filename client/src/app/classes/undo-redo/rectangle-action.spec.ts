@@ -3,6 +3,8 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { RectangleAction } from '@app/classes/undo-redo/rectangle-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
@@ -28,6 +30,8 @@ describe('RectangleAction', () => {
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
+    let autoSaveStub: AutomaticSaveService;
+    let canvasResizerStub: CanvasResizerService;
 
     beforeEach(() => {
         mousePosition = { x: 5, y: 6 };
@@ -43,7 +47,9 @@ describe('RectangleAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        rectStub = new RectangleService(drawingStub, colorStub, undoRedoStub);
+        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        rectStub = new RectangleService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
         rectangleActionStub = new RectangleAction(
             mousePosition,

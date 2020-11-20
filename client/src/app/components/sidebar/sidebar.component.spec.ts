@@ -19,6 +19,7 @@ import { ColorComponent } from '@app/components/color/color.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DropperColorComponent } from '@app/components/dropper-color/dropper-color.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -64,6 +65,7 @@ describe('SidebarComponent', () => {
     let selectionEllipseStub: SelectionEllipseService;
     let undoRedoStub: UndoRedoService;
     let selectionStub: SelectionService;
+    let autoSaveStub: AutomaticSaveService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -72,16 +74,17 @@ describe('SidebarComponent', () => {
     beforeEach(
         waitForAsync(async () => {
             drawingStub = new DrawingService();
+            autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
             colorStub = new ColorService(drawingStub);
             undoRedoStub = new UndoRedoService(drawingStub);
-            rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub);
-            ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub);
-            brushStub = new BrushService(drawingStub, colorStub, undoRedoStub);
-            pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub);
-            eraserStub = new EraserService(drawingStub, undoRedoStub);
-            lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
-            dropperServiceStub = new DropperService(drawingStub, colorStub);
-            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub);
+            rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
+            ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
+            brushStub = new BrushService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
+            pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
+            eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
+            lineStub = new LineService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
+            dropperServiceStub = new DropperService(drawingStub, colorStub, autoSaveStub);
+            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, autoSaveStub);
             selectionStub = new SelectionService(drawingStub);
             toolServiceStub = new ToolService(
                 pencilStub,
@@ -99,7 +102,7 @@ describe('SidebarComponent', () => {
 
             selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
-            polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub);
+            polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             canvas = canvasTestHelper.canvas;
             canvas.width = 100;
             canvas.height = 100;
@@ -133,6 +136,7 @@ describe('SidebarComponent', () => {
                     HttpClientModule,
                 ],
                 providers: [
+                    { provide: AutomaticSaveService, useValue: { save: () => '' } },
                     { provide: DrawingService, useValue: drawingStub },
                     { provide: ToolService, useValue: toolServiceStub },
                     { provide: RectangleService, useValue: rectangleStub },
@@ -778,5 +782,17 @@ describe('SidebarComponent', () => {
         window.dispatchEvent(event);
         component.callRedo(event);
         expect(spyRedo).toHaveBeenCalled();
+    });
+
+    it('should call btnCallRedo', () => {
+        const spyRedo = spyOn(undoRedoStub, 'redo').and.stub();
+        component.btnCallRedo();
+        expect(spyRedo).toHaveBeenCalled();
+    });
+
+    it('should call btnCallUndo', () => {
+        const spyUndo = spyOn(undoRedoStub, 'undo').and.stub();
+        component.btnCallUndo();
+        expect(spyUndo).toHaveBeenCalled();
     });
 });

@@ -11,6 +11,7 @@ import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-n
 import { DialogExportDrawingComponent } from '@app/components/dialog-export-locally/dialog-export-locally.component';
 import { DialogUploadComponent } from '@app/components/dialog-upload/dialog-upload.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
@@ -78,6 +79,7 @@ export class SidebarComponent {
         public undoRedoService: UndoRedoService,
         public selectionRectangleService: SelectionRectangleService,
         public selectionEllipseService: SelectionEllipseService,
+        private automaticSaveService: AutomaticSaveService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
@@ -92,6 +94,7 @@ export class SidebarComponent {
             this.newDrawingRef.afterClosed().subscribe(() => {
                 this.isDialogOpen = false;
             });
+            this.automaticSaveService.save();
         }
     }
 
@@ -102,6 +105,7 @@ export class SidebarComponent {
             this.exportDrawingRef.afterClosed().subscribe(() => {
                 this.isDialogloadSaveEport = true;
             });
+            this.automaticSaveService.save();
         }
     }
 
@@ -109,6 +113,7 @@ export class SidebarComponent {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
         this.undoRedoService.clearRedo();
         this.undoRedoService.clearUndo();
+        this.automaticSaveService.save();
     }
 
     openCarrousel(): void {
@@ -278,6 +283,16 @@ export class SidebarComponent {
 
     checkboxChangeToggle(args: MatCheckboxChange): void {
         this.toolService.currentTool.subToolSelect = args.checked ? SubToolselected.tool2 : SubToolselected.tool1;
+    }
+
+    btnCallRedo(): void {
+        this.undoRedoService.redo();
+        this.automaticSaveService.save();
+    }
+
+    btnCallUndo(): void {
+        this.undoRedoService.undo();
+        this.automaticSaveService.save();
     }
 
     // keybind control o for new drawing
@@ -477,6 +492,7 @@ export class SidebarComponent {
     callUndo(eventK: KeyboardEvent): void {
         if (!this.undoRedoService.isUndoDisabled) {
             this.undoRedoService.undo();
+            this.automaticSaveService.save();
         }
     }
 
@@ -484,6 +500,7 @@ export class SidebarComponent {
     callRedo(eventK: KeyboardEvent): void {
         if (!this.undoRedoService.isRedoDisabled) {
             this.undoRedoService.redo();
+            this.automaticSaveService.save();
         }
     }
 }
