@@ -25,18 +25,18 @@ export class FeatherService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-            this.primaryColor = this.colorService.primaryColor;
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-            this.cleanPaintGrout();
         }
     }
     onMouseMove(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
 
         if (this.mouseDown) {
+            this.clearPreviewCtx();
             this.pathData.push(mousePosition);
-            this.drawFeather(this.drawingService.baseCtx, this.pathData);
+            this.primaryColor = this.colorService.primaryColor;
+            this.drawFeather(this.drawingService.baseCtx, this.pathData, this.primaryColor);
         }
     }
 
@@ -44,7 +44,8 @@ export class FeatherService extends Tool {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.mouseDown) {
             this.pathData.push(mousePosition);
-            this.drawFeather(this.drawingService.baseCtx, this.pathData);
+            this.primaryColor = this.colorService.primaryColor;
+            this.drawFeather(this.drawingService.baseCtx, this.pathData, this.primaryColor);
         }
         this.mouseDown = false;
         // undo- redo
@@ -56,22 +57,26 @@ export class FeatherService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
-    drawFeather(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawFeather(ctx: CanvasRenderingContext2D, path: Vec2[], color: string): void {
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
         this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
-        this.drawingService.baseCtx.strokeStyle = this.primaryColor;
+        this.drawingService.baseCtx.strokeStyle = color;
+        ctx.lineWidth = this.lineWidth; // 2px
         ctx.beginPath();
         const sizePx = this.lineWidth;
         ctx.lineWidth = sizePx / motionDifference;
         for (let index = 1; index <= sizePx; index += 1) {
             ctx.beginPath();
-            ctx.globalAlpha = index / sizePx;
             for (const point of path) {
                 ctx.lineTo(point.x, point.y + sizePx - index);
             }
             ctx.stroke();
         }
         ctx.lineWidth = sizePx;
+    }
+
+    clearPreviewCtx(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     clearPath(): void {

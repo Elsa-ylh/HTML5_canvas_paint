@@ -15,6 +15,9 @@ export class FeatherAction extends AbsUndoRedo {
 
     apply(): void {
         this.drawingService.baseCtx.strokeStyle = this.primaryColor;
-        this.featherService.drawFeather(this.drawingService.baseCtx, this.changesFeather);
+        this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
+        this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
+        this.featherService.drawFeather(this.drawingService.baseCtx, this.changesFeather, this.primaryColor);
+        this.featherService.clearEffectTool();
     }
 }
