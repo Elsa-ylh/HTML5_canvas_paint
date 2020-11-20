@@ -22,9 +22,10 @@
     "@angular/platform-browser": "~10.1.0",
     "@angular/platform-browser-dynamic": "~10.1.0",
     "@angular/router": "~10.1.0",
+    "@types/form-data": "^2.5.0",
     "axios": "^0.21.0",
-    "form-data": "^3.0.0",
     "ci": "^1.0.0",
+    "form-data": "^3.0.0",
     "rxjs": "~6.6.3",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

@@ -47,6 +47,7 @@ export class EmailController {
                 res.status(IMAGE_EXTENSION_NOT_SAME_AS_BINARY).send("L'extension du fichier n'est pas le même que le contenu.");
                 return;
             }
+            console.log(properImageName);
             fs.rename(expressImageName, properImageName, (err) => {
                 if (err) {
                     console.log(err);

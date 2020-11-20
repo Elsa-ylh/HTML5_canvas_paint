@@ -28,7 +28,7 @@ export class DialogExportEmailComponent implements AfterViewInit {
 
     private imageFormatString: Map<ImageFormat, string> = new Map([
         [ImageFormat.PNG, '.png'],
-        [ImageFormat.JPG, '.jpg'],
+        [ImageFormat.JPG, '.jpeg'],
     ]);
 
     constructor(private drawingService: DrawingService, private clientServerService: ClientServerCommunicationService) {
@@ -88,7 +88,7 @@ export class DialogExportEmailComponent implements AfterViewInit {
                     textImageFormat += '.png';
                     break;
                 case ImageFormat.JPG:
-                    textImageFormat += '.jpg';
+                    textImageFormat += '.jpeg';
                     break;
             }
             switch (this.whichFilter) {
@@ -121,7 +121,12 @@ export class DialogExportEmailComponent implements AfterViewInit {
                 finalImageCtx.filter = this.filterString.get(this.whichFilter) as string;
                 finalImageCtx.drawImage(this.previewImage.nativeElement, 0, 0);
 
-                const base64image = finalImageCanvas.toDataURL('image/' + this.imageFormatString.get(this.whichExportType));
+                let base64image;
+                if (this.whichExportType === ImageFormat.JPG) {
+                    base64image = finalImageCanvas.toDataURL('image/jpeg');
+                } else {
+                    base64image = finalImageCanvas.toDataURL('image/png');
+                }
 
                 // https://stackoverflow.com/a/47497249
                 // https://github.com/axios/axios/issues/710#issuecomment-409213073
