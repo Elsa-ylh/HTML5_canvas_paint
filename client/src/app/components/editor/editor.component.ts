@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+
 // import { ToolService } from '@app/services/tool-service';
 
 @Component({
@@ -7,8 +8,8 @@ import { Component } from '@angular/core';
     styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent {
-    /* constructor(public toolService: ToolService) {}
-    onMouseUp(event: MouseEvent): void {
+    // constructor() {}
+    /* onMouseUp(event: MouseEvent): void {
         this.toolService.currentTool.onMouseUp(event);
     } */
 }
