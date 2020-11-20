@@ -1,25 +1,8 @@
-<mat-form-field appearance="outline">
-    <mat-label>Nombre d'émission</mat-label>
-    <input matInput placeholder="1-100" max="100" maxlength="3" #inputEmission type="number" />
-</mat-form-field>
-<mat-form-field appearance="outline">
-    <mat-label>Diamètre du jet</mat-label>
-    <input matInput placeholder="0-255" maxValue="255" maxlength="3" #inputZoneDiameter type="number" />
-</mat-form-field>
-<mat-form-field appearance="outline">
-    <mat-label>Diamètre des gouttelettes</mat-label>
-    <input matInput placeholder="0-255" maxValue="255" maxlength="3" #inputDropDiameter type="number" />
-</mat-form-field>
-<button
-    mat-button
-    class="numDropButton"
-    (click)="
-        sendInput({
-            nbEmission: inputEmission.valueAsNumber,
-            zoneDiameter: inputZoneDiameter.valueAsNumber,
-            dropDiameter: inputDropDiameter.valueAsNumber
-        })
-    "
->
-    appliquer
-</button>
+<mat-slider min="1" max="100" value="1" step="1" [(ngModel)]="sprayService.density"> </mat-slider>
+<div>nombre d'emission : {{ sprayService.density }} goutelettes</div>
+
+<mat-slider min="1" max="5" value="1" step="1" [(ngModel)]="sprayService.dropDiameter"> </mat-slider>
+<div>diametre des gouttes : {{ sprayService.dropDiameter }}</div>
+
+<mat-slider min="1" max="200" value="1" step="1" [(ngModel)]="sprayService.zoneDiameter"> </mat-slider>
+<div>diametre du jet : {{ sprayService.zoneDiameter }}</div>

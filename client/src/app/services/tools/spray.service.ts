@@ -13,7 +13,7 @@ export class SprayService extends Tool {
         super(drawingService);
     }
 
-    private density: number = 40; // number of drop per second
+    density: number = 40; // number of drop per second
     private currentColor: string;
     position: Vec2;
     private time: number = 50;
@@ -21,9 +21,8 @@ export class SprayService extends Tool {
     private minAngle: number = 0;
     private maxAngle: number = Math.PI * 2;
     private minLength: number = 0;
-    private maxLength: number = 30;
-    private radiusX: number = 1;
-    private radiusY: number = 1;
+    zoneDiameter: number = 60; // diametre de la zone d'application
+    dropDiameter: number = 2; // drop diameter
     private rotation: number = 0;
     private beginAngle: number = 0;
     private endAngle: number = 2 * Math.PI;
@@ -43,13 +42,13 @@ export class SprayService extends Tool {
         this.drawingService.baseCtx.fillStyle = this.currentColor;
         for (let i = this.density; i--; ) {
             const angle = this.generateRandomValue(this.minAngle, this.maxAngle);
-            const radius = this.generateRandomValue(this.minLength, this.maxLength); // the max interval is the diameter of the zone
+            const radius = this.generateRandomValue(this.minLength, this.zoneDiameter / 2); // the max interval is the diameter of the zone
             this.drawingService.baseCtx.beginPath();
             this.drawingService.baseCtx.ellipse(
                 this.position.x + radius * Math.cos(angle), // the center of drop in x axis depends on random angle
                 this.position.y + radius * Math.sin(angle), // the center of drop in y axis depends on random angle
-                this.radiusX,
-                this.radiusY,
+                this.dropDiameter / 2,
+                this.dropDiameter / 2,
                 this.rotation,
                 this.beginAngle,
                 this.endAngle,
@@ -69,9 +68,5 @@ export class SprayService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         this.position = { x: event.offsetX, y: event.offsetY };
-    }
-
-    setDensity(nbEmission: number): void {
-        this.density = nbEmission;
     }
 }
