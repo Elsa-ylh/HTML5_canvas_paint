@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { StrokeAction } from '@app/classes/undo-redo/stroke-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil-service';
@@ -22,7 +24,8 @@ describe('StrokeAction', () => {
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
-
+    let autoSaveStub: AutomaticSaveService;
+    let canvasResizerStub: CanvasResizerService;
     beforeEach(() => {
         changes.push({ x: 5, y: 6 });
         changes.push({ x: 1, y: 8 });
@@ -34,7 +37,9 @@ describe('StrokeAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub);
+        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
         strokeActionStub = new StrokeAction(changes, colorPencil, thickness, alpha, pencilStub, drawingStub);
         canvas = canvasTestHelper.canvas;
         // tslint:disable:no-magic-numbers

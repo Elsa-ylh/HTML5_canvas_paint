@@ -9,6 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { MainPageComponent } from '@app/components/main-page/main-page.component';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { Subject } from 'rxjs';
 
 describe('MainPageComponent', () => {
@@ -34,6 +35,7 @@ describe('MainPageComponent', () => {
                 providers: [
                     { provide: MatDialog, useValue: dialogMock },
                     { provide: MatDialogRef, useValue: {} },
+                    { provide: AutomaticSaveService, useValue: { save: () => '', check: () => false } },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);

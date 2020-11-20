@@ -5,6 +5,7 @@ import { Tool } from '@app/classes/tool';
 import { ToolGeneralInfo } from '@app/classes/tool-general-info';
 import { RectangleAction } from '@app/classes/undo-redo/rectangle-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -26,7 +27,12 @@ export class RectangleService extends Tool {
     mouseEnter: boolean = false;
     mouseOut: boolean = false;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private undoRedoService: UndoRedoService,
+        private automaticSaveService: AutomaticSaveService,
+    ) {
         super(drawingService);
     }
 
@@ -234,5 +240,6 @@ export class RectangleService extends Tool {
                     break;
             }
         }
+        this.automaticSaveService.save();
     }
 }

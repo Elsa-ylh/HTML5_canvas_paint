@@ -4,6 +4,7 @@ import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { LineAction } from '@app/classes/undo-redo/line-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -27,7 +28,12 @@ export class LineService extends Tool {
     private shiftKeyDown: boolean = false;
     private mouseOut: boolean = false;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private undoRedoService: UndoRedoService,
+        private automaticSaveService: AutomaticSaveService,
+    ) {
         super(drawingService);
     }
 
@@ -133,6 +139,7 @@ export class LineService extends Tool {
         this.clearPath();
         this.clearEffectTool();
         this.mouseDown = false;
+        this.automaticSaveService.save();
     }
 
     onKeyEscape(event: KeyboardEvent): void {
