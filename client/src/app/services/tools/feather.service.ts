@@ -6,7 +6,6 @@ import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-const motionDifference = 4;
 
 @Injectable({
     providedIn: 'root',
@@ -15,7 +14,8 @@ export class FeatherService extends Tool {
     private pathData: Vec2[]; //
     private lineWidth = 2;
     private primaryColor: string;
-    // private mouseOut: boolean = false;
+    featherLength: number = 1;
+    featherAngle: number = 1;
 
     constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
@@ -61,10 +61,9 @@ export class FeatherService extends Tool {
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
         this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
         this.drawingService.baseCtx.strokeStyle = color;
-        ctx.lineWidth = this.lineWidth; // 2px
         ctx.beginPath();
         const sizePx = this.lineWidth;
-        ctx.lineWidth = sizePx / motionDifference;
+        ctx.lineWidth = sizePx;
         for (let index = 1; index <= sizePx; index += 1) {
             ctx.beginPath();
             for (const point of path) {
@@ -72,7 +71,6 @@ export class FeatherService extends Tool {
             }
             ctx.stroke();
         }
-        ctx.lineWidth = sizePx;
     }
 
     clearPreviewCtx(): void {
@@ -81,7 +79,6 @@ export class FeatherService extends Tool {
 
     clearPath(): void {
         this.pathData = [];
-        // this.mouseOut = false;
     }
 
     clearEffectTool(): void {
