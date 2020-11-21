@@ -4,6 +4,7 @@ import { RGBA } from '@app/classes/rgba';
 import { Tool } from '@app/classes/tool';
 import { PaintBucketAction } from '@app/classes/undo-redo/paint-bucket-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -21,6 +22,7 @@ export class PaintBucketService extends Tool {
         private colorService: ColorService,
         private cvsResizerService: CanvasResizerService,
         private undoRedoService: UndoRedoService,
+        private automaticSaveService: AutomaticSaveService,
     ) {
         super(drawingService);
     }
@@ -140,6 +142,7 @@ export class PaintBucketService extends Tool {
         const paintBucketAction = new PaintBucketAction(pixels, this.drawingService);
         this.undoRedoService.addUndo(paintBucketAction);
         this.undoRedoService.clearRedo();
+        this.automaticSaveService.save();
     }
     /*tslint:enable:cyclomatic-complexity*/
 

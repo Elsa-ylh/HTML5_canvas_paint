@@ -3,7 +3,6 @@ import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
 import { LoadAction } from '@app/classes/undo-redo/load-action';
 import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-
 @Injectable({
     providedIn: 'root',
 })

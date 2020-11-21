@@ -19,6 +19,7 @@ import { ColorComponent } from '@app/components/color/color.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DropperColorComponent } from '@app/components/dropper-color/dropper-color.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -35,6 +36,7 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
+import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Observable, Subject } from 'rxjs';
 import { SidebarComponent } from './sidebar.component';
@@ -43,7 +45,6 @@ import { SidebarComponent } from './sidebar.component';
 // tslint:disable:no-magic-numbers
 // tslint:disable:max-file-line-count
 // tslint:disable:prefer-const
-
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
@@ -64,6 +65,8 @@ describe('SidebarComponent', () => {
     let selectionEllipseStub: SelectionEllipseService;
     let undoRedoStub: UndoRedoService;
     let selectionStub: SelectionService;
+    let textServiceStub: TextService;
+    let automaticSaveStub: AutomaticSaveService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -72,17 +75,19 @@ describe('SidebarComponent', () => {
     beforeEach(
         waitForAsync(async () => {
             drawingStub = new DrawingService();
+            automaticSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
             colorStub = new ColorService(drawingStub);
             undoRedoStub = new UndoRedoService(drawingStub);
-            rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub);
-            ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub);
-            brushStub = new BrushService(drawingStub, colorStub, undoRedoStub);
-            pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub);
-            eraserStub = new EraserService(drawingStub, undoRedoStub);
-            lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
-            dropperServiceStub = new DropperService(drawingStub, colorStub);
-            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub);
+            rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            brushStub = new BrushService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            eraserStub = new EraserService(drawingStub, undoRedoStub, automaticSaveStub);
+            lineStub = new LineService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            dropperServiceStub = new DropperService(drawingStub, colorStub, automaticSaveStub);
+            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, automaticSaveStub);
             selectionStub = new SelectionService(drawingStub);
+            textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -95,11 +100,12 @@ describe('SidebarComponent', () => {
                 paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
+                textServiceStub,
             );
 
             selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
-            polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub);
+            polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             canvas = canvasTestHelper.canvas;
             canvas.width = 100;
             canvas.height = 100;
@@ -133,6 +139,7 @@ describe('SidebarComponent', () => {
                     HttpClientModule,
                 ],
                 providers: [
+                    { provide: AutomaticSaveService, useValue: { save: () => '' } },
                     { provide: DrawingService, useValue: drawingStub },
                     { provide: ToolService, useValue: toolServiceStub },
                     { provide: RectangleService, useValue: rectangleStub },
@@ -778,5 +785,17 @@ describe('SidebarComponent', () => {
         window.dispatchEvent(event);
         component.callRedo(event);
         expect(spyRedo).toHaveBeenCalled();
+    });
+
+    it('should call btnCallRedo', () => {
+        const spyRedo = spyOn(undoRedoStub, 'redo').and.stub();
+        component.btnCallRedo();
+        expect(spyRedo).toHaveBeenCalled();
+    });
+
+    it('should call btnCallUndo', () => {
+        const spyUndo = spyOn(undoRedoStub, 'undo').and.stub();
+        component.btnCallUndo();
+        expect(spyUndo).toHaveBeenCalled();
     });
 });

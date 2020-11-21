@@ -3,6 +3,7 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
@@ -22,7 +23,7 @@ export class DropperService extends Tool {
     private currentColor: string;
     circleCtx: CanvasRenderingContext2D;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private automaticSaveService: AutomaticSaveService) {
         super(drawingService);
     }
 
@@ -53,6 +54,7 @@ export class DropperService extends Tool {
         this.currentColor = this.colorService.numeralToHex(this.colorService.getColor(position, this.drawingService.baseCtx));
         this.shapeCircle(this.currentColor);
         this.shapePreview(this.currentColor);
+        this.automaticSaveService.save();
     }
     shapeCircle(color: string): void {
         this.circlePositionX = this.circleWidth;

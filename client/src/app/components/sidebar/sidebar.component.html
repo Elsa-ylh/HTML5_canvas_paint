@@ -21,6 +21,9 @@
                     <mat-button-toggle (click)="pickLine()" [checked]="lineChecked" matTooltip="Outil ligne" matTooltipPosition="right">
                         <mat-icon>horizontal_rule</mat-icon>
                     </mat-button-toggle>
+                    <mat-button-toggle (click)="pickText()" [checked]="textChecked" matTooltip="Outil Texte" matTooltipPosition="right">
+                        <mat-icon>Title</mat-icon>
+                    </mat-button-toggle>
                     <mat-button-toggle
                         (click)="pickRectangle(1)"
                         [checked]="rectangleChecked"
@@ -73,7 +76,7 @@
                         mat-button
                         matTooltip="Annuler"
                         matTooltipPosition="right"
-                        (click)="undoRedoService.undo()"
+                        (click)="btnCallUndo()"
                         [disabled]="undoRedoService.isUndoDisabled"
                     >
                         <mat-icon> undo </mat-icon>
@@ -82,7 +85,7 @@
                         mat-button
                         matTooltip="Refaire"
                         matTooltipPosition="right"
-                        (click)="undoRedoService.redo()"
+                        (click)="btnCallRedo()"
                         [disabled]="undoRedoService.isRedoDisabled"
                     >
                         <mat-icon> redo </mat-icon>
@@ -166,6 +169,10 @@
                 </mat-grid-tile>
             </mat-grid-list>
 
+            <mat-grid-list class="select" cols="6" *ngSwitchCase="toolUsed.Text">
+                <app-write-text-option></app-write-text-option>
+            </mat-grid-list>
+
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Rectangle">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
                 <mat-grid-tile colspan="6"> Choisissez un type de rectangle</mat-grid-tile>
@@ -189,8 +196,9 @@
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Ellipse">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
-                <mat-grid-tile colspan="6"> Choisissez un type d'ellipse</mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="4">
+                    <mat-grid-tile colspan="6"> Choisissez un type d'ellipse</mat-grid-tile>
+
                     <mat-button-toggle-group vertical="true">
                         <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickEllipse(1)">Plein</mat-button-toggle>
                         <mat-button-toggle class="sub-button" mat-button color="primary" (click)="pickEllipse(2)">Contour</mat-button-toggle>
