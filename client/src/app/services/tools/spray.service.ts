@@ -16,7 +16,7 @@ export class SprayService extends Tool {
     density: number = 40; // number of drop per second
     private currentColor: string;
     position: Vec2;
-    private time: number = 50;
+    private time: number = 1000;
     private timer: ReturnType<typeof setInterval>;
     private minAngle: number = 0;
     private maxAngle: number = Math.PI * 2;
@@ -60,6 +60,7 @@ export class SprayService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         this.position = { x: event.offsetX, y: event.offsetY };
+        this.transform();
         const callback = () => {
             this.transform();
         };

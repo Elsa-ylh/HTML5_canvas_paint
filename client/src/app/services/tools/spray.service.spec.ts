@@ -51,6 +51,6 @@ describe('SprayService', () => {
     it('should not call transform if mouseDown false ', () => {
         const event = { x: 15, y: 6 } as MouseEvent;
         sprayService.onMouseDown(event);
-        expect(transformSpy).not.toHaveBeenCalled();
+        expect(transformSpy).toHaveBeenCalled();
     });
 });
