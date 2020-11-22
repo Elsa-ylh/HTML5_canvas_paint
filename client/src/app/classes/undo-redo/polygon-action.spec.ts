@@ -3,6 +3,8 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { PolygoneAction } from '@app/classes/undo-redo/polygon-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PolygonService } from '@app/services/tools/polygon.service';
@@ -24,7 +26,8 @@ describe('PolygonAction', () => {
     let nbsides: number;
     let isRenderingBase: boolean;
     let selectSubTool: SubToolselected;
-
+    let autoSaveStub: AutomaticSaveService;
+    let canvasResizerStub: CanvasResizerService;
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
@@ -44,7 +47,9 @@ describe('PolygonAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub);
+        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
         polygonActionStub = new PolygoneAction(
             mousePosition,

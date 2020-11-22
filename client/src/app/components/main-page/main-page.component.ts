@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { CarrouselPictureComponent } from '@app/components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 
 @Component({
     selector: 'app-main-page',
@@ -15,8 +17,8 @@ export class MainPageComponent {
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     dialogLoadRef: MatDialogRef<CarrouselPictureComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
-    constructor(public dialogCreator: MatDialog) {
-        this.onGoingDrawing = false;
+    constructor(public dialogCreator: MatDialog, private router: Router, private automaticSaveService: AutomaticSaveService) {
+        this.onGoingDrawing = this.automaticSaveService.check();
     }
 
     createNewDrawing(): void {
@@ -46,5 +48,9 @@ export class MainPageComponent {
             width: '90%',
             height: '100%',
         });
+    }
+    continueDrawing(): void {
+        this.automaticSaveService.getUpload();
+        this.router.navigate(['/editor']);
     }
 }

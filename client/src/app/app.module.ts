@@ -54,6 +54,7 @@ import { PaintBucketColorComponent } from './components/paint-bucket-color/paint
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { SprayComponent } from './components/spray/spray.component';
 import { WriteTextDialogUserGuideComponent } from './components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+import { WriteTextOptionComponent } from './components/write-text-option/write-text-option.component';
 
 @NgModule({
     declarations: [
@@ -76,6 +77,7 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         DropperColorComponent,
         DialogUploadComponent,
         PaintBucketColorComponent,
+        WriteTextOptionComponent,
     ],
     imports: [
         ReactiveFormsModule,

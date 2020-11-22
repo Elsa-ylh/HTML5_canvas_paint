@@ -17,6 +17,7 @@ export enum ToolUsed {
     SelectionRectangle = 10010,
     SelectionEllipse = 10021,
     Spray = 1004,
+    Text = 50,
 }
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant

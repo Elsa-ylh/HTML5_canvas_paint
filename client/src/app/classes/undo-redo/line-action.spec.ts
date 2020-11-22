@@ -3,6 +3,7 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { LineAction } from '@app/classes/undo-redo/line-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from '@app/services/tools/line.service';
@@ -27,7 +28,7 @@ describe('LineAction', () => {
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
-
+    let autoSaveStub: AutomaticSaveService;
     beforeEach(() => {
         changesLine.push({ x: 5, y: 6 });
         changesLine.push({ x: 25, y: 15 });
@@ -40,7 +41,7 @@ describe('LineAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
+        lineStub = new LineService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
         lineActionStub = new LineAction(changesLine, pointMouse, colorLine, thickness, secondaryTickness, lineStub, drawingStub, subToolselected);
 
