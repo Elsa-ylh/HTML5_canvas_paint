@@ -35,6 +35,13 @@ export class EmailController {
             // tslint:disable-next-line:no-any
             const properImageName = (req as any).files[0].originalname as string;
 
+            const binaryImage = fs.createReadStream(expressImageName);
+            binaryImage.on('data', (chunk: Buffer) => {
+                console.log(`Received ${chunk.length} bytes of data.`);
+                console.log(chunk.buffer);
+                console.log(chunk.buffer.slice(0, 2));
+            });
+
             const isEmailValid = await this.emailService.isEmailValid(email);
             if (!isEmailValid) {
                 console.log("Le courriel fourni n'est pas d'un format valide. Le courriel doit être style abc@email.com");
