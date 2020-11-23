@@ -53,4 +53,11 @@ describe('SprayService', () => {
         sprayService.onMouseDown(event);
         expect(transformSpy).toHaveBeenCalled();
     });
+
+    it('should update position on mouse move', () => {
+        const event = { x: 15, y: 6 } as MouseEvent;
+        sprayService.onMouseMove(event);
+        expect(sprayService.position.x).toEqual(event.offsetX);
+        expect(sprayService.position.y).toEqual(event.offsetY);
+    });
 });
