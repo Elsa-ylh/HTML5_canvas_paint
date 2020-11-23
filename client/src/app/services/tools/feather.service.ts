@@ -13,8 +13,8 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 export class FeatherService extends Tool {
     private pathData: Vec2[]; //
     private primaryColor: string;
-    private previewWidth: number;
-    private previewHeight: number;
+    private previewWidth: number = 2;
+    private previewHeight: number = 2;
     featherLength: number = 1;
     featherAngle: number = 0;
 
@@ -73,6 +73,7 @@ export class FeatherService extends Tool {
     onMouseEnter(event: MouseEvent): void {
         this.drawingService.cursorCtx.canvas.style.display = 'inline-block';
         this.cursorLineCtx.canvas.style.display = 'inline-block';
+        this.drawingService.cursorCtx.clearRect(0, 0, 40, 40);
     }
 
     drawFeather(ctx: CanvasRenderingContext2D, path: Vec2[], color: string): void {
@@ -91,13 +92,10 @@ export class FeatherService extends Tool {
     }
 
     private linePreview(): void {
-        this.cursorLineCtx.beginPath();
-        this.cursorLineCtx.rotate(this.featherAngle);
-        this.cursorLineCtx.fillRect(0, 0, this.previewWidth, this.previewHeight);
-        this.cursorLineCtx.fillStyle = '#0000000';
-        this.cursorLineCtx.fill();
-        this.cursorLineCtx.stroke();
-        this.cursorLineCtx.setTransform(1, 0, 0, 1, 0, 0);
+        this.drawingService.cursorCtx.beginPath();
+        this.drawingService.cursorCtx.fillRect(0, 0, this.previewWidth, this.previewHeight);
+        this.drawingService.cursorCtx.fillStyle = '#0000000';
+        this.drawingService.cursorCtx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     clearPreviewCtx(): void {
