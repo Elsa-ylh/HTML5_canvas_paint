@@ -21,21 +21,22 @@ export class EmailController {
     private configureRouter(): void {
         this.router = Router();
         this.router.post('/', async (req: Request, res: Response) => {
-            if (req.body.email === undefined) {
+            const email = req.body.email;
+
+            if (email === undefined) {
                 res.status(400).send("Votre requête a besoin d'un courriel.");
                 return;
             }
-
-            const email = req.body.email;
-
-            // Gitlab CI has difficulty finding the MulterFile type, we will leave it as is as an exception.
 
             // Multer request type
             // tslint:disable-next-line:no-any
             const imageFile = (req as any).file;
 
-            const expressImageName = imageFile.path as string;
+            if (imageFile === undefined) {
+                res.status(400).send("Votre requête a besoin d'une image PNG ou JPG.");
+            }
 
+            const expressImageName = imageFile.path as string;
             const properImageName = imageFile.originalname as string;
 
             const isEmailValid = await this.emailService.isEmailValid(email);
@@ -52,7 +53,7 @@ export class EmailController {
                 res.status(IMAGE_EXTENSION_NOT_SAME_AS_BINARY).send("L'extension du fichier n'est pas le même que le contenu.");
                 return;
             }
-            console.log(properImageName);
+
             fs.rename(expressImageName, properImageName, (err) => {
                 if (err) {
                     console.log(err);
