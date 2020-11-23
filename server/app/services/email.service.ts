@@ -1,4 +1,7 @@
+import { ImageFormat } from '@common/communication/image-format';
 import axios, { AxiosResponse } from 'axios';
+import * as FileType from 'file-type';
+import { FileTypeResult } from 'file-type/core';
 import * as FormData from 'form-data';
 import { injectable } from 'inversify';
 import 'reflect-metadata';
@@ -16,8 +19,28 @@ export class EmailService {
         return false;
     }
 
-    async isContentValid(imagePath: string): Promise<boolean> {
-        return true;
+    async getImageExtension(imagePath: string): Promise<ImageFormat> {
+        const extension = imagePath.split('.').pop();
+        if (extension === 'png' || extension === 'PNG') {
+            return ImageFormat.PNG;
+        }
+        if (extension === 'jpg' || extension === 'jpeg' || extension === 'JPG' || extension === 'JPEG') {
+            return ImageFormat.JPG;
+        }
+        return ImageFormat.NONE;
+    }
+
+    async isContentValid(imagePath: string, expectedExtension: ImageFormat): Promise<boolean> {
+        // https://www.npmjs.com/package/file-type
+        let imageFormatResult: FileTypeResult;
+        imageFormatResult = (await FileType.fromFile(imagePath)) as FileTypeResult;
+        if (imageFormatResult.ext === 'png' && expectedExtension === ImageFormat.PNG) {
+            return true;
+        }
+        if (imageFormatResult.ext === 'jpg' && expectedExtension === ImageFormat.JPG) {
+            return true;
+        }
+        return false;
     }
 
     async sendEmail(emailAndImage: FormData): Promise<void> {

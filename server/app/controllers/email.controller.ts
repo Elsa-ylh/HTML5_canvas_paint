@@ -1,4 +1,5 @@
 import { EmailService } from '@app/services/email.service';
+import { ImageFormat } from '@common/communication/image-format';
 import { Request, Response, Router } from 'express';
 import * as FormData from 'form-data';
 import * as fs from 'fs';
@@ -29,18 +30,13 @@ export class EmailController {
 
             // Gitlab CI has difficulty finding the MulterFile type, we will leave it as is as an exception.
 
+            // Multer request type
             // tslint:disable-next-line:no-any
-            const expressImageName = (req as any).files[0].path as string;
+            const imageFile = (req as any).file;
 
-            // tslint:disable-next-line:no-any
-            const properImageName = (req as any).files[0].originalname as string;
+            const expressImageName = imageFile.path as string;
 
-            const binaryImage = fs.createReadStream(expressImageName);
-            binaryImage.on('data', (chunk: Buffer) => {
-                console.log(`Received ${chunk.length} bytes of data.`);
-                console.log(chunk.buffer);
-                console.log(chunk.buffer.slice(0, 2));
-            });
+            const properImageName = imageFile.originalname as string;
 
             const isEmailValid = await this.emailService.isEmailValid(email);
             if (!isEmailValid) {
@@ -48,7 +44,9 @@ export class EmailController {
                 res.status(BAD_EMAIL).send("Le courriel fourni n'est pas d'un format valide. Le courriel doit être style abc@email.com");
                 return;
             }
-            const isImageContentEqualExtension = await this.emailService.isContentValid(expressImageName);
+
+            const expectedFileExtension: ImageFormat = await this.emailService.getImageExtension(properImageName);
+            const isImageContentEqualExtension: boolean = await this.emailService.isContentValid(expressImageName, expectedFileExtension);
             if (!isImageContentEqualExtension) {
                 console.log("L'extension du fichier n'est pas le même que le contenu.");
                 res.status(IMAGE_EXTENSION_NOT_SAME_AS_BINARY).send("L'extension du fichier n'est pas le même que le contenu.");

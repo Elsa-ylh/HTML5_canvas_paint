@@ -2,8 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
-import axios, { AxiosResponse } from 'axios';
-import * as FormData from 'form-data';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -64,7 +62,8 @@ export class ClientServerCommunicationService {
         return this.http.post<Message>(this.HTTP_SERVE_LOCAL + '/delete', message).pipe(catchError(this.handleError<Message>('basicPost')));
     }
 
-    async sendEmail(formData: FormData): Promise<AxiosResponse<void>> {
-        return axios.post(this.HTTP_SERVE_LOCAL_EMAIL, formData, {});
+    sendEmail(formData: FormData): Observable<string> {
+        const responseOption: Object = { responseType: 'text' };
+        return this.http.post<string>(this.HTTP_SERVE_LOCAL_EMAIL, formData, responseOption);
     }
 }

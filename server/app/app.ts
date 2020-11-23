@@ -33,7 +33,7 @@ export class Application {
         this.app.use(cors());
 
         // this is to handle form data aka HTML5 File or images
-        this.app.use(multer({ dest: './uploads/' }).any());
+        this.app.use(multer({ dest: './uploads/' }).single('image'));
     }
 
     bindRoutes(): void {
