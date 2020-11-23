@@ -64,6 +64,14 @@
                     >
                         <mat-icon>crop_free</mat-icon>
                     </mat-button-toggle>
+                    <mat-button-toggle
+                        (click)="pickMagicWandSelection()"
+                        [checked]="MagicWandSelectionChecked"
+                        matTooltip="Sélection par baguette magique"
+                        matTooltipPosition="right"
+                    >
+                    <mat-icon>accessible_forward</mat-icon>
+                    </mat-button-toggle>
                 </mat-button-toggle-group>
             </mat-list>
 

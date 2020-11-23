@@ -17,6 +17,7 @@ export enum ToolUsed {
     Dropper = 1003,
     SelectionRectangle = 10010,
     SelectionEllipse = 10021,
+    MagicWandSelection = 10040,
 }
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant

@@ -23,6 +23,7 @@ import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { MagicWandService } from '@app/services/tools/selection-service/magic-wand.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -61,6 +62,7 @@ export class SidebarComponent {
     private isPolygonChecked: boolean = false;
     private isPaintBucketChecked: boolean = false;
     private isTextChecked: boolean = false;
+    private isMagicWandSelectionChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -80,6 +82,7 @@ export class SidebarComponent {
         public undoRedoService: UndoRedoService,
         public selectionRectangleService: SelectionRectangleService,
         public selectionEllipseService: SelectionEllipseService,
+        public magicWandService: MagicWandService,
         private automaticSaveService: AutomaticSaveService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
@@ -288,6 +291,16 @@ export class SidebarComponent {
 
     get textChecked(): boolean {
         return this.isTextChecked;
+    }
+
+    pickMagicWandSelection(): void {
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.MagicWandSelection);
+        this.isDialogloadSaveEport = true;
+    }
+
+    get MagicWandSelectionChecked(): boolean {
+        return this.isMagicWandSelectionChecked;
     }
 
     resetCheckedButton(): void {

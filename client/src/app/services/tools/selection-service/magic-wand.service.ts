@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
-import { Tool } from '@app/classes/tool';
 import { PaintBucketAction } from '@app/classes/undo-redo/paint-bucket-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
@@ -9,6 +8,7 @@ import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.servic
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { SelectionService } from './selection-service';
 
 const MIN_TOLERANCE = 0;
 const MAX_TOLERANCE = 100;
@@ -16,7 +16,7 @@ const MAX_TOLERANCE = 100;
 @Injectable({
     providedIn: 'root',
 })
-export class PaintBucketService extends Tool {
+export class MagicWandService extends SelectionService {
     constructor(
         drawingService: DrawingService,
         private colorService: ColorService,
@@ -29,10 +29,6 @@ export class PaintBucketService extends Tool {
     private radix: number = 16; // radix also means base as hexadecimal for this use case
     private colorAttributes: number = 4; // r,g,b,a
     tolerance: number = 0; // from 0 to 100 inclusively, look at paint bucket component
-
-    // https://en.wikipedia.org/wiki/Flood_fill#:~:text=Flood%20fill%2C%20also%20called%20seed,in%20a%20multi%2Ddimensional%20array.
-    // https://ben.akrin.com/?p=7888
-    // https://ben.akrin.com/canvas_fill/fill_04.html
 
     // the starting x and y means where the mouse was clicked down
     /*tslint:disable:cyclomatic-complexity*/
@@ -91,6 +87,7 @@ export class PaintBucketService extends Tool {
                 // tslint:disable-next-line:no-magic-numbers
                 pixels.data[linearCords + 3] === originalColor.alpha
             ) {
+                // put selection code
                 pixels.data[linearCords] = replacementColor.red;
                 pixels.data[linearCords + 1] = replacementColor.green;
                 pixels.data[linearCords + 2] = replacementColor.blue;
@@ -197,6 +194,7 @@ export class PaintBucketService extends Tool {
             // tslint:disable-next-line:no-magic-numbers
             atIteratorColor.alpha = pixels.data[iterator + 3];
             if (this.matchFillColor(originalColor, atIteratorColor)) {
+                // put selection code
                 pixels.data[iterator] = replacementColor.red;
                 pixels.data[iterator + 1] = replacementColor.green;
                 pixels.data[iterator + 2] = replacementColor.blue;
@@ -229,12 +227,14 @@ export class PaintBucketService extends Tool {
         if (event.button === MouseButton.Left) {
             this.mouseDown = false;
             this.floodFill(event.offsetX, event.offsetY, this.hexToRGBA(this.colorService.primaryColor));
+            // call contigous selection
             return;
         }
         // The entire canvas is being verified if the target color plus tolerance can be colored with the replacement color.
         if (event.button === MouseButton.Right) {
             this.mouseDown = false;
             this.paintAllSimilar(event.offsetX, event.offsetY, this.hexToRGBA(this.colorService.primaryColor));
+            // call non-contigus selections
             return;
         }
     }
