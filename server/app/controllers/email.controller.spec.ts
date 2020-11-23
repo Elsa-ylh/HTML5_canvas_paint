@@ -23,6 +23,7 @@ describe('Email controller', () => {
         emailService = container.get(TYPES.EmailService);
         app = container.get<Application>(TYPES.Application).app;
     });
+
     it('should undefined', async () => {
         emailService.isEmailValid.resolves(false);
         emailService.isContentValid.resolves(false);
@@ -33,5 +34,6 @@ describe('Email controller', () => {
                 expect(response.body).to.deep.equal("Votre requête a besoin d'un courriel.");
             });
     });
-    it('', async () => {});
+
+    it('should ', async () => {});
 });
