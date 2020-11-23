@@ -12,10 +12,13 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 })
 export class FeatherService extends Tool {
     private pathData: Vec2[]; //
-    private lineWidth = 2;
     private primaryColor: string;
+    private previewWidth: number;
+    private previewHeight: number;
     featherLength: number = 1;
-    featherAngle: number = 1;
+    featherAngle: number = 0;
+
+    cursorLineCtx: CanvasRenderingContext2D;
 
     constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
@@ -30,8 +33,13 @@ export class FeatherService extends Tool {
         }
     }
     onMouseMove(event: MouseEvent): void {
-        const mousePosition = this.getPositionFromMouse(event);
+        this.previewWidth = this.drawingService.cursorCtx.canvas.offsetWidth / 2; // magic number needed to center cursor
+        this.previewHeight = this.drawingService.cursorCtx.canvas.offsetHeight / 2;
+        this.drawingService.cursorCtx.canvas.style.left = event.offsetX - this.previewWidth + 'px';
+        this.drawingService.cursorCtx.canvas.style.top = event.offsetY - this.previewHeight + 'px';
+        this.linePreview();
 
+        const mousePosition = this.getPositionFromMouse(event);
         if (this.mouseDown) {
             this.clearPreviewCtx();
             this.pathData.push(mousePosition);
@@ -57,20 +65,39 @@ export class FeatherService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
+    onMouseOut(event: MouseEvent): void {
+        this.drawingService.cursorCtx.canvas.style.display = 'none';
+        this.cursorLineCtx.canvas.style.display = 'none';
+    }
+
+    onMouseEnter(event: MouseEvent): void {
+        this.drawingService.cursorCtx.canvas.style.display = 'inline-block';
+        this.cursorLineCtx.canvas.style.display = 'inline-block';
+    }
+
     drawFeather(ctx: CanvasRenderingContext2D, path: Vec2[], color: string): void {
-        this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
-        this.drawingService.previewCtx.lineJoin = this.drawingService.previewCtx.lineCap = 'round';
         this.drawingService.baseCtx.strokeStyle = color;
         ctx.beginPath();
-        const sizePx = this.lineWidth;
+        ctx.lineWidth = this.featherLength;
+        const sizePx = ctx.lineWidth;
         ctx.lineWidth = sizePx;
         for (let index = 1; index <= sizePx; index += 1) {
             ctx.beginPath();
             for (const point of path) {
-                ctx.lineTo(point.x, point.y + sizePx - index);
+                ctx.lineTo(point.x, point.y + Math.sin((Math.PI * this.featherAngle) / 180) * sizePx);
             }
             ctx.stroke();
         }
+    }
+
+    private linePreview(): void {
+        this.cursorLineCtx.beginPath();
+        this.cursorLineCtx.rotate(this.featherAngle);
+        this.cursorLineCtx.fillRect(0, 0, this.previewWidth, this.previewHeight);
+        this.cursorLineCtx.fillStyle = '#0000000';
+        this.cursorLineCtx.fill();
+        this.cursorLineCtx.stroke();
+        this.cursorLineCtx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     clearPreviewCtx(): void {

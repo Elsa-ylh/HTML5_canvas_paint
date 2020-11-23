@@ -28,8 +28,8 @@
         (mouseout)="onResizeOut($event)"
     ></canvas>
     <canvas
-        id="dropperLayer"
-        #dropperLayer
+        id="cursorCanvas"
+        #cursorCanvas
         width="40px"
         height="40px"
         [style.display]="toolService.currentToolName == dropper ? 'inline-block' : 'none'"
