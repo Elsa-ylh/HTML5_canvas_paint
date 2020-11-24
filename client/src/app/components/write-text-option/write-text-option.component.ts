@@ -10,7 +10,7 @@ import { TextService } from '@app/services/tools/text.service';
 export class WriteTextOptionComponent implements OnInit {
     private itItalic: boolean;
     private itBold: boolean;
-    private isTextChecked: boolean = false;
+    // private isTextChecked: boolean = false;
     // tslint:disable-next-line: typedef
     toolUsed = ToolUsed;
     constructor(public textService: TextService) {}
@@ -20,9 +20,9 @@ export class WriteTextOptionComponent implements OnInit {
         this.itItalic = false;
     }
 
-    get textChecked(): boolean {
+    /*get textChecked(): boolean {
         return this.isTextChecked;
-    }
+    }*/
 
     pickBold(): void {
         this.itBold = !this.itBold;
@@ -37,9 +37,9 @@ export class WriteTextOptionComponent implements OnInit {
         this.textService.selectTextPosition(subTool);
     }
 
-    resetCheckedButton(): void {
+    /* resetCheckedButton(): void {
         this.isTextChecked = false;
-    }
+    }*/
 
     @HostListener('window:keydown', ['$event']) keyUpHandler(event: KeyboardEvent): void {
         event.preventDefault();

@@ -61,4 +61,11 @@ describe('WriteTextOptionComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it('should ngOnInit', () => {
+        component.ngOnInit();
+        expect(component['itBold']).toBeFalse;
+        expect(component['itItalic']).toBeFalse;
+    });
+    it('should', () => {});
 });
