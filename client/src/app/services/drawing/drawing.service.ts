@@ -9,6 +9,7 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     dropperCtx: CanvasRenderingContext2D;
+    stampCtx: CanvasRenderingContext2D;
 
     whichTools: ToolUsed = ToolUsed.Pencil;
     currentTool: Tool;

@@ -61,6 +61,7 @@ export class SidebarComponent {
     private isPolygonChecked: boolean = false;
     private isPaintBucketChecked: boolean = false;
     private isTextChecked: boolean = false;
+    private isStampChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -290,6 +291,15 @@ export class SidebarComponent {
         return this.isTextChecked;
     }
 
+    pickStamp(): void {
+        this.toolService.switchTool(ToolUsed.Stamp);
+        this.isStampChecked = true;
+    }
+
+    get stampChecked(): boolean {
+        return this.isStampChecked;
+    }
+
     resetCheckedButton(): void {
         this.isPencilChecked = false;
         this.isEraserChecked = false;
@@ -303,6 +313,7 @@ export class SidebarComponent {
         this.isSelectionEllipseChecked = false;
         this.isSelectionRectangleChecked = false;
         this.isTextChecked = false;
+        this.isStampChecked = false;
     }
 
     checkboxChangeToggle(args: MatCheckboxChange): void {

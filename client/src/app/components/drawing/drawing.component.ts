@@ -45,18 +45,24 @@ export class DrawingComponent implements AfterViewInit {
         return ToolUsed.Dropper;
     }
 
+    get stamp(): ToolUsed.Stamp {
+        return ToolUsed.Stamp;
+    }
+
     // On utilise ce canvas pour dessiner sans affecter le dessin final, aussi utilisé pour sauvegarder
     // une version du dessin avant de l'appliquer au final.
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizingPreview', { static: false }) canvasResizingPreview: ElementRef<HTMLCanvasElement>;
     @ViewChild('dropperLayer', { static: false }) dropperLayer: ElementRef<HTMLCanvasElement>;
+    @ViewChild('stampLayer', { static: false }) stampLayer: ElementRef<HTMLCanvasElement>;
 
     baseCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
     private resizeCtx: CanvasRenderingContext2D;
 
     private dropperCtx: CanvasRenderingContext2D;
+    private stampCtx: CanvasRenderingContext2D;
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -67,6 +73,8 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.dropperCtx = this.dropperLayer.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.dropperCtx = this.dropperCtx;
+        this.stampCtx = this.stampLayer.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.drawingService.stampCtx = this.stampCtx;
         this.setCanvasBackgroundColor();
 
         const event = { offsetX: this.cvsResizerService.DEFAULT_WIDTH, offsetY: this.cvsResizerService.DEFAULT_HEIGHT } as MouseEvent;

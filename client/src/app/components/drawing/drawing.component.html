@@ -34,5 +34,8 @@
         height="40px"
         [style.display]="toolService.currentToolName == dropper ? 'inline-block' : 'none'"
     ></canvas>
+
+    <canvas id="stampLayer" #stampLayer width="40px" height="40px" [style.display]="toolService.currentToolName == stamp ? 'inline-block' : 'none'">
+    </canvas>
     <div id="greyBackground" [ngStyle]="{ 'width.px': cvsResizerService.resizeWidth, 'height.px': cvsResizerService.resizeHeight }"></div>
 </div>

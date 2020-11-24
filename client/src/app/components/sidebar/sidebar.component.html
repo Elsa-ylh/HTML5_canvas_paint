@@ -64,6 +64,10 @@
                     >
                         <mat-icon>crop_free</mat-icon>
                     </mat-button-toggle>
+
+                    <mat-button-toggle (click)="pickStamp()" [checked]="stampChecked" matTooltip="Outil Etampe" matTooltipPosition="right">
+                        <mat-icon>radio_button_checked</mat-icon>
+                    </mat-button-toggle>
                 </mat-button-toggle-group>
             </mat-list>
 
