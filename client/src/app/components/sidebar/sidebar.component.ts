@@ -295,7 +295,7 @@ export class SidebarComponent {
     }
 
     pickFeather(): void {
-        this.drawingService.cursorUsed = cursorName.default;
+        this.drawingService.cursorUsed = cursorName.none;
         this.toolService.switchTool(ToolUsed.Feather);
     }
 

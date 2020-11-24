@@ -33,6 +33,7 @@
         width="40px"
         height="40px"
         [style.display]="toolService.currentToolName == dropper ? 'inline-block' : 'none'"
+        [ngStyle]="{ cursor: cursorUsed }"
     ></canvas>
     <div id="greyBackground" [ngStyle]="{ 'width.px': cvsResizerService.resizeWidth, 'height.px': cvsResizerService.resizeHeight }"></div>
 </div>

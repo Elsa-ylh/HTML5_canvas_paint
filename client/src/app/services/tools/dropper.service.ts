@@ -57,6 +57,7 @@ export class DropperService extends Tool {
         this.automaticSaveService.save();
     }
     shapeCircle(color: string): void {
+        this.drawingService.cursorCtx.clearRect(0, 0, 40, 40);
         this.circlePositionX = this.circleWidth;
         this.circlePositionY = this.circleHeight;
         this.drawingService.cursorCtx.beginPath();

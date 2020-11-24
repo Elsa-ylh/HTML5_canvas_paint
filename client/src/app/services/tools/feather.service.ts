@@ -1,26 +1,29 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
-import { FeatherAction } from '@app/classes/undo-redo/feather-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class FeatherService extends Tool {
+    private readonly thickness: number = 2;
+
     private pathData: Vec2[]; //
-    private primaryColor: string;
-    private previewWidth: number = 2;
-    private previewHeight: number = 2;
-    featherLength: number = 1;
+    // private primaryColor: string;
+    //private previewWidth: number = 2;
+    // private previewHeight: number = 2;
+    featherLength: number = 30;
     featherAngle: number = 0;
 
     cursorLineCtx: CanvasRenderingContext2D;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService, // private undoRedoService: UndoRedoService
+    ) {
         super(drawingService);
     }
 
@@ -33,21 +36,20 @@ export class FeatherService extends Tool {
         }
     }
     onMouseMove(event: MouseEvent): void {
-        this.previewWidth = this.drawingService.cursorCtx.canvas.offsetWidth / 2; // magic number needed to center cursor
-        this.previewHeight = this.drawingService.cursorCtx.canvas.offsetHeight / 2;
-        this.drawingService.cursorCtx.canvas.style.left = event.offsetX - this.previewWidth + 'px';
-        this.drawingService.cursorCtx.canvas.style.top = event.offsetY - this.previewHeight + 'px';
-        this.linePreview();
+        this.renderCursor(event);
 
+        /*
         const mousePosition = this.getPositionFromMouse(event);
         if (this.mouseDown) {
             this.clearPreviewCtx();
             this.pathData.push(mousePosition);
             this.primaryColor = this.colorService.primaryColor;
-            this.drawFeather(this.drawingService.baseCtx, this.pathData, this.primaryColor);
+            // this.drawFeather(this.drawingService.baseCtx, this.pathData, this.primaryColor);
         }
+        */
     }
 
+    /*
     onMouseUp(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.mouseDown) {
@@ -64,18 +66,19 @@ export class FeatherService extends Tool {
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
+    */
 
     onMouseOut(event: MouseEvent): void {
         this.drawingService.cursorCtx.canvas.style.display = 'none';
-        this.cursorLineCtx.canvas.style.display = 'none';
+        this.drawingService.cursorCtx.canvas.style.display = 'none';
     }
 
     onMouseEnter(event: MouseEvent): void {
         this.drawingService.cursorCtx.canvas.style.display = 'inline-block';
-        this.cursorLineCtx.canvas.style.display = 'inline-block';
-        this.drawingService.cursorCtx.clearRect(0, 0, 40, 40);
+        this.drawingService.cursorCtx.canvas.style.display = 'inline-block';
     }
 
+    /*
     drawFeather(ctx: CanvasRenderingContext2D, path: Vec2[], color: string): void {
         this.drawingService.baseCtx.strokeStyle = color;
         ctx.beginPath();
@@ -90,12 +93,24 @@ export class FeatherService extends Tool {
             ctx.stroke();
         }
     }
+    */
 
-    private linePreview(): void {
+    private renderCursor(event: MouseEvent): void {
+        this.drawingService.cursorCtx.canvas.style.left = event.offsetX - this.featherLength / 2 + 'px';
+        this.drawingService.cursorCtx.canvas.style.top = event.offsetY - this.thickness / 2 + 'px';
+
+        this.drawingService.cursorCtx.clearRect(0, 0, 40, 40);
         this.drawingService.cursorCtx.beginPath();
-        this.drawingService.cursorCtx.fillRect(0, 0, this.previewWidth, this.previewHeight);
-        this.drawingService.cursorCtx.fillStyle = '#0000000';
-        this.drawingService.cursorCtx.setTransform(1, 0, 0, 1, 0, 0);
+
+        this.drawingService.cursorCtx.translate(this.featherLength / 2, this.thickness / 2);
+        this.drawingService.cursorCtx.rotate((45 * Math.PI) / 180);
+        this.drawingService.cursorCtx.translate(-this.featherLength / 2, -this.thickness / 2);
+
+        this.drawingService.cursorCtx.fillStyle = '#000000';
+        this.drawingService.cursorCtx.fillRect(0, 0, this.featherLength, this.thickness);
+        this.drawingService.cursorCtx.stroke();
+
+        this.drawingService.cursorCtx.resetTransform();
     }
 
     clearPreviewCtx(): void {
