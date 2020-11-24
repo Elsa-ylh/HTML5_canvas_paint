@@ -39,16 +39,8 @@ export class StampService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.drawingService.cursorCtx.canvas.width = this.drawingService.cursorCtx.canvas.width * this.canvasScale;
-        this.drawingService.cursorCtx.canvas.height = this.drawingService.cursorCtx.canvas.height * this.canvasScale;
-        console.log(this.drawingService.cursorCtx.canvas.width);
-        console.log(this.drawingService.cursorCtx.canvas.height);
-
-        console.log('stamp');
-        this.currentStamp.width = this.currentStamp.width + this.imageScale;
-        this.currentStamp.height = this.currentStamp.height + this.imageScale;
-        console.log(this.currentStamp.width);
-        console.log(this.currentStamp.width);
+        this.drawingService.cursorCtx.canvas.width = 300;
+        this.drawingService.cursorCtx.canvas.height = 300;
 
         this.drawingService.cursorCtx.scale(this.currentStamp.width, this.currentStamp.height);
         this.drawImage();
