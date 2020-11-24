@@ -1,4 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatLineModule, MatOptionModule } from '@angular/material/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TextService } from '@app/services/tools/text.service';
 import { WriteTextOptionComponent } from './write-text-option.component';
 
@@ -7,6 +16,18 @@ describe('WriteTextOptionComponent', () => {
     let fixture: ComponentFixture<WriteTextOptionComponent>;
     beforeEach(async () => {
         await TestBed.configureTestingModule({
+            imports: [
+                MatDialogModule,
+                MatIconModule,
+                MatGridListModule,
+                MatFormFieldModule,
+                MatOptionModule,
+                MatSelectModule,
+                FormsModule,
+                MatLineModule,
+                MatButtonToggleModule,
+                BrowserAnimationsModule,
+            ],
             declarations: [WriteTextOptionComponent],
             providers: [
                 {
