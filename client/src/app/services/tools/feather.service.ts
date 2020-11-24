@@ -13,7 +13,7 @@ export class FeatherService extends Tool {
 
     private pathData: Vec2[]; //
     // private primaryColor: string;
-    //private previewWidth: number = 2;
+    // private previewWidth: number = 2;
     // private previewHeight: number = 2;
     featherLength: number = 30;
     featherAngle: number = 0;
@@ -103,7 +103,7 @@ export class FeatherService extends Tool {
         this.drawingService.cursorCtx.beginPath();
 
         this.drawingService.cursorCtx.translate(this.featherLength / 2, this.thickness / 2);
-        this.drawingService.cursorCtx.rotate((45 * Math.PI) / 180);
+        this.drawingService.cursorCtx.rotate((this.featherAngle * Math.PI) / 180);
         this.drawingService.cursorCtx.translate(-this.featherLength / 2, -this.thickness / 2);
 
         this.drawingService.cursorCtx.fillStyle = '#000000';
