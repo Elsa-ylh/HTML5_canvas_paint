@@ -25,7 +25,7 @@ describe('Email service', () => {
     });
 
     it('should check if content is right extension', async () => {
-        const isContentValid = await emailService.isContentValid('placeholder');
+        const isContentValid = await emailService.isContentValid('png', 1);
         expect(isContentValid).to.be.true;
     });
 

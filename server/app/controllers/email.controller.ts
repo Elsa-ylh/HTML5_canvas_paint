@@ -30,7 +30,14 @@ export class EmailController {
 
             // Multer request type
             // tslint:disable-next-line:no-any
-            const imageFile = (req as any).file;
+            let imageFile;
+            try {
+                imageFile = (req as any).file;
+                console.log(imageFile);
+            } catch (error) {
+                console.log(error);
+                res.status(400).send("Votre requête a besoin d'une image File.");
+            }
 
             if (imageFile === undefined) {
                 res.status(400).send("Votre requête a besoin d'une image PNG ou JPG.");
