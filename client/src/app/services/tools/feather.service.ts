@@ -11,12 +11,12 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class FeatherService extends Tool {
     private readonly thickness: number = 2;
 
-    private pathData: Vec2[]; //
+    private pathData: Vec2[];
     // private primaryColor: string;
     // private previewWidth: number = 2;
     // private previewHeight: number = 2;
     featherLength: number = 30;
-    featherAngle: number = 0;
+    featherAngle: number = 120;
 
     cursorLineCtx: CanvasRenderingContext2D;
 
@@ -96,18 +96,26 @@ export class FeatherService extends Tool {
     */
 
     private renderCursor(event: MouseEvent): void {
-        this.drawingService.cursorCtx.canvas.style.left = event.offsetX - this.featherLength / 2 + 'px';
-        this.drawingService.cursorCtx.canvas.style.top = event.offsetY - this.thickness / 2 + 'px';
+        const maxSize = this.drawingService.cursorCtxWidthAndHeight;
 
-        this.drawingService.cursorCtx.clearRect(0, 0, 40, 40);
+        this.drawingService.cursorCtx.canvas.style.left = event.offsetX - maxSize / 2 + 'px';
+        this.drawingService.cursorCtx.canvas.style.top = event.offsetY - maxSize / 2 + 'px';
+
+        this.drawingService.cursorCtx.clearRect(0, 0, maxSize, maxSize);
         this.drawingService.cursorCtx.beginPath();
 
-        this.drawingService.cursorCtx.translate(this.featherLength / 2, this.thickness / 2);
+        this.drawingService.cursorCtx.translate(maxSize / 2, maxSize / 2);
         this.drawingService.cursorCtx.rotate((this.featherAngle * Math.PI) / 180);
-        this.drawingService.cursorCtx.translate(-this.featherLength / 2, -this.thickness / 2);
+        this.drawingService.cursorCtx.translate(-maxSize / 2, -maxSize / 2);
 
         this.drawingService.cursorCtx.fillStyle = '#000000';
-        this.drawingService.cursorCtx.fillRect(0, 0, this.featherLength, this.thickness);
+        this.drawingService.cursorCtx.fillRect(
+            (maxSize - this.featherLength) / 2,
+            (maxSize - this.thickness) / 2,
+            this.featherLength,
+            this.thickness,
+        );
+
         this.drawingService.cursorCtx.stroke();
 
         this.drawingService.cursorCtx.resetTransform();

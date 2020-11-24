@@ -14,6 +14,8 @@ export class DrawingService {
     currentTool: Tool;
     cursorUsed: string = cursorName.default;
 
+    readonly cursorCtxWidthAndHeight: number = 40;
+
     private image: HTMLImageElement;
 
     clearCanvas(context: CanvasRenderingContext2D): void {
