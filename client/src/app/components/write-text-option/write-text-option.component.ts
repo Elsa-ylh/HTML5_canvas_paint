@@ -34,8 +34,6 @@ export class WriteTextOptionComponent implements OnInit {
     }
 
     pickFontStyle(subTool: number): void {
-        // this.toolService.switchTool(ToolUsed.Text);
-        // this.toolService.currentTool.subToolSelect = subTool;
         this.textService.selectTextPosition(subTool);
     }
 
