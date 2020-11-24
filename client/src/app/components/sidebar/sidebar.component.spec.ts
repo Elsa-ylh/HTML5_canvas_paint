@@ -36,6 +36,7 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
+import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Observable, Subject } from 'rxjs';
 import { SidebarComponent } from './sidebar.component';
@@ -44,7 +45,6 @@ import { SidebarComponent } from './sidebar.component';
 // tslint:disable:no-magic-numbers
 // tslint:disable:max-file-line-count
 // tslint:disable:prefer-const
-
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
@@ -65,7 +65,8 @@ describe('SidebarComponent', () => {
     let selectionEllipseStub: SelectionEllipseService;
     let undoRedoStub: UndoRedoService;
     let selectionStub: SelectionService;
-    let autoSaveStub: AutomaticSaveService;
+    let textServiceStub: TextService;
+    let automaticSaveStub: AutomaticSaveService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -74,18 +75,19 @@ describe('SidebarComponent', () => {
     beforeEach(
         waitForAsync(async () => {
             drawingStub = new DrawingService();
-            autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+            automaticSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
             colorStub = new ColorService(drawingStub);
             undoRedoStub = new UndoRedoService(drawingStub);
-            rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
-            ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
-            brushStub = new BrushService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
-            pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
-            eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
-            lineStub = new LineService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
-            dropperServiceStub = new DropperService(drawingStub, colorStub, autoSaveStub);
-            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, autoSaveStub);
+            rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            brushStub = new BrushService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            eraserStub = new EraserService(drawingStub, undoRedoStub, automaticSaveStub);
+            lineStub = new LineService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            dropperServiceStub = new DropperService(drawingStub, colorStub, automaticSaveStub);
+            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, automaticSaveStub);
             selectionStub = new SelectionService(drawingStub);
+            textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -98,11 +100,12 @@ describe('SidebarComponent', () => {
                 paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
+                textServiceStub,
             );
 
             selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
-            polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
+            polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             canvas = canvasTestHelper.canvas;
             canvas.width = 100;
             canvas.height = 100;
