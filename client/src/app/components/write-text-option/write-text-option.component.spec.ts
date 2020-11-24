@@ -10,7 +10,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TextService } from '@app/services/tools/text.service';
 import { WriteTextOptionComponent } from './write-text-option.component';
-
+// tslint:disable:no-magic-numbers
+// tslint:disable:no-unused-expression
+// tslint:disable:no-string-literal
+// tslint:disable:no-empty 
 describe('WriteTextOptionComponent', () => {
     let component: WriteTextOptionComponent;
     let fixture: ComponentFixture<WriteTextOptionComponent>;

@@ -20,7 +20,7 @@ export class WriteTextOptionComponent implements OnInit {
         this.itItalic = false;
     }
 
-    /*get textChecked(): boolean {
+    /* get textChecked(): boolean {
         return this.isTextChecked;
     }*/
 
