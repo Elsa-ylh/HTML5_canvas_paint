@@ -62,6 +62,7 @@ export class SidebarComponent {
     private isPaintBucketChecked: boolean = false;
     private isTextChecked: boolean = false;
     private isStampChecked: boolean = false;
+    private curCanvasDefaultSize: number = 40;
 
     constructor(
         public drawingService: DrawingService,
@@ -252,6 +253,7 @@ export class SidebarComponent {
         return this.isPaintBucketChecked;
     }
     pickDropper(): void {
+        this.resetCursorCanvas();
         this.drawingService.cursorUsed = 'pointer';
         this.toolService.switchTool(ToolUsed.Dropper);
         this.isDialogloadSaveEport = true;
@@ -292,12 +294,21 @@ export class SidebarComponent {
     }
 
     pickStamp(): void {
+        this.resetCursorCanvas();
+        this.drawingService.cursorUsed = 'pointer';
         this.toolService.switchTool(ToolUsed.Stamp);
         this.isStampChecked = true;
     }
 
     get stampChecked(): boolean {
         return this.isStampChecked;
+    }
+
+    resetCursorCanvas(): void {
+        this.drawingService.cursorCtx.canvas.width = this.curCanvasDefaultSize;
+        this.drawingService.cursorCtx.canvas.height = this.curCanvasDefaultSize;
+        this.drawingService.cursorCtx.fillStyle = 'white';
+        this.drawingService.cursorCtx.fillRect(0, 0, this.drawingService.cursorCtx.canvas.width, this.drawingService.cursorCtx.canvas.height);
     }
 
     resetCheckedButton(): void {
