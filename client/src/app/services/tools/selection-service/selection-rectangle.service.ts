@@ -35,7 +35,6 @@ export class SelectionRectangleService extends SelectionService {
             // check if mouse is inside a control point
             if (!this.drawingService.isPreviewCanvasBlank()) {
                 this.controlPoint = this.isInControlPoint(this.mouseDownCoord);
-                console.log(this.controlPoint);
             }
 
             // for drawing preview
@@ -124,10 +123,12 @@ export class SelectionRectangleService extends SelectionService {
             if (xSign > 0 && ySign > 0) {
                 this.endingPos = { x: this.imagePosition.x + this.width, y: this.imagePosition.y + this.height };
                 return { x: this.imagePosition.x, y: this.imagePosition.y };
-            } else if (xSign > 0 && ySign < 0) {
+            }
+            if (xSign > 0 && ySign < 0) {
                 this.endingPos = { x: this.imagePosition.x + this.width, y: this.imagePosition.y };
                 return { x: this.imagePosition.x, y: this.imagePosition.y + this.height };
-            } else if (xSign < 0 && ySign < 0) {
+            }
+            if (xSign < 0 && ySign < 0) {
                 this.endingPos = { x: this.imagePosition.x, y: this.imagePosition.y };
                 return { x: this.imagePosition.x + this.width, y: this.imagePosition.y + this.height };
             } else {
@@ -137,7 +138,8 @@ export class SelectionRectangleService extends SelectionService {
         } else {
             if (xSign > 0 && ySign > 0) {
                 return { x: this.imagePosition.x, y: this.imagePosition.y };
-            } else if (xSign > 0 && ySign < 0) {
+            }
+            if (xSign > 0 && ySign < 0) {
                 this.endingPos = { x: this.endingPos.x, y: this.imagePosition.y };
                 return { x: this.imagePosition.x, y: tmpEndPos.y };
             } else if (xSign < 0 && ySign < 0) {

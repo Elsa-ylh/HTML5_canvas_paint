@@ -126,7 +126,7 @@ export class SelectionService extends Tool {
                     this.cleared = true;
                 }
 
-                // draw selection
+                // scale selection
             } else if (this.controlPoint !== ControlPoint.none) {
                 this.mouseMouvement.x = mousePosition.x - this.previousMousePos.x;
                 this.mouseMouvement.y = mousePosition.y - this.previousMousePos.y;
@@ -134,6 +134,7 @@ export class SelectionService extends Tool {
                 this.drawSelection(this.imagePosition);
                 this.previousMousePos = mousePosition;
                 console.log(this.height);
+                // draw selection
             } else {
                 this.endingPos = mousePosition;
                 this.drawPreview();
@@ -519,6 +520,7 @@ export class SelectionService extends Tool {
 
     pasteImage(): void {}
 
+    // tslint:disable:cyclomatic-complexity
     isInControlPoint(mouse: Vec2): ControlPoint {
         if (
             mouse.x >= this.imagePosition.x - this.modifSelectSquare / 2 &&
@@ -528,7 +530,8 @@ export class SelectionService extends Tool {
         ) {
             this.inControlPoint = true;
             return ControlPoint.topLeft;
-        } else if (
+        }
+        if (
             mouse.x >= this.imagePosition.x + this.width / 2 - this.modifSelectSquare / 2 &&
             mouse.x <= this.imagePosition.x + this.width / 2 + this.modifSelectSquare / 2 &&
             mouse.y >= this.imagePosition.y - this.modifSelectSquare / 2 &&
@@ -536,7 +539,8 @@ export class SelectionService extends Tool {
         ) {
             this.inControlPoint = true;
             return ControlPoint.top;
-        } else if (
+        }
+        if (
             mouse.x >= this.imagePosition.x + this.width - this.modifSelectSquare / 2 &&
             mouse.x <= this.imagePosition.x + this.width + this.modifSelectSquare / 2 &&
             mouse.y >= this.imagePosition.y - this.modifSelectSquare / 2 &&
@@ -544,7 +548,8 @@ export class SelectionService extends Tool {
         ) {
             this.inControlPoint = true;
             return ControlPoint.topRight;
-        } else if (
+        }
+        if (
             mouse.x >= this.endingPos.x - this.modifSelectSquare / 2 &&
             mouse.x <= this.endingPos.x + this.modifSelectSquare / 2 &&
             mouse.y >= this.endingPos.y - this.modifSelectSquare / 2 &&
@@ -552,7 +557,8 @@ export class SelectionService extends Tool {
         ) {
             this.inControlPoint = true;
             return ControlPoint.bottomRight;
-        } else if (
+        }
+        if (
             mouse.x >= this.endingPos.x - this.width / 2 - this.modifSelectSquare / 2 &&
             mouse.x <= this.endingPos.x - this.width / 2 + this.modifSelectSquare / 2 &&
             mouse.y >= this.endingPos.y - this.modifSelectSquare / 2 &&
@@ -560,7 +566,8 @@ export class SelectionService extends Tool {
         ) {
             this.inControlPoint = true;
             return ControlPoint.bottom;
-        } else if (
+        }
+        if (
             mouse.x >= this.endingPos.x - this.width - this.modifSelectSquare / 2 &&
             mouse.x <= this.endingPos.x - this.width + this.modifSelectSquare / 2 &&
             mouse.y >= this.endingPos.y - this.modifSelectSquare / 2 &&
@@ -568,7 +575,8 @@ export class SelectionService extends Tool {
         ) {
             this.inControlPoint = true;
             return ControlPoint.bottomLeft;
-        } else if (
+        }
+        if (
             mouse.x >= this.imagePosition.x - this.modifSelectSquare / 2 &&
             mouse.x <= this.imagePosition.x + this.modifSelectSquare / 2 &&
             mouse.y >= this.imagePosition.y + this.height / 2 - this.modifSelectSquare / 2 &&
@@ -576,7 +584,8 @@ export class SelectionService extends Tool {
         ) {
             this.inControlPoint = true;
             return ControlPoint.left;
-        } else if (
+        }
+        if (
             mouse.x >= this.endingPos.x - this.modifSelectSquare / 2 &&
             mouse.x <= this.endingPos.x + this.modifSelectSquare / 2 &&
             mouse.y >= this.endingPos.y - this.height / 2 - this.modifSelectSquare / 2 &&
@@ -593,7 +602,7 @@ export class SelectionService extends Tool {
         }
     }
 
-    scaleSelection(mouseMouvement: Vec2): void{
+    scaleSelection(mouseMouvement: Vec2): void {
         switch (this.controlPoint) {
             case ControlPoint.top:
                 this.height -= mouseMouvement.y;
