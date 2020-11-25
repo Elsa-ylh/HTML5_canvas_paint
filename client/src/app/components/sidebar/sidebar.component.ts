@@ -322,6 +322,7 @@ export class SidebarComponent {
     }
 
     btnCallGrid(): void {
+        this.drawingService.isGridOn ? (this.drawingService.isGridOn = false) : (this.drawingService.isGridOn = true);
         this.gridService.activateGrid();
     }
 

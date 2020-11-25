@@ -12,6 +12,7 @@ export class DrawingService {
 
     gridCanvas: HTMLCanvasElement;
     gridCtx: CanvasRenderingContext2D;
+    isGridOn: boolean = false;
 
     whichTools: ToolUsed = ToolUsed.Pencil;
     currentTool: Tool;
