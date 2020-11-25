@@ -34,5 +34,6 @@
         height="40px"
         [style.display]="toolService.currentToolName == dropper ? 'inline-block' : 'none'"
     ></canvas>
+    <canvas id="gridLayer" #gridLayer [attr.width]="width" [attr.height]="height" [ngStyle]="{ cursor: cursorUsed }"> </canvas>
     <div id="greyBackground" [ngStyle]="{ 'width.px': cvsResizerService.resizeWidth, 'height.px': cvsResizerService.resizeHeight }"></div>
 </div>

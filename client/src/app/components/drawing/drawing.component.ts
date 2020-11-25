@@ -53,6 +53,7 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizingPreview', { static: false }) canvasResizingPreview: ElementRef<HTMLCanvasElement>;
     @ViewChild('dropperLayer', { static: false }) dropperLayer: ElementRef<HTMLCanvasElement>;
+    @ViewChild('gridLayer', { static: false }) gridLayer: ElementRef<HTMLCanvasElement>;
 
     baseCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
@@ -69,6 +70,8 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.dropperCtx = this.dropperLayer.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.dropperCtx = this.dropperCtx;
+        this.drawingService.gridCanvas = this.gridLayer.nativeElement;
+        this.drawingService.gridCtx = this.gridLayer.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.setCanvasBackgroundColor();
         if (this.automaticSaveService.check()) this.automaticSaveService.getUpload();
         const event = { offsetX: this.cvsResizerService.DEFAULT_WIDTH, offsetY: this.cvsResizerService.DEFAULT_HEIGHT } as MouseEvent;

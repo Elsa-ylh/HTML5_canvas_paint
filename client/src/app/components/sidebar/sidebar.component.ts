@@ -18,6 +18,7 @@ import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { GridService } from '@app/services/tools/grid.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
@@ -80,6 +81,7 @@ export class SidebarComponent {
         public undoRedoService: UndoRedoService,
         public selectionRectangleService: SelectionRectangleService,
         public selectionEllipseService: SelectionEllipseService,
+        public gridService: GridService,
         private automaticSaveService: AutomaticSaveService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
@@ -317,6 +319,10 @@ export class SidebarComponent {
     btnCallUndo(): void {
         this.undoRedoService.undo();
         this.automaticSaveService.save();
+    }
+
+    btnCallGrid(): void {
+        this.gridService.activateGrid();
     }
 
     // keybind control o for new drawing
