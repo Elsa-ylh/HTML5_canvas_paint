@@ -16,8 +16,10 @@ export class StampService extends Tool {
 
     newWidth: number;
     newHeight: number;
-    xOffset: number;
-    yOffset: number;
+    private xOffset: number;
+    private yOffset: number;
+    private mouseCenterX: number;
+    private mouseCenterY: number;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -65,9 +67,11 @@ export class StampService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.currentStamp = new Image();
         this.currentStamp.src = STAMP.stamp1;
+        this.mouseCenterX = event.offsetX - this.canvasWidth;
+        this.mouseCenterY = event.offsetY - this.canvasHeight;
 
         this.currentStamp.onload = () => {
-            this.drawingService.baseCtx.drawImage(this.currentStamp, event.offsetX, event.offsetY, this.newWidth, this.newHeight);
+            this.drawingService.baseCtx.drawImage(this.currentStamp, this.mouseCenterX, this.mouseCenterY, this.newWidth, this.newHeight);
         };
     }
 
