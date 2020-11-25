@@ -588,4 +588,13 @@ export class SidebarComponent {
             this.selectionEllipseService.deleteImage();
         }
     }
+
+    @HostListener('window:keydown.v', ['$event'])
+    changeMagicWandMode(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
+            this.resetCheckedButton();
+            this.isMagicWandSelectionChecked = true;
+            this.pickMagicWandSelection();
+        }
+    }
 }

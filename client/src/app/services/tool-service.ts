@@ -9,6 +9,7 @@ import { EllipseService } from './tools/ellipse.service';
 import { LineService } from './tools/line.service';
 import { PaintBucketService } from './tools/paint-bucket.service';
 import { PolygonService } from './tools/polygon.service';
+import { MagicWandService } from './tools/selection-service/magic-wand.service';
 import { SelectionEllipseService } from './tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from './tools/selection-service/selection-rectangle.service';
 import { TextService } from './tools/text.service';
@@ -33,6 +34,7 @@ export class ToolService {
         private selectionRectangleService: SelectionRectangleService,
         private selectionEllipseService: SelectionEllipseService,
         private textService: TextService,
+        private magicWandService : MagicWandService,
     ) {
         this.tableTool[ToolUsed.NONE] = this.pencilService;
         this.tableTool[ToolUsed.Pencil] = this.pencilService;
@@ -47,6 +49,7 @@ export class ToolService {
         this.tableTool[ToolUsed.Polygon] = this.polygonService;
         this.tableTool[ToolUsed.PaintBucket] = this.paintBucketService;
         this.tableTool[ToolUsed.Text] = this.textService;
+        this.tableTool[ToolUsed.MagicWandSelection] = this.magicWandService;
 
         this.switchTool(ToolUsed.NONE); // default tools if all else fail in the sidebar usually
     }
