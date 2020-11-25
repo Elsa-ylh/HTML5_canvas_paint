@@ -1,0 +1,44 @@
+import { HttpClientModule } from '@angular/common/http';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { StampComponent } from '@app/components/stamp/stamp.component';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { StampService } from '@app/services/tools/stamp.service';
+
+describe('StampComponent', () => {
+    let component: StampComponent;
+    let fixture: ComponentFixture<StampComponent>;
+    let stampStub: StampService;
+    let drawingStub: DrawingService;
+    let cursorStubCtx: CanvasRenderingContext2D;
+
+    beforeEach(async () => {
+        drawingStub = new DrawingService();
+        stampStub = new StampService(drawingStub);
+        cursorStubCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        await TestBed.configureTestingModule({
+            declarations: [StampComponent],
+            imports: [MatButtonModule, MatListModule, HttpClientModule],
+            providers: [
+                { provide: StampService, useValue: stampStub },
+                { provide: DrawingService, useValue: drawingStub },
+            ],
+        }).compileComponents();
+        fixture = TestBed.createComponent(StampComponent);
+        component = fixture.componentInstance;
+        drawingStub.cursorCtx = cursorStubCtx;
+        fixture.detectChanges();
+    });
+
+    afterEach(() => {
+        if (fixture.nativeElement && 'remove' in fixture.nativeElement) {
+            (fixture.nativeElement as HTMLElement).remove();
+        }
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+});

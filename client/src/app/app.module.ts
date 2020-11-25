@@ -52,6 +52,7 @@ import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { PaintBucketColorComponent } from './components/paint-bucket-color/paint-bucket-color.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { StampComponent } from './components/stamp/stamp.component';
 import { WriteTextDialogUserGuideComponent } from './components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { WriteTextOptionComponent } from './components/write-text-option/write-text-option.component';
 
@@ -69,6 +70,7 @@ import { WriteTextOptionComponent } from './components/write-text-option/write-t
         DialogCreateNewDrawingComponent,
         DialogExportDrawingComponent,
         SidebarComponent,
+        StampComponent,
         WriteTextDialogUserGuideComponent,
         ColorComponent,
         CarrouselPictureComponent,

@@ -1,53 +1,74 @@
 import { Injectable } from '@angular/core';
+import { STAMP } from '@app/classes/stamp';
 import { Tool } from '@app/classes/tool';
-import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class StampService extends Tool {
-    position: Vec2;
     private canvasWidth: number;
     private canvasHeight: number;
-    private currentStamp: HTMLImageElement;
+    currentStamp: HTMLImageElement;
 
-    canvasScale: number = 3;
-    imageScale: number = 0.00001;
+    canvasScale: number = 80;
+    imageScale: number = 1;
+
+    newWidth: number;
+    newHeight: number;
+    xOffset: number;
+    yOffset: number;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
     }
 
-    centerCanvas(event: MouseEvent): void {
+    onMouseMove(event: MouseEvent): void {
         this.canvasWidth = this.drawingService.cursorCtx.canvas.offsetWidth / 2;
         this.canvasHeight = this.drawingService.cursorCtx.canvas.offsetHeight / 2;
         this.drawingService.cursorCtx.canvas.style.left = event.offsetX - this.canvasWidth + 'px';
         this.drawingService.cursorCtx.canvas.style.top = event.offsetY - this.canvasHeight + 'px';
     }
 
-    onMouseMove(event: MouseEvent): void {
-        this.centerCanvas(event);
-    }
-
     drawImage(): void {
         this.currentStamp = new Image();
+        this.currentStamp.src = STAMP.stamp1;
+        const wrh = this.currentStamp.width / this.currentStamp.height;
+        this.newWidth = this.drawingService.cursorCtx.canvas.width;
+        this.newHeight = this.newWidth / wrh;
+        if (this.newHeight > this.drawingService.cursorCtx.canvas.height) {
+            this.newHeight = this.drawingService.cursorCtx.canvas.height;
+            this.newWidth = this.newHeight * wrh;
+        }
+        this.xOffset =
+            this.newWidth < this.drawingService.cursorCtx.canvas.width ? (this.drawingService.cursorCtx.canvas.width - this.newWidth) / 2 : 0;
+        this.yOffset =
+            this.newHeight < this.drawingService.cursorCtx.canvas.height ? (this.drawingService.cursorCtx.canvas.height - this.newHeight) / 2 : 0;
+
         this.currentStamp.onload = () => {
-            this.drawingService.cursorCtx.drawImage(this.currentStamp, 0, 0);
+            this.drawingService.cursorCtx.drawImage(this.currentStamp, this.xOffset, this.yOffset, this.newWidth, this.newHeight);
         };
-        this.currentStamp.src = 'assets/square.cur';
+    }
+
+    increaseSize(): void {
+        this.drawingService.cursorCtx.canvas.width = this.drawingService.cursorCtx.canvas.width + this.canvasScale;
+        this.drawingService.cursorCtx.canvas.height = this.drawingService.cursorCtx.canvas.height + this.canvasScale;
+        this.drawingService.cursorCtx.scale(this.imageScale, this.imageScale);
+    }
+
+    decreaseSize(): void {
+        this.drawingService.cursorCtx.canvas.width = this.drawingService.cursorCtx.canvas.width - this.canvasScale;
+        this.drawingService.cursorCtx.canvas.height = this.drawingService.cursorCtx.canvas.height - this.canvasScale;
+        this.drawingService.cursorCtx.scale(this.imageScale, this.imageScale);
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.drawingService.cursorCtx.canvas.width = 300;
-        this.drawingService.cursorCtx.canvas.height = 300;
+        this.currentStamp = new Image();
+        this.currentStamp.src = STAMP.stamp1;
 
-        this.drawingService.cursorCtx.scale(this.currentStamp.width, this.currentStamp.height);
-        this.drawImage();
-    }
-
-    onMouseUp(event: MouseEvent): void {
-        this.centerCanvas(event);
+        this.currentStamp.onload = () => {
+            this.drawingService.baseCtx.drawImage(this.currentStamp, event.offsetX, event.offsetY, this.newWidth, this.newHeight);
+        };
     }
 
     onMouseEnter(event: MouseEvent): void {
