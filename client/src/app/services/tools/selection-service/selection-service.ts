@@ -20,9 +20,9 @@ export class SelectionService extends Tool {
     }
 
     // initialization of local const
-    private minTimeMovement: number = 500;
+    readonly minTimeMovement: number = 500;
     lineWidth: number = 1;
-    private modifSelectSquare: number = 10;
+    readonly modifSelectSquare: number = 10;
     dottedSpace: number = 10;
 
     shiftPressed: boolean = false;

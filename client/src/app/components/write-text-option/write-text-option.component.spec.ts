@@ -36,7 +36,7 @@ describe('WriteTextOptionComponent', () => {
                 {
                     provide: TextService,
                     useValue: {
-                        possibleSizeFont: [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72],
+                        possibleSizeFont: [20, 22, 24, 26, 28, 30, 23, 34, 36, 38, 40, 48, 60, 72],
                         fontStyleBold: false,
                         fontStyleItalic: false,
                         selectTextPosition: () => '',

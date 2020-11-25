@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
-import { Tool } from '@app/classes/tool';
+import { Tool, ToolUsed } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -22,6 +22,7 @@ const F1 = 112;
 const F12 = 123;
 const ZERO = 48;
 const DOTTEDSPACE = 10;
+const TEXTZONEMINWIDTH = 100;
 
 @Injectable({
     providedIn: 'root',
@@ -29,27 +30,27 @@ const DOTTEDSPACE = 10;
 export class TextService extends Tool {
     fontStyle: string = 'Times New Roman';
     // tslint:disable-next-line:no-magic-numbers
-    possibleSizeFont: number[] = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
+    possibleSizeFont: number[] = [8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 23, 34, 36, 38, 40, 48, 60, 72];
     // different font sizes allowed for text -> autorized disable magical number
-    sizeFont: number = this.possibleSizeFont[0];
+    // tslint:disable-next-line:no-magic-numbers
+    sizeFont: number = this.possibleSizeFont[6];
     possibleFont: string[] = ['Times New Roman', 'Calibri', 'Courier New', 'Verdana', 'Impact'];
     mouseEnter: boolean = false;
     mouseOut: boolean = false;
-    mousePosition: Vec2;
+    mousePosition: Vec2 = { x: 0, y: 0 };
     canvasSelected: boolean;
-    textTitle: string = 'Overlay text';
     keyHistory: string[] = [];
     stack: string[] = [];
     fontStyleBold: boolean = false;
     fontStyleItalic: boolean = false;
-    height: number;
-    width: number;
+    height: number = 0;
+    width: number = 0;
     private lineWidth: number = 2;
     textValue: string = 'initial value';
     log: string = '';
-    writeOnCanvas: boolean = false;
-    distanceX: number;
-    distanceY: number;
+    writeOnPreviewCtx: boolean = false;
+    distanceX: number = 0;
+    distanceY: number = 0;
     private textAlign: number = 2;
 
     constructor(drawingService: DrawingService, private colorService: ColorService, private rectangleService: RectangleService) {
@@ -62,14 +63,15 @@ export class TextService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseEnter && !this.mouseOut && this.mouseDown && !this.writeOnCanvas) {
+        if (this.mouseEnter && !this.mouseOut && this.mouseDown && !this.writeOnPreviewCtx) {
             this.rectangleService.clearEffectTool();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.mousePosition = this.mouseDownCoord;
+            this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
         }
-        if (this.writeOnCanvas) {
+        if (this.writeOnPreviewCtx) {
             this.drawText();
-            this.writeOnCanvas = false;
+            this.writeOnPreviewCtx = false;
             this.clearEffectTool();
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
@@ -83,9 +85,8 @@ export class TextService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
             this.mouseDown = false;
-            this.writeOnCanvas = true;
+            this.writeOnPreviewCtx = true;
         }
-        // this.mouseDown = false;
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -168,13 +169,18 @@ export class TextService extends Tool {
         ctx.lineWidth = this.lineWidth;
         ctx.setLineDash([DOTTEDSPACE, DOTTEDSPACE]);
         if (this.drawingService.previewCtx === ctx) {
-            if (mousePosition.x > mouseDownCoord.x && mousePosition.y > mouseDownCoord.y) {
+            if (Math.abs(this.width) <= TEXTZONEMINWIDTH || Math.abs(this.height) <= this.sizeFont) {
+                this.width = Math.abs(this.width) > TEXTZONEMINWIDTH ? this.width : TEXTZONEMINWIDTH;
+                this.height = Math.abs(this.height) > this.sizeFont ? this.height : this.sizeFont + 1;
+            }
+            if (mousePosition.x >= mouseDownCoord.x && mousePosition.y >= mouseDownCoord.y) {
                 ctx.strokeRect(
                     mouseDownCoord.x - this.lineWidth / 2,
                     mouseDownCoord.y - this.lineWidth / 2,
                     this.width + this.lineWidth,
                     this.height + this.lineWidth,
                 );
+
                 return;
             }
             if (mousePosition.x < mouseDownCoord.x && mousePosition.y < mouseDownCoord.y) {
@@ -205,6 +211,8 @@ export class TextService extends Tool {
                 return;
             }
         }
+
+        // }
     }
 
     drawText(): void {
@@ -213,6 +221,7 @@ export class TextService extends Tool {
         const textPreview: string[] = [];
         let indexLine = 0;
         textPreview[indexLine] = '';
+
         this.keyHistory.forEach((element) => {
             if (element === '\n') {
                 textPreview.push('');
@@ -244,6 +253,12 @@ export class TextService extends Tool {
     addletter(letter: string): void {
         this.keyHistory.push(letter);
         this.previewText();
+    }
+
+    selectTools(name: string): void {
+        if (!ToolUsed.Text) {
+            // confirmer texte sur baseCtx
+        }
     }
 
     private previewText(): void {
@@ -290,10 +305,10 @@ export class TextService extends Tool {
     }
 
     private checkWidthText(ctx: CanvasRenderingContext2D, text: string): boolean {
-        return Math.abs(ctx.measureText(text).width) < Math.abs(this.width);
+        return Math.abs(ctx.measureText(text).width) <= Math.abs(this.width);
     }
     private checkHeightText(nbLineBreak: number): boolean {
-        return (nbLineBreak + 1) * this.sizeFont < Math.abs(this.height);
+        return (nbLineBreak + 1) * this.sizeFont <= Math.abs(this.height + 1);
     }
 
     private position(ctx: CanvasRenderingContext2D, texts: string[], align: number): void {
@@ -326,6 +341,8 @@ export class TextService extends Tool {
                 break;
         }
     }
+    // arrowTop(): void {}
+    // arrowBottom(): void {}
 
     arrowLeft(): void {
         if (this.keyHistory.length) {
@@ -361,7 +378,7 @@ export class TextService extends Tool {
     }
 
     keyUpHandler(event: KeyboardEvent): void {
-        if (this.writeOnCanvas) {
+        if (this.writeOnPreviewCtx) {
             if (
                 event.keyCode === SPACE ||
                 (event.keyCode >= ZERO &&
@@ -381,6 +398,10 @@ export class TextService extends Tool {
     clearEffectTool(): void {
         this.keyHistory = [];
         this.stack = [];
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    }
+
+    clearPreviewCtx(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 }
