@@ -23,7 +23,7 @@ export class SelectionService extends Tool {
     // initialization of local const
     private minTimeMovement: number = 500;
     lineWidth: number = 1;
-    private modifSelectSquare: number = 10;
+    private modifySelectSquare: number = 10;
     dottedSpace: number = 10;
 
     shiftPressed: boolean = false;
@@ -54,7 +54,7 @@ export class SelectionService extends Tool {
     // bypass clear selection bug
     cleared: boolean = false;
 
-    // intialization clipboard
+    // initialization clipboard
     clipboard: ImageClipboard = new ImageClipboard();
 
     // Control points
@@ -96,7 +96,7 @@ export class SelectionService extends Tool {
             } else if (this.inSelection && this.controlPoint === ControlPoint.none) {
                 this.imagePosition = { x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y };
                 this.drawSelection(this.imagePosition);
-                // this.startingPos = { x: this.startingPos.x + this.mouseMouvement.x, y: this.startingPos.y + this.mouseMouvement.y };
+                // this.startingPos = { x: this.startingPos.x + this.mouseMovement.x, y: this.startingPos.y + this.mouseMovement.y };
                 this.endingPos = { x: this.endingPos.x + this.mouseMouvement.x, y: this.endingPos.y + this.mouseMouvement.y };
                 this.mouseMouvement = { x: 0, y: 0 };
             } else if (this.controlPoint !== ControlPoint.none) {
@@ -215,56 +215,56 @@ export class SelectionService extends Tool {
         }
     }
 
-    drawSelectionRect(mouseDownCoord: Vec2, width: number, height: number): void {
-        this.drawingService.previewCtx.strokeRect(mouseDownCoord.x, mouseDownCoord.y, width, height);
+    drawSelectionRect(mouseDownCoords: Vec2, width: number, height: number): void {
+        this.drawingService.previewCtx.strokeRect(mouseDownCoords.x, mouseDownCoords.y, width, height);
         this.drawingService.previewCtx.setLineDash([]);
         this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x + width / 2 - this.modifSelectSquare / 2,
-            mouseDownCoord.y - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
+            mouseDownCoords.x + width / 2 - this.modifySelectSquare / 2,
+            mouseDownCoords.y - this.modifySelectSquare / 2,
+            this.modifySelectSquare,
+            this.modifySelectSquare,
         );
         this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x - this.modifSelectSquare / 2,
-            mouseDownCoord.y + height / 2 - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
+            mouseDownCoords.x - this.modifySelectSquare / 2,
+            mouseDownCoords.y + height / 2 - this.modifySelectSquare / 2,
+            this.modifySelectSquare,
+            this.modifySelectSquare,
         );
         this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x + width / 2 - this.modifSelectSquare / 2,
-            mouseDownCoord.y + height - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
+            mouseDownCoords.x + width / 2 - this.modifySelectSquare / 2,
+            mouseDownCoords.y + height - this.modifySelectSquare / 2,
+            this.modifySelectSquare,
+            this.modifySelectSquare,
         );
         this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x + width - this.modifSelectSquare / 2,
-            mouseDownCoord.y + height / 2 - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
+            mouseDownCoords.x + width - this.modifySelectSquare / 2,
+            mouseDownCoords.y + height / 2 - this.modifySelectSquare / 2,
+            this.modifySelectSquare,
+            this.modifySelectSquare,
         );
         this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x - this.modifSelectSquare / 2,
-            mouseDownCoord.y - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
+            mouseDownCoords.x - this.modifySelectSquare / 2,
+            mouseDownCoords.y - this.modifySelectSquare / 2,
+            this.modifySelectSquare,
+            this.modifySelectSquare,
         );
         this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x + width - this.modifSelectSquare / 2,
-            mouseDownCoord.y - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
+            mouseDownCoords.x + width - this.modifySelectSquare / 2,
+            mouseDownCoords.y - this.modifySelectSquare / 2,
+            this.modifySelectSquare,
+            this.modifySelectSquare,
         );
         this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x - this.modifSelectSquare / 2,
-            mouseDownCoord.y + height - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
+            mouseDownCoords.x - this.modifySelectSquare / 2,
+            mouseDownCoords.y + height - this.modifySelectSquare / 2,
+            this.modifySelectSquare,
+            this.modifySelectSquare,
         );
         this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x + width - this.modifSelectSquare / 2,
-            mouseDownCoord.y + height - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
+            mouseDownCoords.x + width - this.modifySelectSquare / 2,
+            mouseDownCoords.y + height - this.modifySelectSquare / 2,
+            this.modifySelectSquare,
+            this.modifySelectSquare,
         );
         this.drawingService.previewCtx.setLineDash([this.dottedSpace, this.dottedSpace]);
     }
@@ -335,7 +335,7 @@ export class SelectionService extends Tool {
                 this.cleared = true;
             }
             if (!this.leftArrow.arrowPressed) {
-                // first mouvement
+                // first movement
                 this.mouseMouvement.x -= PIXELMOUVEMENT;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawSelection({ x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y });
@@ -344,7 +344,7 @@ export class SelectionService extends Tool {
             this.startTimer();
             // for continuous movement
             if (this.time >= this.minTimeMovement) {
-                this.moveSelectiontimerLeft();
+                this.moveSelectionTimerLeft();
             }
         }
     }
@@ -429,7 +429,7 @@ export class SelectionService extends Tool {
         }
     }
 
-    moveSelectiontimerLeft(): void {
+    moveSelectionTimerLeft(): void {
         if (!this.leftArrow.timerStarted) {
             this.leftArrow.timerStarted = true;
             const timerMove = timer(MOUVEMENTDELAY, MOUVEMENTDELAY);
@@ -522,66 +522,66 @@ export class SelectionService extends Tool {
     // tslint:disable:cyclomatic-complexity
     isInControlPoint(mouse: Vec2): ControlPoint {
         if (
-            mouse.x >= this.imagePosition.x - this.modifSelectSquare / 2 &&
-            mouse.x <= this.imagePosition.x + this.modifSelectSquare / 2 &&
-            mouse.y >= this.imagePosition.y - this.modifSelectSquare / 2 &&
-            mouse.y <= this.imagePosition.y + this.modifSelectSquare / 2
+            mouse.x >= this.imagePosition.x - this.modifySelectSquare / 2 &&
+            mouse.x <= this.imagePosition.x + this.modifySelectSquare / 2 &&
+            mouse.y >= this.imagePosition.y - this.modifySelectSquare / 2 &&
+            mouse.y <= this.imagePosition.y + this.modifySelectSquare / 2
         ) {
             return ControlPoint.topLeft;
         }
         if (
-            mouse.x >= this.imagePosition.x + this.width / 2 - this.modifSelectSquare / 2 &&
-            mouse.x <= this.imagePosition.x + this.width / 2 + this.modifSelectSquare / 2 &&
-            mouse.y >= this.imagePosition.y - this.modifSelectSquare / 2 &&
-            mouse.y <= this.imagePosition.y + this.modifSelectSquare / 2
+            mouse.x >= this.imagePosition.x + this.width / 2 - this.modifySelectSquare / 2 &&
+            mouse.x <= this.imagePosition.x + this.width / 2 + this.modifySelectSquare / 2 &&
+            mouse.y >= this.imagePosition.y - this.modifySelectSquare / 2 &&
+            mouse.y <= this.imagePosition.y + this.modifySelectSquare / 2
         ) {
             return ControlPoint.top;
         }
         if (
-            mouse.x >= this.imagePosition.x + this.width - this.modifSelectSquare / 2 &&
-            mouse.x <= this.imagePosition.x + this.width + this.modifSelectSquare / 2 &&
-            mouse.y >= this.imagePosition.y - this.modifSelectSquare / 2 &&
-            mouse.y <= this.imagePosition.y + this.modifSelectSquare / 2
+            mouse.x >= this.imagePosition.x + this.width - this.modifySelectSquare / 2 &&
+            mouse.x <= this.imagePosition.x + this.width + this.modifySelectSquare / 2 &&
+            mouse.y >= this.imagePosition.y - this.modifySelectSquare / 2 &&
+            mouse.y <= this.imagePosition.y + this.modifySelectSquare / 2
         ) {
             return ControlPoint.topRight;
         }
         if (
-            mouse.x >= this.endingPos.x - this.modifSelectSquare / 2 &&
-            mouse.x <= this.endingPos.x + this.modifSelectSquare / 2 &&
-            mouse.y >= this.endingPos.y - this.modifSelectSquare / 2 &&
-            mouse.y <= this.endingPos.y + this.modifSelectSquare / 2
+            mouse.x >= this.endingPos.x - this.modifySelectSquare / 2 &&
+            mouse.x <= this.endingPos.x + this.modifySelectSquare / 2 &&
+            mouse.y >= this.endingPos.y - this.modifySelectSquare / 2 &&
+            mouse.y <= this.endingPos.y + this.modifySelectSquare / 2
         ) {
             return ControlPoint.bottomRight;
         }
         if (
-            mouse.x >= this.endingPos.x - this.width / 2 - this.modifSelectSquare / 2 &&
-            mouse.x <= this.endingPos.x - this.width / 2 + this.modifSelectSquare / 2 &&
-            mouse.y >= this.endingPos.y - this.modifSelectSquare / 2 &&
-            mouse.y <= this.endingPos.y + this.modifSelectSquare / 2
+            mouse.x >= this.endingPos.x - this.width / 2 - this.modifySelectSquare / 2 &&
+            mouse.x <= this.endingPos.x - this.width / 2 + this.modifySelectSquare / 2 &&
+            mouse.y >= this.endingPos.y - this.modifySelectSquare / 2 &&
+            mouse.y <= this.endingPos.y + this.modifySelectSquare / 2
         ) {
             return ControlPoint.bottom;
         }
         if (
-            mouse.x >= this.endingPos.x - this.width - this.modifSelectSquare / 2 &&
-            mouse.x <= this.endingPos.x - this.width + this.modifSelectSquare / 2 &&
-            mouse.y >= this.endingPos.y - this.modifSelectSquare / 2 &&
-            mouse.y <= this.endingPos.y + this.modifSelectSquare / 2
+            mouse.x >= this.endingPos.x - this.width - this.modifySelectSquare / 2 &&
+            mouse.x <= this.endingPos.x - this.width + this.modifySelectSquare / 2 &&
+            mouse.y >= this.endingPos.y - this.modifySelectSquare / 2 &&
+            mouse.y <= this.endingPos.y + this.modifySelectSquare / 2
         ) {
             return ControlPoint.bottomLeft;
         }
         if (
-            mouse.x >= this.imagePosition.x - this.modifSelectSquare / 2 &&
-            mouse.x <= this.imagePosition.x + this.modifSelectSquare / 2 &&
-            mouse.y >= this.imagePosition.y + this.height / 2 - this.modifSelectSquare / 2 &&
-            mouse.y <= this.imagePosition.y + this.height / 2 + this.modifSelectSquare / 2
+            mouse.x >= this.imagePosition.x - this.modifySelectSquare / 2 &&
+            mouse.x <= this.imagePosition.x + this.modifySelectSquare / 2 &&
+            mouse.y >= this.imagePosition.y + this.height / 2 - this.modifySelectSquare / 2 &&
+            mouse.y <= this.imagePosition.y + this.height / 2 + this.modifySelectSquare / 2
         ) {
             return ControlPoint.left;
         }
         if (
-            mouse.x >= this.endingPos.x - this.modifSelectSquare / 2 &&
-            mouse.x <= this.endingPos.x + this.modifSelectSquare / 2 &&
-            mouse.y >= this.endingPos.y - this.height / 2 - this.modifSelectSquare / 2 &&
-            mouse.y <= this.endingPos.y - this.height / 2 + this.modifSelectSquare / 2
+            mouse.x >= this.endingPos.x - this.modifySelectSquare / 2 &&
+            mouse.x <= this.endingPos.x + this.modifySelectSquare / 2 &&
+            mouse.y >= this.endingPos.y - this.height / 2 - this.modifySelectSquare / 2 &&
+            mouse.y <= this.endingPos.y - this.height / 2 + this.modifySelectSquare / 2
         ) {
             return ControlPoint.right;
             // }else if(this.inSelection){

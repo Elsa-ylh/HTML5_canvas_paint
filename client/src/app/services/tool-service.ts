@@ -34,7 +34,7 @@ export class ToolService {
         private selectionRectangleService: SelectionRectangleService,
         private selectionEllipseService: SelectionEllipseService,
         private textService: TextService,
-        private magicWandService : MagicWandService,
+        private magicWandService: MagicWandService,
     ) {
         this.tableTool[ToolUsed.NONE] = this.pencilService;
         this.tableTool[ToolUsed.Pencil] = this.pencilService;
