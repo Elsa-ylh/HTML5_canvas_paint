@@ -87,9 +87,9 @@
                     >
                         <mat-icon> redo </mat-icon>
                     </button>
-                    <button mat-button matTooltip="Grille" matToolTipPosition="right" (click)="btnCallGrid()">
-                        <mat-icon> grid_on </mat-icon>
-                    </button>
+                    <mat-button-toggle mat-button matTooltip="Grille" matToolTipPosition="right">
+                        <mat-icon>grid_on</mat-icon>
+                    </mat-button-toggle>
                     <mat-button-toggle-group vertical="true">
                         <mat-button-toggle (click)="openSaveServer()" matTooltip="Téléverser vers le serveur" matTooltipPosition="right">
                             <mat-icon>cloud_upload</mat-icon>

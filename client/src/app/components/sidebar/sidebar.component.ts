@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
@@ -40,6 +40,8 @@ export class SidebarComponent {
     // I can't stand reading numbers anymore.
     // tslint:disable-next-line: typedef
     toolUsed = ToolUsed;
+
+    isGridOn: boolean = false;
 
     isDialogOpen: boolean = false;
     isDialogloadSaveEport: boolean = true;
@@ -89,6 +91,8 @@ export class SidebarComponent {
         this.iconRegistry.addSvgIcon('polygon', this.sanitizer.bypassSecurityTrustResourceUrl('assets/polygon.svg'));
         this.iconRegistry.addSvgIcon('paint-bucket', this.sanitizer.bypassSecurityTrustResourceUrl('assets/paint-bucket.svg'));
     }
+
+    @ViewChild('gridToggleButton') gridToggleIcon: ElementRef;
 
     clearCanvas(): void {
         if (!this.drawingService.isCanvasBlank()) {
@@ -325,6 +329,7 @@ export class SidebarComponent {
         if (this.drawingService.isGridOn) {
             this.drawingService.isGridOn = false;
             this.gridService.deactivateGrid();
+            this.gridToggleIcon.nativeElement.value = 'eraser';
             return;
         }
         {
