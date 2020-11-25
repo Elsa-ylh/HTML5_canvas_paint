@@ -59,7 +59,6 @@ export class SelectionService extends Tool {
 
     // Control points
     controlPoint: ControlPoint = ControlPoint.none;
-    inControlPoint: boolean = false;
 
     onMouseDown(event: MouseEvent): void {}
 
@@ -528,7 +527,6 @@ export class SelectionService extends Tool {
             mouse.y >= this.imagePosition.y - this.modifSelectSquare / 2 &&
             mouse.y <= this.imagePosition.y + this.modifSelectSquare / 2
         ) {
-            this.inControlPoint = true;
             return ControlPoint.topLeft;
         }
         if (
@@ -537,7 +535,6 @@ export class SelectionService extends Tool {
             mouse.y >= this.imagePosition.y - this.modifSelectSquare / 2 &&
             mouse.y <= this.imagePosition.y + this.modifSelectSquare / 2
         ) {
-            this.inControlPoint = true;
             return ControlPoint.top;
         }
         if (
@@ -546,7 +543,6 @@ export class SelectionService extends Tool {
             mouse.y >= this.imagePosition.y - this.modifSelectSquare / 2 &&
             mouse.y <= this.imagePosition.y + this.modifSelectSquare / 2
         ) {
-            this.inControlPoint = true;
             return ControlPoint.topRight;
         }
         if (
@@ -555,7 +551,6 @@ export class SelectionService extends Tool {
             mouse.y >= this.endingPos.y - this.modifSelectSquare / 2 &&
             mouse.y <= this.endingPos.y + this.modifSelectSquare / 2
         ) {
-            this.inControlPoint = true;
             return ControlPoint.bottomRight;
         }
         if (
@@ -564,7 +559,6 @@ export class SelectionService extends Tool {
             mouse.y >= this.endingPos.y - this.modifSelectSquare / 2 &&
             mouse.y <= this.endingPos.y + this.modifSelectSquare / 2
         ) {
-            this.inControlPoint = true;
             return ControlPoint.bottom;
         }
         if (
@@ -573,7 +567,6 @@ export class SelectionService extends Tool {
             mouse.y >= this.endingPos.y - this.modifSelectSquare / 2 &&
             mouse.y <= this.endingPos.y + this.modifSelectSquare / 2
         ) {
-            this.inControlPoint = true;
             return ControlPoint.bottomLeft;
         }
         if (
@@ -582,7 +575,6 @@ export class SelectionService extends Tool {
             mouse.y >= this.imagePosition.y + this.height / 2 - this.modifSelectSquare / 2 &&
             mouse.y <= this.imagePosition.y + this.height / 2 + this.modifSelectSquare / 2
         ) {
-            this.inControlPoint = true;
             return ControlPoint.left;
         }
         if (
@@ -591,13 +583,10 @@ export class SelectionService extends Tool {
             mouse.y >= this.endingPos.y - this.height / 2 - this.modifSelectSquare / 2 &&
             mouse.y <= this.endingPos.y - this.height / 2 + this.modifSelectSquare / 2
         ) {
-            this.inControlPoint = true;
             return ControlPoint.right;
             // }else if(this.inSelection){
-            //   this.inControlPoint = true;
             //   return ControlPoint.center;
         } else {
-            this.inControlPoint = false;
             return ControlPoint.none;
         }
     }
