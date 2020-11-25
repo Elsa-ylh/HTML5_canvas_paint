@@ -322,8 +322,16 @@ export class SidebarComponent {
     }
 
     btnCallGrid(): void {
-        this.drawingService.isGridOn ? (this.drawingService.isGridOn = false) : (this.drawingService.isGridOn = true);
-        this.gridService.activateGrid();
+        if (this.drawingService.isGridOn) {
+            this.drawingService.isGridOn = false;
+            this.gridService.deactivateGrid();
+            return;
+        }
+        {
+            this.drawingService.isGridOn = true;
+            this.gridService.activateGrid();
+            return;
+        }
     }
 
     // keybind control o for new drawing
