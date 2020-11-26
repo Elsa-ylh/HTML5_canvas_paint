@@ -64,6 +64,13 @@
                     >
                         <mat-icon>crop_free</mat-icon>
                     </mat-button-toggle>
+                    <mat-button-toggle
+                        (click)="pickGridSettings()"
+                        [checked]="gridSettingsChecked"
+                        matTooltip="Paramètres pour la grille"
+                        matTooltipPosition="right"
+                        ><mat-icon>tune</mat-icon></mat-button-toggle
+                    >
                 </mat-button-toggle-group>
             </mat-list>
 
@@ -87,7 +94,7 @@
                     >
                         <mat-icon> redo </mat-icon>
                     </button>
-                    <mat-button-toggle mat-button matTooltip="Grille" matToolTipPosition="right">
+                    <mat-button-toggle mat-button matTooltip="Grille" matToolTipPosition="right" (click)="btnCallGrid()">
                         <mat-icon>grid_on</mat-icon>
                     </mat-button-toggle>
                     <mat-button-toggle-group vertical="true">
@@ -303,6 +310,8 @@
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Dropper">
                 <app-dropper-color></app-dropper-color>
             </mat-grid-list>
+
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Grid"> hello </mat-grid-list>
         </div>
     </div>
 </div>

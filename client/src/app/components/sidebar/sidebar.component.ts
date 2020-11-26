@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
@@ -41,8 +41,6 @@ export class SidebarComponent {
     // tslint:disable-next-line: typedef
     toolUsed = ToolUsed;
 
-    isGridOn: boolean = false;
-
     isDialogOpen: boolean = false;
     isDialogloadSaveEport: boolean = true;
     lineWidth: number;
@@ -64,6 +62,7 @@ export class SidebarComponent {
     private isPolygonChecked: boolean = false;
     private isPaintBucketChecked: boolean = false;
     private isTextChecked: boolean = false;
+    private isGridSettingsChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -91,8 +90,6 @@ export class SidebarComponent {
         this.iconRegistry.addSvgIcon('polygon', this.sanitizer.bypassSecurityTrustResourceUrl('assets/polygon.svg'));
         this.iconRegistry.addSvgIcon('paint-bucket', this.sanitizer.bypassSecurityTrustResourceUrl('assets/paint-bucket.svg'));
     }
-
-    @ViewChild('gridToggleButton') gridToggleIcon: ElementRef;
 
     clearCanvas(): void {
         if (!this.drawingService.isCanvasBlank()) {
@@ -296,6 +293,16 @@ export class SidebarComponent {
         return this.isTextChecked;
     }
 
+    pickGridSettings(): void {
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.Grid);
+        this.isDialogloadSaveEport = true;
+    }
+
+    get gridSettingsChecked(): boolean {
+        return this.isGridSettingsChecked;
+    }
+
     resetCheckedButton(): void {
         this.isPencilChecked = false;
         this.isEraserChecked = false;
@@ -329,7 +336,6 @@ export class SidebarComponent {
         if (this.drawingService.isGridOn) {
             this.drawingService.isGridOn = false;
             this.gridService.deactivateGrid();
-            this.gridToggleIcon.nativeElement.value = 'eraser';
             return;
         }
         {
