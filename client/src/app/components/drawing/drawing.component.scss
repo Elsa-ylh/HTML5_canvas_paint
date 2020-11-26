@@ -10,7 +10,7 @@ canvas {
 }
 
 #previewLayer {
-    z-index: 6;
+    z-index: 5;
 }
 
 #baseCanvas {
@@ -35,6 +35,6 @@ canvas {
 }
 
 #gridLayer {
-    z-index: 5;
+    z-index: 6;
     position: absolute;
 }
