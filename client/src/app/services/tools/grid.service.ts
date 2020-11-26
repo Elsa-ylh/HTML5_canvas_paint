@@ -12,6 +12,10 @@ export class GridService {
 
     constructor(private drawingService: DrawingService, private canvasResizerService: CanvasResizerService) {}
 
+    getGridData(): ImageData {
+        return this.drawingService.gridCtx.getImageData(0, 0, this.drawingService.gridCanvas.width, this.drawingService.gridCanvas.height);
+    }
+
     activateGrid() {
         if (this.isGridSettingsChecked) {
             const ctx = this.drawingService.gridCtx;

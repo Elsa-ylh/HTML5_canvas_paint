@@ -20,6 +20,7 @@ import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { GridService } from '@app/services/tools/grid.service';
 import { LineService } from '@app/services/tools/line.service';
+import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
@@ -82,6 +83,7 @@ export class SidebarComponent {
         public selectionRectangleService: SelectionRectangleService,
         public selectionEllipseService: SelectionEllipseService,
         public gridService: GridService,
+        public magnetismService: MagnetismService,
         private automaticSaveService: AutomaticSaveService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
@@ -600,5 +602,10 @@ export class SidebarComponent {
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
             this.selectionEllipseService.deleteImage();
         }
+    }
+
+    @HostListener('window:keydown.m', ['$event']) activateMagnetism(event: KeyboardEvent): void {
+        event.preventDefault();
+        this.magnetismService.activateMagnetism();
     }
 }
