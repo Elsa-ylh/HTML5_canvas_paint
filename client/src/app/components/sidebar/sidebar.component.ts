@@ -62,7 +62,6 @@ export class SidebarComponent {
     private isPolygonChecked: boolean = false;
     private isPaintBucketChecked: boolean = false;
     private isTextChecked: boolean = false;
-    private isGridSettingsChecked: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -296,11 +295,12 @@ export class SidebarComponent {
     pickGridSettings(): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Grid);
+        this.gridService.isGridSettingsChecked = true;
         this.isDialogloadSaveEport = true;
     }
 
     get gridSettingsChecked(): boolean {
-        return this.isGridSettingsChecked;
+        return this.gridService.isGridSettingsChecked;
     }
 
     resetCheckedButton(): void {
