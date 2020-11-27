@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
+import { ToolInfoFeather } from '@app/classes/tool-info-feather';
+import { FeatherAction } from '@app/classes/undo-redo/feather-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class FeatherService extends Tool {
-    private readonly thickness: number = 2;
+    private thickness: number = 2;
 
     private pathData: Vec2[];
     private primaryColor: string;
@@ -20,32 +23,39 @@ export class FeatherService extends Tool {
 
     cursorLineCtx: CanvasRenderingContext2D;
 
-    constructor(
-        drawingService: DrawingService,
-        private colorService: ColorService, // private undoRedoService: UndoRedoService
-    ) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
-            this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
+            this.primaryColor = this.colorService.primaryColor;
+
+            this.drawFeather(this.drawingService.baseCtx, this.pathData, {
+                primaryColor: this.primaryColor,
+                angle: this.featherAngle,
+                length: this.featherLength,
+            });
         }
+        this.clearEffectTool();
     }
+
     onMouseMove(event: MouseEvent): void {
         this.renderCursor(event);
 
         const mousePosition = this.getPositionFromMouse(event);
         if (this.mouseDown) {
             this.clearPreviewCtx();
-
             this.primaryColor = this.colorService.primaryColor;
             this.pathData.push(mousePosition);
-
-            this.drawFeather(this.drawingService.baseCtx, this.pathData, this.primaryColor);
+            this.drawFeather(this.drawingService.baseCtx, this.pathData, {
+                primaryColor: this.primaryColor,
+                angle: this.featherAngle,
+                length: this.featherLength,
+            });
         }
     }
 
@@ -53,14 +63,18 @@ export class FeatherService extends Tool {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.mouseDown) {
             this.pathData.push(mousePosition);
-            this.drawFeather(this.drawingService.baseCtx, this.pathData, this.primaryColor);
+            this.drawFeather(this.drawingService.baseCtx, this.pathData, {
+                primaryColor: this.primaryColor,
+                angle: this.featherAngle,
+                length: this.featherLength,
+            });
             this.primaryColor = this.colorService.primaryColor;
         }
         this.mouseDown = false;
-        // undo- redo
-        // const featherAction = new FeatherAction(this.pathData, this.primaryColor, this.drawingService, this);
-        // this.undoRedoService.addUndo(featherAction);
-        // this.undoRedoService.clearRedo();
+        // undo - redo
+        const featherAction = new FeatherAction(this.pathData, this.featherAngle, this.featherLength, this.primaryColor, this.drawingService, this);
+        this.undoRedoService.addUndo(featherAction);
+        this.undoRedoService.clearRedo();
 
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -76,23 +90,23 @@ export class FeatherService extends Tool {
         this.drawingService.cursorCtx.canvas.style.display = 'inline-block';
     }
 
-    drawFeather(ctx: CanvasRenderingContext2D, path: Vec2[], color: string): void {
-        this.drawingService.baseCtx.strokeStyle = color;
+    drawFeather(ctx: CanvasRenderingContext2D, path: Vec2[], toolInfo: ToolInfoFeather): void {
+        this.drawingService.baseCtx.strokeStyle = toolInfo.primaryColor;
         this.drawingService.baseCtx.lineJoin = 'bevel';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = this.thickness;
+        const angleX = Math.cos((toolInfo.angle * Math.PI) / 180);
+        const angleY = Math.sin((toolInfo.angle * Math.PI) / 180);
 
         ctx.beginPath();
-        const angleX = Math.cos((this.featherAngle * Math.PI) / 180);
-        const angleY = Math.sin((this.featherAngle * Math.PI) / 180);
 
-        for (let point = 1; point < this.pathData.length; ++point) {
-            for (let i = 0; i < this.featherLength; ++i) {
-                ctx.moveTo(this.pathData[point - 1].x + angleX * i, this.pathData[point - 1].y + angleY * i);
-                ctx.lineTo(this.pathData[point - 1].x + angleX * i, this.pathData[point].y + angleY * i);
+        for (let point = 1; point < path.length; ++point) {
+            for (let i = 0; i < toolInfo.length; ++i) {
+                ctx.moveTo(path[point - 1].x + angleX * i, path[point - 1].y + angleY * i);
+                ctx.lineTo(path[point - 1].x + angleX * i, path[point].y + angleY * i);
             }
         }
-        // ctx.closePath();
         ctx.stroke();
+        ctx.closePath();
     }
 
     private renderCursor(event: MouseEvent): void {
