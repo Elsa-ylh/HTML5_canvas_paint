@@ -286,6 +286,7 @@ export class MagicWandService extends SelectionService {
         const rightBoundPos: Vec2 = this.findBound(Bound.RIGHT, previewLayer);
 
         const borders: Vec2[] = [upperBoundPos, lowerBoundPos, leftBoundPos, rightBoundPos];
+        console.log(borders);
 
         // this.createRectangleBorders(borders);
 
@@ -301,6 +302,7 @@ export class MagicWandService extends SelectionService {
         console.log(event.offsetX, event.offsetY);
         if (event.button === MouseButton.Left) {
             // if (this.selectionBoxCreated) {
+            debugger;
             const toBeSelectedPixels: ImageData = this.selectedFloodFill(event.offsetX, event.offsetY, this.replacementColor);
             this.createSelectionRectangle(toBeSelectedPixels);
             this.selectionBoxCreated = true;
