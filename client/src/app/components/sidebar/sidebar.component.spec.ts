@@ -386,7 +386,7 @@ describe('SidebarComponent', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.callThrough();
         const resetCursor = spyOn(component, 'resetCursorCanvas').and.stub();
         component.pickStamp();
-        expect(drawingStub.cursorUsed).toEqual('pointer');
+        expect(drawingStub.cursorUsed).toEqual('none');
         expect(switchToolSpy).toHaveBeenCalled();
         expect(resetCursor).toHaveBeenCalled();
     });

@@ -295,7 +295,7 @@ export class SidebarComponent {
 
     pickStamp(): void {
         this.resetCursorCanvas();
-        this.drawingService.cursorUsed = 'pointer';
+        this.drawingService.cursorUsed = 'none';
         this.toolService.switchTool(ToolUsed.Stamp);
         this.isStampChecked = true;
     }
@@ -307,8 +307,7 @@ export class SidebarComponent {
     resetCursorCanvas(): void {
         this.drawingService.cursorCtx.canvas.width = this.curCanvasDefaultSize;
         this.drawingService.cursorCtx.canvas.height = this.curCanvasDefaultSize;
-        this.drawingService.cursorCtx.fillStyle = 'white';
-        this.drawingService.cursorCtx.fillRect(0, 0, this.drawingService.cursorCtx.canvas.width, this.drawingService.cursorCtx.canvas.height);
+        this.drawingService.cursorCtx.clearRect(0, 0, this.drawingService.cursorCtx.canvas.width, this.drawingService.cursorCtx.canvas.height);
     }
 
     resetCheckedButton(): void {
