@@ -41,13 +41,13 @@ export class BrushService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.mouseDownCoords = this.getPositionFromMouse(event);
             if (this.subToolSelect === SubToolselected.tool4) {
-                const point = new PointArc(this.mouseDownCoord, this.randomInt(), Math.random());
+                const point = new PointArc(this.mouseDownCoords, this.randomInt(), Math.random());
                 this.brush4Data.push(point);
             } else {
-                this.pathData.push(this.mouseDownCoord);
-                this.lastPoint = this.mouseDownCoord;
+                this.pathData.push(this.mouseDownCoords);
+                this.lastPoint = this.mouseDownCoords;
             }
         }
     }
@@ -119,13 +119,13 @@ export class BrushService extends Tool {
 
     onMouseEnter(event: MouseEvent): void {
         if (this.mouseDown && this.mouseOut) {
-            this.mouseDownCoord = this.lastPoint;
+            this.mouseDownCoords = this.lastPoint;
             if (this.subToolSelect === SubToolselected.tool4) {
-                const point = new PointArc(this.mouseDownCoord, this.randomInt(), Math.random());
+                const point = new PointArc(this.mouseDownCoords, this.randomInt(), Math.random());
                 this.brush4Data.push(point);
             } else {
-                this.pathData.push(this.mouseDownCoord);
-                this.lastPoint = this.mouseDownCoord;
+                this.pathData.push(this.mouseDownCoords);
+                this.lastPoint = this.mouseDownCoords;
             }
         }
         this.mouseOut = false;

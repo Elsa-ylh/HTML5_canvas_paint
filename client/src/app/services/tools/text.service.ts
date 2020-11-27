@@ -64,14 +64,14 @@ export class TextService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseEnter && !this.mouseOut && this.mouseDown && !this.writeOnCanvas) {
             this.rectangleService.clearEffectTool();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.mousePosition = this.mouseDownCoord;
+            this.mouseDownCoords = this.getPositionFromMouse(event);
+            this.mousePosition = this.mouseDownCoords;
         }
         if (this.writeOnCanvas) {
             this.drawText();
             this.writeOnCanvas = false;
             this.clearEffectTool();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.mouseDownCoords = this.getPositionFromMouse(event);
         }
     }
 
@@ -81,7 +81,7 @@ export class TextService extends Tool {
             this.mousePosition = mousePosition;
             this.canvasSelected = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
+            this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoords, this.mousePosition);
             this.mouseDown = false;
             this.writeOnCanvas = true;
         }
@@ -93,9 +93,9 @@ export class TextService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.mousePosition = mousePosition;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.height = mousePosition.y - this.mouseDownCoord.y;
-            this.width = mousePosition.x - this.mouseDownCoord.x;
-            this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
+            this.height = mousePosition.y - this.mouseDownCoords.y;
+            this.width = mousePosition.x - this.mouseDownCoords.x;
+            this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoords, this.mousePosition);
             this.canvasSelected = false;
         }
     }
@@ -248,7 +248,7 @@ export class TextService extends Tool {
 
     private previewText(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
+        this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoords, this.mousePosition);
         const textPreview: string[] = [];
         let indexLine = 0;
         textPreview[indexLine] = '';
@@ -282,11 +282,11 @@ export class TextService extends Tool {
     }
 
     private xTop(width: number): number {
-        return (this.mouseDownCoord.x < this.mousePosition.x ? this.mouseDownCoord.x : this.mousePosition.x) + width;
+        return (this.mouseDownCoords.x < this.mousePosition.x ? this.mouseDownCoords.x : this.mousePosition.x) + width;
     }
 
     private yTop(): number {
-        return (this.mouseDownCoord.y < this.mousePosition.y ? this.mouseDownCoord.y : this.mousePosition.y) + this.sizeFont;
+        return (this.mouseDownCoords.y < this.mousePosition.y ? this.mouseDownCoords.y : this.mousePosition.y) + this.sizeFont;
     }
 
     private checkWidthText(ctx: CanvasRenderingContext2D, text: string): boolean {

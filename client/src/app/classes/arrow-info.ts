@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs';
 
-export const PIXELMOUVEMENT = 3;
-export const MOUVEMENTDELAY = 100;
+export const PIXELMOVEMENT = 3;
+export const MOVEMENTDELAY = 100;
 export class ArrowInfo {
     constructor() {
         this.timerStarted = false;
