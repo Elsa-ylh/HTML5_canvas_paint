@@ -14,9 +14,10 @@ import { WriteTextOptionComponent } from './write-text-option.component';
 // tslint:disable:no-unused-expression
 // tslint:disable:no-string-literal
 // tslint:disable:no-empty
-describe('WriteTextOptionComponent', () => {
+fdescribe('WriteTextOptionComponent', () => {
     let component: WriteTextOptionComponent;
     let fixture: ComponentFixture<WriteTextOptionComponent>;
+    const event = new KeyboardEvent('window:keydown.control.a', {});
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [
@@ -49,6 +50,8 @@ describe('WriteTextOptionComponent', () => {
                         clearEffectTool: () => '',
                         delete: () => '',
                         backspace: () => '',
+                        arrowTop: () => '',
+                        arrowBottom: () => '',
                     },
                 },
             ],
@@ -66,9 +69,48 @@ describe('WriteTextOptionComponent', () => {
     });
 
     it('should ngOnInit', () => {
-        component.ngOnInit();
         expect(component['itBold']).toBeFalse;
         expect(component['itItalic']).toBeFalse;
     });
-    it('should', () => {});
+    it('should', () => {
+        component.pickBold();
+        expect(component['itBold']).toBeTrue;
+        component.pickBold();
+        expect(component['itBold']).toBeFalse;
+    });
+    it('should', () => {
+        component.pickItalic();
+        expect(component['itItalic']).toBeFalse;
+        component.pickItalic();
+        expect(component['itItalic']).toBeFalse;
+    });
+
+    it('should', () => {
+        component.pickFontStyle(0);
+    });
+
+    it('should keyUpHandler', () => {
+        component.keyUpHandler(event);
+    });
+    it('should onLeftArrow', () => {
+        component.onLeftArrow(event);
+    });
+    it('should onRightArrow', () => {
+        component.onRightArrow(event);
+    });
+    it('should onEnter', () => {
+        component.onEnter(event);
+    });
+    it('should onDelete', () => {
+        component.onDelete(event);
+    });
+    it('should onBackSpace', () => {
+        component.onBackSpace(event);
+    });
+    it('should onTopArrow', () => {
+        component.onTopArrow(event);
+    });
+    it('should onBottomArrow', () => {
+        component.onBottomArrow(event);
+    });
 });

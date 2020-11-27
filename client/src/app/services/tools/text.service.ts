@@ -5,7 +5,6 @@ import { Tool, ToolUsed } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { RectangleService } from './rectangle.service';
 
 // https://css-tricks.com/snippets/javascript/javascript-keycodes/
 
@@ -53,7 +52,7 @@ export class TextService extends Tool {
     distanceY: number = 0;
     private textAlign: number = 2;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private rectangleService: RectangleService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService) {
         super(drawingService);
     }
 
@@ -64,7 +63,6 @@ export class TextService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseEnter && !this.mouseOut && this.mouseDown && !this.writeOnPreviewCtx) {
-            this.rectangleService.clearEffectTool();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.mousePosition = this.mouseDownCoord;
             this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
@@ -341,8 +339,12 @@ export class TextService extends Tool {
                 break;
         }
     }
-    // arrowTop(): void {}
-    // arrowBottom(): void {}
+    arrowTop(): void {
+        this.stack.push(this.keyHistory.pop() as string);
+    }
+    arrowBottom(): void {
+        this.keyHistory.push(this.stack.pop() as string);
+    }
 
     arrowLeft(): void {
         if (this.keyHistory.length) {

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ToolUsed } from '@app/classes/tool';
 import { TextService } from '@app/services/tools/text.service';
 
@@ -7,18 +7,13 @@ import { TextService } from '@app/services/tools/text.service';
     templateUrl: './write-text-option.component.html',
     styleUrls: ['./write-text-option.component.scss'],
 })
-export class WriteTextOptionComponent implements OnInit {
-    private itItalic: boolean;
-    private itBold: boolean;
+export class WriteTextOptionComponent {
+    private itItalic: boolean = false;
+    private itBold: boolean = false;
     // private isTextChecked: boolean = false;
     // tslint:disable-next-line: typedef
     toolUsed = ToolUsed;
     constructor(public textService: TextService) {}
-
-    ngOnInit(): void {
-        this.itBold = false;
-        this.itItalic = false;
-    }
 
     /* get textChecked(): boolean {
         return this.isTextChecked;
@@ -49,36 +44,39 @@ export class WriteTextOptionComponent implements OnInit {
     @HostListener('window:keydown.ArrowLeft', ['$event']) onLeftArrow(event: KeyboardEvent): void {
         event.preventDefault();
         this.textService.arrowLeft();
-        console.log('arrowLeft');
     }
-
     @HostListener('window:keydown.ArrowRight', ['$event']) onRightArrow(event: KeyboardEvent): void {
         event.preventDefault();
         this.textService.arrowRight();
-        console.log('arrowRight');
+    }
+
+    @HostListener('window:keydown.ArrowTop', ['$event']) onTopArrow(event: KeyboardEvent): void {
+        event.preventDefault();
+        this.textService.arrowTop();
+    }
+
+    @HostListener('window:keydown.ArrowBottom', ['$event']) onBottomArrow(event: KeyboardEvent): void {
+        event.preventDefault();
+        this.textService.arrowBottom();
     }
 
     @HostListener('window:keydown.Enter', ['$event']) onEnter(event: KeyboardEvent): void {
         event.preventDefault();
         this.textService.enter();
-        console.log('enter');
     }
 
     @HostListener('window:keydown.Escape', ['$event']) onEscape(event: KeyboardEvent): void {
         event.preventDefault();
         this.textService.clearEffectTool();
-        console.log('escape');
     }
 
     @HostListener('window:keydown.Delete', ['$event']) onDelete(event: KeyboardEvent): void {
         event.preventDefault();
         this.textService.delete();
-        console.log('delete');
     }
 
     @HostListener('window:keydown.Backspace', ['$event']) onBackSpace(event: KeyboardEvent): void {
         event.preventDefault();
         this.textService.backspace();
-        console.log('backSpace');
     }
 }
