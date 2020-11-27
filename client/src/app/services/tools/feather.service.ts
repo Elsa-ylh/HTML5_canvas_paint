@@ -12,7 +12,7 @@ export class FeatherService extends Tool {
     private readonly thickness: number = 2;
 
     private pathData: Vec2[];
-    // private primaryColor: string;
+    private primaryColor: string;
     // private previewWidth: number = 2;
     // private previewHeight: number = 2;
     featherLength: number = 30;
@@ -38,35 +38,33 @@ export class FeatherService extends Tool {
     onMouseMove(event: MouseEvent): void {
         this.renderCursor(event);
 
-        /*
         const mousePosition = this.getPositionFromMouse(event);
         if (this.mouseDown) {
             this.clearPreviewCtx();
-            this.pathData.push(mousePosition);
+
             this.primaryColor = this.colorService.primaryColor;
-            // this.drawFeather(this.drawingService.baseCtx, this.pathData, this.primaryColor);
+            this.pathData.push(mousePosition);
+
+            this.drawFeather(this.drawingService.baseCtx, this.pathData, this.primaryColor);
         }
-        */
     }
 
-    /*
     onMouseUp(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.mouseDown) {
             this.pathData.push(mousePosition);
-            this.primaryColor = this.colorService.primaryColor;
             this.drawFeather(this.drawingService.baseCtx, this.pathData, this.primaryColor);
+            this.primaryColor = this.colorService.primaryColor;
         }
         this.mouseDown = false;
         // undo- redo
-        const featherAction = new FeatherAction(this.pathData, this.primaryColor, this.drawingService, this);
-        this.undoRedoService.addUndo(featherAction);
-        this.undoRedoService.clearRedo();
+        // const featherAction = new FeatherAction(this.pathData, this.primaryColor, this.drawingService, this);
+        // this.undoRedoService.addUndo(featherAction);
+        // this.undoRedoService.clearRedo();
 
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
-    */
 
     onMouseOut(event: MouseEvent): void {
         this.drawingService.cursorCtx.canvas.style.display = 'none';
@@ -78,22 +76,24 @@ export class FeatherService extends Tool {
         this.drawingService.cursorCtx.canvas.style.display = 'inline-block';
     }
 
-    /*
     drawFeather(ctx: CanvasRenderingContext2D, path: Vec2[], color: string): void {
         this.drawingService.baseCtx.strokeStyle = color;
+        this.drawingService.baseCtx.lineJoin = 'bevel';
+        ctx.lineWidth = 2;
+
         ctx.beginPath();
-        ctx.lineWidth = this.featherLength;
-        const sizePx = ctx.lineWidth;
-        ctx.lineWidth = sizePx;
-        for (let index = 1; index <= sizePx; index += 1) {
-            ctx.beginPath();
-            for (const point of path) {
-                ctx.lineTo(point.x, point.y + Math.sin((Math.PI * this.featherAngle) / 180) * sizePx);
+        const angleX = Math.cos((this.featherAngle * Math.PI) / 180);
+        const angleY = Math.sin((this.featherAngle * Math.PI) / 180);
+
+        for (let point = 1; point < this.pathData.length; ++point) {
+            for (let i = 0; i < this.featherLength; ++i) {
+                ctx.moveTo(this.pathData[point - 1].x + angleX * i, this.pathData[point - 1].y + angleY * i);
+                ctx.lineTo(this.pathData[point - 1].x + angleX * i, this.pathData[point].y + angleY * i);
             }
-            ctx.stroke();
         }
+        // ctx.closePath();
+        ctx.stroke();
     }
-    */
 
     private renderCursor(event: MouseEvent): void {
         const maxSize = this.drawingService.cursorCtxWidthAndHeight;
