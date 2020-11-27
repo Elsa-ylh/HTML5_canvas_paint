@@ -7,7 +7,7 @@ import { DrawingService } from '../drawing/drawing.service';
 })
 export class GridService {
     isGridSettingsChecked: boolean = false;
-    opacity: number = 0; // 0 means transparent or DISABLED, 100 means you see nothing thru it
+    opacity: number = 0.1; // 0 means transparent or DISABLED, 1 means super opaque
     squareWidth: number = 100; // the unit is in pixels
 
     constructor(private drawingService: DrawingService, private canvasResizerService: CanvasResizerService) {}
@@ -24,7 +24,11 @@ export class GridService {
             const h = this.canvasResizerService.canvasSize.y;
             const nbOfVerticalLines = Math.ceil(w / this.squareWidth);
             const nbOfHorizontalLines = Math.ceil(h / this.squareWidth);
-            ctx.fillStyle = '#000000'; // black lines
+            ctx.fillStyle = 'rgba(0, 0, 0)'; // black lines
+
+            if (this.opacity === 0) return; // draw nothing if opacity is at zero
+
+            ctx.globalAlpha = this.opacity;
             // horizontal lines first
             for (let j = 0; j < nbOfHorizontalLines; ++j) {
                 ctx.beginPath();
@@ -47,5 +51,6 @@ export class GridService {
     // deactivating the grid means clearing it
     deactivateGrid() {
         this.drawingService.clearCanvas(this.drawingService.gridCtx);
+        this.isGridSettingsChecked = false;
     }
 }

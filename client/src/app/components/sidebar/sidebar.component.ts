@@ -299,12 +299,7 @@ export class SidebarComponent {
     pickGridSettings(): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Grid);
-        this.gridService.isGridSettingsChecked = true;
         this.isDialogloadSaveEport = true;
-    }
-
-    get gridSettingsChecked(): boolean {
-        return this.gridService.isGridSettingsChecked;
     }
 
     resetCheckedButton(): void {
@@ -337,13 +332,12 @@ export class SidebarComponent {
     }
 
     btnCallGrid(): void {
-        if (this.drawingService.isGridOn) {
-            this.drawingService.isGridOn = false;
+        if (this.gridService.isGridSettingsChecked) {
+            this.gridService.isGridSettingsChecked = false;
             this.gridService.deactivateGrid();
             return;
-        }
-        {
-            this.drawingService.isGridOn = true;
+        } else {
+            this.gridService.isGridSettingsChecked = true;
             this.gridService.activateGrid();
             return;
         }
