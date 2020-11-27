@@ -13,13 +13,10 @@ import { UndoRedoService } from '../undo-redo/undo-redo.service';
 })
 export class FeatherService extends Tool {
     private thickness: number = 2;
-
     private pathData: Vec2[];
     private primaryColor: string;
-    // private previewWidth: number = 2;
-    // private previewHeight: number = 2;
-    featherLength: number = 30;
-    featherAngle: number = 120;
+    featherLength: number = 10;
+    featherAngle: number = 0;
 
     cursorLineCtx: CanvasRenderingContext2D;
 
@@ -94,15 +91,18 @@ export class FeatherService extends Tool {
         this.drawingService.baseCtx.strokeStyle = toolInfo.primaryColor;
         this.drawingService.baseCtx.lineJoin = 'bevel';
         ctx.lineWidth = this.thickness;
-        const angleX = Math.cos((toolInfo.angle * Math.PI) / 180);
-        const angleY = Math.sin((toolInfo.angle * Math.PI) / 180);
+        this.featherLength = toolInfo.length;
+        this.featherAngle = toolInfo.angle;
+        const angleX = Math.cos((this.featherAngle * Math.PI) / 180);
+        const angleY = Math.sin((this.featherAngle * Math.PI) / 180);
 
         ctx.beginPath();
 
         for (let point = 1; point < path.length; ++point) {
-            for (let i = 0; i < toolInfo.length; ++i) {
+            for (let i = 0; i < this.featherLength; ++i) {
                 ctx.moveTo(path[point - 1].x + angleX * i, path[point - 1].y + angleY * i);
-                ctx.lineTo(path[point - 1].x + angleX * i, path[point].y + angleY * i);
+                ctx.lineTo(path[point - 1].x + angleX * i, path[point - 1].y + angleY * i);
+                ctx.lineTo(path[point].x + angleX * i, path[point].y + angleY * i);
             }
         }
         ctx.stroke();
