@@ -12,7 +12,7 @@ export class MagnetismService {
     constructor(private gridService: GridService, private snackBar: MatSnackBar) {}
 
     activateMagnetism(): void {
-        const gridInfo: ImageData = this.gridService.getGridData();
+        // const gridInfo: ImageData = this.gridService.getGridData();
         this.snackBar.open("Vous avez besoin d'activer la grille avec le bouton «grille» et peser sur «m» pour activer le magnétisme.", 'ok', {
             duration: 10000,
             horizontalPosition: this.horizontalPosition,
