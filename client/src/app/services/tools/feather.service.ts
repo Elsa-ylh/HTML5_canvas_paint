@@ -31,11 +31,11 @@ export class FeatherService extends Tool {
             this.pathData.push(this.mouseDownCoord);
             this.primaryColor = this.colorService.primaryColor;
 
-            this.drawFeather(this.drawingService.baseCtx, this.pathData, {
-                primaryColor: this.primaryColor,
-                angle: this.featherAngle,
-                length: this.featherLength,
-            });
+            // this.drawFeather(this.drawingService.baseCtx, this.pathData, {
+            //     primaryColor: this.primaryColor,
+            //     angle: this.featherAngle,
+            //     length: this.featherLength,
+            // });
         }
         this.clearEffectTool();
     }
@@ -98,11 +98,10 @@ export class FeatherService extends Tool {
 
         ctx.beginPath();
 
-        for (let point = 1; point < path.length; ++point) {
+        for (let line = 1; line < path.length; ++line) {
             for (let i = 0; i < this.featherLength; ++i) {
-                ctx.moveTo(path[point - 1].x + angleX * i, path[point - 1].y + angleY * i);
-                ctx.lineTo(path[point - 1].x + angleX * i, path[point - 1].y + angleY * i);
-                ctx.lineTo(path[point].x + angleX * i, path[point].y + angleY * i);
+                ctx.moveTo(path[line - 1].x + angleX * i, path[line - 1].y + angleY * i);
+                ctx.lineTo(path[line].x + angleX * i, path[line].y + angleY * i);
             }
         }
         ctx.stroke();
