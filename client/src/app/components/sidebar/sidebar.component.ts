@@ -268,6 +268,7 @@ export class SidebarComponent {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.SelectionRectangle);
         this.isDialogloadSaveEport = true;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     get selectionRectangleChecked(): boolean {
@@ -278,6 +279,7 @@ export class SidebarComponent {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.SelectionEllipse);
         this.isDialogloadSaveEport = true;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     get selectionEllipseChecked(): boolean {
