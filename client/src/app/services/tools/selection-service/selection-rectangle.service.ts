@@ -157,7 +157,7 @@ export class SelectionRectangleService extends SelectionService {
         }
     }
 
-    protected drawSelection(imagePosition: Vec2): void {
+    drawSelection(imagePosition: Vec2): void {
         this.drawingService.previewCtx.drawImage(this.image, imagePosition.x, imagePosition.y, this.width, this.height);
         this.drawSelectionRect(imagePosition, this.width, this.height);
     }
@@ -173,78 +173,6 @@ export class SelectionRectangleService extends SelectionService {
     clearSelection(position: Vec2, width: number, height: number): void {
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fillRect(position.x, position.y, width, height);
-    }
-
-    onLeftArrowUp(): void {
-        if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.leftArrow.arrowPressed = false;
-            this.resetTimer();
-            if (this.leftArrow.timerStarted) {
-                this.leftArrow.subscription.unsubscribe();
-            }
-
-            // changing image position
-            this.imagePosition = { x: this.imagePosition.x + this.mouseMovement.x, y: this.imagePosition.y + this.mouseMovement.y };
-            // this.startingPos = { x: this.startingPos.x + this.mouseMovement.x, y: this.startingPos.y + this.mouseMovement.y };
-            this.endingPos = { x: this.endingPos.x + this.mouseMovement.x, y: this.endingPos.y + this.mouseMovement.y };
-
-            this.mouseMovement = { x: 0, y: 0 };
-            this.leftArrow.timerStarted = false;
-        }
-    }
-
-    onRightArrowUp(): void {
-        if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.rightArrow.arrowPressed = false;
-            this.resetTimer();
-            if (this.rightArrow.timerStarted) {
-                this.rightArrow.subscription.unsubscribe();
-            }
-
-            // changing image position
-            this.imagePosition = { x: this.imagePosition.x + this.mouseMovement.x, y: this.imagePosition.y + this.mouseMovement.y };
-            // this.startingPos = { x: this.startingPos.x + this.mouseMovement.x, y: this.startingPos.y + this.mouseMovement.y };
-            this.endingPos = { x: this.endingPos.x + this.mouseMovement.x, y: this.endingPos.y + this.mouseMovement.y };
-
-            this.mouseMovement = { x: 0, y: 0 };
-            this.rightArrow.timerStarted = false;
-        }
-    }
-
-    onUpArrowUp(): void {
-        if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.upArrow.arrowPressed = false;
-            this.resetTimer();
-            if (this.upArrow.timerStarted) {
-                this.upArrow.subscription.unsubscribe();
-            }
-
-            // changing image position
-            this.imagePosition = { x: this.imagePosition.x + this.mouseMovement.x, y: this.imagePosition.y + this.mouseMovement.y };
-            // this.startingPos = { x: this.startingPos.x + this.mouseMovement.x, y: this.startingPos.y + this.mouseMovement.y };
-            this.endingPos = { x: this.endingPos.x + this.mouseMovement.x, y: this.endingPos.y + this.mouseMovement.y };
-
-            this.mouseMovement = { x: 0, y: 0 };
-            this.upArrow.timerStarted = false;
-        }
-    }
-
-    onDownArrowUp(): void {
-        if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.downArrow.arrowPressed = false;
-            this.resetTimer();
-            if (this.downArrow.timerStarted) {
-                this.downArrow.subscription.unsubscribe();
-            }
-
-            // changing image position
-            this.imagePosition = { x: this.imagePosition.x + this.mouseMovement.x, y: this.imagePosition.y + this.mouseMovement.y };
-            // this.startingPos = { x: this.startingPos.x + this.mouseMovement.x, y: this.startingPos.y + this.mouseMovement.y };
-            this.endingPos = { x: this.endingPos.x + this.mouseMovement.x, y: this.endingPos.y + this.mouseMovement.y };
-
-            this.mouseMovement = { x: 0, y: 0 };
-            this.downArrow.timerStarted = false;
-        }
     }
 
     pasteImage(): void {

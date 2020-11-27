@@ -146,7 +146,7 @@ export class SelectionEllipseService extends SelectionService {
         }
     }
 
-    protected drawSelection(imagePosition: Vec2): void {
+    drawSelection(imagePosition: Vec2): void {
         if (this.isAllSelect) {
             this.drawingService.previewCtx.putImageData(this.imageData, imagePosition.x, imagePosition.y);
             this.drawSelectionRect(imagePosition, Math.abs(this.width), Math.abs(this.height));
@@ -216,85 +216,6 @@ export class SelectionEllipseService extends SelectionService {
             this.drawingService.baseCtx.beginPath();
             this.drawEllipse(this.drawingService.baseCtx, position, width / 2, height / 2);
             this.drawingService.baseCtx.fill();
-        }
-    }
-
-    onLeftArrowUp(): void {
-        if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.leftArrow.arrowPressed = false;
-            this.resetTimer();
-            if (this.leftArrow.timerStarted) {
-                this.leftArrow.subscription.unsubscribe();
-            }
-
-            // changing image position
-            this.imagePosition = { x: this.imagePosition.x + this.mouseMovement.x, y: this.imagePosition.y + this.mouseMovement.y };
-            // this.startingPos.x = this.startingPos.x + this.mouseMovement.x;
-            // this.startingPos.y = this.startingPos.y + this.mouseMovement.y;
-            this.endingPos.x = this.endingPos.x + this.mouseMovement.x;
-            this.endingPos.y = this.endingPos.y + this.mouseMovement.y;
-
-            this.mouseMovement = { x: 0, y: 0 };
-            this.leftArrow.timerStarted = false;
-        }
-    }
-
-    onRightArrowUp(): void {
-        if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.rightArrow.arrowPressed = false;
-            this.resetTimer();
-            if (this.rightArrow.timerStarted) {
-                this.rightArrow.subscription.unsubscribe();
-            }
-
-            // changing image position
-            this.imagePosition = { x: this.imagePosition.x + this.mouseMovement.x, y: this.imagePosition.y + this.mouseMovement.y };
-            // this.startingPos.x = this.startingPos.x + this.mouseMovement.x;
-            // this.startingPos.y = this.startingPos.y + this.mouseMovement.y;
-            this.endingPos.x = this.endingPos.x + this.mouseMovement.x;
-            this.endingPos.y = this.endingPos.y + this.mouseMovement.y;
-
-            this.mouseMovement = { x: 0, y: 0 };
-            this.rightArrow.timerStarted = false;
-        }
-    }
-
-    onUpArrowUp(): void {
-        if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.upArrow.arrowPressed = false;
-            this.resetTimer();
-            if (this.upArrow.timerStarted) {
-                this.upArrow.subscription.unsubscribe();
-            }
-
-            // changing image position
-            this.imagePosition = { x: this.imagePosition.x + this.mouseMovement.x, y: this.imagePosition.y + this.mouseMovement.y };
-            // this.startingPos.x = this.startingPos.x + this.mouseMovement.x;
-            // this.startingPos.y = this.startingPos.y + this.mouseMovement.y;
-            this.endingPos.x = this.endingPos.x + this.mouseMovement.x;
-            this.endingPos.y = this.endingPos.y + this.mouseMovement.y;
-
-            this.mouseMovement = { x: 0, y: 0 };
-            this.upArrow.timerStarted = false;
-        }
-    }
-
-    onDownArrowUp(): void {
-        if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.downArrow.arrowPressed = false;
-            this.resetTimer();
-            if (this.downArrow.timerStarted) {
-                this.downArrow.subscription.unsubscribe();
-            }
-            // changing image position
-            this.imagePosition = { x: this.imagePosition.x + this.mouseMovement.x, y: this.imagePosition.y + this.mouseMovement.y };
-            // this.startingPos.x = this.startingPos.x + this.mouseMovement.x;
-            // this.startingPos.y = this.startingPos.y + this.mouseMovement.y;
-            this.endingPos.x = this.endingPos.x + this.mouseMovement.x;
-            this.endingPos.y = this.endingPos.y + this.mouseMovement.y;
-
-            this.mouseMovement = { x: 0, y: 0 };
-            this.downArrow.timerStarted = false;
         }
     }
 
