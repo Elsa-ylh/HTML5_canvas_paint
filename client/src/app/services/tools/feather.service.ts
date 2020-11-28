@@ -134,7 +134,7 @@ export class FeatherService extends Tool {
 
     // to scroll
     changeAngleWithScroll(event: WheelEvent): void {
-        if (event.deltaX > 0) {
+        if (event.deltaY < 0) {
             if (!this.altPressed) {
                 this.featherAngle += FIFTEEN;
             } else {
