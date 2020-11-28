@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ArrowInfo, MOUVEMENTDELAY, PIXELMOUVEMENT } from '@app/classes/arrow-info';
-import { ControlPoint } from '@app/classes/control-points';
+import { ControlGroup } from '@app/classes/control-group';
+import { ControlPointName } from '@app/classes/control-points';
 import { ImageClipboard } from '@app/classes/image-clipboard';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { interval, Subscription, timer } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { MagnetismService } from '../magnetism.service';
+<<<<<<< HEAD
+=======
+import { interval, Subscription } from 'rxjs';
+>>>>>>> 29-redimensionnement-d-une-selection
 
 @Injectable({
     providedIn: 'root',
@@ -22,7 +27,7 @@ export class SelectionService extends Tool {
     }
 
     // initialization of local const
-    private minTimeMovement: number = 500;
+    minTimeMovement: number = 500;
     lineWidth: number = 1;
     private modifSelectSquare: number = 10;
     dottedSpace: number = 10;
@@ -30,7 +35,7 @@ export class SelectionService extends Tool {
     shiftPressed: boolean = false;
     height: number;
     width: number;
-    mouseMouvement: Vec2 = { x: 0, y: 0 };
+    mouseMovement: Vec2 = { x: 0, y: 0 };
     // startingPos: Vec2;
     endingPos: Vec2;
 
@@ -44,10 +49,10 @@ export class SelectionService extends Tool {
     previousMousePos: Vec2 = { x: 0, y: 0 };
 
     // initialization of variables needed for arrow movement
-    leftArrow: ArrowInfo = new ArrowInfo();
-    rightArrow: ArrowInfo = new ArrowInfo();
-    upArrow: ArrowInfo = new ArrowInfo();
-    downArrow: ArrowInfo = new ArrowInfo();
+    leftArrow: ArrowInfo = new ArrowInfo({ x: -PIXELMOUVEMENT, y: 0 }, this.drawingService, this);
+    rightArrow: ArrowInfo = new ArrowInfo({ x: +PIXELMOUVEMENT, y: 0 }, this.drawingService, this);
+    upArrow: ArrowInfo = new ArrowInfo({ x: 0, y: -PIXELMOUVEMENT }, this.drawingService, this);
+    downArrow: ArrowInfo = new ArrowInfo({ x: 0, y: +PIXELMOUVEMENT }, this.drawingService, this);
     subscriptionTimer: Subscription;
     time: number = 0;
     timerStarted: boolean = false;
@@ -55,11 +60,12 @@ export class SelectionService extends Tool {
     // bypass clear selection bug
     cleared: boolean = false;
 
-    // intialization clipboard
+    // initialization clipboard
+    controlGroup: ControlGroup;
     clipboard: ImageClipboard = new ImageClipboard();
 
     // Control points
-    controlPoint: ControlPoint = ControlPoint.none;
+    controlPointName: ControlPointName = ControlPointName.none;
 
     onMouseDown(event: MouseEvent): void {}
 
@@ -72,7 +78,7 @@ export class SelectionService extends Tool {
                 this.imagePosition.x !== this.endingPos.x &&
                 this.imagePosition.y !== this.endingPos.y &&
                 !this.inSelection &&
-                this.controlPoint === ControlPoint.none
+                this.controlPointName === ControlPointName.none
             ) {
                 this.endingPos = mousePosition;
                 if (!this.shiftPressed) {
@@ -83,28 +89,23 @@ export class SelectionService extends Tool {
                 if (this.width !== 0 && this.height !== 0) {
                     this.copySelection();
                     this.imagePosition = this.copyImageInitialPos = this.updateSelectionPositions();
-                    this.width = Math.abs(this.width);
-                    this.height = Math.abs(this.height);
-                    // this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
-                    this.drawSelection(this.copyImageInitialPos);
 
+                    // initialization of controls points
+                    this.controlGroup = new ControlGroup(this.drawingService);
+                    this.drawSelection(this.imagePosition);
                     this.cleared = false;
                     // ask about that
-                    // this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
                 }
 
-                // move selection
-            } else if (this.inSelection && this.controlPoint === ControlPoint.none) {
-                this.imagePosition = { x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y };
+                // move or scale selection
+            } else if (this.inSelection || this.controlPointName !== ControlPointName.none) {
                 this.drawSelection(this.imagePosition);
-                // this.startingPos = { x: this.startingPos.x + this.mouseMouvement.x, y: this.startingPos.y + this.mouseMouvement.y };
-                this.endingPos = { x: this.endingPos.x + this.mouseMouvement.x, y: this.endingPos.y + this.mouseMouvement.y };
-                this.mouseMouvement = { x: 0, y: 0 };
-            } else if (this.controlPoint !== ControlPoint.none) {
-                this.drawSelection(this.imagePosition);
+                this.mouseMovement = { x: 0, y: 0 };
+
+                this.controlGroup.resetSelected();
             }
         }
-        this.controlPoint = ControlPoint.none;
+        this.controlPointName = ControlPointName.none;
         this.mouseDown = false;
         this.inSelection = false;
     }
@@ -115,25 +116,33 @@ export class SelectionService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             // move selection
-            if (this.inSelection && this.controlPoint === ControlPoint.none) {
-                this.mouseMouvement.x = mousePosition.x - this.mouseDownCoord.x;
-                this.mouseMouvement.y = mousePosition.y - this.mouseDownCoord.y;
-                // inject magnetism service magic if necessary
-                // this.magnetism(this.controlPoint, {x: this.mouseMouvement.x})
+            if (this.inSelection && this.controlPointName === ControlPointName.none) {
+                this.mouseMovement.x = mousePosition.x - this.previousMousePos.x;
+                this.mouseMovement.y = mousePosition.y - this.previousMousePos.y;
+                this.imagePosition = { x: this.imagePosition.x + this.mouseMovement.x, y: this.imagePosition.y + this.mouseMovement.y };
+                this.endingPos = { x: this.endingPos.x + this.mouseMovement.x, y: this.endingPos.y + this.mouseMovement.y };
 
-                this.drawSelection({ x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y });
+                this.drawSelection(this.imagePosition);
+                this.previousMousePos = mousePosition;
 
                 // bypass bug clear selection
                 if (!this.cleared) {
-                    this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
+                    this.clearSelection(this.copyImageInitialPos, this.width, this.height);
                     this.cleared = true;
                 }
 
                 // scale selection
-            } else if (this.controlPoint !== ControlPoint.none) {
-                this.mouseMouvement.x = mousePosition.x - this.previousMousePos.x;
-                this.mouseMouvement.y = mousePosition.y - this.previousMousePos.y;
-                this.scaleSelection(this.mouseMouvement);
+            } else if (this.controlPointName !== ControlPointName.none) {
+                this.mouseMovement.x = mousePosition.x - this.previousMousePos.x;
+                this.mouseMovement.y = mousePosition.y - this.previousMousePos.y;
+
+                // bypass bug clear selection
+                if (!this.cleared) {
+                    this.clearSelection(this.copyImageInitialPos, this.width, this.height);
+                    this.cleared = true;
+                }
+
+                this.scaleSelection(this.mouseMovement);
                 this.drawSelection(this.imagePosition);
                 this.previousMousePos = mousePosition;
                 console.log(this.height);
@@ -160,7 +169,7 @@ export class SelectionService extends Tool {
 
     onShiftKeyDown(event: KeyboardEvent): void {
         this.shiftPressed = true;
-        if (this.mouseDown && !this.inSelection) {
+        if (this.mouseDown && !this.inSelection && this.controlPointName === ControlPointName.none) {
             this.ellipseRad = {
                 x: Math.min(Math.abs(this.width / 2), Math.abs(this.height / 2)),
                 y: Math.min(Math.abs(this.width / 2), Math.abs(this.height / 2)),
@@ -172,7 +181,7 @@ export class SelectionService extends Tool {
 
     onShiftKeyUp(event: KeyboardEvent): void {
         this.shiftPressed = false;
-        if (this.mouseDown && !this.inSelection) {
+        if (this.mouseDown && !this.inSelection && this.controlPointName === ControlPointName.none) {
             this.ellipseRad = { x: Math.abs(this.width / 2), y: Math.abs(this.height / 2) };
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawPreview();
@@ -195,7 +204,6 @@ export class SelectionService extends Tool {
         this.isAllSelect = true;
         this.width = this.drawingService.canvas.width;
         this.height = this.drawingService.canvas.height;
-        // this.startingPos = { x: 1, y: 1 };
         this.endingPos = { x: this.width, y: this.height };
         this.imagePosition = this.copyImageInitialPos = { x: 1, y: 1 };
         this.imageData = this.drawingService.baseCtx.getImageData(0, 0, this.width, this.height);
@@ -220,6 +228,7 @@ export class SelectionService extends Tool {
     }
 
     drawSelectionRect(mouseDownCoord: Vec2, width: number, height: number): void {
+        this.drawingService.previewCtx.setLineDash([this.dottedSpace, this.dottedSpace]);
         this.drawingService.previewCtx.strokeRect(mouseDownCoord.x, mouseDownCoord.y, width, height);
         this.drawingService.previewCtx.setLineDash([]);
         this.drawingService.previewCtx.fillRect(
@@ -228,49 +237,10 @@ export class SelectionService extends Tool {
             this.modifSelectSquare,
             this.modifSelectSquare,
         );
-        this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x - this.modifSelectSquare / 2,
-            mouseDownCoord.y + height / 2 - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
-        );
-        this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x + width / 2 - this.modifSelectSquare / 2,
-            mouseDownCoord.y + height - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
-        );
-        this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x + width - this.modifSelectSquare / 2,
-            mouseDownCoord.y + height / 2 - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
-        );
-        this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x - this.modifSelectSquare / 2,
-            mouseDownCoord.y - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
-        );
-        this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x + width - this.modifSelectSquare / 2,
-            mouseDownCoord.y - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
-        );
-        this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x - this.modifSelectSquare / 2,
-            mouseDownCoord.y + height - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
-        );
-        this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x + width - this.modifSelectSquare / 2,
-            mouseDownCoord.y + height - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
-        );
-        this.drawingService.previewCtx.setLineDash([this.dottedSpace, this.dottedSpace]);
+
+        this.controlGroup.setPositions(this.imagePosition, this.endingPos, { x: this.width, y: this.height });
+
+        this.controlGroup.draw();
     }
 
     copySelection(): void {
@@ -282,6 +252,9 @@ export class SelectionService extends Tool {
         const xSign = Math.sign(this.endingPos.x - this.imagePosition.x);
         const ySign = Math.sign(this.endingPos.y - this.imagePosition.y);
         const tmpEndPos = this.endingPos;
+
+        this.width = Math.abs(this.width);
+        this.height = Math.abs(this.height);
 
         if (xSign > 0 && ySign > 0) {
             return { x: this.imagePosition.x, y: this.imagePosition.y };
@@ -319,7 +292,7 @@ export class SelectionService extends Tool {
 
     protected drawPreview(): void {}
 
-    protected drawSelection(imagePosition: Vec2): void {}
+    drawSelection(imagePosition: Vec2): void {}
 
     getImageURL(imgData: ImageData, width: number, height: number): string {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
@@ -333,155 +306,42 @@ export class SelectionService extends Tool {
     clearSelection(position: Vec2, width: number, height: number): void {}
 
     onLeftArrow(): void {
-        if (!this.drawingService.isPreviewCanvasBlank()) {
-            if (!this.cleared) {
-                this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
-                this.cleared = true;
-            }
-            if (!this.leftArrow.arrowPressed) {
-                // first mouvement
-                this.mouseMouvement.x -= PIXELMOUVEMENT;
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.drawSelection({ x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y });
-            }
-            this.leftArrow.arrowPressed = true;
-            this.startTimer();
-            // for continuous movement
-            if (this.time >= this.minTimeMovement) {
-                this.moveSelectiontimerLeft();
-            }
-        }
+        this.leftArrow.onArrowDown();
     }
 
     onRightArrow(): void {
-        if (!this.drawingService.isPreviewCanvasBlank()) {
-            if (!this.cleared) {
-                this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
-                this.cleared = true;
-            }
-            if (!this.rightArrow.arrowPressed) {
-                // first mouvement
-                this.mouseMouvement.x += PIXELMOUVEMENT;
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
-                this.drawSelection({ x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y });
-            }
-            this.rightArrow.arrowPressed = true;
-            this.startTimer();
-            // for continuous movement
-            if (this.time >= this.minTimeMovement) {
-                this.moveSelectiontimerRight();
-            }
-        }
+        this.rightArrow.onArrowDown();
     }
 
     onUpArrow(): void {
-        if (!this.drawingService.isPreviewCanvasBlank()) {
-            if (!this.cleared) {
-                this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
-                this.cleared = true;
-            }
-            if (!this.upArrow.arrowPressed) {
-                // first mouvement
-                this.mouseMouvement.y -= PIXELMOUVEMENT;
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.drawSelection({ x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y });
-            }
-            this.upArrow.arrowPressed = true;
-            this.startTimer();
-            // for continuous movement
-            if (this.time >= this.minTimeMovement) {
-                this.moveSelectiontimerUp();
-            }
-        }
+        this.upArrow.onArrowDown();
     }
 
     onDownArrow(): void {
-        if (!this.drawingService.isPreviewCanvasBlank()) {
-            if (!this.cleared) {
-                this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
-                this.cleared = true;
-            }
-            if (!this.downArrow.arrowPressed) {
-                // first mouvement
-                this.mouseMouvement.y += PIXELMOUVEMENT;
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.drawSelection({ x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y });
-            }
-            this.downArrow.arrowPressed = true;
-            this.startTimer();
-            // for continuous movement
-            if (this.time >= this.minTimeMovement) {
-                this.moveSelectiontimerDown();
-            }
-        }
+        this.downArrow.onArrowDown();
     }
 
-    onLeftArrowUp(): void {}
+    onLeftArrowUp(): void {
+        this.leftArrow.onArrowUp();
+    }
 
-    onRightArrowUp(): void {}
+    onRightArrowUp(): void {
+        this.rightArrow.onArrowUp();
+    }
 
-    onDownArrowUp(): void {}
+    onDownArrowUp(): void {
+        this.downArrow.onArrowUp();
+    }
 
-    onUpArrowUp(): void {}
+    onUpArrowUp(): void {
+        this.upArrow.onArrowUp();
+    }
 
     startTimer(): void {
         if (!this.timerStarted) {
             this.timerStarted = true;
             const mainTimer = interval(MOUVEMENTDELAY);
             this.subscriptionTimer = mainTimer.subscribe(() => (this.time += MOUVEMENTDELAY));
-        }
-    }
-
-    moveSelectiontimerLeft(): void {
-        if (!this.leftArrow.timerStarted) {
-            this.leftArrow.timerStarted = true;
-            const timerMove = timer(MOUVEMENTDELAY, MOUVEMENTDELAY);
-
-            this.leftArrow.subscription = timerMove.subscribe(() => {
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.mouseMouvement.x -= PIXELMOUVEMENT;
-                this.drawSelection({ x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y });
-            });
-        }
-    }
-
-    moveSelectiontimerRight(): void {
-        if (!this.rightArrow.timerStarted) {
-            this.rightArrow.timerStarted = true;
-            const timerMove = timer(MOUVEMENTDELAY, MOUVEMENTDELAY);
-
-            this.rightArrow.subscription = timerMove.subscribe(() => {
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.mouseMouvement.x += PIXELMOUVEMENT;
-                this.drawSelection({ x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y });
-            });
-        }
-    }
-
-    moveSelectiontimerUp(): void {
-        if (!this.upArrow.timerStarted) {
-            this.upArrow.timerStarted = true;
-            const timerMove = timer(MOUVEMENTDELAY, MOUVEMENTDELAY);
-
-            this.upArrow.subscription = timerMove.subscribe(() => {
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.mouseMouvement.y -= PIXELMOUVEMENT;
-                this.drawSelection({ x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y });
-            });
-        }
-    }
-
-    moveSelectiontimerDown(): void {
-        if (!this.downArrow.timerStarted) {
-            this.downArrow.timerStarted = true;
-            const timerMove = timer(MOUVEMENTDELAY, MOUVEMENTDELAY);
-
-            this.downArrow.subscription = timerMove.subscribe(() => {
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.mouseMouvement.y += PIXELMOUVEMENT;
-                this.drawSelection({ x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y });
-            });
         }
     }
 
@@ -511,132 +371,122 @@ export class SelectionService extends Tool {
     }
 
     cutImage(): void {
-        this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
+        if (!this.cleared) {
+            this.clearSelection(this.copyImageInitialPos, this.width, this.height);
+            this.cleared = true;
+        }
+
         this.copyImage();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     deleteImage(): void {
-        this.clearSelection(this.copyImageInitialPos, Math.abs(this.width), Math.abs(this.height));
+        this.clearSelection(this.copyImageInitialPos, this.width, this.height);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     pasteImage(): void {}
 
     // tslint:disable:cyclomatic-complexity
-    isInControlPoint(mouse: Vec2): ControlPoint {
-        if (
-            mouse.x >= this.imagePosition.x - this.modifSelectSquare / 2 &&
-            mouse.x <= this.imagePosition.x + this.modifSelectSquare / 2 &&
-            mouse.y >= this.imagePosition.y - this.modifSelectSquare / 2 &&
-            mouse.y <= this.imagePosition.y + this.modifSelectSquare / 2
-        ) {
-            return ControlPoint.topLeft;
-        }
-        if (
-            mouse.x >= this.imagePosition.x + this.width / 2 - this.modifSelectSquare / 2 &&
-            mouse.x <= this.imagePosition.x + this.width / 2 + this.modifSelectSquare / 2 &&
-            mouse.y >= this.imagePosition.y - this.modifSelectSquare / 2 &&
-            mouse.y <= this.imagePosition.y + this.modifSelectSquare / 2
-        ) {
-            return ControlPoint.top;
-        }
-        if (
-            mouse.x >= this.imagePosition.x + this.width - this.modifSelectSquare / 2 &&
-            mouse.x <= this.imagePosition.x + this.width + this.modifSelectSquare / 2 &&
-            mouse.y >= this.imagePosition.y - this.modifSelectSquare / 2 &&
-            mouse.y <= this.imagePosition.y + this.modifSelectSquare / 2
-        ) {
-            return ControlPoint.topRight;
-        }
-        if (
-            mouse.x >= this.endingPos.x - this.modifSelectSquare / 2 &&
-            mouse.x <= this.endingPos.x + this.modifSelectSquare / 2 &&
-            mouse.y >= this.endingPos.y - this.modifSelectSquare / 2 &&
-            mouse.y <= this.endingPos.y + this.modifSelectSquare / 2
-        ) {
-            return ControlPoint.bottomRight;
-        }
-        if (
-            mouse.x >= this.endingPos.x - this.width / 2 - this.modifSelectSquare / 2 &&
-            mouse.x <= this.endingPos.x - this.width / 2 + this.modifSelectSquare / 2 &&
-            mouse.y >= this.endingPos.y - this.modifSelectSquare / 2 &&
-            mouse.y <= this.endingPos.y + this.modifSelectSquare / 2
-        ) {
-            return ControlPoint.bottom;
-        }
-        if (
-            mouse.x >= this.endingPos.x - this.width - this.modifSelectSquare / 2 &&
-            mouse.x <= this.endingPos.x - this.width + this.modifSelectSquare / 2 &&
-            mouse.y >= this.endingPos.y - this.modifSelectSquare / 2 &&
-            mouse.y <= this.endingPos.y + this.modifSelectSquare / 2
-        ) {
-            return ControlPoint.bottomLeft;
-        }
-        if (
-            mouse.x >= this.imagePosition.x - this.modifSelectSquare / 2 &&
-            mouse.x <= this.imagePosition.x + this.modifSelectSquare / 2 &&
-            mouse.y >= this.imagePosition.y + this.height / 2 - this.modifSelectSquare / 2 &&
-            mouse.y <= this.imagePosition.y + this.height / 2 + this.modifSelectSquare / 2
-        ) {
-            return ControlPoint.left;
-        }
-        if (
-            mouse.x >= this.endingPos.x - this.modifSelectSquare / 2 &&
-            mouse.x <= this.endingPos.x + this.modifSelectSquare / 2 &&
-            mouse.y >= this.endingPos.y - this.height / 2 - this.modifSelectSquare / 2 &&
-            mouse.y <= this.endingPos.y - this.height / 2 + this.modifSelectSquare / 2
-        ) {
-            return ControlPoint.right;
-            // }else if(this.inSelection){
-            //   return ControlPoint.center;
+    scaleSelection(mouseMovement: Vec2): void {
+        if (!this.shiftPressed) {
+            switch (this.controlPointName) {
+                case ControlPointName.top:
+                    this.height -= mouseMovement.y;
+                    this.imagePosition.y += mouseMovement.y;
+                    break;
+                case ControlPointName.bottom:
+                    this.height += mouseMovement.y;
+                    this.endingPos.y += mouseMovement.y;
+                    break;
+                case ControlPointName.left:
+                    this.width -= mouseMovement.x;
+                    this.imagePosition.x += mouseMovement.x;
+                    break;
+                case ControlPointName.right:
+                    this.width += mouseMovement.x;
+                    this.endingPos.x += mouseMovement.x;
+                    break;
+                case ControlPointName.topLeft:
+                    this.width -= mouseMovement.x;
+                    this.height -= mouseMovement.y;
+                    this.imagePosition.x += mouseMovement.x;
+                    this.imagePosition.y += mouseMovement.y;
+                    break;
+                case ControlPointName.topRight:
+                    this.width += mouseMovement.x;
+                    this.height -= mouseMovement.y;
+                    this.endingPos.x += mouseMovement.x;
+                    this.imagePosition.y += mouseMovement.y;
+                    break;
+                case ControlPointName.bottomLeft:
+                    this.width -= mouseMovement.x;
+                    this.height += mouseMovement.y;
+                    this.imagePosition.x += mouseMovement.x;
+                    this.endingPos.y += mouseMovement.y;
+                    break;
+                case ControlPointName.bottomRight:
+                    this.width += mouseMovement.x;
+                    this.height += mouseMovement.y;
+                    this.endingPos.x += mouseMovement.x;
+                    this.endingPos.y += mouseMovement.y;
+                    break;
+            }
         } else {
-            return ControlPoint.none;
-        }
-    }
-
-    scaleSelection(mouseMouvement: Vec2): void {
-        switch (this.controlPoint) {
-            case ControlPoint.top:
-                this.height -= mouseMouvement.y;
-                this.imagePosition.y += mouseMouvement.y;
-                break;
-            case ControlPoint.bottom:
-                this.height += mouseMouvement.y;
-                this.endingPos.y += mouseMouvement.y;
-                break;
-            case ControlPoint.left:
-                this.width -= mouseMouvement.x;
-                this.imagePosition.x += mouseMouvement.x;
-                break;
-            case ControlPoint.right:
-                this.width += mouseMouvement.x;
-                this.endingPos.x += mouseMouvement.x;
-                break;
-            case ControlPoint.topLeft:
-                this.width -= mouseMouvement.x;
-                this.height -= mouseMouvement.y;
-                this.imagePosition.x += mouseMouvement.x;
-                this.imagePosition.y += mouseMouvement.y;
-                break;
-            case ControlPoint.topRight:
-                this.width += mouseMouvement.x;
-                this.height -= mouseMouvement.y;
-                this.endingPos.x += mouseMouvement.x;
-                this.imagePosition.y += mouseMouvement.y;
-                break;
-            case ControlPoint.bottomLeft:
-                this.width -= mouseMouvement.x;
-                this.height += mouseMouvement.y;
-                this.imagePosition.x += mouseMouvement.x;
-                this.endingPos.y += mouseMouvement.y;
-                break;
-            case ControlPoint.bottomRight:
-                this.width += mouseMouvement.x;
-                this.height += mouseMouvement.y;
-                this.endingPos.x += mouseMouvement.x;
-                this.endingPos.y += mouseMouvement.y;
-                break;
+            switch (this.controlPointName) {
+                case ControlPointName.top:
+                    this.height -= mouseMovement.y * 2;
+                    this.imagePosition.y += mouseMovement.y;
+                    this.endingPos.y -= mouseMovement.y;
+                    break;
+                case ControlPointName.bottom:
+                    this.height += mouseMovement.y * 2;
+                    this.endingPos.y += mouseMovement.y;
+                    this.imagePosition.y -= mouseMovement.y;
+                    break;
+                case ControlPointName.left:
+                    this.width -= mouseMovement.x * 2;
+                    this.imagePosition.x += mouseMovement.x;
+                    this.endingPos.x -= mouseMovement.x;
+                    break;
+                case ControlPointName.right:
+                    this.width += mouseMovement.x * 2;
+                    this.endingPos.x += mouseMovement.x;
+                    this.imagePosition.x -= mouseMovement.x;
+                    break;
+                case ControlPointName.topLeft:
+                    this.width -= mouseMovement.x * 2;
+                    this.height -= mouseMovement.y * 2;
+                    this.imagePosition.x += mouseMovement.x;
+                    this.imagePosition.y += mouseMovement.y;
+                    this.endingPos.x -= mouseMovement.x;
+                    this.endingPos.y -= mouseMovement.y;
+                    break;
+                case ControlPointName.topRight:
+                    this.width += mouseMovement.x * 2;
+                    this.height -= mouseMovement.y * 2;
+                    this.endingPos.x += mouseMovement.x;
+                    this.imagePosition.y += mouseMovement.y;
+                    this.endingPos.y -= mouseMovement.y;
+                    this.imagePosition.x -= mouseMovement.x;
+                    break;
+                case ControlPointName.bottomLeft:
+                    this.width -= mouseMovement.x * 2;
+                    this.height += mouseMovement.y * 2;
+                    this.imagePosition.x += mouseMovement.x;
+                    this.endingPos.y += mouseMovement.y;
+                    this.imagePosition.y -= mouseMovement.y;
+                    this.endingPos.x -= mouseMovement.x;
+                    break;
+                case ControlPointName.bottomRight:
+                    this.width += mouseMovement.x * 2;
+                    this.height += mouseMovement.y * 2;
+                    this.endingPos.x += mouseMovement.x;
+                    this.endingPos.y += mouseMovement.y;
+                    this.imagePosition.x -= mouseMovement.x;
+                    this.imagePosition.y -= mouseMovement.y;
+                    break;
+            }
         }
     }
 }
