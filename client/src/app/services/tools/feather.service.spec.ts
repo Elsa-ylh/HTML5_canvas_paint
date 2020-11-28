@@ -19,7 +19,6 @@ describe('Service: Feather', () => {
     let automaticSaveStub: AutomaticSaveService;
     let canvasResizeStub: CanvasResizerService;
     let mouseEvent: MouseEvent;
-    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -41,8 +40,6 @@ describe('Service: Feather', () => {
         featherStubCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         lineCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
 
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-
         canvas = canvasTestHelper.canvas;
         // tslint:disable:no-magic-numbers
         canvas.width = 100;
@@ -62,7 +59,6 @@ describe('Service: Feather', () => {
                 { provide: FeatherService, useValue: featherStub },
                 { provide: CanvasResizerService, useValue: canvasResizeStub },
                 { provide: UndoRedoService, useValue: undoredoStub },
-                { provide: DrawingService, useValue: drawServiceSpy },
             ],
         });
 
