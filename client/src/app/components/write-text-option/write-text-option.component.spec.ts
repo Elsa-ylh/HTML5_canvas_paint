@@ -14,7 +14,7 @@ import { WriteTextOptionComponent } from './write-text-option.component';
 // tslint:disable:no-unused-expression
 // tslint:disable:no-string-literal
 // tslint:disable:no-empty
-fdescribe('WriteTextOptionComponent', () => {
+describe('WriteTextOptionComponent', () => {
     let component: WriteTextOptionComponent;
     let fixture: ComponentFixture<WriteTextOptionComponent>;
     const event = new KeyboardEvent('window:keydown.control.a', {});
@@ -112,5 +112,8 @@ fdescribe('WriteTextOptionComponent', () => {
     });
     it('should onBottomArrow', () => {
         component.onBottomArrow(event);
+    });
+    it('should onEscape', () => {
+        component.onEscape(event);
     });
 });
