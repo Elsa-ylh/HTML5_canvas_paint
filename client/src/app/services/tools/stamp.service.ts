@@ -28,7 +28,7 @@ export class StampService extends Tool {
     stampMaxSize: number = 160;
     stampMinSize: number = 40;
 
-    angle: number = 180;
+    angle: number = 90;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
