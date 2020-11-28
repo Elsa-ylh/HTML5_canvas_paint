@@ -21,9 +21,9 @@ export class ArrowInfo {
         if (!this.drawingService.isPreviewCanvasBlank()) {
             if (!this.selectionService.cleared) {
                 this.selectionService.clearSelection(
-                    this.selectionService.copyImageInitialPos,
-                    this.selectionService.width,
-                    this.selectionService.height,
+                    this.selectionService.selection.copyImageInitialPos,
+                    this.selectionService.selection.width,
+                    this.selectionService.selection.height,
                 );
                 this.selectionService.cleared = true;
             }
@@ -32,15 +32,15 @@ export class ArrowInfo {
                 this.selectionService.mouseMovement.x = this.direction.x;
                 this.selectionService.mouseMovement.y = this.direction.y;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.selectionService.imagePosition = {
-                    x: this.selectionService.imagePosition.x + this.selectionService.mouseMovement.x,
-                    y: this.selectionService.imagePosition.y + this.selectionService.mouseMovement.y,
+                this.selectionService.selection.imagePosition = {
+                    x: this.selectionService.selection.imagePosition.x + this.selectionService.mouseMovement.x,
+                    y: this.selectionService.selection.imagePosition.y + this.selectionService.mouseMovement.y,
                 };
-                this.selectionService.endingPos = {
-                    x: this.selectionService.endingPos.x + this.selectionService.mouseMovement.x,
-                    y: this.selectionService.endingPos.y + this.selectionService.mouseMovement.y,
+                this.selectionService.selection.endingPos = {
+                    x: this.selectionService.selection.endingPos.x + this.selectionService.mouseMovement.x,
+                    y: this.selectionService.selection.endingPos.y + this.selectionService.mouseMovement.y,
                 };
-                this.selectionService.drawSelection(this.selectionService.imagePosition);
+                this.selectionService.drawSelection(this.selectionService.selection.imagePosition);
             }
             this.arrowPressed = true;
             this.selectionService.startTimer();
@@ -60,15 +60,15 @@ export class ArrowInfo {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.selectionService.mouseMovement.x = this.direction.x;
                 this.selectionService.mouseMovement.y = this.direction.y;
-                this.selectionService.imagePosition = {
-                    x: this.selectionService.imagePosition.x + this.selectionService.mouseMovement.x,
-                    y: this.selectionService.imagePosition.y + this.selectionService.mouseMovement.y,
+                this.selectionService.selection.imagePosition = {
+                    x: this.selectionService.selection.imagePosition.x + this.selectionService.mouseMovement.x,
+                    y: this.selectionService.selection.imagePosition.y + this.selectionService.mouseMovement.y,
                 };
-                this.selectionService.endingPos = {
-                    x: this.selectionService.endingPos.x + this.selectionService.mouseMovement.x,
-                    y: this.selectionService.endingPos.y + this.selectionService.mouseMovement.y,
+                this.selectionService.selection.endingPos = {
+                    x: this.selectionService.selection.endingPos.x + this.selectionService.mouseMovement.x,
+                    y: this.selectionService.selection.endingPos.y + this.selectionService.mouseMovement.y,
                 };
-                this.selectionService.drawSelection(this.selectionService.imagePosition);
+                this.selectionService.drawSelection(this.selectionService.selection.imagePosition);
             });
         }
     }

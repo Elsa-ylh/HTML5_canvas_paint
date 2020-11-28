@@ -8,5 +8,6 @@ export class ImageClipboard {
     height: number;
     start: Vec2;
     end: Vec2;
+    imageSize: Vec2;
     ellipseRad: Vec2;
 }
