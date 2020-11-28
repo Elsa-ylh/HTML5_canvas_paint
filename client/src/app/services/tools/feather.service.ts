@@ -6,10 +6,11 @@ import { FeatherAction } from '@app/classes/undo-redo/feather-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoService } from '../undo-redo/undo-redo.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 export const FIFTEEN = 15;
 export const ONE = 1;
+export const ONEHUNDREDEIGHTY = 180;
 
 @Injectable({
     providedIn: 'root',
@@ -91,8 +92,8 @@ export class FeatherService extends Tool {
         ctx.lineWidth = this.thickness;
         this.featherLength = toolInfo.length;
         this.featherAngle = toolInfo.angle;
-        const angleX = Math.cos((this.featherAngle * Math.PI) / 180);
-        const angleY = Math.sin((this.featherAngle * Math.PI) / 180);
+        const angleX = Math.cos((this.featherAngle * Math.PI) / ONEHUNDREDEIGHTY);
+        const angleY = Math.sin((this.featherAngle * Math.PI) / ONEHUNDREDEIGHTY);
 
         ctx.beginPath();
 
@@ -116,7 +117,7 @@ export class FeatherService extends Tool {
         this.drawingService.cursorCtx.beginPath();
 
         this.drawingService.cursorCtx.translate(maxSize / 2, maxSize / 2);
-        this.drawingService.cursorCtx.rotate((this.featherAngle * Math.PI) / 180);
+        this.drawingService.cursorCtx.rotate((this.featherAngle * Math.PI) / ONEHUNDREDEIGHTY);
         this.drawingService.cursorCtx.translate(-maxSize / 2, -maxSize / 2);
 
         this.drawingService.cursorCtx.fillStyle = '#000000';
@@ -132,8 +133,8 @@ export class FeatherService extends Tool {
         this.drawingService.cursorCtx.resetTransform();
     }
 
-    // to scroll
     changeAngleWithScroll(event: WheelEvent): void {
+        // scroll up : same as when scrolling up a page
         if (event.deltaY < 0) {
             if (!this.altPressed) {
                 this.featherAngle += FIFTEEN;

@@ -28,6 +28,7 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { DropperService } from '@app/services/tools/dropper.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { FeatherService } from '@app/services/tools/feather.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
@@ -67,6 +68,7 @@ describe('SidebarComponent', () => {
     let selectionStub: SelectionService;
     let textServiceStub: TextService;
     let automaticSaveStub: AutomaticSaveService;
+    let featherStub: FeatherService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -88,6 +90,7 @@ describe('SidebarComponent', () => {
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, automaticSaveStub);
             selectionStub = new SelectionService(drawingStub);
             textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
+            featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -100,6 +103,7 @@ describe('SidebarComponent', () => {
                 paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
+                featherStub,
                 textServiceStub,
             );
 

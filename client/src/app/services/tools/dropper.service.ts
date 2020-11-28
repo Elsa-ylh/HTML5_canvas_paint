@@ -6,7 +6,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-
+export const FORTY = 40;
 @Injectable({
     providedIn: 'root',
 })
@@ -57,7 +57,7 @@ export class DropperService extends Tool {
         this.automaticSaveService.save();
     }
     shapeCircle(color: string): void {
-        this.drawingService.cursorCtx.clearRect(0, 0, 40, 40);
+        this.drawingService.cursorCtx.clearRect(0, 0, FORTY, FORTY);
         this.circlePositionX = this.circleWidth;
         this.circlePositionY = this.circleHeight;
         this.drawingService.cursorCtx.beginPath();

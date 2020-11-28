@@ -1,7 +1,7 @@
+import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { FeatherService } from '@app/services/tools/feather.service';
-import { Vec2 } from '../vec2';
-import { AbsUndoRedo } from './abs-undo-redo';
 
 export class FeatherAction extends AbsUndoRedo {
     constructor(
