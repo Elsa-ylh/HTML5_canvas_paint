@@ -28,11 +28,11 @@ export class SelectionRectangleService extends SelectionService {
                 this.inSelection = this.isInsideSelection(this.getPositionFromMouse(event));
             }
 
-            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.mouseDownCoords = this.getPositionFromMouse(event);
 
             // for drawing preview
             if (this.drawingService.isPreviewCanvasBlank()) {
-                this.startingPos = this.mouseDownCoord;
+                this.startingPos = this.mouseDownCoords;
 
                 // for  pasting selection
             } else if (!this.inSelection && !this.drawingService.isPreviewCanvasBlank()) {
@@ -52,8 +52,8 @@ export class SelectionRectangleService extends SelectionService {
                 this.undoRedoService.clearRedo();
                 this.mouseMouvement = { x: 0, y: 0 };
                 this.isAllSelect = false;
-                this.endingPos = this.mouseDownCoord;
-                this.startingPos = this.mouseDownCoord;
+                this.endingPos = this.mouseDownCoords;
+                this.startingPos = this.mouseDownCoords;
             }
         }
     }
@@ -87,7 +87,7 @@ export class SelectionRectangleService extends SelectionService {
         this.undoRedoService.clearRedo();
         this.mouseMouvement = { x: 0, y: 0 };
         this.isAllSelect = false;
-        this.endingPos = this.startingPos = this.mouseDownCoord;
+        this.endingPos = this.startingPos = this.mouseDownCoords;
 
         this.mouseDown = false;
         if (this.downArrow.timerStarted) {

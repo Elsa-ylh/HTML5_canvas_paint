@@ -26,8 +26,8 @@ export class EraserService extends Tool {
             this.drawingService.baseCtx.strokeStyle = this.color; // draw in white
             this.drawingService.previewCtx.strokeStyle = this.color; // when changecolor is implemented call pencil with white.
             this.clearEffectTool();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
+            this.mouseDownCoords = this.getPositionFromMouse(event);
+            this.pathData.push(this.mouseDownCoords);
         }
         this.clearPath();
     }

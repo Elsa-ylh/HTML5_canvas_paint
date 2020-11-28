@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
-import { Tool, ToolUsed } from '@app/classes/tool';
+import { TextControl } from '@app/classes/text-control';
+import { Tool } from '@app/classes/tool';
+// import { TextAction } from '@app/classes/undo-redo/text-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // https://css-tricks.com/snippets/javascript/javascript-keycodes/
 
@@ -30,7 +33,7 @@ export class TextService extends Tool {
     fontStyle: string = 'Times New Roman';
     // tslint:disable-next-line:no-magic-numbers
     possibleSizeFont: number[] = [8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 23, 34, 36, 38, 40, 48, 60, 72];
-    // different font sizes allowed for text -> autorized disable magical number
+    // different font sizes allowed for text -> authorized disable magical number
     // tslint:disable-next-line:no-magic-numbers
     sizeFont: number = this.possibleSizeFont[6];
     possibleFont: string[] = ['Times New Roman', 'Calibri', 'Courier New', 'Verdana', 'Impact'];
@@ -51,9 +54,14 @@ export class TextService extends Tool {
     distanceX: number = 0;
     distanceY: number = 0;
     private textAlign: number = 2;
-
-    constructor(drawingService: DrawingService, private colorService: ColorService) {
+    private textControl: TextControl;
+    // private textPreview: string[] = [];
+    // private indexLine : number = 0;
+    // private indexLastLine:number = 0;
+    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
+        this.textControl = new TextControl(this.drawingService.previewCtx, this.sizeFont);
+        // this.textPreview[this.indexLine]="|";
     }
 
     formatLabel(value: number): number {
@@ -63,15 +71,30 @@ export class TextService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseEnter && !this.mouseOut && this.mouseDown && !this.writeOnPreviewCtx) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.mousePosition = this.mouseDownCoord;
-            this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
+            this.mouseDownCoords = this.getPositionFromMouse(event);
+            this.mousePosition = this.mouseDownCoords;
+            this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoords, this.mousePosition);
         }
         if (this.writeOnPreviewCtx) {
             this.drawText();
+            // const textAction = new TextAction(
+            //   this.mousePosition,
+            //   this.mouseDownCoords,
+            //   this.colorService.primaryColor,
+            //   this.sizeFont, this.fontStyle,
+            //   this.textAlign,
+            //   this.fontStyleItalic,
+            //   this.fontStyleBold,
+            //   this.subToolSelect,
+            //   this,
+            //   this.drawingService
+            //   );
+            // this.undoRedoService.addUndo(textAction);
+            this.undoRedoService.clearRedo();
+
             this.writeOnPreviewCtx = false;
             this.clearEffectTool();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.mouseDownCoords = this.getPositionFromMouse(event);
         }
     }
 
@@ -81,7 +104,7 @@ export class TextService extends Tool {
             this.mousePosition = mousePosition;
             this.canvasSelected = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
+            this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoords, this.mousePosition);
             this.mouseDown = false;
             this.writeOnPreviewCtx = true;
         }
@@ -92,9 +115,9 @@ export class TextService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.mousePosition = mousePosition;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.height = mousePosition.y - this.mouseDownCoord.y;
-            this.width = mousePosition.x - this.mouseDownCoord.x;
-            this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
+            this.height = mousePosition.y - this.mouseDownCoords.y;
+            this.width = mousePosition.x - this.mouseDownCoords.x;
+            this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoords, this.mousePosition);
             this.canvasSelected = false;
         }
     }
@@ -171,6 +194,8 @@ export class TextService extends Tool {
                 this.width = Math.abs(this.width) > TEXTZONEMINWIDTH ? this.width : TEXTZONEMINWIDTH;
                 this.height = Math.abs(this.height) > this.sizeFont ? this.height : this.sizeFont + 1;
             }
+            this.textControl.setHeight(this.height);
+            this.textControl.setWidth(this.width);
             if (mousePosition.x >= mouseDownCoord.x && mousePosition.y >= mouseDownCoord.y) {
                 ctx.strokeRect(
                     mouseDownCoord.x - this.lineWidth / 2,
@@ -209,109 +234,100 @@ export class TextService extends Tool {
                 return;
             }
         }
-
-        // }
     }
 
     drawText(): void {
         this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // text color
         this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
-        const textPreview: string[] = [];
-        let indexLine = 0;
-        textPreview[indexLine] = '';
+        const textPreview: string[] = this.textControl.getText();
+        // let indexLine = 0;
+        // textPreview[indexLine] = '';
 
-        this.keyHistory.forEach((element) => {
-            if (element === '\n') {
-                textPreview.push('');
-                indexLine++;
-            } else {
-                if (!this.checkWidthText(this.drawingService.baseCtx, textPreview[indexLine] + element)) {
-                    textPreview.push('');
-                    indexLine++;
-                }
-                textPreview[indexLine] += element;
-            }
-        });
-        for (let index = this.stack.length - 1; index >= 0; index--) {
-            const element = this.stack[index];
-            if (element === '\n') {
-                textPreview.push('');
-                indexLine++;
-            } else {
-                if (!this.checkWidthText(this.drawingService.baseCtx, textPreview[indexLine] + element)) {
-                    textPreview.push('');
-                    indexLine++;
-                }
-                textPreview[indexLine] += element;
-            }
-        }
+        // this.keyHistory.forEach((element) => {
+        //     if (element === '\n') {
+        //         textPreview.push('');
+        //         indexLine++;
+        //     } else {
+        //         if (!this.checkWidthText(this.drawingService.baseCtx, textPreview[indexLine] + element)) {
+        //             textPreview.push('');
+        //             indexLine++;
+        //         }
+        //         textPreview[indexLine] += element;
+        //     }
+        // });
+        // for (let index = this.stack.length - 1; index >= 0; index--) {
+        //     const element = this.stack[index];
+        //     if (element === '\n') {
+        //         textPreview.push('');
+        //         indexLine++;
+        //     } else {
+        //         if (!this.checkWidthText(this.drawingService.baseCtx, textPreview[indexLine] + element)) {
+        //             textPreview.push('');
+        //             indexLine++;
+        //         }
+        //         textPreview[indexLine] += element;
+        //     }
+        // }
         this.position(this.drawingService.baseCtx, textPreview, this.textAlign);
     }
 
-    addletter(letter: string): void {
-        this.keyHistory.push(letter);
-        this.previewText();
-    }
-
-    selectTools(name: string): void {
-        if (!ToolUsed.Text) {
-            // confirmer texte sur baseCtx
-        }
-    }
-
-    private previewText(): void {
+    previewText(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoord, this.mousePosition);
-        const textPreview: string[] = [];
-        let indexLine = 0;
-        textPreview[indexLine] = '';
-        this.keyHistory.forEach((element) => {
-            if (element === '\n') {
-                textPreview.push('');
-                indexLine++;
-            } else {
-                if (!this.checkWidthText(this.drawingService.previewCtx, textPreview[indexLine] + element)) {
-                    textPreview.push('');
-                    indexLine++;
-                }
-                textPreview[indexLine] += element;
-            }
-        });
-        textPreview[indexLine] += '|';
-        for (let index = this.stack.length - 1; index >= 0; index--) {
-            const element = this.stack[index];
-            if (element === '\n') {
-                textPreview.push('');
-                indexLine++;
-            } else {
-                if (!this.checkWidthText(this.drawingService.previewCtx, textPreview[indexLine] + element)) {
-                    textPreview.push('');
-                    indexLine++;
-                }
-                textPreview[indexLine] += element;
-            }
-        }
+        this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoords, this.mousePosition);
+        const textPreview: string[] = this.textControl.getText();
+        // let indexLine = 0;
+        // textPreview[indexLine] = '';
+        // this.keyHistory.forEach((element) => {
+        //     if (element === '\n') {
+        //         textPreview.push('');
+        //         indexLine++;
+        //     } else {
+        //         if (!this.checkWidthText(this.drawingService.previewCtx, textPreview[indexLine] + element)) {
+        //             textPreview.push('');
+        //             indexLine++;
+        //         }
+        //         textPreview[indexLine] += element;
+        //     }
+        // });
+        // textPreview[indexLine] += '|';
+        // for (let index = this.stack.length - 1; index >= 0; index--) {
+        //     const element = this.stack[index];
+        //     if (element === '\n') {
+        //         textPreview.push('');
+        //         indexLine++;
+        //     } else {
+        //         if (!this.checkWidthText(this.drawingService.previewCtx, textPreview[indexLine] + element)) {
+        //             textPreview.push('');
+        //             indexLine++;
+        //         }
+        //         textPreview[indexLine] += element;
+        //     }
+        // }
+        console.log(textPreview, 'test preview');
         this.position(this.drawingService.previewCtx, textPreview, this.textAlign);
     }
 
     private xTop(width: number): number {
-        return (this.mouseDownCoord.x < this.mousePosition.x ? this.mouseDownCoord.x : this.mousePosition.x) + width;
+        return (this.mouseDownCoords.x < this.mousePosition.x ? this.mouseDownCoords.x : this.mousePosition.x) + width;
     }
 
     private yTop(): number {
-        return (this.mouseDownCoord.y < this.mousePosition.y ? this.mouseDownCoord.y : this.mousePosition.y) + this.sizeFont;
+        return (this.mouseDownCoords.y < this.mousePosition.y ? this.mouseDownCoords.y : this.mousePosition.y) + this.sizeFont;
     }
 
-    private checkWidthText(ctx: CanvasRenderingContext2D, text: string): boolean {
-        return Math.abs(ctx.measureText(text).width) <= Math.abs(this.width);
-    }
+    // private checkWidthText(ctx: CanvasRenderingContext2D, text: string): boolean {
+    //   return Math.abs(ctx.measureText(text).width) <= Math.abs(this.width);
+    // }
     private checkHeightText(nbLineBreak: number): boolean {
         return (nbLineBreak + 1) * this.sizeFont <= Math.abs(this.height + 1);
     }
 
     private position(ctx: CanvasRenderingContext2D, texts: string[], align: number): void {
+        // set font and size for text with or without italic or bold
         ctx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
+        this.textControl.setCtx(ctx);
         let lineBreak = 0;
+        // get string []= this.textControl
         switch (align) {
             case SubToolselected.tool1:
                 texts.forEach((element) => {
@@ -340,42 +356,36 @@ export class TextService extends Tool {
         }
     }
     arrowTop(): void {
-        this.stack.push(this.keyHistory.pop() as string);
+        this.textControl.arrowTop();
+        this.previewText();
     }
     arrowBottom(): void {
-        this.keyHistory.push(this.stack.pop() as string);
+        this.textControl.arrowBottom();
+        this.previewText();
     }
 
     arrowLeft(): void {
-        if (this.keyHistory.length) {
-            this.stack.push(this.keyHistory.pop() as string);
-        }
+        this.textControl.arrowLeft();
         this.previewText();
     }
 
     arrowRight(): void {
-        if (this.stack.length) {
-            this.keyHistory.push(this.stack.pop() as string);
-        }
+        this.textControl.arrowRight();
         this.previewText();
     }
 
     backspace(): void {
-        if (this.keyHistory.length) {
-            this.keyHistory.pop();
-        }
+        this.textControl.backspace();
         this.previewText();
     }
 
     delete(): void {
-        if (this.stack.length) {
-            this.stack.pop();
-        }
+        this.textControl.delete();
         this.previewText();
     }
 
     enter(): void {
-        this.keyHistory.push('\n');
+        this.textControl.enter();
         this.previewText();
     }
 
@@ -391,15 +401,13 @@ export class TextService extends Tool {
                     event.keyCode !== ARROWUP)
             )
                 if (event.keyCode < F1 || event.keyCode > F12) {
-                    this.addletter(event.key.toString());
-                    console.log(event.keyCode);
+                    this.textControl.addLetter(event.key.toString());
                 }
         }
     }
 
     clearEffectTool(): void {
-        this.keyHistory = [];
-        this.stack = [];
+        this.textControl.clearText();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 

@@ -100,8 +100,8 @@ export class SelectionService extends Tool {
 
             // move selection
             if (this.inSelection) {
-                this.mouseMouvement.x = mousePosition.x - this.mouseDownCoord.x;
-                this.mouseMouvement.y = mousePosition.y - this.mouseDownCoord.y;
+                this.mouseMouvement.x = mousePosition.x - this.mouseDownCoords.x;
+                this.mouseMouvement.y = mousePosition.y - this.mouseDownCoords.y;
                 this.drawSelection({ x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y });
                 // bypass bug clear selection
                 if (!this.cleared) {

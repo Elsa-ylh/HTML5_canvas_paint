@@ -37,10 +37,10 @@ export class PencilService extends Tool {
             this.drawingService.baseCtx.lineWidth = this.pencilSize;
             this.drawingService.previewCtx.lineWidth = this.pencilSize;
             this.clearEffectTool();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.mouseDownCoords = this.getPositionFromMouse(event);
 
             this.intiColor = this.colorService.primaryColor;
-            this.pathData.push(this.mouseDownCoord);
+            this.pathData.push(this.mouseDownCoords);
         }
         this.clearPath();
     }

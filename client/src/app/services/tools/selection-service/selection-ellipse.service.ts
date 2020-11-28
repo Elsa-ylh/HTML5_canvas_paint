@@ -30,11 +30,11 @@ export class SelectionEllipseService extends SelectionService {
                 this.inSelection = this.isInsideSelection(this.getPositionFromMouse(event));
             }
 
-            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.mouseDownCoords = this.getPositionFromMouse(event);
 
             // for drawing preview
             if (this.drawingService.isPreviewCanvasBlank()) {
-                this.startingPos = this.mouseDownCoord;
+                this.startingPos = this.mouseDownCoords;
 
                 // for  pasting selection
             } else if (!this.inSelection && !this.drawingService.isPreviewCanvasBlank()) {
@@ -74,7 +74,7 @@ export class SelectionEllipseService extends SelectionService {
                 this.mouseMouvement = { x: 0, y: 0 };
                 this.width = 0;
                 this.height = 0;
-                this.endingPos = this.startingPos = this.mouseDownCoord;
+                this.endingPos = this.startingPos = this.mouseDownCoords;
             }
         }
     }
@@ -126,7 +126,7 @@ export class SelectionEllipseService extends SelectionService {
         this.undoRedoService.clearRedo();
         this.isAllSelect = false;
         this.mouseMouvement = { x: 0, y: 0 };
-        this.endingPos = this.startingPos = this.mouseDownCoord;
+        this.endingPos = this.startingPos = this.mouseDownCoords;
 
         this.mouseDown = false;
         if (this.downArrow.timerStarted) {

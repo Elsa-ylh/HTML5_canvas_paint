@@ -3,7 +3,7 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { ToolInfoPolygone } from '@app/classes/tool-info-polygone';
-import { PolygoneAction } from '@app/classes/undo-redo/polygon-action';
+import { PolygoneAction as PolygonsAction } from '@app/classes/undo-redo/polygon-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
@@ -56,9 +56,9 @@ export class PolygonService extends Tool {
             this.onMouseUp(event);
         }
         if (this.mouseDown) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.mouseDownCoords = this.getPositionFromMouse(event);
         }
-        this.mousePosition = this.mouseDownCoord;
+        this.mousePosition = this.mouseDownCoords;
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -66,7 +66,7 @@ export class PolygonService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.mousePosition = mousePosition;
             this.isRenderingBase = true;
-            this.selectPolygon(mousePosition, this.mouseDownCoord, {
+            this.selectPolygon(mousePosition, this.mouseDownCoords, {
                 primaryColor: this.strokeColor,
                 secondaryColor: this.fillColor,
                 lineWidth: this.lineWidth,
@@ -77,9 +77,9 @@ export class PolygonService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         // undo- redo
-        const polygoneAction = new PolygoneAction(
+        const polygoneAction = new PolygonsAction(
             this.mousePosition,
-            this.mouseDownCoord,
+            this.mouseDownCoords,
             this.strokeColor,
             this.fillColor,
             this.lineWidth,
@@ -105,7 +105,7 @@ export class PolygonService extends Tool {
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.isRenderingBase = false;
-            this.selectPolygon(mousePosition, this.mouseDownCoord, {
+            this.selectPolygon(mousePosition, this.mouseDownCoords, {
                 primaryColor: this.strokeColor,
                 secondaryColor: this.fillColor,
                 lineWidth: this.lineWidth,
@@ -146,7 +146,7 @@ export class PolygonService extends Tool {
             ctx.lineWidth = this.lineCirclewidth;
             ctx.strokeStyle = this.strokeCircleColor;
             ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
-            ctx.arc(this.mouseDownCoord.x, this.mouseDownCoord.y, this.radius, 0, 2 * Math.PI, false);
+            ctx.arc(this.mouseDownCoords.x, this.mouseDownCoords.y, this.radius, 0, 2 * Math.PI, false);
             ctx.stroke();
         }
     }
@@ -186,12 +186,12 @@ export class PolygonService extends Tool {
         this.distanceX = mousePosition.x - mouseDownCoord.x;
         this.distanceY = mousePosition.y - mouseDownCoord.y;
 
-        this.mouseDownCoord = mouseDownCoord;
+        this.mouseDownCoords = mouseDownCoord;
         this.fillColor = infoPolygone.secondaryColor;
         this.strokeColor = infoPolygone.primaryColor;
         this.lineWidth = infoPolygone.lineWidth;
         this.numberOfSides = infoPolygone.nbsides;
-        this.radius = Math.sqrt(Math.pow(mousePosition.x - mouseDownCoord.x, 2) + Math.pow(mousePosition.y - this.mouseDownCoord.y, 2));
+        this.radius = Math.sqrt(Math.pow(mousePosition.x - mouseDownCoord.x, 2) + Math.pow(mousePosition.y - this.mouseDownCoords.y, 2));
         if (infoPolygone.isRenderingBase) {
             switch (infoPolygone.selectSubTool) {
                 case SubToolselected.tool1: {
@@ -236,9 +236,9 @@ export class PolygonService extends Tool {
         this.drawingService.previewCtx.beginPath();
         this.drawingService.baseCtx.beginPath();
 
-        ctx.moveTo(this.mouseDownCoord.x + this.radius * Math.cos(0), this.mouseDownCoord.y + this.radius * Math.sin(0));
+        ctx.moveTo(this.mouseDownCoords.x + this.radius * Math.cos(0), this.mouseDownCoords.y + this.radius * Math.sin(0));
         for (let i = 1; i <= numberOfSides; i++) {
-            ctx.lineTo(this.mouseDownCoord.x + this.radius * Math.cos(i * angle), this.mouseDownCoord.y + this.radius * Math.sin(i * angle));
+            ctx.lineTo(this.mouseDownCoords.x + this.radius * Math.cos(i * angle), this.mouseDownCoords.y + this.radius * Math.sin(i * angle));
         }
     }
 
@@ -248,7 +248,7 @@ export class PolygonService extends Tool {
             ctx.strokeStyle = this.strokeCircleColor;
             ctx.lineWidth = this.lineCirclewidth;
             ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
-            ctx.arc(this.mouseDownCoord.x, this.mouseDownCoord.y, this.radius + this.lineWidth / 2, 0, 2 * Math.PI, false);
+            ctx.arc(this.mouseDownCoords.x, this.mouseDownCoords.y, this.radius + this.lineWidth / 2, 0, 2 * Math.PI, false);
             ctx.stroke();
         }
         this.automaticSaveService.save();
