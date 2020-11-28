@@ -23,7 +23,7 @@ describe('FeatherAction', () => {
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
 
-    let changes: Vec2[] = [];
+    const changes: Vec2[] = [];
     let angle: number;
     let length: number;
     let primaryColor: string;

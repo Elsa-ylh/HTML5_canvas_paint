@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { cursorName } from '@app/classes/cursor-name';
 import { RESIZE_MIDDLE_LOWER_PROPORTION } from '@app/classes/resize-canvas';
 import { Tool } from '@app/classes/tool';
+import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
@@ -23,7 +24,6 @@ import { SelectionEllipseService } from '@app/services/tools/selection-service/s
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
 // tslint:disable:no-any
