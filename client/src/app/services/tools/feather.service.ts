@@ -7,6 +7,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { AutomaticSaveService } from '../automatic-save/automatic-save.service';
 
 export const FIFTEEN = 15;
 export const ONE = 1;
@@ -25,7 +26,12 @@ export class FeatherService extends Tool {
 
     cursorLineCtx: CanvasRenderingContext2D;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private undoRedoService: UndoRedoService,
+        private automaticSaveService: AutomaticSaveService,
+    ) {
         super(drawingService);
     }
 
@@ -74,6 +80,7 @@ export class FeatherService extends Tool {
 
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.automaticSaveService.save();
     }
 
     onMouseOut(event: MouseEvent): void {

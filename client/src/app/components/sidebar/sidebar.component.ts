@@ -555,7 +555,6 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.control.c', ['$event']) copySelection(event: KeyboardEvent): void {
         event.preventDefault();
-        console.log('copy event');
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
             this.selectionRectangleService.copyImage();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
@@ -599,14 +598,15 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:wheel', ['$event']) changeFeatherAngle(event: WheelEvent): void {
+    @HostListener('window:wheel', ['$event'])
+    changeFeatherAngle(event: WheelEvent): void {
         if (this.toolService.currentToolName === ToolUsed.Feather) {
             this.featherService.changeAngleWithScroll(event);
         }
-        // if(this. .currentToolName === ToolUsed.)
     }
 
-    @HostListener('window:keydown.alt', ['$event']) altPressed(event: KeyboardEvent): void {
+    @HostListener('window:keydown.alt', ['$event'])
+    altPressed(event: KeyboardEvent): void {
         if (this.toolService.currentToolName === ToolUsed.Feather) {
             this.featherService.altPressed = true;
         }

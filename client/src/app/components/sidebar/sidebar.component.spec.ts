@@ -90,7 +90,7 @@ describe('SidebarComponent', () => {
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, automaticSaveStub);
             selectionStub = new SelectionService(drawingStub);
             textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
-            featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub);
+            featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -162,6 +162,7 @@ describe('SidebarComponent', () => {
                     { provide: Observable, useValue: {} },
                     { provide: SelectionService, useValue: selectionStub },
                     { provide: UndoRedoService, useValue: undoRedoStub },
+                    { provide: FeatherService, useValue: featherStub },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);
@@ -801,5 +802,59 @@ describe('SidebarComponent', () => {
         const spyUndo = spyOn(undoRedoStub, 'undo').and.stub();
         component.btnCallUndo();
         expect(spyUndo).toHaveBeenCalled();
+    });
+
+    it('should pick text', () => {
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
+        component.pickText();
+        expect(drawingStub.cursorUsed).toEqual('text');
+        expect(switchToolSpy).toHaveBeenCalled();
+        expect(component.isDialogloadSaveEport).toEqual(false);
+    });
+
+    it('should pick feather', () => {
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
+        component.pickFeather();
+        expect(drawingStub.cursorUsed).toEqual(cursorName.none);
+        expect(switchToolSpy).toHaveBeenCalled();
+    });
+
+    it('should call resetChecked button, set isFeatherChecked to true and call pickFeather when pressing p', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new KeyboardEvent('window:keydown.p', {});
+        const resetCheckedButtonSpy = spyOn(component, 'resetCheckedButton').and.callThrough();
+        const spyPickFeather = spyOn(component, 'pickFeather').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeFeatherMode(event);
+        expect(resetCheckedButtonSpy).toHaveBeenCalled();
+        expect(spyPickFeather).toHaveBeenCalled();
+    });
+
+    it('should call changeFeatherAngle when scrolling using the mouse wheel', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new WheelEvent('window:wheel', {});
+        const changeFeatherAngleSpy = spyOn(component, 'changeFeatherAngle').and.callThrough();
+        const changeAngleWithScrollSpy = spyOn(featherStub, 'changeAngleWithScroll').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeFeatherAngle(event);
+        expect(changeFeatherAngleSpy).toHaveBeenCalled();
+        expect(changeAngleWithScrollSpy).toHaveBeenCalled();
+    });
+
+    it('should change altPressed value to true when alt is pressed ', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new KeyboardEvent('window:keydown.alt', {});
+        const altPressedSpy = spyOn(component, 'altPressed').and.stub();
+        window.dispatchEvent(event);
+        component.altPressed(event);
+        expect(altPressedSpy).toHaveBeenCalled();
+    });
+
+    it('should change featherStub.altpressed to true', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new KeyboardEvent('window:keydown.alt', {});
+        window.dispatchEvent(event);
+        component.altPressed(event);
+        expect(featherStub.altPressed).toEqual(true);
     });
 });

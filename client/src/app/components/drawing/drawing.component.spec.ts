@@ -13,6 +13,7 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { DropperService } from '@app/services/tools/dropper.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { FeatherService } from '@app/services/tools/feather.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
@@ -35,7 +36,7 @@ describe('DrawingComponent', () => {
     let toolServiceStub: ToolService;
     let canvasResizerStub: CanvasResizerService;
     let autoSaveStub: AutomaticSaveService;
-
+    let featherStub: FeatherService;
     let pencilStub: PencilService;
     let eraserStub: EraserService;
     let brushStub: BrushService;
@@ -69,6 +70,7 @@ describe('DrawingComponent', () => {
             selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
             textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
+            featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -81,6 +83,7 @@ describe('DrawingComponent', () => {
                 paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
+                featherStub,
                 textServiceStub,
             );
 
