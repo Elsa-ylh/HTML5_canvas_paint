@@ -1,5 +1,4 @@
 canvas {
-    // cursor: crosshair;
     position: absolute;
     left: 1px;
     top: 1px;
@@ -33,4 +32,9 @@ canvas {
     z-index: 4;
     position: absolute;
     box-shadow: 0 1px 5px -3px white;
+}
+
+#gridLayer {
+    z-index: 6;
+    position: absolute;
 }

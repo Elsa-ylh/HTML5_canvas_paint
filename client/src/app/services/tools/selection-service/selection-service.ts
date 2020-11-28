@@ -8,6 +8,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { interval, Subscription } from 'rxjs';
+import { MagnetismParams, MagnetismService } from '../magnetism.service';
 
 @Injectable({
     providedIn: 'root',
@@ -18,7 +19,7 @@ import { interval, Subscription } from 'rxjs';
 // This file is larger than 350 lines but is entirely used by the methods.
 // tslint:disable:max-file-line-count
 export class SelectionService extends Tool {
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService) {
         super(drawingService);
     }
 
@@ -103,7 +104,8 @@ export class SelectionService extends Tool {
                 this.drawSelection(this.selection.imagePosition);
                 this.mouseMovement = { x: 0, y: 0 };
 
-                this.controlGroup.resetSelected();
+                // not in action anymore
+                // this.controlGroup.resetSelected();
             }
         }
         this.controlPointName = ControlPointName.none;
@@ -129,7 +131,17 @@ export class SelectionService extends Tool {
                     y: this.selection.endingPos.y + this.mouseMovement.y,
                 };
 
+                // press "m" to activate the magnetism
+                const magnetismParams: MagnetismParams = {
+                    imagePosition: this.selection.imagePosition,
+                    endingPosition: this.selection.endingPos,
+                    controlPointName: this.controlPointName,
+                    controlGroup: this.controlGroup,
+                };
+                this.magnetismService.applyMagnetism(magnetismParams);
+
                 this.drawSelection(this.selection.imagePosition);
+
                 this.previousMousePos = mousePosition;
 
                 // bypass bug clear selection

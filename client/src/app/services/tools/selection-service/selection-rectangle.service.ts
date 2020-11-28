@@ -5,15 +5,15 @@ import { SelectionImage } from '@app/classes/selection';
 // import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-// import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { MagnetismService } from '../magnetism.service';
 import { SelectionService } from './selection-service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionRectangleService extends SelectionService {
-    constructor(drawingService: DrawingService) {
-        super(drawingService);
+    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService) {
+        super(drawingService, magnetismService);
     }
 
     onMouseDown(event: MouseEvent): void {

@@ -18,7 +18,9 @@ import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { GridService } from '@app/services/tools/grid.service';
 import { LineService } from '@app/services/tools/line.service';
+import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
@@ -80,6 +82,8 @@ export class SidebarComponent {
         public undoRedoService: UndoRedoService,
         public selectionRectangleService: SelectionRectangleService,
         public selectionEllipseService: SelectionEllipseService,
+        public gridService: GridService,
+        public magnetismService: MagnetismService,
         private automaticSaveService: AutomaticSaveService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
@@ -292,6 +296,12 @@ export class SidebarComponent {
         return this.isTextChecked;
     }
 
+    pickGridSettings(): void {
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.Grid);
+        this.isDialogloadSaveEport = true;
+    }
+
     resetCheckedButton(): void {
         this.isPencilChecked = false;
         this.isEraserChecked = false;
@@ -319,6 +329,18 @@ export class SidebarComponent {
     btnCallUndo(): void {
         this.undoRedoService.undo();
         this.automaticSaveService.save();
+    }
+
+    btnCallGrid(): void {
+        if (this.gridService.isGridSettingsChecked) {
+            this.gridService.isGridSettingsChecked = false;
+            this.gridService.deactivateGrid();
+            return;
+        } else {
+            this.gridService.isGridSettingsChecked = true;
+            this.gridService.activateGrid();
+            return;
+        }
     }
 
     // keybind control o for new drawing
@@ -575,6 +597,14 @@ export class SidebarComponent {
             this.selectionRectangleService.deleteImage();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
             this.selectionEllipseService.deleteImage();
+        }
+    }
+
+    @HostListener('window:keydown.m', ['$event']) activateMagnetism(event: MouseEvent): void {
+        if (this.magnetismService.isMagnetismActive) {
+            this.magnetismService.isMagnetismActive = false;
+        } else {
+            this.magnetismService.isMagnetismActive = true;
         }
     }
 }

@@ -6,6 +6,7 @@ import { SelectionImage } from '@app/classes/selection';
 // import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '../magnetism.service';
 import { SelectionRectangleService } from './selection-rectangle.service';
 // import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 // import { SelectionRectangleService } from './selection-rectangle.service';
@@ -15,8 +16,8 @@ import { SelectionService } from './selection-service';
     providedIn: 'root',
 })
 export class SelectionEllipseService extends SelectionService {
-    constructor(drawingService: DrawingService) {
-        super(drawingService);
+    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService) {
+        super(drawingService, magnetismService);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -50,7 +51,7 @@ export class SelectionEllipseService extends SelectionService {
 
                 if (this.isAllSelect) {
                     // paste image
-                    const selectionRectService = new SelectionRectangleService(this.drawingService);
+                    const selectionRectService = new SelectionRectangleService(this.drawingService, this.magnetismService);
                     selectionRectService.pasteSelection(this.selection);
                     // undo redo
                     // const selectRectAc = new SelectionRectAction(

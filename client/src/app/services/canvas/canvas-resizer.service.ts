@@ -47,7 +47,7 @@ export class CanvasResizerService {
         this.isResizeDown = event.button === MouseButton.Left;
         this.resizeDirection = resizeDirection;
         if (this.isResizeDown) {
-            this.resizerIndex = this.PRIORITY_INDEX; // We now put the whole surface in the foregound.
+            this.resizerIndex = this.PRIORITY_INDEX; // We now put the whole surface in the foreground.
             this.resizeDirection = resizeDirection;
             this.addToUndoRedo = true;
         }
