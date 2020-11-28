@@ -133,10 +133,6 @@ describe('Service: Feather', () => {
         expect(drawingStub.cursorCtx.canvas.style.display).toEqual('inline-block');
     });
 
-    // it('should draw a line using feather tool', () => {
-    //     const moveToSpy
-    // });
-
     it('should change the angle of attribut featherAngle and retact 15 degree of that value', () => {
         featherStub.featherAngle = 15;
         featherStub.altPressed = false;
