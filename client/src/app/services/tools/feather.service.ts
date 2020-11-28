@@ -18,11 +18,12 @@ export const ONEHUNDREDEIGHTY = 180;
 })
 export class FeatherService extends Tool {
     private thickness: number = 2;
-    private pathData: Vec2[];
+    private pathData: Vec2[] = [];
     private primaryColor: string;
     featherLength: number = 10;
     featherAngle: number = 0;
     altPressed: boolean = false;
+    isWheelAdd: boolean = false;
 
     cursorLineCtx: CanvasRenderingContext2D;
 
@@ -114,7 +115,7 @@ export class FeatherService extends Tool {
         ctx.closePath();
     }
 
-    private renderCursor(event: MouseEvent): void {
+    renderCursor(event: MouseEvent): void {
         const maxSize = this.drawingService.cursorCtxWidthAndHeight;
 
         this.drawingService.cursorCtx.canvas.style.left = event.offsetX - maxSize / 2 + 'px';
@@ -140,9 +141,8 @@ export class FeatherService extends Tool {
         this.drawingService.cursorCtx.resetTransform();
     }
 
-    changeAngleWithScroll(event: WheelEvent): void {
-        // scroll up : same as when scrolling up a page
-        if (event.deltaY < 0) {
+    changeAngleWithScroll(): void {
+        if (this.isWheelAdd) {
             if (!this.altPressed) {
                 this.featherAngle += FIFTEEN;
             } else {
@@ -154,6 +154,16 @@ export class FeatherService extends Tool {
             } else {
                 this.featherAngle -= ONE;
             }
+        }
+    }
+
+    addOrRetract(event: WheelEvent): void {
+        // scroll up => wheel adds to the angle (same as when scrolling up a page.)
+        // if the value of deltaY is <0 that means we are scrooling up
+        if (event.deltaY < 0) {
+            this.isWheelAdd = true;
+        } else {
+            this.isWheelAdd = false;
         }
     }
 

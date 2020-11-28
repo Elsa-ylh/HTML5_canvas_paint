@@ -601,7 +601,8 @@ export class SidebarComponent {
     @HostListener('window:wheel', ['$event'])
     changeFeatherAngle(event: WheelEvent): void {
         if (this.toolService.currentToolName === ToolUsed.Feather) {
-            this.featherService.changeAngleWithScroll(event);
+            this.featherService.addOrRetract(event);
+            this.featherService.changeAngleWithScroll();
         }
     }
 

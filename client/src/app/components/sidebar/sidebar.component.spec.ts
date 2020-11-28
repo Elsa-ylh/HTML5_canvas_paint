@@ -841,6 +841,15 @@ describe('SidebarComponent', () => {
         expect(changeAngleWithScrollSpy).toHaveBeenCalled();
     });
 
+    it('should call addOrRetract when scrolling using the mouse wheel and changeFeatherAngle is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new WheelEvent('window:wheel', {});
+        const addOrRetractSpy = spyOn(featherStub, 'addOrRetract').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeFeatherAngle(event);
+        expect(addOrRetractSpy).toHaveBeenCalled();
+    });
+
     it('should change altPressed value to true when alt is pressed ', () => {
         toolServiceStub.currentToolName = ToolUsed.Feather;
         const event = new KeyboardEvent('window:keydown.alt', {});
@@ -850,7 +859,7 @@ describe('SidebarComponent', () => {
         expect(altPressedSpy).toHaveBeenCalled();
     });
 
-    it('should change featherStub.altpressed to true', () => {
+    it('should change featherStub altpressed to true', () => {
         toolServiceStub.currentToolName = ToolUsed.Feather;
         const event = new KeyboardEvent('window:keydown.alt', {});
         window.dispatchEvent(event);
