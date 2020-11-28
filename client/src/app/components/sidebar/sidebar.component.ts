@@ -600,8 +600,11 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.m', ['$event']) activateMagnetism(event: KeyboardEvent): void {
-        event.preventDefault();
-        this.magnetismService.activateMagnetism();
+    @HostListener('window:keydown.m', ['$event']) activateMagnetism(event: MouseEvent): void {
+        if (this.magnetismService.isMagnetismActive) {
+            this.magnetismService.isMagnetismActive = false;
+        } else {
+            this.magnetismService.isMagnetismActive = true;
+        }
     }
 }

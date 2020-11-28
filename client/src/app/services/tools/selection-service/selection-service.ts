@@ -6,6 +6,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { interval, Subscription, timer } from 'rxjs';
+import { MagnetismService } from '../magnetism.service';
 
 @Injectable({
     providedIn: 'root',
@@ -16,7 +17,7 @@ import { interval, Subscription, timer } from 'rxjs';
 // This file is larger than 350 lines but is entirely used by the methods.
 // tslint:disable:max-file-line-count
 export class SelectionService extends Tool {
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, magnetismService: MagnetismService) {
         super(drawingService);
     }
 
@@ -117,6 +118,9 @@ export class SelectionService extends Tool {
             if (this.inSelection && this.controlPoint === ControlPoint.none) {
                 this.mouseMouvement.x = mousePosition.x - this.mouseDownCoord.x;
                 this.mouseMouvement.y = mousePosition.y - this.mouseDownCoord.y;
+                // inject magnetism service magic if necessary
+                // this.magnetism(this.controlPoint, {x: this.mouseMouvement.x})
+
                 this.drawSelection({ x: this.imagePosition.x + this.mouseMouvement.x, y: this.imagePosition.y + this.mouseMouvement.y });
 
                 // bypass bug clear selection
