@@ -8,6 +8,9 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
+export const FIFTEEN = 15;
+export const ONE = 1;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -17,6 +20,7 @@ export class FeatherService extends Tool {
     private primaryColor: string;
     featherLength: number = 10;
     featherAngle: number = 0;
+    altPressed: boolean = false;
 
     cursorLineCtx: CanvasRenderingContext2D;
 
@@ -30,12 +34,6 @@ export class FeatherService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
             this.primaryColor = this.colorService.primaryColor;
-
-            // this.drawFeather(this.drawingService.baseCtx, this.pathData, {
-            //     primaryColor: this.primaryColor,
-            //     angle: this.featherAngle,
-            //     length: this.featherLength,
-            // });
         }
         this.clearEffectTool();
     }
@@ -132,6 +130,23 @@ export class FeatherService extends Tool {
         this.drawingService.cursorCtx.stroke();
 
         this.drawingService.cursorCtx.resetTransform();
+    }
+
+    // to scroll
+    changeAngleWithScroll(event: WheelEvent): void {
+        if (event.deltaX > 0) {
+            if (!this.altPressed) {
+                this.featherAngle += FIFTEEN;
+            } else {
+                this.featherAngle += ONE;
+            }
+        } else {
+            if (!this.altPressed) {
+                this.featherAngle -= FIFTEEN;
+            } else {
+                this.featherAngle -= ONE;
+            }
+        }
     }
 
     clearPreviewCtx(): void {

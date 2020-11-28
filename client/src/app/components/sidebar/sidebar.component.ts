@@ -598,4 +598,17 @@ export class SidebarComponent {
             this.pickFeather();
         }
     }
+
+    @HostListener('window:wheel', ['$event']) changeFeatherAngle(event: WheelEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Feather) {
+            this.featherService.changeAngleWithScroll(event);
+        }
+        // if(this. .currentToolName === ToolUsed.)
+    }
+
+    @HostListener('window:keydown.alt', ['$event']) altPressed(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Feather) {
+            this.featherService.altPressed = true;
+        }
+    }
 }
