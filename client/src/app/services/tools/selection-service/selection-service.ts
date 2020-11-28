@@ -7,11 +7,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { interval, Subscription } from 'rxjs';
-import { MagnetismService } from '../magnetism.service';
-<<<<<<< HEAD
-=======
-import { interval, Subscription } from 'rxjs';
->>>>>>> 29-redimensionnement-d-une-selection
+import { MagnetismParams, MagnetismService } from '../magnetism.service';
 
 @Injectable({
     providedIn: 'root',
@@ -22,7 +18,7 @@ import { interval, Subscription } from 'rxjs';
 // This file is larger than 350 lines but is entirely used by the methods.
 // tslint:disable:max-file-line-count
 export class SelectionService extends Tool {
-    constructor(drawingService: DrawingService, magnetismService: MagnetismService) {
+    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService) {
         super(drawingService);
     }
 
@@ -102,7 +98,8 @@ export class SelectionService extends Tool {
                 this.drawSelection(this.imagePosition);
                 this.mouseMovement = { x: 0, y: 0 };
 
-                this.controlGroup.resetSelected();
+                // not in action anymore
+                // this.controlGroup.resetSelected();
             }
         }
         this.controlPointName = ControlPointName.none;
@@ -121,6 +118,15 @@ export class SelectionService extends Tool {
                 this.mouseMovement.y = mousePosition.y - this.previousMousePos.y;
                 this.imagePosition = { x: this.imagePosition.x + this.mouseMovement.x, y: this.imagePosition.y + this.mouseMovement.y };
                 this.endingPos = { x: this.endingPos.x + this.mouseMovement.x, y: this.endingPos.y + this.mouseMovement.y };
+
+                // press "m" to activate the magnetism
+                const magnetismParams: MagnetismParams = {
+                    imagePosition: this.imagePosition,
+                    endingPosition: this.endingPos,
+                    controlPointName: this.controlPointName,
+                    controlGroup: this.controlGroup,
+                };
+                this.magnetismService.applyMagnetism(magnetismParams);
 
                 this.drawSelection(this.imagePosition);
                 this.previousMousePos = mousePosition;
@@ -145,7 +151,7 @@ export class SelectionService extends Tool {
                 this.scaleSelection(this.mouseMovement);
                 this.drawSelection(this.imagePosition);
                 this.previousMousePos = mousePosition;
-                console.log(this.height);
+                // console.log(this.height);
                 // draw selection
             } else {
                 this.endingPos = mousePosition;

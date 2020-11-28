@@ -5,6 +5,7 @@ import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-actio
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { MagnetismService } from '../magnetism.service';
 import { SelectionRectangleService } from './selection-rectangle.service';
 import { SelectionService } from './selection-service';
 
@@ -12,8 +13,8 @@ import { SelectionService } from './selection-service';
     providedIn: 'root',
 })
 export class SelectionEllipseService extends SelectionService {
-    constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService) {
-        super(drawingService);
+    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService, private undoRedoService: UndoRedoService) {
+        super(drawingService, magnetismService);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -42,7 +43,7 @@ export class SelectionEllipseService extends SelectionService {
 
                 if (this.isAllSelect) {
                     // paste image
-                    const selectionRectService = new SelectionRectangleService(this.drawingService, this.undoRedoService);
+                    const selectionRectService = new SelectionRectangleService(this.drawingService, this.magnetismService, this.undoRedoService);
                     selectionRectService.pasteSelection(this.imagePosition, this.image);
                     // undo redo
                     const selectRectAc = new SelectionRectAction(
@@ -92,7 +93,7 @@ export class SelectionEllipseService extends SelectionService {
             this.imagePosition = { x: this.imagePosition.x + this.mouseMovement.x, y: this.imagePosition.y + this.mouseMovement.y };
         }
         if (this.isAllSelect) {
-            const selectionRectService = new SelectionRectangleService(this.drawingService, this.undoRedoService);
+            const selectionRectService = new SelectionRectangleService(this.drawingService, this.magnetismService, this.undoRedoService);
             // paste image
             selectionRectService.pasteSelection(this.imagePosition, this.image);
             // undo redo

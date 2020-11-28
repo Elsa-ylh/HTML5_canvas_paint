@@ -57,52 +57,77 @@ export class ControlGroup {
         this.controlPointBottomLeft.setPosition({ x: endingPos.x - size.x - CPSIZE / 2, y: endingPos.y - CPSIZE / 2 });
     }
 
+    // only one can be selected at a tim
     // tslint:disable:cyclomatic-complexity
     isInControlPoint(mouse: Vec2): ControlPointName {
         if (this.controlPointTopLeft.isInside(mouse)) {
-            this.controlPointTopLeft.selected = true;
+            const temp = this.controlPointTopLeft.selected;
+            this.resetSelected();
+            if (temp) this.controlPointTopLeft.selected = false;
+            else this.controlPointTopLeft.selected = true;
             this.controlPointTopLeft.draw();
             return ControlPointName.topLeft;
         }
         if (this.controlPointTop.isInside(mouse)) {
-            this.controlPointTop.selected = true;
+            const temp = this.controlPointTop.selected;
+            this.resetSelected();
+            if (temp) this.controlPointTop.selected = false;
+            else this.controlPointTop.selected = true;
             this.controlPointTop.draw();
             return ControlPointName.top;
         }
         if (this.controlPointTopRight.isInside(mouse)) {
-            this.controlPointTopRight.selected = true;
+            const temp = this.controlPointTopRight.selected;
+            this.resetSelected();
+            if (temp) this.controlPointTopRight.selected = false;
+            else this.controlPointTopRight.selected = true;
             this.controlPointTopRight.draw();
             return ControlPointName.topRight;
         }
         if (this.controlPointBottomRight.isInside(mouse)) {
-            this.controlPointBottomRight.selected = true;
+            const temp = this.controlPointBottomRight.selected;
+            this.resetSelected();
+            if (temp) this.controlPointBottomRight.selected = false;
+            else this.controlPointBottomRight.selected = true;
             this.controlPointBottomRight.draw();
             return ControlPointName.bottomRight;
         }
         if (this.controlPointBottom.isInside(mouse)) {
-            this.controlPointBottom.selected = true;
+            const temp = this.controlPointBottom.selected;
+            this.resetSelected();
+            if (temp) this.controlPointBottom.selected = false;
+            else this.controlPointBottom.selected = true;
             this.controlPointBottom.draw();
             return ControlPointName.bottom;
         }
         if (this.controlPointBottomLeft.isInside(mouse)) {
-            this.controlPointBottomLeft.selected = true;
+            const temp = this.controlPointBottomLeft.selected;
+            this.resetSelected();
+            if (temp) this.controlPointBottomLeft.selected = false;
+            else this.controlPointBottomLeft.selected = true;
             this.controlPointBottomLeft.draw();
             return ControlPointName.bottomLeft;
         }
         if (this.controlPointLeft.isInside(mouse)) {
-            this.controlPointLeft.selected = true;
+            const temp = this.controlPointLeft.selected;
+            this.resetSelected();
+            if (temp) this.controlPointLeft.selected = false;
+            else this.controlPointLeft.selected = true;
             this.controlPointLeft.draw();
             return ControlPointName.left;
         }
         if (this.controlPointRight.isInside(mouse)) {
-            this.controlPointRight.selected = true;
+            const temp = this.controlPointRight.selected;
+            this.resetSelected();
+            if (temp) this.controlPointRight.selected = false;
+            else this.controlPointRight.selected = true;
             this.controlPointRight.draw();
             return ControlPointName.right;
         }
         return ControlPointName.none;
     }
 
-    resetSelected(): void {
+    private resetSelected(): void {
         this.controlPointTopLeft.selected = false;
         this.controlPointTopRight.selected = false;
         this.controlPointTop.selected = false;
