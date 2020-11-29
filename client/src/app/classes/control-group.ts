@@ -4,7 +4,13 @@ import { Vec2 } from './vec2';
 
 export class ControlGroup {
     drawingService: DrawingService;
+
+    // the next variable is not linked to the selection service
+    controlPointName: ControlPointName = ControlPointName.none;
+
     controlPoints: Map<ControlPointName, ControlPoint> = new Map<ControlPointName, ControlPoint>();
+
+    sizeControlGroup: Vec2;
 
     constructor(drawingService: DrawingService) {
         this.drawingService = drawingService;
@@ -67,10 +73,11 @@ export class ControlGroup {
 
     private drawControlPoint(controlPointName: ControlPointName, controlPoint: ControlPoint, mouse: Vec2): ControlPointName {
         if (controlPoint.isInside(mouse)) {
-            const temp = controlPoint.selected;
             this.resetSelected();
-            if (temp) controlPoint.selected = false;
-            else controlPoint.selected = true;
+            if (!controlPoint.selected) {
+                controlPoint.selected = true;
+                this.controlPointName = controlPointName;
+            }
             controlPoint.draw();
             return controlPointName;
         }

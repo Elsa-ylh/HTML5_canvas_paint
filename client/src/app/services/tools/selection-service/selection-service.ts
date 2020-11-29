@@ -99,16 +99,15 @@ export class SelectionService extends Tool {
                     // ask about that
                 }
 
+                this.magnetismService.resetMagnetism();
+
                 // move or scale selection
             } else if (this.inSelection || this.controlPointName !== ControlPointName.none) {
                 this.drawSelection(this.selection.imagePosition);
                 this.mouseMovement = { x: 0, y: 0 };
-
-                // not in action anymore
-                // this.controlGroup.resetSelected();
             }
         }
-        this.controlPointName = ControlPointName.none;
+        // this.controlPointName = ControlPointName.none;
         this.mouseDown = false;
         this.inSelection = false;
     }
@@ -131,14 +130,21 @@ export class SelectionService extends Tool {
                     y: this.selection.endingPos.y + this.mouseMovement.y,
                 };
 
-                // press "m" to activate the magnetism and sure there is a controlPoint clicked on aka selected
-                this.magnetismService.applyMagnetism({
-                    imagePosition: this.selection.imagePosition,
-                    endingPosition: this.selection.endingPos,
-                    controlPointName: this.controlPointName,
-                    controlGroup: this.controlGroup,
-                } as MagnetismParams);
+                // press "m" to activate the magnetism and sure there is a controlPointName selected
+                // this controlPointName is different from the one in selection service, as one if for resizing purpose
+                // and the following for the magnetism
+                if (this.controlGroup.controlPointName !== ControlPointName.none) {
+                    const magnetismReturn = this.magnetismService.applyMagnetism({
+                        imagePosition: this.selection.imagePosition,
+                        endingPosition: this.selection.endingPos,
+                        controlGroup: this.controlGroup,
+                        selectionSize: { x: this.selection.width, y: this.selection.height } as Vec2,
+                    } as MagnetismParams);
 
+                    this.selection.imagePosition = magnetismReturn.imagePosition;
+                    this.selection.endingPos = magnetismReturn.endingPosition;
+                    this.controlGroup = magnetismReturn.controlGroup;
+                }
                 this.drawSelection(this.selection.imagePosition);
 
                 this.previousMousePos = mousePosition;
