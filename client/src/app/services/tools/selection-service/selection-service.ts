@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ArrowInfo, MOUVEMENTDELAY, PIXELMOUVEMENT } from '@app/classes/arrow-info';
 import { ControlGroup } from '@app/classes/control-group';
 import { ControlPointName } from '@app/classes/control-points';
+import { FlipDirection } from '@app/classes/flip-direction';
 import { ImageClipboard } from '@app/classes/image-clipboard';
 import { SelectionImage } from '@app/classes/selection';
 import { Tool } from '@app/classes/tool';
@@ -19,6 +20,7 @@ import { MagnetismParams, MagnetismService } from '../magnetism.service';
 // This file is larger than 350 lines but is entirely used by the methods.
 // tslint:disable:max-file-line-count
 export class SelectionService extends Tool {
+
     constructor(drawingService: DrawingService, protected magnetismService: MagnetismService) {
         super(drawingService);
     }
@@ -28,6 +30,10 @@ export class SelectionService extends Tool {
     lineWidth: number = 1;
     dottedSpace: number = 10;
     shiftPressed: boolean = false;
+    scaled: boolean =false;
+
+
+    baseImage: HTMLImageElement;
     // height: number;
     // width: number;
     mouseMovement: Vec2 = { x: 0, y: 0 };
@@ -60,11 +66,12 @@ export class SelectionService extends Tool {
     cleared: boolean = false;
 
     // initialization clipboard
-    controlGroup: ControlGroup;
     clipboard: ImageClipboard = new ImageClipboard();
 
     // Control points
+    controlGroup: ControlGroup;
     controlPointName: ControlPointName = ControlPointName.none;
+    flip:FlipDirection = FlipDirection.none;
 
     onMouseDown(event: MouseEvent): void {}
 
@@ -259,6 +266,8 @@ export class SelectionService extends Tool {
 
     copySelection(): void {
         this.selection.getImage({ x: this.selection.width, y: this.selection.height });
+        this.baseImage = new Image();
+        this.baseImage.src = this.getImageURL(this.selection.imageData, this.selection.width, this.selection.height);
         // this.selection.imageData = this.drawingService.baseCtx.getImageData(this.selection.imagePosition.x,
         // this.selection.imagePosition.y, this.selection.width, this.selection.height);
         // this.selection.image.src = this.getImageURL(this.selection.imageData, this.selection.width, this.selection.height);
@@ -550,5 +559,21 @@ export class SelectionService extends Tool {
                     break;
             }
         }
+
+        this.scaled =true;
+        // this.flip = this.flipDirection(this.selection);
     }
+
+    // flipDirection(selection:SelectionImage) : FlipDirection {
+    //   if(selection.width < 0 && selection.height <0){
+    //     return FlipDirection.diagonal;
+    //   }
+    //   if(selection.width > 0 && selection.height <0){
+    //     return  FlipDirection.vertical;
+    //   }
+    //   if(selection.width < 0 && selection.height > 0){
+    //     return FlipDirection.horizontal;
+    //   }
+    //   return FlipDirection.none;
+    // }
 }
