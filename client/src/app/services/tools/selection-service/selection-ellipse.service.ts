@@ -6,7 +6,7 @@ import { SelectionImage } from '@app/classes/selection';
 // import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MagnetismService } from '../magnetism.service';
+import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { SelectionRectangleService } from './selection-rectangle.service';
 // import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 // import { SelectionRectangleService } from './selection-rectangle.service';

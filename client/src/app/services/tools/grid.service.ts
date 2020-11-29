@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CanvasResizerService } from '../canvas/canvas-resizer.service';
-import { DrawingService } from '../drawing/drawing.service';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
     providedIn: 'root',
@@ -16,7 +16,7 @@ export class GridService {
         return this.drawingService.gridCtx.getImageData(0, 0, this.drawingService.gridCanvas.width, this.drawingService.gridCanvas.height);
     }
 
-    activateGrid() {
+    activateGrid(): void {
         if (this.isGridSettingsChecked) {
             const ctx = this.drawingService.gridCtx;
             this.drawingService.clearCanvas(ctx);
@@ -49,7 +49,7 @@ export class GridService {
     }
 
     // deactivating the grid means clearing it
-    deactivateGrid() {
+    deactivateGrid(): void {
         this.drawingService.clearCanvas(this.drawingService.gridCtx);
         this.isGridSettingsChecked = false;
     }

@@ -73,12 +73,10 @@ export class MagnetismService {
             const squareWidth = this.gridService.squareWidth;
             const controlPoint = params.controlGroup.controlPoints.get(params.controlGroup.controlPointName) as ControlPoint;
 
-            debugger;
-
             if (!this.isMagnetValueSet) {
                 this.isMagnetValueSet = true;
 
-                let calculatingPosition = controlPoint.position;
+                const calculatingPosition = controlPoint.position;
 
                 const remainderX = calculatingPosition.x % squareWidth;
                 if (remainderX <= squareWidth / 2) this.ajustedPosition.x = calculatingPosition.x - remainderX;
@@ -93,8 +91,6 @@ export class MagnetismService {
                     params.controlGroup.controlPointName,
                     params.selectionSize,
                 );
-
-                console.log(this.ajustedPosition);
             }
 
             params.endingPosition.x = this.ajustedPosition.x + params.selectionSize.x;

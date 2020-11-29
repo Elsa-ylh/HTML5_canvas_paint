@@ -7,8 +7,8 @@ import { SelectionImage } from '@app/classes/selection';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism.service';
 import { interval, Subscription } from 'rxjs';
-import { MagnetismParams, MagnetismService } from '../magnetism.service';
 
 @Injectable({
     providedIn: 'root',
