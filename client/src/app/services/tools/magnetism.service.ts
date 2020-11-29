@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ControlGroup } from '@app/classes/control-group';
-import { ControlPoint } from '@app/classes/control-points';
+import { ControlPoint, ControlPointName } from '@app/classes/control-points';
 import { Vec2 } from '@app/classes/vec2';
 import { GridService } from './grid.service';
 
@@ -18,41 +18,107 @@ export class MagnetismService {
     isMagnetismActive: boolean = false;
 
     // the following 4 variables are for locking mouseMovement
-    private isMagnetActive: boolean = false;
-    private xPos: number = -1;
-    private yPos: number = -1;
+    private isMagnetValueSet: boolean = false;
+    private ajustedPosition: Vec2 = { x: -1, y: -1 };
 
     constructor(private gridService: GridService) {}
 
-    applyMagnetism(params: MagnetismParams): MagnetismParams {
-        const squareWidth = this.gridService.squareWidth;
-        const controlPoint = params.controlGroup.controlPoints.get(params.controlGroup.controlPointName) as ControlPoint;
-
-        if (!this.isMagnetActive) {
-            this.isMagnetActive = true;
-
-            const remainderX = params.imagePosition.x % squareWidth;
-            if (remainderX <= squareWidth / 2) this.xPos = params.imagePosition.x - remainderX;
-            else this.xPos = params.imagePosition.x - remainderX + squareWidth;
-
-            const remainderY = params.imagePosition.y % squareWidth;
-            if (remainderY <= squareWidth / 2) this.yPos = params.imagePosition.y - remainderY;
-            else this.yPos = params.imagePosition.y - remainderY + squareWidth;
+    // we need to bring it back for image position compatible
+    private convertCalculatingPosition(ajustedPosition: Vec2, controlPointname: ControlPointName, selectionSize: Vec2): Vec2 {
+        switch (controlPointname) {
+            case ControlPointName.topLeft:
+                return ajustedPosition;
+            case ControlPointName.top:
+                return {
+                    x: ajustedPosition.x - selectionSize.x / 2,
+                    y: ajustedPosition.y,
+                };
+            case ControlPointName.topRight:
+                return {
+                    x: ajustedPosition.x - selectionSize.x,
+                    y: ajustedPosition.y,
+                };
+            case ControlPointName.left:
+                return {
+                    x: ajustedPosition.x,
+                    y: ajustedPosition.y - selectionSize.y / 2,
+                };
+            case ControlPointName.right:
+                return {
+                    x: ajustedPosition.x - selectionSize.x,
+                    y: ajustedPosition.y - selectionSize.y / 2,
+                };
+            case ControlPointName.bottomLeft:
+                return {
+                    x: ajustedPosition.x,
+                    y: ajustedPosition.y - selectionSize.y,
+                };
+            case ControlPointName.bottom:
+                return {
+                    x: ajustedPosition.x - selectionSize.x / 2,
+                    y: ajustedPosition.y - selectionSize.y,
+                };
+            case ControlPointName.bottomRight:
+                return {
+                    x: ajustedPosition.x - selectionSize.x,
+                    y: ajustedPosition.y - selectionSize.y,
+                };
+            case ControlPointName.none:
         }
+        return {} as Vec2;
+    }
 
-        params.endingPosition.x = this.xPos + params.selectionSize.x;
-        params.endingPosition.y = this.yPos + params.selectionSize.y;
+    applyMagnetism(params: MagnetismParams): MagnetismParams {
+        if (this.isMagnetismActive) {
+            const squareWidth = this.gridService.squareWidth;
+            debugger;
+            const controlPoint = params.controlGroup.controlPoints.get(params.controlGroup.controlPointName) as ControlPoint;
 
-        params.imagePosition.x = this.xPos;
-        params.imagePosition.y = params.endingPosition.y - params.selectionSize.y;
+            console.log(params.controlGroup.controlPoints);
 
-        params.controlGroup.setPositions(params.imagePosition, params.endingPosition, params.selectionSize);
-        return { imagePosition: controlPoint.position, endingPosition: params.endingPosition, controlGroup: params.controlGroup } as MagnetismParams;
+            if (!this.isMagnetValueSet) {
+                this.isMagnetValueSet = true;
+
+                let calculatingPosition = controlPoint.position;
+                console.log(calculatingPosition);
+
+                const remainderX = calculatingPosition.x % squareWidth;
+                if (remainderX <= squareWidth / 2) this.ajustedPosition.x = calculatingPosition.x - remainderX;
+                else this.ajustedPosition.x = calculatingPosition.x - remainderX + squareWidth;
+
+                const remainderY = calculatingPosition.y % squareWidth;
+                if (remainderY <= squareWidth / 2) this.ajustedPosition.y = calculatingPosition.y - remainderY;
+                else this.ajustedPosition.y = calculatingPosition.y - remainderY + squareWidth;
+
+                console.log(this.ajustedPosition);
+
+                this.ajustedPosition = this.convertCalculatingPosition(
+                    this.ajustedPosition,
+                    params.controlGroup.controlPointName,
+                    params.selectionSize,
+                );
+
+                console.log(this.ajustedPosition);
+            }
+
+            params.endingPosition.x = this.ajustedPosition.x + params.selectionSize.x;
+            params.endingPosition.y = this.ajustedPosition.y + params.selectionSize.y;
+
+            params.imagePosition.x = this.ajustedPosition.x;
+            params.imagePosition.y = params.endingPosition.y - params.selectionSize.y;
+
+            params.controlGroup.setPositions(params.imagePosition, params.endingPosition, params.selectionSize);
+            return {
+                imagePosition: params.imagePosition,
+                endingPosition: params.endingPosition,
+                controlGroup: params.controlGroup,
+            } as MagnetismParams;
+        }
+        return { imagePosition: params.imagePosition, endingPosition: params.endingPosition, controlGroup: params.controlGroup } as MagnetismParams;
     }
 
     resetMagnetism(): void {
-        this.isMagnetActive = false;
-        this.xPos = -1;
-        this.yPos = -1;
+        this.isMagnetValueSet = false;
+        this.ajustedPosition = { x: -1, y: -1 };
     }
 }

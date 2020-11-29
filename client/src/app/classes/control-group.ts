@@ -57,7 +57,7 @@ export class ControlGroup {
             y: startingPos.y + size.y / 2 - CPSIZE / 2,
         });
 
-        (this.controlPoints.get(ControlPointName.bottomRight) as ControlPoint).setPosition({
+        (this.controlPoints.get(ControlPointName.bottomLeft) as ControlPoint).setPosition({
             x: endingPos.x - CPSIZE / 2,
             y: endingPos.y - CPSIZE / 2,
         });
@@ -65,7 +65,7 @@ export class ControlGroup {
             x: endingPos.x - size.x / 2 - CPSIZE / 2,
             y: endingPos.y - CPSIZE / 2,
         });
-        (this.controlPoints.get(ControlPointName.bottomLeft) as ControlPoint).setPosition({
+        (this.controlPoints.get(ControlPointName.bottomRight) as ControlPoint).setPosition({
             x: endingPos.x - size.x - CPSIZE / 2,
             y: endingPos.y - CPSIZE / 2,
         });
