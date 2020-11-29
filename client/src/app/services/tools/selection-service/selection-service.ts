@@ -21,6 +21,7 @@ import { MagnetismParams, MagnetismService } from '../magnetism.service';
 // tslint:disable:max-file-line-count
 export class SelectionService extends Tool {
 
+
     constructor(drawingService: DrawingService, protected magnetismService: MagnetismService) {
         super(drawingService);
     }
@@ -34,6 +35,7 @@ export class SelectionService extends Tool {
 
 
     baseImage: HTMLImageElement;
+    baseImageData: ImageData;
     // height: number;
     // width: number;
     mouseMovement: Vec2 = { x: 0, y: 0 };
@@ -109,6 +111,10 @@ export class SelectionService extends Tool {
                 this.drawSelection(this.selection.imagePosition);
                 this.mouseMovement = { x: 0, y: 0 };
                 this.selection.imagePosition = this.updateSelectionPositions();
+
+                //reset baseImage to use when flipping the image
+                this.baseImage = new Image();
+                this.baseImage.src = this.selection.image.src;
                 // not in action anymore
                 // this.controlGroup.resetSelected();
             }
@@ -266,8 +272,9 @@ export class SelectionService extends Tool {
 
     copySelection(): void {
         this.selection.getImage({ x: this.selection.width, y: this.selection.height });
+        this.baseImageData = this.selection.imageData;
         this.baseImage = new Image();
-        this.baseImage.src = this.getImageURL(this.selection.imageData, this.selection.width, this.selection.height);
+        this.baseImage.src = this.getImageURL(this.baseImageData, this.selection.width, this.selection.height);
         // this.selection.imageData = this.drawingService.baseCtx.getImageData(this.selection.imagePosition.x,
         // this.selection.imagePosition.y, this.selection.width, this.selection.height);
         // this.selection.image.src = this.getImageURL(this.selection.imageData, this.selection.width, this.selection.height);
@@ -563,6 +570,43 @@ export class SelectionService extends Tool {
         this.scaled =true;
         // this.flip = this.flipDirection(this.selection);
     }
+
+    flipImage():void {
+      if(this.selection.width < 0 && this.selection.height <0 && this.flip !== FlipDirection.diagonal){
+        this.flip = FlipDirection.diagonal;
+        this.drawFlippedImage({x:-1,y:-1}, this.selection.imageSize);
+        return;
+      }
+      if(this.selection.width > 0 && this.selection.height <0 && this.flip !== FlipDirection.vertical ){
+        this.drawFlippedImage({x:1,y:-1}, {x:0, y:this.selection.imageSize.y});
+        // ctx.save();
+        // ctx.translate(0, canvas.height);
+        // ctx.scale(1,-1);
+        // ctx.drawImage(this.baseImage, 0, 0, canvas.width,canvas.height);
+        // ctx.restore();
+        // this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
+        // this.selection.image = new Image();
+        // this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+        this.flip = FlipDirection.vertical;
+        return;
+      }
+      if(this.selection.width < 0 && this.selection.height > 0 &&  this.flip !== FlipDirection.horizontal){
+        this.drawFlippedImage({x:-1,y:1}, {x:this.selection.imageSize.x, y:0});
+        this.flip = FlipDirection.horizontal;
+        return;
+      }
+      if(this.selection.width > 0 && this.selection.height > 0 &&  this.flip !== FlipDirection.none){
+        this.flip = FlipDirection.none;
+        this.drawFlippedImage({x:1,y:1},{x:0,y:0});
+        // ctx.drawImage(this.baseImage, 0, 0, canvas.width,canvas.height);
+        // ctx.restore();
+        // this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
+        // this.selection.image = new Image();
+        // this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+      }
+    }
+
+    drawFlippedImage(scale:Vec2, translation:Vec2): void {}
 
     // flipDirection(selection:SelectionImage) : FlipDirection {
     //   if(selection.width < 0 && selection.height <0){

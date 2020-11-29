@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ControlPointName } from '@app/classes/control-points';
-import { FlipDirection } from '@app/classes/flip-direction';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SelectionImage } from '@app/classes/selection';
 // import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
@@ -205,41 +204,19 @@ export class SelectionRectangleService extends SelectionService {
         this.drawingService.baseCtx.fillRect(position.x, position.y, width, height);
     }
 
-    flipImage():void {
-      const canvas = document.createElement('canvas') as HTMLCanvasElement;
-      const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
-      canvas.width =Math.abs(this.selection.imageSize.x);
-      canvas.height = Math.abs(this.selection.imageSize.y);
-        if(this.selection.width < 0 && this.selection.height <0 && this.flip !== FlipDirection.diagonal){
-          this.flip = FlipDirection.diagonal;
-          ctx.save();
-          ctx.translate(canvas.width, canvas.height);
-          ctx.scale(-1,-1);
+      drawFlippedImage(scale:Vec2, translation:Vec2): void {
+        const canvas = document.createElement('canvas') as HTMLCanvasElement;
+        const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
+        canvas.width =Math.abs(this.selection.imageSize.x);
+        canvas.height = Math.abs(this.selection.imageSize.y);
+        ctx.save();
+          ctx.translate(translation.x,translation.y);
+          ctx.scale(scale.x,scale.y);
           ctx.drawImage(this.baseImage, 0, 0, canvas.width,canvas.height);
           ctx.restore();
           this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
           this.selection.image = new Image();
           this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
-          return;
-        }
-        if(this.selection.width > 0 && this.selection.height <0 && this.flip !== FlipDirection.vertical ){
-          this.flip = FlipDirection.vertical;
-          console.log(this.flip);
-          return;
-        }
-        if(this.selection.width < 0 && this.selection.height > 0 &&  this.flip !== FlipDirection.horizontal){
-          this.flip = FlipDirection.horizontal;
-          console.log(this.flip);
-          return;
-        }
-        if(this.selection.width > 0 && this.selection.height > 0 &&  this.flip !== FlipDirection.none){
-          this.flip = FlipDirection.none;
-          ctx.drawImage(this.baseImage, 0, 0, canvas.width,canvas.height);
-          ctx.restore();
-          this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
-          this.selection.image = new Image();
-          this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
-        }
       }
 
 
