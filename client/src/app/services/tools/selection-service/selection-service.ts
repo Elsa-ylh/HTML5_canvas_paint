@@ -131,14 +131,13 @@ export class SelectionService extends Tool {
                     y: this.selection.endingPos.y + this.mouseMovement.y,
                 };
 
-                // press "m" to activate the magnetism
-                const magnetismParams: MagnetismParams = {
+                // press "m" to activate the magnetism and sure there is a controlPoint clicked on aka selected
+                this.magnetismService.applyMagnetism({
                     imagePosition: this.selection.imagePosition,
                     endingPosition: this.selection.endingPos,
                     controlPointName: this.controlPointName,
                     controlGroup: this.controlGroup,
-                };
-                this.magnetismService.applyMagnetism(magnetismParams);
+                } as MagnetismParams);
 
                 this.drawSelection(this.selection.imagePosition);
 

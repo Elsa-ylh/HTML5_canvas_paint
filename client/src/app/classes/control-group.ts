@@ -67,8 +67,10 @@ export class ControlGroup {
 
     private drawControlPoint(controlPointName: ControlPointName, controlPoint: ControlPoint, mouse: Vec2): ControlPointName {
         if (controlPoint.isInside(mouse)) {
+            const temp = controlPoint.selected;
             this.resetSelected();
-            if (!controlPoint.selected) controlPoint.selected = true;
+            if (temp) controlPoint.selected = false;
+            else controlPoint.selected = true;
             controlPoint.draw();
             return controlPointName;
         }
@@ -85,7 +87,6 @@ export class ControlGroup {
             }
         }
 
-        this.resetSelected();
         return ControlPointName.none;
     }
 
