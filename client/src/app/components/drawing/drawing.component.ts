@@ -9,6 +9,7 @@ import {
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { ToolUsed } from '@app/classes/tool';
 import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -27,6 +28,7 @@ export class DrawingComponent implements AfterViewInit {
         public cvsResizerService: CanvasResizerService,
         public colorService: ColorService,
         public undoRedoService: UndoRedoService,
+        private automaticSaveService: AutomaticSaveService,
     ) {}
 
     get width(): number {
@@ -50,13 +52,13 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizingPreview', { static: false }) canvasResizingPreview: ElementRef<HTMLCanvasElement>;
-    @ViewChild('dropperLayer', { static: false }) dropperLayer: ElementRef<HTMLCanvasElement>;
+    @ViewChild('cursorCanvas', { static: false }) cursorCanvas: ElementRef<HTMLCanvasElement>;
 
     baseCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
     private resizeCtx: CanvasRenderingContext2D;
 
-    private dropperCtx: CanvasRenderingContext2D;
+    private cursorCtx: CanvasRenderingContext2D;
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -65,10 +67,10 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
-        this.dropperCtx = this.dropperLayer.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.drawingService.dropperCtx = this.dropperCtx;
+        this.cursorCtx = this.cursorCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.drawingService.cursorCtx = this.cursorCtx;
         this.setCanvasBackgroundColor();
-
+        if (this.automaticSaveService.check()) this.automaticSaveService.getUpload();
         const event = { offsetX: this.cvsResizerService.DEFAULT_WIDTH, offsetY: this.cvsResizerService.DEFAULT_HEIGHT } as MouseEvent;
         this.undoRedoService.defaultCanvasAction = new ResizeCanvasAction(
             event,

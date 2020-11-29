@@ -6,6 +6,7 @@ import { PencilService } from '@app/services/tools/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { BrushService } from './tools/brush.service';
 import { EllipseService } from './tools/ellipse.service';
+import { FeatherService } from './tools/feather.service';
 import { LineService } from './tools/line.service';
 import { PaintBucketService } from './tools/paint-bucket.service';
 import { PolygonService } from './tools/polygon.service';
@@ -35,6 +36,7 @@ export class ToolService {
         private selectionRectangleService: SelectionRectangleService,
         private selectionEllipseService: SelectionEllipseService,
         private sprayService: SprayService,
+        private featherService: FeatherService,
         private textService: TextService,
     ) {
         this.tableTool[ToolUsed.NONE] = this.pencilService;
@@ -50,6 +52,7 @@ export class ToolService {
         this.tableTool[ToolUsed.Polygon] = this.polygonService;
         this.tableTool[ToolUsed.PaintBucket] = this.paintBucketService;
         this.tableTool[ToolUsed.Spray] = this.sprayService;
+        this.tableTool[ToolUsed.Feather] = this.featherService;
         this.tableTool[ToolUsed.Text] = this.textService;
 
         this.switchTool(ToolUsed.NONE); // default tools if all else fail in the sidebar usually

@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { cursorName } from '@app/classes/cursor-name';
 import { RESIZE_MIDDLE_LOWER_PROPORTION } from '@app/classes/resize-canvas';
 import { Tool } from '@app/classes/tool';
+import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
@@ -13,6 +14,7 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { DropperService } from '@app/services/tools/dropper.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { FeatherService } from '@app/services/tools/feather.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
@@ -23,7 +25,6 @@ import { SelectionRectangleService } from '@app/services/tools/selection-service
 import { SprayService } from '@app/services/tools/spray.service';
 import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
 // tslint:disable:no-any
@@ -36,7 +37,7 @@ describe('DrawingComponent', () => {
     let toolServiceStub: ToolService;
     let canvasResizerStub: CanvasResizerService;
     let autoSaveStub: AutomaticSaveService;
-
+    let featherStub: FeatherService;
     let pencilStub: PencilService;
     let eraserStub: EraserService;
     let brushStub: BrushService;
@@ -74,6 +75,7 @@ describe('DrawingComponent', () => {
             sprayStub = new SprayService(drawingStub, colorStub);
 
             textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
+            featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -87,6 +89,7 @@ describe('DrawingComponent', () => {
                 selectionRectangleStub,
                 selectionEllipseStub,
                 sprayStub,
+                featherStub,
                 textServiceStub,
             );
 
