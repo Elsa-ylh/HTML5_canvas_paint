@@ -3,6 +3,9 @@ import { STAMP } from '@app/classes/stamp';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
+// tslint:disable:max-file-line-count
+// tslint:disable:max-line-length
+
 export const FIFTEEN = 15;
 export const ONE = 1;
 
@@ -112,7 +115,7 @@ export class StampService extends Tool {
         this.currentStamp.src = this.currentStampName;
     }
 
-    onMouseOut(event: MouseEvent) {
+    onMouseOut(event: MouseEvent): void {
         this.drawingService.cursorCtx.canvas.style.display = 'none';
     }
 
