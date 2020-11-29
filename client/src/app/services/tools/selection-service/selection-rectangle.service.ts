@@ -134,14 +134,14 @@ export class SelectionRectangleService extends SelectionService {
             }
             if (xSign > 0 && ySign < 0) {
                 this.selection.endingPos = { x: this.selection.imagePosition.x + this.selection.width, y: this.selection.imagePosition.y };
-                return { x: this.selection.imagePosition.x, y: this.selection.imagePosition.y + this.selection.height };
+                return { x: this.selection.imagePosition.x, y: this.selection.imagePosition.y - this.selection.height };
             }
             if (xSign < 0 && ySign < 0) {
                 this.selection.endingPos = { x: this.selection.imagePosition.x, y: this.selection.imagePosition.y };
-                return { x: this.selection.imagePosition.x + this.selection.width, y: this.selection.imagePosition.y + this.selection.height };
+                return { x: this.selection.imagePosition.x - this.selection.width, y: this.selection.imagePosition.y - this.selection.height };
             } else {
                 this.selection.endingPos = { x: this.selection.imagePosition.x, y: this.selection.imagePosition.y + this.selection.height };
-                return { x: this.selection.imagePosition.x + this.selection.width, y: this.selection.imagePosition.y };
+                return { x: this.selection.imagePosition.x - this.selection.width, y: this.selection.imagePosition.y };
             }
         } else {
             if (xSign > 0 && ySign > 0) {
