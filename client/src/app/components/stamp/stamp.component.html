@@ -1,4 +1,7 @@
+<div>Angle de l'etampe : {{ this.stampService.angle }}</div>
+
 <div>largeur de l'etampe : {{ this.drawingService.cursorCtx.canvas.width }}</div>
 <div>taille de l'etampe : {{ this.drawingService.cursorCtx.canvas.height }}</div>
-<button mat-button (click)="this.stampService.increaseSize()">increase</button>
-<button mat-button (click)="this.stampService.decreaseSize()">decrease</button>
+
+<button mat-button (click)="this.stampService.increaseSize()">augmenter</button>
+<button mat-button (click)="this.stampService.decreaseSize()">diminuer</button>

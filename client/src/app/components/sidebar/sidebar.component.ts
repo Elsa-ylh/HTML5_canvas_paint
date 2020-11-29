@@ -26,6 +26,7 @@ import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
+import { StampService } from '@app/services/tools/stamp.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Component({
@@ -86,6 +87,7 @@ export class SidebarComponent {
         public selectionEllipseService: SelectionEllipseService,
         public featherService: FeatherService,
         private automaticSaveService: AutomaticSaveService,
+        public stampService: StampService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
@@ -626,12 +628,19 @@ export class SidebarComponent {
             this.featherService.addOrRetract(event);
             this.featherService.changeAngleWithScroll();
         }
+        if (this.toolService.currentToolName === ToolUsed.Stamp) {
+            this.stampService.addOrRetract(event);
+            this.stampService.changeAngleWithScroll();
+        }
     }
 
     @HostListener('window:keydown.alt', ['$event'])
     altPressed(event: KeyboardEvent): void {
         if (this.toolService.currentToolName === ToolUsed.Feather) {
             this.featherService.altPressed = true;
+        }
+        if (this.toolService.currentToolName === ToolUsed.Stamp) {
+            this.stampService.isAltPressed = true;
         }
     }
 }
