@@ -48,7 +48,7 @@ export class MagnetismService {
                     x: ajustedPosition.x - selectionSize.x,
                     y: ajustedPosition.y - selectionSize.y / 2,
                 };
-            case ControlPointName.bottomLeft:
+            case ControlPointName.bottomRight:
                 return {
                     x: ajustedPosition.x,
                     y: ajustedPosition.y - selectionSize.y,
@@ -58,7 +58,7 @@ export class MagnetismService {
                     x: ajustedPosition.x - selectionSize.x / 2,
                     y: ajustedPosition.y - selectionSize.y,
                 };
-            case ControlPointName.bottomRight:
+            case ControlPointName.bottomLeft:
                 return {
                     x: ajustedPosition.x - selectionSize.x,
                     y: ajustedPosition.y - selectionSize.y,
@@ -71,16 +71,14 @@ export class MagnetismService {
     applyMagnetism(params: MagnetismParams): MagnetismParams {
         if (this.isMagnetismActive) {
             const squareWidth = this.gridService.squareWidth;
-            debugger;
             const controlPoint = params.controlGroup.controlPoints.get(params.controlGroup.controlPointName) as ControlPoint;
 
-            console.log(params.controlGroup.controlPoints);
+            debugger;
 
             if (!this.isMagnetValueSet) {
                 this.isMagnetValueSet = true;
 
                 let calculatingPosition = controlPoint.position;
-                console.log(calculatingPosition);
 
                 const remainderX = calculatingPosition.x % squareWidth;
                 if (remainderX <= squareWidth / 2) this.ajustedPosition.x = calculatingPosition.x - remainderX;
@@ -89,8 +87,6 @@ export class MagnetismService {
                 const remainderY = calculatingPosition.y % squareWidth;
                 if (remainderY <= squareWidth / 2) this.ajustedPosition.y = calculatingPosition.y - remainderY;
                 else this.ajustedPosition.y = calculatingPosition.y - remainderY + squareWidth;
-
-                console.log(this.ajustedPosition);
 
                 this.ajustedPosition = this.convertCalculatingPosition(
                     this.ajustedPosition,
