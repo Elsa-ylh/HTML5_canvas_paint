@@ -79,7 +79,7 @@ export class TextControl {
         text.forEach((letter) => {
             lineText += letter;
         });
-        lineText += addLetter
+        lineText += addLetter;
         return lineText;
     }
     getText(): string[] {
