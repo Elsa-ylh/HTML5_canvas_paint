@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ArrowInfo, MOUVEMENTDELAY, PIXELMOUVEMENT } from '@app/classes/arrow-info';
+import { ArrowInfo, MOVEMENTDELAY, PIXELMOVEMENT } from '@app/classes/arrow-info';
 import { ControlGroup } from '@app/classes/control-group';
 import { ControlPointName } from '@app/classes/control-points';
 import { ImageClipboard } from '@app/classes/image-clipboard';
@@ -48,10 +48,10 @@ export class SelectionService extends Tool {
     previousMousePos: Vec2 = { x: 0, y: 0 };
 
     // initialization of variables needed for arrow movement
-    leftArrow: ArrowInfo = new ArrowInfo({ x: -PIXELMOUVEMENT, y: 0 }, this.drawingService, this);
-    rightArrow: ArrowInfo = new ArrowInfo({ x: +PIXELMOUVEMENT, y: 0 }, this.drawingService, this);
-    upArrow: ArrowInfo = new ArrowInfo({ x: 0, y: -PIXELMOUVEMENT }, this.drawingService, this);
-    downArrow: ArrowInfo = new ArrowInfo({ x: 0, y: +PIXELMOUVEMENT }, this.drawingService, this);
+    leftArrow: ArrowInfo = new ArrowInfo({ x: -PIXELMOVEMENT, y: 0 }, this.drawingService, this);
+    rightArrow: ArrowInfo = new ArrowInfo({ x: +PIXELMOVEMENT, y: 0 }, this.drawingService, this);
+    upArrow: ArrowInfo = new ArrowInfo({ x: 0, y: -PIXELMOVEMENT }, this.drawingService, this);
+    downArrow: ArrowInfo = new ArrowInfo({ x: 0, y: +PIXELMOVEMENT }, this.drawingService, this);
     subscriptionTimer: Subscription;
     time: number = 0;
     timerStarted: boolean = false;
@@ -358,8 +358,8 @@ export class SelectionService extends Tool {
     startTimer(): void {
         if (!this.timerStarted) {
             this.timerStarted = true;
-            const mainTimer = interval(MOUVEMENTDELAY);
-            this.subscriptionTimer = mainTimer.subscribe(() => (this.time += MOUVEMENTDELAY));
+            const mainTimer = interval(MOVEMENTDELAY);
+            this.subscriptionTimer = mainTimer.subscribe(() => (this.time += MOVEMENTDELAY));
         }
     }
 

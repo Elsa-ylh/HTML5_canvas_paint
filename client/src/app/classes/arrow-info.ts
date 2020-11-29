@@ -3,8 +3,8 @@ import { SelectionService } from '@app/services/tools/selection-service/selectio
 import { Subscription, timer } from 'rxjs';
 import { Vec2 } from './vec2';
 
-export const PIXELMOUVEMENT = 3;
-export const MOUVEMENTDELAY = 100;
+export const PIXELMOVEMENT = 3;
+export const MOVEMENTDELAY = 100;
 export class ArrowInfo {
     constructor(private direction: Vec2, private drawingService: DrawingService, private selectionService: SelectionService) {
         this.timerStarted = false;
@@ -54,7 +54,7 @@ export class ArrowInfo {
     startMoveSelectionTimer(): void {
         if (!this.timerStarted) {
             this.timerStarted = true;
-            const timerMove = timer(MOUVEMENTDELAY, MOUVEMENTDELAY);
+            const timerMove = timer(MOVEMENTDELAY, MOVEMENTDELAY);
 
             this.subscription = timerMove.subscribe(() => {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
