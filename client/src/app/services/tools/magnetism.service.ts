@@ -19,7 +19,7 @@ export class MagnetismService {
     // constructor(private gridService: GridService) {}
 
     applyMagnetism(params: MagnetismParams): void {
-        //const squareWidth = this.gridService.squareWidth;
-        //params.controlGroup.
+        // const squareWidth = this.gridService.squareWidth;
+        // params.controlGroup.
     }
 }

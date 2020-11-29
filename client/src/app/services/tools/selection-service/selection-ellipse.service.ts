@@ -162,12 +162,18 @@ export class SelectionEllipseService extends SelectionService {
         } else {
             this.drawingService.previewCtx.save();
             this.drawingService.previewCtx.beginPath();
-            this.drawEllipse(this.drawingService.previewCtx, imagePosition, Math.abs(this.selection.width) / 2, Math.abs(this.selection.height) / 2);
+            this.drawEllipse(this.drawingService.previewCtx, imagePosition, this.selection.width / 2, this.selection.height / 2);
             this.drawingService.previewCtx.stroke();
             this.drawingService.previewCtx.clip();
-            this.drawingService.previewCtx.drawImage(this.selection.image, imagePosition.x, imagePosition.y);
+            this.drawingService.previewCtx.drawImage(
+                this.selection.image,
+                imagePosition.x,
+                imagePosition.y,
+                this.selection.width,
+                this.selection.height,
+            );
             this.drawingService.previewCtx.restore();
-            this.drawSelectionRect(imagePosition, Math.abs(this.selection.width), Math.abs(this.selection.height));
+            this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
         }
     }
 
@@ -220,7 +226,7 @@ export class SelectionEllipseService extends SelectionService {
         let centerY = 0 as number;
         centerX = mouseCoord.x + radiusX;
         centerY = mouseCoord.y + radiusY;
-        ctx.ellipse(centerX, centerY, this.selection.ellipseRad.x, this.selection.ellipseRad.y, 0, 0, 2 * Math.PI);
+        ctx.ellipse(centerX, centerY, Math.abs(this.selection.ellipseRad.x), Math.abs(this.selection.ellipseRad.y), 0, 0, 2 * Math.PI);
     }
 
     clearSelection(position: Vec2, width: number, height: number): void {

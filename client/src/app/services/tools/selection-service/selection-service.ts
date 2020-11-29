@@ -26,9 +26,7 @@ export class SelectionService extends Tool {
     // initialization of local const
     minTimeMovement: number = 500;
     lineWidth: number = 1;
-    private modifSelectSquare: number = 10;
     dottedSpace: number = 10;
-
     shiftPressed: boolean = false;
     // height: number;
     // width: number;
@@ -103,7 +101,7 @@ export class SelectionService extends Tool {
             } else if (this.inSelection || this.controlPointName !== ControlPointName.none) {
                 this.drawSelection(this.selection.imagePosition);
                 this.mouseMovement = { x: 0, y: 0 };
-
+                this.selection.imagePosition = this.updateSelectionPositions();
                 // not in action anymore
                 // this.controlGroup.resetSelected();
             }
@@ -253,12 +251,6 @@ export class SelectionService extends Tool {
         this.drawingService.previewCtx.setLineDash([this.dottedSpace, this.dottedSpace]);
         this.drawingService.previewCtx.strokeRect(mouseDownCoord.x, mouseDownCoord.y, width, height);
         this.drawingService.previewCtx.setLineDash([]);
-        this.drawingService.previewCtx.fillRect(
-            mouseDownCoord.x + width / 2 - this.modifSelectSquare / 2,
-            mouseDownCoord.y - this.modifSelectSquare / 2,
-            this.modifSelectSquare,
-            this.modifSelectSquare,
-        );
 
         this.controlGroup.setPositions(this.selection.imagePosition, this.selection.endingPos, { x: this.selection.width, y: this.selection.height });
 
@@ -438,40 +430,52 @@ export class SelectionService extends Tool {
         if (!this.shiftPressed) {
             switch (this.controlPointName) {
                 case ControlPointName.top:
+                    this.selection.ellipseRad.y -= mouseMovement.y / 2;
                     this.selection.height -= mouseMovement.y;
                     this.selection.imagePosition.y += mouseMovement.y;
                     break;
                 case ControlPointName.bottom:
+                    this.selection.ellipseRad.y += mouseMovement.y / 2;
                     this.selection.height += mouseMovement.y;
                     this.selection.endingPos.y += mouseMovement.y;
                     break;
                 case ControlPointName.left:
+                    this.selection.ellipseRad.x -= mouseMovement.x / 2;
                     this.selection.width -= mouseMovement.x;
                     this.selection.imagePosition.x += mouseMovement.x;
                     break;
                 case ControlPointName.right:
+                    this.selection.ellipseRad.x += mouseMovement.x / 2;
                     this.selection.width += mouseMovement.x;
                     this.selection.endingPos.x += mouseMovement.x;
                     break;
                 case ControlPointName.topLeft:
+                    this.selection.ellipseRad.x -= mouseMovement.x / 2;
+                    this.selection.ellipseRad.y -= mouseMovement.y / 2;
                     this.selection.width -= mouseMovement.x;
                     this.selection.height -= mouseMovement.y;
                     this.selection.imagePosition.x += mouseMovement.x;
                     this.selection.imagePosition.y += mouseMovement.y;
                     break;
                 case ControlPointName.topRight:
+                    this.selection.ellipseRad.x += mouseMovement.x / 2;
+                    this.selection.ellipseRad.y -= mouseMovement.y / 2;
                     this.selection.width += mouseMovement.x;
                     this.selection.height -= mouseMovement.y;
                     this.selection.endingPos.x += mouseMovement.x;
                     this.selection.imagePosition.y += mouseMovement.y;
                     break;
                 case ControlPointName.bottomLeft:
+                    this.selection.ellipseRad.x -= mouseMovement.x / 2;
+                    this.selection.ellipseRad.y += mouseMovement.y / 2;
                     this.selection.width -= mouseMovement.x;
                     this.selection.height += mouseMovement.y;
                     this.selection.imagePosition.x += mouseMovement.x;
                     this.selection.endingPos.y += mouseMovement.y;
                     break;
                 case ControlPointName.bottomRight:
+                    this.selection.ellipseRad.x += mouseMovement.x / 2;
+                    this.selection.ellipseRad.y += mouseMovement.y / 2;
                     this.selection.width += mouseMovement.x;
                     this.selection.height += mouseMovement.y;
                     this.selection.endingPos.x += mouseMovement.x;
@@ -481,26 +485,32 @@ export class SelectionService extends Tool {
         } else {
             switch (this.controlPointName) {
                 case ControlPointName.top:
+                    this.selection.ellipseRad.y -= mouseMovement.y;
                     this.selection.height -= mouseMovement.y * 2;
                     this.selection.imagePosition.y += mouseMovement.y;
                     this.selection.endingPos.y -= mouseMovement.y;
                     break;
                 case ControlPointName.bottom:
+                    this.selection.ellipseRad.y += mouseMovement.y;
                     this.selection.height += mouseMovement.y * 2;
                     this.selection.endingPos.y += mouseMovement.y;
                     this.selection.imagePosition.y -= mouseMovement.y;
                     break;
                 case ControlPointName.left:
+                    this.selection.ellipseRad.x -= mouseMovement.x;
                     this.selection.width -= mouseMovement.x * 2;
                     this.selection.imagePosition.x += mouseMovement.x;
                     this.selection.endingPos.x -= mouseMovement.x;
                     break;
                 case ControlPointName.right:
+                    this.selection.ellipseRad.x += mouseMovement.x;
                     this.selection.width += mouseMovement.x * 2;
                     this.selection.endingPos.x += mouseMovement.x;
                     this.selection.imagePosition.x -= mouseMovement.x;
                     break;
                 case ControlPointName.topLeft:
+                    this.selection.ellipseRad.x -= mouseMovement.x;
+                    this.selection.ellipseRad.y -= mouseMovement.y;
                     this.selection.width -= mouseMovement.x * 2;
                     this.selection.height -= mouseMovement.y * 2;
                     this.selection.imagePosition.x += mouseMovement.x;
@@ -509,6 +519,8 @@ export class SelectionService extends Tool {
                     this.selection.endingPos.y -= mouseMovement.y;
                     break;
                 case ControlPointName.topRight:
+                    this.selection.ellipseRad.x += mouseMovement.x;
+                    this.selection.ellipseRad.y -= mouseMovement.y;
                     this.selection.width += mouseMovement.x * 2;
                     this.selection.height -= mouseMovement.y * 2;
                     this.selection.endingPos.x += mouseMovement.x;
@@ -517,6 +529,8 @@ export class SelectionService extends Tool {
                     this.selection.imagePosition.x -= mouseMovement.x;
                     break;
                 case ControlPointName.bottomLeft:
+                    this.selection.ellipseRad.x -= mouseMovement.x;
+                    this.selection.ellipseRad.y += mouseMovement.y;
                     this.selection.width -= mouseMovement.x * 2;
                     this.selection.height += mouseMovement.y * 2;
                     this.selection.imagePosition.x += mouseMovement.x;
@@ -525,6 +539,8 @@ export class SelectionService extends Tool {
                     this.selection.endingPos.x -= mouseMovement.x;
                     break;
                 case ControlPointName.bottomRight:
+                    this.selection.ellipseRad.x += mouseMovement.x;
+                    this.selection.ellipseRad.y += mouseMovement.y;
                     this.selection.width += mouseMovement.x * 2;
                     this.selection.height += mouseMovement.y * 2;
                     this.selection.endingPos.x += mouseMovement.x;

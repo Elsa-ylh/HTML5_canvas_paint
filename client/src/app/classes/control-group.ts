@@ -22,7 +22,7 @@ export class ControlGroup {
     }
 
     draw(): void {
-        for (let entry of Array.from(this.controlPoints.entries())) {
+        for (const entry of Array.from(this.controlPoints.entries())) {
             const controlPoint = entry[1];
             controlPoint.draw();
         }
@@ -77,7 +77,7 @@ export class ControlGroup {
 
     // tslint:disable:cyclomatic-complexity
     isInControlPoint(mouse: Vec2): ControlPointName {
-        for (let entry of Array.from(this.controlPoints.entries())) {
+        for (const entry of Array.from(this.controlPoints.entries())) {
             const controlPointName = entry[0];
             const controlPoint = entry[1];
             if (this.drawControlPoint(controlPointName, controlPoint, mouse) !== ControlPointName.none) {
@@ -90,7 +90,7 @@ export class ControlGroup {
     }
 
     private resetSelected(): void {
-        for (let entry of Array.from(this.controlPoints.entries())) {
+        for (const entry of Array.from(this.controlPoints.entries())) {
             const controlPoint = entry[1];
             controlPoint.selected = false;
         }
