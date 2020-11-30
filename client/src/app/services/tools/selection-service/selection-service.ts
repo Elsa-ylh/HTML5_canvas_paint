@@ -48,10 +48,10 @@ export class SelectionService extends Tool {
     previousMousePos: Vec2 = { x: 0, y: 0 };
 
     // initialization of variables needed for arrow movement
-    leftArrow: ArrowInfo = new ArrowInfo({ x: -PIXELMOVEMENT, y: 0 }, this.drawingService, this);
-    rightArrow: ArrowInfo = new ArrowInfo({ x: +PIXELMOVEMENT, y: 0 }, this.drawingService, this);
-    upArrow: ArrowInfo = new ArrowInfo({ x: 0, y: -PIXELMOVEMENT }, this.drawingService, this);
-    downArrow: ArrowInfo = new ArrowInfo({ x: 0, y: +PIXELMOVEMENT }, this.drawingService, this);
+    leftArrow: ArrowInfo = new ArrowInfo({ x: -PIXELMOVEMENT, y: 0 }, this.drawingService, this, this.magnetismService);
+    rightArrow: ArrowInfo = new ArrowInfo({ x: +PIXELMOVEMENT, y: 0 }, this.drawingService, this, this.magnetismService);
+    upArrow: ArrowInfo = new ArrowInfo({ x: 0, y: -PIXELMOVEMENT }, this.drawingService, this, this.magnetismService);
+    downArrow: ArrowInfo = new ArrowInfo({ x: 0, y: +PIXELMOVEMENT }, this.drawingService, this, this.magnetismService);
     subscriptionTimer: Subscription;
     time: number = 0;
     timerStarted: boolean = false;
@@ -135,7 +135,7 @@ export class SelectionService extends Tool {
                 // this controlPointName is different from the one in selection service, as one if for resizing purpose
                 // and the following for the magnetism
                 if (this.controlGroup.controlPointName !== ControlPointName.none) {
-                    const magnetismReturn = this.magnetismService.applyMagnetism({
+                    const magnetismReturn = this.magnetismService.applyMagnetismMouseMove({
                         imagePosition: this.selection.imagePosition,
                         endingPosition: this.selection.endingPos,
                         controlGroup: this.controlGroup,
@@ -332,19 +332,19 @@ export class SelectionService extends Tool {
     clearSelection(position: Vec2, width: number, height: number): void {}
 
     onLeftArrow(): void {
-        this.leftArrow.onArrowDown();
+        this.leftArrow.onArrowDown(this.controlGroup);
     }
 
     onRightArrow(): void {
-        this.rightArrow.onArrowDown();
+        this.rightArrow.onArrowDown(this.controlGroup);
     }
 
     onUpArrow(): void {
-        this.upArrow.onArrowDown();
+        this.upArrow.onArrowDown(this.controlGroup);
     }
 
     onDownArrow(): void {
-        this.downArrow.onArrowDown();
+        this.downArrow.onArrowDown(this.controlGroup);
     }
 
     onLeftArrowUp(): void {
