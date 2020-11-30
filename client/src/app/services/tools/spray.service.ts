@@ -16,7 +16,7 @@ export class SprayService extends Tool {
         super(drawingService);
     }
 
-    density: number = 40; // number of drop per second //
+    density: number = 40; // number of drop per second
     private currentColor: string;
     position: Vec2;
     private time: number = 1000;
@@ -24,8 +24,8 @@ export class SprayService extends Tool {
     private minAngle: number = 0;
     private maxAngle: number = Math.PI * 2;
     private minLength: number = 0;
-    zoneDiameter: number = 60; // diametre de la zone d'application //
-    dropDiameter: number = 2; // drop diameter //
+    zoneDiameter: number = 60; // diametre de la zone d'application
+    dropDiameter: number = 2; // drop diameter
     private rotation: number = 0;
     private beginAngle: number = 0;
     private endAngle: number = 2 * Math.PI;
