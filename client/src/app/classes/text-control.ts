@@ -83,7 +83,7 @@ export class TextControl {
         return lineText;
     }
     getText(): string[] {
-        this.textPreview.push(this.tmpLineText(this.textLine, ''));
+        this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '');
         console.log(this.textPreview);
         return this.textPreview;
     }

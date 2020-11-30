@@ -55,13 +55,9 @@ export class TextService extends Tool {
     distanceY: number = 0;
     private textAlign: number = 2;
     private textControl: TextControl;
-    // private textPreview: string[] = [];
-    // private indexLine : number = 0;
-    // private indexLastLine:number = 0;
     constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
         this.textControl = new TextControl(this.drawingService.previewCtx, this.sizeFont);
-        // this.textPreview[this.indexLine]="|";
     }
 
     formatLabel(value: number): number {
@@ -321,7 +317,6 @@ export class TextService extends Tool {
     private checkHeightText(nbLineBreak: number): boolean {
         return (nbLineBreak + 1) * this.sizeFont <= Math.abs(this.height + 1);
     }
-
     private position(ctx: CanvasRenderingContext2D, texts: string[], align: number): void {
         // set font and size for text with or without italic or bold
         ctx.font = (this.getBold() + this.getItalic() + this.getSize() + 'px' + "'" + this.getFont() + "'").toString();
@@ -402,6 +397,7 @@ export class TextService extends Tool {
             )
                 if (event.keyCode < F1 || event.keyCode > F12) {
                     this.textControl.addLetter(event.key.toString());
+                    this.previewText();
                 }
         }
     }
