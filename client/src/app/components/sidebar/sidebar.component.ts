@@ -116,8 +116,6 @@ export class SidebarComponent {
 
     createNewDrawing(): void {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
-        this.undoRedoService.clearRedo();
-        this.undoRedoService.clearUndo();
         this.automaticSaveService.save();
     }
 

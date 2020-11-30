@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Data, Router } from '@angular/router';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Component({
     selector: 'app-dialog-create-new-drawing',
@@ -19,6 +20,7 @@ export class DialogCreateNewDrawingComponent {
         private drawingService: DrawingService,
         private canvasResizerService: CanvasResizerService,
         private router: Router,
+        private undoRedoService: UndoRedoService,
     ) {
         if (this.data) {
             this.message = data.message;
@@ -47,6 +49,8 @@ export class DialogCreateNewDrawingComponent {
         if (this.message === 'Êtes-vous sûr de vouloir effacer votre dessin actuel ?') {
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.undoRedoService.clearRedo();
+            this.undoRedoService.clearUndo();
         }
         this.router.navigate(['/editor']);
     }
