@@ -270,7 +270,7 @@ export class TextService extends Tool {
     previewText(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoords, this.mousePosition);
-        const textPreview: string[] = this.textControl.getText();
+        const textPreview: string[] = this.textControl.getTextWithCursor();
         // let indexLine = 0;
         // textPreview[indexLine] = '';
         // this.keyHistory.forEach((element) => {

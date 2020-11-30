@@ -4,7 +4,7 @@ export class TextControl {
     private sizeFont: number = 0;
     private textPreview: string[] = [];
     private textLine: string[] = [];
-    // private textStack:string[]=[];
+    private textStack: string[] = [];
     private indexLine: number = 0;
     private indexLastLine: number = 0;
     private nbOfLettersInLine: number = 0;
@@ -51,15 +51,30 @@ export class TextControl {
     }
 
     arrowLeft(): void {
-        console.log(this.textLine);
+        if (this.textLine.length > 0 && this.nbOfLettersInLine) {
+            const letter: string | undefined = this.textLine.pop();
+            if (letter !== undefined) {
+                this.textStack.push(letter);
+                this.nbOfLettersInLine--;
+            }
+        }
     }
 
     arrowRight(): void {
-        console.log(this.textLine);
+        if (this.textStack.length > 0) {
+            const letter: string | undefined = this.textStack.pop();
+            if (letter !== undefined) {
+                this.textLine.push(letter);
+                this.nbOfLettersInLine++;
+            }
+        }
     }
 
     backspace(): void {
-        console.log(this.textLine);
+        if (this.nbOfLettersInLine) {
+            this.textLine.pop();
+            this.nbOfLettersInLine--;
+        }
     }
 
     delete(): void {
@@ -67,24 +82,38 @@ export class TextControl {
     }
 
     enter(): void {
-        this.textPreview.push(this.tmpLineText(this.textLine, ''));
+        this.textPreview.push(this.tmpLineText(this.textLine, '\n'));
         this.nbOfLettersInLine = 0;
         this.textLine = [];
         this.indexLine++;
         this.indexLastLine = this.textPreview.length;
     }
 
-    tmpLineText(text: string[], addLetter: string): string {
+    private tmpLineText(text: string[], addLetter: string): string {
         let lineText = '';
         text.forEach((letter) => {
             lineText += letter;
         });
         lineText += addLetter;
+
         return lineText;
     }
+    private tmpLineTextStack(): string {
+        let text = '';
+
+        if (this.textStack.length)
+            for (let index = this.textStack.length - 1; index >= 0; index--) {
+                text += this.textStack[index];
+            }
+        return text;
+    }
     getText(): string[] {
-        this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '');
-        console.log(this.textPreview);
+        this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + this.tmpLineTextStack();
+        return this.textPreview;
+    }
+
+    getTextWithCursor(): string[] {
+        this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + '|' + this.tmpLineTextStack();
         return this.textPreview;
     }
     // creer une fonction donnant le nombre de lettre dans une ligne
