@@ -35,8 +35,8 @@ export class SprayService extends Tool {
     private rotation: number = 0;
     private beginAngle: number = 0;
     private endAngle: number = 2 * Math.PI;
-    private angle: number;
-    private radius: number;
+    private angle: number[] = [];
+    private radius: number[] = [];
 
     generateRandomValue(min: number, max: number): number {
         return Math.random() * (max - min) + min;
@@ -64,23 +64,27 @@ export class SprayService extends Tool {
         this.automaticSaveService.save();
     }
 
-    transform(toolInfo: ToolInfoSpray): void {
+    transform(toolInfo: ToolInfoSpray, isTransformUndo: boolean): void {
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
         this.drawingService.baseCtx.fillStyle = toolInfo.color;
         this.density = toolInfo.density;
         this.zoneDiameter = toolInfo.zoneDiameter;
         this.dropDiameter = toolInfo.dropDiameter;
-        this.angle = toolInfo.angle;
-        this.radius = toolInfo.radius;
         this.position = toolInfo.position;
 
         for (let i = this.density; i--; ) {
-            this.angle = this.generateRandomValue(this.minAngle, this.maxAngle);
-            this.radius = this.generateRandomValue(this.minLength, this.zoneDiameter / 2); // the max interval is the diameter of the zone
+            if (!isTransformUndo) {
+                this.angle.push(this.generateRandomValue(this.minAngle, this.maxAngle));
+                this.radius.push(this.generateRandomValue(this.minLength, this.zoneDiameter / 2)); // the max interval is the diameter of the zone
+            } else {
+                this.angle[i] = toolInfo.angle[i];
+                this.radius[i] = toolInfo.radius[i];
+            }
+
             this.drawingService.baseCtx.beginPath();
             this.drawingService.baseCtx.ellipse(
-                this.position.x + this.radius * Math.cos(this.angle), // the center of drop in x axis depends on random angle
-                this.position.y + this.radius * Math.sin(this.angle), // the center of drop in y axis depends on random angle
+                this.position.x + this.radius[i] * Math.cos(this.angle[i]), // the center of drop in x axis depends on random angle
+                this.position.y + this.radius[i] * Math.sin(this.angle[i]), // the center of drop in y axis depends on random angle
                 this.dropDiameter / 2,
                 this.dropDiameter / 2,
                 this.rotation,
@@ -95,17 +99,8 @@ export class SprayService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         this.currentColor = this.colorService.primaryColor;
         this.position = { x: event.offsetX, y: event.offsetY };
-        this.transform({
-            density: this.density,
-            color: this.currentColor,
-            zoneDiameter: this.zoneDiameter,
-            dropDiameter: this.dropDiameter,
-            angle: this.angle,
-            radius: this.radius,
-            position: this.position,
-        });
-        const callback = () => {
-            this.transform({
+        this.transform(
+            {
                 density: this.density,
                 color: this.currentColor,
                 zoneDiameter: this.zoneDiameter,
@@ -113,7 +108,22 @@ export class SprayService extends Tool {
                 angle: this.angle,
                 radius: this.radius,
                 position: this.position,
-            });
+            },
+            false,
+        );
+        const callback = () => {
+            this.transform(
+                {
+                    density: this.density,
+                    color: this.currentColor,
+                    zoneDiameter: this.zoneDiameter,
+                    dropDiameter: this.dropDiameter,
+                    angle: this.angle,
+                    radius: this.radius,
+                    position: this.position,
+                },
+                false,
+            );
         };
         this.timer = setInterval(callback, this.time);
     }

@@ -5,7 +5,7 @@ export class ToolInfoSpray {
     color: string;
     zoneDiameter: number;
     dropDiameter: number;
-    angle: number;
-    radius: number;
+    angle: number[];
+    radius: number[];
     position: Vec2;
 }

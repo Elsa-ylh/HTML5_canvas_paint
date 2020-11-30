@@ -44,6 +44,7 @@ export class UndoRedoService {
     addUndo(action: AbsUndoRedo): void {
         this.listUndo.push(action);
         this.updateStatus();
+        console.log('undo', this.listUndo);
     }
 
     // to load an image from the caroussel

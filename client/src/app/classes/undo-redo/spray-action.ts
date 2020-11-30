@@ -9,8 +9,8 @@ export class SprayAction extends AbsUndoRedo {
         private color: string,
         private zoneDiameter: number,
         private dropDiameter: number,
-        private angle: number,
-        private radius: number,
+        private angle: number[],
+        private radius: number[],
         private position: Vec2,
         private drawingService: DrawingService,
         private sprayService: SprayService,
@@ -21,14 +21,17 @@ export class SprayAction extends AbsUndoRedo {
     apply(): void {
         this.drawingService.baseCtx.lineJoin = this.drawingService.baseCtx.lineCap = 'round';
         this.drawingService.baseCtx.fillStyle = this.color;
-        this.sprayService.transform({
-            density: this.density,
-            color: this.color,
-            zoneDiameter: this.zoneDiameter,
-            dropDiameter: this.dropDiameter,
-            angle: this.angle,
-            radius: this.radius,
-            position: this.position,
-        });
+        this.sprayService.transform(
+            {
+                density: this.density,
+                color: this.color,
+                zoneDiameter: this.zoneDiameter,
+                dropDiameter: this.dropDiameter,
+                angle: this.angle,
+                radius: this.radius,
+                position: this.position,
+            },
+            true,
+        );
     }
 }
