@@ -22,6 +22,7 @@ export class MagnetismService {
     private isMouseMagnetValueSet: boolean = false;
     private ajustedPosition: Vec2 = { x: -1, y: -1 };
 
+    private prevControlPointName: ControlPointName = ControlPointName.none;
     private isFirstTimeArrow: boolean = true;
 
     constructor(private gridService: GridService) {}
@@ -125,6 +126,13 @@ export class MagnetismService {
         if (this.isMagnetismActive) {
             const squareWidth = this.gridService.squareWidth;
             const controlPoint = params.controlGroup.controlPoints.get(params.controlGroup.controlPointName) as ControlPoint;
+            const controlPointName = params.controlGroup.controlPointName;
+
+            const isTheSameControlPointName = controlPointName === this.prevControlPointName;
+            if (!isTheSameControlPointName) {
+                this.prevControlPointName = controlPointName;
+                this.isFirstTimeArrow = true;
+            }
 
             if (this.isFirstTimeArrow) {
                 this.isFirstTimeArrow = false;
@@ -142,8 +150,6 @@ export class MagnetismService {
                 this.applyFinalPosition(params);
             } else {
                 const calculatingPosition = controlPoint.position;
-
-                debugger;
 
                 this.ajustedPosition.x = calculatingPosition.x + (arrowDirection.x / PIXELMOVEMENT) * squareWidth + CPSIZE / 2;
                 this.ajustedPosition.y = calculatingPosition.y + (arrowDirection.y / PIXELMOVEMENT) * squareWidth + CPSIZE / 2;
@@ -172,6 +178,7 @@ export class MagnetismService {
     }
 
     resetMagnetism(): void {
+        this.prevControlPointName = ControlPointName.none;
         this.isMouseMagnetValueSet = false;
         this.isFirstTimeArrow = true;
         this.ajustedPosition = { x: -1, y: -1 };

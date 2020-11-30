@@ -20,8 +20,6 @@ import { interval, Subscription } from 'rxjs';
 // This file is larger than 350 lines but is entirely used by the methods.
 // tslint:disable:max-file-line-count
 export class SelectionService extends Tool {
-
-
     constructor(drawingService: DrawingService, protected magnetismService: MagnetismService) {
         super(drawingService);
     }
@@ -31,8 +29,7 @@ export class SelectionService extends Tool {
     lineWidth: number = 1;
     dottedSpace: number = 10;
     shiftPressed: boolean = false;
-    scaled: boolean =false;
-
+    scaled: boolean = false;
 
     baseImage: HTMLImageElement;
     baseImageData: ImageData;
@@ -73,7 +70,7 @@ export class SelectionService extends Tool {
     // Control points
     controlGroup: ControlGroup;
     controlPointName: ControlPointName = ControlPointName.none;
-    flip:FlipDirection = FlipDirection.none;
+    flip: FlipDirection = FlipDirection.none;
 
     onMouseDown(event: MouseEvent): void {}
 
@@ -575,46 +572,46 @@ export class SelectionService extends Tool {
             }
         }
 
-        this.scaled =true;
+        this.scaled = true;
         // this.flip = this.flipDirection(this.selection);
     }
 
-    flipImage():void {
-      if(this.selection.width < 0 && this.selection.height <0 && this.flip !== FlipDirection.diagonal){
-        this.flip = FlipDirection.diagonal;
-        this.drawFlippedImage({x:-1,y:-1}, this.selection.imageSize);
-        return;
-      }
-      if(this.selection.width > 0 && this.selection.height <0 && this.flip !== FlipDirection.vertical ){
-        this.drawFlippedImage({x:1,y:-1}, {x:0, y:this.selection.imageSize.y});
-        // ctx.save();
-        // ctx.translate(0, canvas.height);
-        // ctx.scale(1,-1);
-        // ctx.drawImage(this.baseImage, 0, 0, canvas.width,canvas.height);
-        // ctx.restore();
-        // this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
-        // this.selection.image = new Image();
-        // this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
-        this.flip = FlipDirection.vertical;
-        return;
-      }
-      if(this.selection.width < 0 && this.selection.height > 0 &&  this.flip !== FlipDirection.horizontal){
-        this.drawFlippedImage({x:-1,y:1}, {x:this.selection.imageSize.x, y:0});
-        this.flip = FlipDirection.horizontal;
-        return;
-      }
-      if(this.selection.width > 0 && this.selection.height > 0 &&  this.flip !== FlipDirection.none){
-        this.flip = FlipDirection.none;
-        this.drawFlippedImage({x:1,y:1},{x:0,y:0});
-        // ctx.drawImage(this.baseImage, 0, 0, canvas.width,canvas.height);
-        // ctx.restore();
-        // this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
-        // this.selection.image = new Image();
-        // this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
-      }
+    flipImage(): void {
+        if (this.selection.width < 0 && this.selection.height < 0 && this.flip !== FlipDirection.diagonal) {
+            this.flip = FlipDirection.diagonal;
+            this.drawFlippedImage({ x: -1, y: -1 }, this.selection.imageSize);
+            return;
+        }
+        if (this.selection.width > 0 && this.selection.height < 0 && this.flip !== FlipDirection.vertical) {
+            this.drawFlippedImage({ x: 1, y: -1 }, { x: 0, y: this.selection.imageSize.y });
+            // ctx.save();
+            // ctx.translate(0, canvas.height);
+            // ctx.scale(1,-1);
+            // ctx.drawImage(this.baseImage, 0, 0, canvas.width,canvas.height);
+            // ctx.restore();
+            // this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
+            // this.selection.image = new Image();
+            // this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+            this.flip = FlipDirection.vertical;
+            return;
+        }
+        if (this.selection.width < 0 && this.selection.height > 0 && this.flip !== FlipDirection.horizontal) {
+            this.drawFlippedImage({ x: -1, y: 1 }, { x: this.selection.imageSize.x, y: 0 });
+            this.flip = FlipDirection.horizontal;
+            return;
+        }
+        if (this.selection.width > 0 && this.selection.height > 0 && this.flip !== FlipDirection.none) {
+            this.flip = FlipDirection.none;
+            this.drawFlippedImage({ x: 1, y: 1 }, { x: 0, y: 0 });
+            // ctx.drawImage(this.baseImage, 0, 0, canvas.width,canvas.height);
+            // ctx.restore();
+            // this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
+            // this.selection.image = new Image();
+            // this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+        }
     }
 
-    drawFlippedImage(scale:Vec2, translation:Vec2): void {}
+    drawFlippedImage(scale: Vec2, translation: Vec2): void {}
 
     // flipDirection(selection:SelectionImage) : FlipDirection {
     //   if(selection.width < 0 && selection.height <0){

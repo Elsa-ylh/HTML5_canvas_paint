@@ -16,8 +16,6 @@ export class SelectionRectangleService extends SelectionService {
         super(drawingService, magnetismService);
     }
 
-
-
     onMouseDown(event: MouseEvent): void {
         this.clearEffectTool();
         this.drawingService.previewCtx.lineWidth = this.lineWidth;
@@ -163,26 +161,24 @@ export class SelectionRectangleService extends SelectionService {
     }
 
     drawSelection(imagePosition: Vec2): void {
-
-        if(this.scaled){
-          // this.drawingService.previewCtx.save();
-          // this.drawingService.previewCtx.translate(this.drawingService.canvas.width, this.drawingService.canvas.height);
-          // this.drawingService.previewCtx.scale(-1,-1);
-          // this.drawingService.previewCtx.drawImage(this.selection.image, this.drawingService.canvas.width - imagePosition.x, this.drawingService.canvas.height - imagePosition.y, this.selection.width*-1, this.selection.height*-1);
-          // this.drawingService.previewCtx.restore();
-          // this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
-          // this.scaled =false;
-          // this.selection.getImage({x:this.selection.width, y:this.selection.height});
-          this.flipImage();
-          this.scaled =false;
-          // this.flip.x = 1;
-          // this.flip.y = 1;
+        if (this.scaled) {
+            // this.drawingService.previewCtx.save();
+            // this.drawingService.previewCtx.translate(this.drawingService.canvas.width, this.drawingService.canvas.height);
+            // this.drawingService.previewCtx.scale(-1,-1);
+            // this.drawingService.previewCtx.drawImage(this.selection.image, this.drawingService.canvas.width - imagePosition.x, this.drawingService.canvas.height - imagePosition.y, this.selection.width*-1, this.selection.height*-1);
+            // this.drawingService.previewCtx.restore();
+            // this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
+            // this.scaled =false;
+            // this.selection.getImage({x:this.selection.width, y:this.selection.height});
+            this.flipImage();
+            this.scaled = false;
+            // this.flip.x = 1;
+            // this.flip.y = 1;
         }
         this.drawingService.previewCtx.save();
         this.drawingService.previewCtx.drawImage(this.selection.image, imagePosition.x, imagePosition.y, this.selection.width, this.selection.height);
         this.drawingService.previewCtx.restore();
         this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
-
     }
 
     pasteSelection(selection: SelectionImage): void {
@@ -204,20 +200,18 @@ export class SelectionRectangleService extends SelectionService {
         this.drawingService.baseCtx.fillRect(position.x, position.y, width, height);
     }
 
-      drawFlippedImage(scale:Vec2, translation:Vec2): void {
+    drawFlippedImage(scale: Vec2, translation: Vec2): void {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
-        canvas.width =Math.abs(this.selection.imageSize.x);
+        canvas.width = Math.abs(this.selection.imageSize.x);
         canvas.height = Math.abs(this.selection.imageSize.y);
         ctx.save();
-          ctx.translate(translation.x,translation.y);
-          ctx.scale(scale.x,scale.y);
-          ctx.drawImage(this.baseImage, 0, 0, canvas.width,canvas.height);
-          ctx.restore();
-          this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
-          this.selection.image = new Image();
-          this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
-      }
-
-
+        ctx.translate(translation.x, translation.y);
+        ctx.scale(scale.x, scale.y);
+        ctx.drawImage(this.baseImage, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+        this.selection.imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        this.selection.image = new Image();
+        this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+    }
 }
