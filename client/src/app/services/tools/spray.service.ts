@@ -6,13 +6,19 @@ import { SprayAction } from '@app/classes/undo-redo/spray-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { AutomaticSaveService } from '../automatic-save/automatic-save.service';
 import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SprayService extends Tool {
-    constructor(drawingService: DrawingService, public colorService: ColorService, private undoRedoService: UndoRedoService) {
+    constructor(
+        drawingService: DrawingService,
+        public colorService: ColorService,
+        private undoRedoService: UndoRedoService,
+        private automaticSaveService: AutomaticSaveService,
+    ) {
         super(drawingService);
     }
 
@@ -38,6 +44,7 @@ export class SprayService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         clearInterval(this.timer);
+        this.mouseDown = false;
 
         this.currentColor = this.colorService.primaryColor;
         // undo - redo
@@ -54,7 +61,7 @@ export class SprayService extends Tool {
         );
         this.undoRedoService.addUndo(sprayAction);
         this.undoRedoService.clearRedo();
-        this.mouseDown = false;
+        this.automaticSaveService.save();
     }
 
     transform(toolInfo: ToolInfoSpray): void {
