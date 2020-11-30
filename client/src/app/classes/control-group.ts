@@ -4,7 +4,13 @@ import { Vec2 } from './vec2';
 
 export class ControlGroup {
     drawingService: DrawingService;
+
+    // the next variable is not linked to the selection service
+    controlPointName: ControlPointName = ControlPointName.none;
+
     controlPoints: Map<ControlPointName, ControlPoint> = new Map<ControlPointName, ControlPoint>();
+
+    sizeControlGroup: Vec2;
 
     constructor(drawingService: DrawingService) {
         this.drawingService = drawingService;
@@ -51,7 +57,7 @@ export class ControlGroup {
             y: startingPos.y + size.y / 2 - CPSIZE / 2,
         });
 
-        (this.controlPoints.get(ControlPointName.bottomRight) as ControlPoint).setPosition({
+        (this.controlPoints.get(ControlPointName.bottomLeft) as ControlPoint).setPosition({
             x: endingPos.x - CPSIZE / 2,
             y: endingPos.y - CPSIZE / 2,
         });
@@ -59,7 +65,7 @@ export class ControlGroup {
             x: endingPos.x - size.x / 2 - CPSIZE / 2,
             y: endingPos.y - CPSIZE / 2,
         });
-        (this.controlPoints.get(ControlPointName.bottomLeft) as ControlPoint).setPosition({
+        (this.controlPoints.get(ControlPointName.bottomRight) as ControlPoint).setPosition({
             x: endingPos.x - size.x - CPSIZE / 2,
             y: endingPos.y - CPSIZE / 2,
         });
@@ -68,7 +74,10 @@ export class ControlGroup {
     private drawControlPoint(controlPointName: ControlPointName, controlPoint: ControlPoint, mouse: Vec2): ControlPointName {
         if (controlPoint.isInside(mouse)) {
             this.resetSelected();
-            if (!controlPoint.selected) controlPoint.selected = true;
+            if (!controlPoint.selected) {
+                controlPoint.selected = true;
+                this.controlPointName = controlPointName;
+            }
             controlPoint.draw();
             return controlPointName;
         }
@@ -85,7 +94,6 @@ export class ControlGroup {
             }
         }
 
-        this.resetSelected();
         return ControlPointName.none;
     }
 

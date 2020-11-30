@@ -8,8 +8,8 @@ import { SelectionImage } from '@app/classes/selection';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism.service';
 import { interval, Subscription } from 'rxjs';
-import { MagnetismParams, MagnetismService } from '../magnetism.service';
 
 @Injectable({
     providedIn: 'root',
@@ -56,10 +56,10 @@ export class SelectionService extends Tool {
     previousMousePos: Vec2 = { x: 0, y: 0 };
 
     // initialization of variables needed for arrow movement
-    leftArrow: ArrowInfo = new ArrowInfo({ x: -PIXELMOVEMENT, y: 0 }, this.drawingService, this);
-    rightArrow: ArrowInfo = new ArrowInfo({ x: +PIXELMOVEMENT, y: 0 }, this.drawingService, this);
-    upArrow: ArrowInfo = new ArrowInfo({ x: 0, y: -PIXELMOVEMENT }, this.drawingService, this);
-    downArrow: ArrowInfo = new ArrowInfo({ x: 0, y: +PIXELMOVEMENT }, this.drawingService, this);
+    leftArrow: ArrowInfo = new ArrowInfo({ x: -PIXELMOVEMENT, y: 0 }, this.drawingService, this, this.magnetismService);
+    rightArrow: ArrowInfo = new ArrowInfo({ x: +PIXELMOVEMENT, y: 0 }, this.drawingService, this, this.magnetismService);
+    upArrow: ArrowInfo = new ArrowInfo({ x: 0, y: -PIXELMOVEMENT }, this.drawingService, this, this.magnetismService);
+    downArrow: ArrowInfo = new ArrowInfo({ x: 0, y: +PIXELMOVEMENT }, this.drawingService, this, this.magnetismService);
     subscriptionTimer: Subscription;
     time: number = 0;
     timerStarted: boolean = false;
@@ -106,6 +106,8 @@ export class SelectionService extends Tool {
                     // ask about that
                 }
 
+                this.magnetismService.resetMagnetism();
+
                 // move or scale selection
             } else if (this.inSelection || this.controlPointName !== ControlPointName.none) {
                 this.drawSelection(this.selection.imagePosition);
@@ -119,7 +121,7 @@ export class SelectionService extends Tool {
                 // this.controlGroup.resetSelected();
             }
         }
-        this.controlPointName = ControlPointName.none;
+        // this.controlPointName = ControlPointName.none;
         this.mouseDown = false;
         this.inSelection = false;
     }
@@ -142,15 +144,21 @@ export class SelectionService extends Tool {
                     y: this.selection.endingPos.y + this.mouseMovement.y,
                 };
 
-                // press "m" to activate the magnetism
-                const magnetismParams: MagnetismParams = {
-                    imagePosition: this.selection.imagePosition,
-                    endingPosition: this.selection.endingPos,
-                    controlPointName: this.controlPointName,
-                    controlGroup: this.controlGroup,
-                };
-                this.magnetismService.applyMagnetism(magnetismParams);
+                // press "m" to activate the magnetism and sure there is a controlPointName selected
+                // this controlPointName is different from the one in selection service, as one if for resizing purpose
+                // and the following for the magnetism
+                if (this.controlGroup.controlPointName !== ControlPointName.none) {
+                    const magnetismReturn = this.magnetismService.applyMagnetismMouseMove({
+                        imagePosition: this.selection.imagePosition,
+                        endingPosition: this.selection.endingPos,
+                        controlGroup: this.controlGroup,
+                        selectionSize: { x: this.selection.width, y: this.selection.height } as Vec2,
+                    } as MagnetismParams);
 
+                    this.selection.imagePosition = magnetismReturn.imagePosition;
+                    this.selection.endingPos = magnetismReturn.endingPosition;
+                    this.controlGroup = magnetismReturn.controlGroup;
+                }
                 this.drawSelection(this.selection.imagePosition);
 
                 this.previousMousePos = mousePosition;
@@ -340,19 +348,19 @@ export class SelectionService extends Tool {
     clearSelection(position: Vec2, width: number, height: number): void {}
 
     onLeftArrow(): void {
-        this.leftArrow.onArrowDown();
+        this.leftArrow.onArrowDown(this.controlGroup);
     }
 
     onRightArrow(): void {
-        this.rightArrow.onArrowDown();
+        this.rightArrow.onArrowDown(this.controlGroup);
     }
 
     onUpArrow(): void {
-        this.upArrow.onArrowDown();
+        this.upArrow.onArrowDown(this.controlGroup);
     }
 
     onDownArrow(): void {
-        this.downArrow.onArrowDown();
+        this.downArrow.onArrowDown(this.controlGroup);
     }
 
     onLeftArrowUp(): void {

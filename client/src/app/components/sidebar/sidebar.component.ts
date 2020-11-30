@@ -603,6 +603,7 @@ export class SidebarComponent {
     @HostListener('window:keydown.m', ['$event']) activateMagnetism(event: MouseEvent): void {
         if (this.magnetismService.isMagnetismActive) {
             this.magnetismService.isMagnetismActive = false;
+            this.magnetismService.resetMagnetism();
         } else {
             this.magnetismService.isMagnetismActive = true;
         }
