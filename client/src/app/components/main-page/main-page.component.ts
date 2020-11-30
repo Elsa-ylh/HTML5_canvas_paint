@@ -22,6 +22,7 @@ export class MainPageComponent {
     }
 
     createNewDrawing(): void {
+        this.automaticSaveService.save();
         this.newDrawingRef = this.dialogCreator.open(DialogCreateNewDrawingComponent, {
             data: { message: 'Créer un nouveau dessin' },
         });

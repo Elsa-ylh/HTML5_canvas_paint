@@ -57,7 +57,8 @@ export class ToolService {
     switchTool(toolUsed: ToolUsed): void {
         // color is special as we don't change tool per say, we are simply making an extension of making other tools
         // change color
-        if (toolUsed !== ToolUsed.Color) {
+        // same for grid, we just want to show the ui modifier
+        if (toolUsed !== ToolUsed.Color && toolUsed !== ToolUsed.Grid) {
             this.currentTool = this.tableTool[toolUsed];
         }
         this.currentTool.cleanPaintGrout();

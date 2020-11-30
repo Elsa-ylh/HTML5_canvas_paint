@@ -6,6 +6,7 @@ import { Vec2 } from '@app/classes/vec2';
 // import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/tools/magnetism.service';
 // import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
@@ -22,18 +23,24 @@ enum Bound {
 })
 
 // https://github.com/Tamersoul/magic-wand-js/blob/master/src/MagicWand.js
+
+// tslint:disable:cyclomatic-complexity
 export class MagicWandService extends SelectionService {
     private replacementColor: RGBA = { red: 101, green: 231, blue: 0, alpha: 1 };
     private readonly COLORATTRIBUTES: number = 4;
-    private selectionBoxCreated: boolean = false;
+    // private selectionBoxCreated: boolean = false;
 
-    constructor(drawingService: DrawingService, private canvasResizerService: CanvasResizerService, private paintBucketService: PaintBucketService) {
-        super(drawingService);
+    constructor(
+        drawingService: DrawingService,
+        private canvasResizerService: CanvasResizerService,
+        private paintBucketService: PaintBucketService,
+        protected magnetismService: MagnetismService,
+    ) {
+        super(drawingService, magnetismService);
     }
     tolerance: number = 0; // from 0 to 100 inclusively, look at paint bucket component
 
     // the starting x and y means where the mouse was clicked down
-    /*tslint:disable:cyclomatic-complexity*/
     private selectedFloodFill(x: number, y: number, replacementColor: RGBA): ImageData {
         const pixelStack: Vec2[] = [];
         pixelStack.push({ x, y });
@@ -132,7 +139,6 @@ export class MagicWandService extends SelectionService {
         }
         return pixels;
     }
-    /*tslint:enable:cyclomatic-complexity*/
 
     private selectAllSimilar(x: number, y: number, replacementColor: RGBA): ImageData {
         const pixels: ImageData = this.drawingService.baseCtx.getImageData(
@@ -200,10 +206,12 @@ export class MagicWandService extends SelectionService {
                 // tslint:disable-next-line:no-magic-numbers
                 previewLayer.data[i * this.COLORATTRIBUTES + 3] = originalLayer.data[i * this.COLORATTRIBUTES + 3];
             } else {
-                // rgba(255, 255, 255, 0) means transparent
-
+                // rgba(255, 255, 255, 0) means transparent -> magic number for white color
+                // tslint:disable-next-line:no-magic-numbers
                 previewLayer.data[i * this.COLORATTRIBUTES] = 255;
+                // tslint:disable-next-line:no-magic-numbers
                 previewLayer.data[i * this.COLORATTRIBUTES + 1] = 255;
+                // tslint:disable-next-line:no-magic-numbers
                 previewLayer.data[i * this.COLORATTRIBUTES + 2] = 255;
                 // +3 means at alpha position
                 // tslint:disable-next-line:no-magic-numbers
@@ -218,6 +226,7 @@ export class MagicWandService extends SelectionService {
             previewLayer.data[pixelPosition] !== transparentColor.red &&
             previewLayer.data[pixelPosition + 1] !== transparentColor.green &&
             previewLayer.data[pixelPosition + 2] !== transparentColor.blue &&
+            // tslint:disable-next-line:no-magic-numbers
             previewLayer.data[pixelPosition + 3] !== transparentColor.alpha
         );
     }
@@ -273,7 +282,7 @@ export class MagicWandService extends SelectionService {
         return { x: NaN, y: NaN };
     }
 
-    private createSelectionRectangle(selectedPixels: ImageData): void {
+    private saveSelectionData(selectedPixels: ImageData): void {
         // const ctx: CanvasRenderingContext2D = this.drawingService.previewCtx;
 
         // the next steps removes anything other than the selected pixels to become transparent
@@ -285,38 +294,43 @@ export class MagicWandService extends SelectionService {
         const leftBoundPos: Vec2 = this.findBound(Bound.LEFT, previewLayer);
         const rightBoundPos: Vec2 = this.findBound(Bound.RIGHT, previewLayer);
 
-        const borders: Vec2[] = [upperBoundPos, lowerBoundPos, leftBoundPos, rightBoundPos];
-        console.log(borders);
+        this.selection.imagePosition = { x: leftBoundPos.x, y: upperBoundPos.y } as Vec2;
+        this.selection.endingPos = { x: rightBoundPos.x, y: lowerBoundPos.y } as Vec2;
 
-        // this.createRectangleBorders(borders);
-
-        // ctx.putImageData(previewLayer, 0, 0);
+        this.selection.image = new Image();
+        this.selection.image.src = this.getImageURL(
+            previewLayer,
+            this.selection.endingPos.x - this.selection.imagePosition.x,
+            this.selection.endingPos.y - this.selection.imagePosition.y,
+        );
     }
 
-    protected drawSelection(imagePosition: Vec2): void {
-        this.drawingService.previewCtx.drawImage(this.image, imagePosition.x, imagePosition.y, this.width, this.height);
-        this.drawSelectionRect(imagePosition, Math.abs(this.width), Math.abs(this.height));
+    drawSelection(imagePosition: Vec2): void {
+        if (this.scaled) {
+            this.flipImage();
+            this.scaled = false;
+        }
+        this.drawingService.previewCtx.save();
+        this.drawingService.previewCtx.drawImage(this.selection.image, imagePosition.x, imagePosition.y, this.selection.width, this.selection.height);
+        this.drawingService.previewCtx.restore();
+        this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
     }
 
     onMouseDown(event: MouseEvent): void {
         console.log(event.offsetX, event.offsetY);
         if (event.button === MouseButton.Left) {
-            // if (this.selectionBoxCreated) {
-            debugger;
             const toBeSelectedPixels: ImageData = this.selectedFloodFill(event.offsetX, event.offsetY, this.replacementColor);
-            this.createSelectionRectangle(toBeSelectedPixels);
-            this.selectionBoxCreated = true;
-            // this.image.src = this.getImageURL(toBeSelectedPixels, this.drawingService.canvas.width, this.drawingService.canvas.height);
-            // this.drawSelection({ x: event.offsetX, y: event.offsetY });
-            // }
+            this.saveSelectionData(toBeSelectedPixels);
+            // debugger;
+            this.drawSelection(this.selection.imagePosition);
+            // this.drawingService.previewCtx.fillRect(0,0,100,100);
         }
 
         // The entire canvas is being verified if the target color plus tolerance can be colored with the replacement color.
         if (event.button === MouseButton.Right) {
             this.mouseDown = false;
             const toBeSelectedPixels: ImageData = this.selectAllSimilar(event.offsetX, event.offsetY, this.replacementColor);
-            this.createSelectionRectangle(toBeSelectedPixels);
-
+            this.saveSelectionData(toBeSelectedPixels);
             return;
         }
     }
