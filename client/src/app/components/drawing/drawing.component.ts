@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { cursorName } from '@app/classes/cursor-name';
 import {
     RESIZE_CORNER_PROPORTION,
@@ -21,7 +21,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-export class DrawingComponent implements AfterViewInit {
+export class DrawingComponent implements AfterContentInit, AfterViewInit {
     constructor(
         private drawingService: DrawingService,
         public toolService: ToolService,
@@ -64,6 +64,10 @@ export class DrawingComponent implements AfterViewInit {
 
     private cursorCtx: CanvasRenderingContext2D;
 
+    ngAfterContentInit(): void {
+        if (this.automaticSaveService.check()) this.automaticSaveService.getUpload();
+    }
+
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -74,7 +78,6 @@ export class DrawingComponent implements AfterViewInit {
         this.cursorCtx = this.cursorCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.cursorCtx = this.cursorCtx;
         this.setCanvasBackgroundColor();
-        if (this.automaticSaveService.check()) this.automaticSaveService.getUpload();
         const event = { offsetX: this.cvsResizerService.DEFAULT_WIDTH, offsetY: this.cvsResizerService.DEFAULT_HEIGHT } as MouseEvent;
         this.undoRedoService.defaultCanvasAction = new ResizeCanvasAction(
             event,
