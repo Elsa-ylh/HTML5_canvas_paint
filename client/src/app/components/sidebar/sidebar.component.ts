@@ -61,6 +61,7 @@ export class SidebarComponent {
     private isSelectionRectangleChecked: boolean = false;
     private isPolygonChecked: boolean = false;
     private isPaintBucketChecked: boolean = false;
+    private isSprayChecked: boolean = false;
     private isFeatherChecked: boolean = false;
     private isTextChecked: boolean = false;
 
@@ -282,6 +283,15 @@ export class SidebarComponent {
         return this.isSelectionEllipseChecked;
     }
 
+    pickSprayer(): void {
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.Spray);
+    }
+
+    get sprayChecked(): boolean {
+        return this.isSprayChecked;
+    }
+
     pickText(): void {
         this.drawingService.cursorUsed = 'text';
         this.toolService.switchTool(ToolUsed.Text);
@@ -313,6 +323,7 @@ export class SidebarComponent {
         this.isDropperChecked = false;
         this.isSelectionEllipseChecked = false;
         this.isSelectionRectangleChecked = false;
+        this.isSprayChecked = false;
         this.isFeatherChecked = false;
         this.isTextChecked = false;
     }
@@ -584,6 +595,15 @@ export class SidebarComponent {
             this.selectionRectangleService.deleteImage();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
             this.selectionEllipseService.deleteImage();
+        }
+    }
+
+    @HostListener('window:keydown.a', ['$event'])
+    changeSprayMode(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isSprayChecked = true;
+            this.pickSprayer();
         }
     }
 
