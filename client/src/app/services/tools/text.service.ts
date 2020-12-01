@@ -299,7 +299,10 @@ export class TextService extends Tool {
         //         textPreview[indexLine] += element;
         //     }
         // }
-        console.log(textPreview, 'test preview');
+        console.log('indexLine.lenght', this.textControl.textLine.length);
+        console.log('indexLine', this.textControl.indexLine);
+        console.log('test preview', textPreview);
+
         this.position(this.drawingService.previewCtx, textPreview, this.textAlign);
     }
 

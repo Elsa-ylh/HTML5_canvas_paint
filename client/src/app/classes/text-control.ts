@@ -3,9 +3,9 @@ export class TextControl {
     private width: number = 0;
     private sizeFont: number = 0;
     private textPreview: string[] = [];
-    private textLine: string[] = [];
+    textLine: string[] = [];
     private textStack: string[] = [];
-    private indexLine: number = 0;
+    indexLine: number = 0;
     private indexLastLine: number = 0;
     private nbOfLettersInLine: number = 0;
     private ctx: CanvasRenderingContext2D;
@@ -86,11 +86,20 @@ export class TextControl {
         if (this.nbOfLettersInLine) {
             this.textLine.pop();
             this.nbOfLettersInLine--;
+            if (this.textLine.length === 0) {
+                if (this.indexLine !== 0) {
+                    this.indexLine--;
+                }
+                this.indexLastLine = this.textPreview.length;
+            }
         }
     }
 
     delete(): void {
-        console.log(this.textLine);
+        if (this.textLine.length) {
+            this.textStack.pop();
+            this.nbOfLettersInLine--;
+        }
     }
 
     enter(): void {
@@ -126,7 +135,7 @@ export class TextControl {
     }
 
     getTextWithCursor(): string[] {
-        let tmpText: string[] = [];
+        const tmpText: string[] = [];
         this.textPreview.forEach((element) => {
             tmpText.push(element);
         });
