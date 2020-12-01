@@ -37,6 +37,7 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
+import { SprayService } from '@app/services/tools/spray.service';
 import { StampService } from '@app/services/tools/stamp.service';
 import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -67,6 +68,7 @@ describe('SidebarComponent', () => {
     let selectionEllipseStub: SelectionEllipseService;
     let undoRedoStub: UndoRedoService;
     let selectionStub: SelectionService;
+    let sprayStub: SprayService;
     let textServiceStub: TextService;
     let automaticSaveStub: AutomaticSaveService;
     let stampServiceStub: StampService;
@@ -92,6 +94,7 @@ describe('SidebarComponent', () => {
             dropperServiceStub = new DropperService(drawingStub, colorStub, automaticSaveStub);
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, automaticSaveStub);
             selectionStub = new SelectionService(drawingStub);
+            sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
             stampServiceStub = new StampService(drawingStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
@@ -108,6 +111,7 @@ describe('SidebarComponent', () => {
                 paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
+                sprayStub,
                 featherStub,
                 textServiceStub,
                 stampServiceStub,
@@ -171,6 +175,7 @@ describe('SidebarComponent', () => {
                     { provide: SelectionService, useValue: selectionStub },
                     { provide: UndoRedoService, useValue: undoRedoStub },
                     { provide: StampService, useValue: stampServiceStub },
+                    { provide: SprayService, useValue: sprayStub },
                     { provide: FeatherService, useValue: featherStub },
                 ],
             }).compileComponents();
@@ -395,6 +400,13 @@ describe('SidebarComponent', () => {
         expect(switchToolSpy).toHaveBeenCalled();
         expect(resetCursor).toHaveBeenCalled();
     });
+
+    it('should pick sprayer', () => {
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.callThrough();
+        component.pickSprayer();
+        expect(drawingStub.cursorUsed).toEqual(cursorName.default);
+        expect(switchToolSpy).toHaveBeenCalled();
+    });
     it('should set all checked to false', () => {
         component.resetCheckedButton();
         expect(component.pencilChecked).toEqual(false);
@@ -412,6 +424,7 @@ describe('SidebarComponent', () => {
         expect(component.selectionRectangleChecked).toEqual(false);
         expect(component.textChecked).toEqual(false);
         expect(component.stampChecked).toEqual(false);
+        expect(component.sprayChecked).toEqual(false);
     });
 
     it('should set subtoolselected as tool 2', () => {
@@ -807,6 +820,15 @@ describe('SidebarComponent', () => {
         window.dispatchEvent(event);
         component.callRedo(event);
         expect(spyRedo).toHaveBeenCalled();
+    });
+
+    it('should change to spray mode if a is pressed', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new KeyboardEvent('window:keydown.a', {});
+        const spySprayer = spyOn(component, 'pickSprayer').and.stub();
+        window.dispatchEvent(event);
+        component.changeSprayMode(event);
+        expect(spySprayer).toHaveBeenCalled();
     });
 
     it('should call btnCallRedo', () => {

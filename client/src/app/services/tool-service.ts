@@ -12,8 +12,10 @@ import { PaintBucketService } from './tools/paint-bucket.service';
 import { PolygonService } from './tools/polygon.service';
 import { SelectionEllipseService } from './tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from './tools/selection-service/selection-rectangle.service';
+import { SprayService } from './tools/spray.service';
 import { StampService } from './tools/stamp.service';
 import { TextService } from './tools/text.service';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -34,6 +36,7 @@ export class ToolService {
         private paintBucketService: PaintBucketService,
         private selectionRectangleService: SelectionRectangleService,
         private selectionEllipseService: SelectionEllipseService,
+        private sprayService: SprayService,
         private featherService: FeatherService,
         private textService: TextService,
         private stampService: StampService,
@@ -50,6 +53,7 @@ export class ToolService {
         this.tableTool[ToolUsed.SelectionEllipse] = this.selectionEllipseService;
         this.tableTool[ToolUsed.Polygon] = this.polygonService;
         this.tableTool[ToolUsed.PaintBucket] = this.paintBucketService;
+        this.tableTool[ToolUsed.Spray] = this.sprayService;
         this.tableTool[ToolUsed.Feather] = this.featherService;
         this.tableTool[ToolUsed.Text] = this.textService;
         this.tableTool[ToolUsed.Stamp] = this.stampService;
