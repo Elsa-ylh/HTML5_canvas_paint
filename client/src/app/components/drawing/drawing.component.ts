@@ -70,7 +70,7 @@ export class DrawingComponent implements AfterViewInit {
         this.cursorCtx = this.cursorCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.cursorCtx = this.cursorCtx;
         this.setCanvasBackgroundColor();
-        if (this.automaticSaveService.check()) this.automaticSaveService.getUpload();
+
         const event = { offsetX: this.cvsResizerService.DEFAULT_WIDTH, offsetY: this.cvsResizerService.DEFAULT_HEIGHT } as MouseEvent;
         this.undoRedoService.defaultCanvasAction = new ResizeCanvasAction(
             event,
@@ -79,6 +79,7 @@ export class DrawingComponent implements AfterViewInit {
             ResizeDirection.verticalAndHorizontal,
             this.cvsResizerService,
         );
+        if (this.automaticSaveService.check()) this.automaticSaveService.getUpload();
     }
 
     setCanvasBackgroundColor(): void {

@@ -19,6 +19,7 @@ export class TextControl {
     clearText(): void {
         this.textPreview = [];
         this.textLine = [];
+        this.textStack = [];
     }
     setCtx(ctx: CanvasRenderingContext2D): void {
         this.ctx = ctx;
@@ -58,6 +59,17 @@ export class TextControl {
                 this.nbOfLettersInLine--;
             }
         }
+        if (!this.nbOfLettersInLine && this.indexLine >= 1) {
+            this.getText();
+            this.textLine = [];
+            this.textStack = [];
+            this.indexLine--;
+            const line: string = this.textPreview[this.indexLine];
+            this.nbOfLettersInLine = line.length - 1;
+            for (let index = 0; index <= this.nbOfLettersInLine; index++) {
+                this.textLine.push(line[index]);
+            }
+        }
     }
 
     arrowRight(): void {
@@ -82,7 +94,7 @@ export class TextControl {
     }
 
     enter(): void {
-        this.textPreview.push(this.tmpLineText(this.textLine, '\n'));
+        this.textPreview.push(this.tmpLineText(this.textLine, ''));
         this.nbOfLettersInLine = 0;
         this.textLine = [];
         this.indexLine++;
@@ -107,14 +119,19 @@ export class TextControl {
             }
         return text;
     }
+
     getText(): string[] {
         this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + this.tmpLineTextStack();
         return this.textPreview;
     }
 
     getTextWithCursor(): string[] {
-        this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + '|' + this.tmpLineTextStack();
-        return this.textPreview;
+        let tmpText: string[] = [];
+        this.textPreview.forEach((element) => {
+            tmpText.push(element);
+        });
+        tmpText[this.indexLine] = this.tmpLineText(this.textLine, '') + '|' + this.tmpLineTextStack();
+        return tmpText;
     }
     // creer une fonction donnant le nombre de lettre dans une ligne
 
