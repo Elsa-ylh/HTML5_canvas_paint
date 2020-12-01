@@ -127,6 +127,7 @@ export class StampService extends Tool {
     }
 
     changeAngleWithScroll(): void {
+        // change angle
         if (this.isWheelUp) {
             if (!this.isAltPressed) {
                 this.angle += FIFTEEN;
