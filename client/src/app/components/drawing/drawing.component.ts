@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { cursorName } from '@app/classes/cursor-name';
 import {
     RESIZE_CORNER_PROPORTION,
@@ -21,7 +21,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-export class DrawingComponent implements AfterViewInit {
+export class DrawingComponent implements AfterContentInit, AfterViewInit {
     constructor(
         private drawingService: DrawingService,
         public toolService: ToolService,
@@ -52,14 +52,18 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizingPreview', { static: false }) canvasResizingPreview: ElementRef<HTMLCanvasElement>;
-    @ViewChild('dropperLayer', { static: false }) dropperLayer: ElementRef<HTMLCanvasElement>;
     @ViewChild('gridLayer', { static: false }) gridLayer: ElementRef<HTMLCanvasElement>;
+    @ViewChild('cursorCanvas', { static: false }) cursorCanvas: ElementRef<HTMLCanvasElement>;
 
     baseCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
     private resizeCtx: CanvasRenderingContext2D;
 
-    private dropperCtx: CanvasRenderingContext2D;
+    private cursorCtx: CanvasRenderingContext2D;
+
+    ngAfterContentInit(): void {
+        if (this.automaticSaveService.check()) this.automaticSaveService.getUpload();
+    }
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -68,12 +72,11 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
-        this.dropperCtx = this.dropperLayer.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.drawingService.dropperCtx = this.dropperCtx;
         this.drawingService.gridCanvas = this.gridLayer.nativeElement;
         this.drawingService.gridCtx = this.gridLayer.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.cursorCtx = this.cursorCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.drawingService.cursorCtx = this.cursorCtx;
         this.setCanvasBackgroundColor();
-        if (this.automaticSaveService.check()) this.automaticSaveService.getUpload();
         const event = { offsetX: this.cvsResizerService.DEFAULT_WIDTH, offsetY: this.cvsResizerService.DEFAULT_HEIGHT } as MouseEvent;
         this.undoRedoService.defaultCanvasAction = new ResizeCanvasAction(
             event,

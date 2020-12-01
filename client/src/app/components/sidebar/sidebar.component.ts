@@ -18,6 +18,7 @@ import { ToolService } from '@app/services/tool-service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { FeatherService } from '@app/services/tools/feather.service';
 import { GridService } from '@app/services/tools/grid.service';
 import { LineService } from '@app/services/tools/line.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
@@ -62,6 +63,7 @@ export class SidebarComponent {
     private isSelectionRectangleChecked: boolean = false;
     private isPolygonChecked: boolean = false;
     private isPaintBucketChecked: boolean = false;
+    private isFeatherChecked: boolean = false;
     private isTextChecked: boolean = false;
 
     constructor(
@@ -84,12 +86,14 @@ export class SidebarComponent {
         public selectionEllipseService: SelectionEllipseService,
         public gridService: GridService,
         public magnetismService: MagnetismService,
+        public featherService: FeatherService,
         private automaticSaveService: AutomaticSaveService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
         this.iconRegistry.addSvgIcon('polygon', this.sanitizer.bypassSecurityTrustResourceUrl('assets/polygon.svg'));
         this.iconRegistry.addSvgIcon('paint-bucket', this.sanitizer.bypassSecurityTrustResourceUrl('assets/paint-bucket.svg'));
+        this.iconRegistry.addSvgIcon('feather', this.sanitizer.bypassSecurityTrustResourceUrl('assets/feather.svg'));
     }
 
     clearCanvas(): void {
@@ -116,8 +120,6 @@ export class SidebarComponent {
 
     createNewDrawing(): void {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
-        this.undoRedoService.clearRedo();
-        this.undoRedoService.clearUndo();
         this.automaticSaveService.save();
     }
 
@@ -301,6 +303,14 @@ export class SidebarComponent {
         this.toolService.switchTool(ToolUsed.Grid);
         this.isDialogloadSaveEport = true;
     }
+    pickFeather(): void {
+        this.drawingService.cursorUsed = cursorName.none;
+        this.toolService.switchTool(ToolUsed.Feather);
+    }
+
+    get selectionFeatherChecked(): boolean {
+        return this.isFeatherChecked;
+    }
 
     resetCheckedButton(): void {
         this.isPencilChecked = false;
@@ -314,6 +324,7 @@ export class SidebarComponent {
         this.isDropperChecked = false;
         this.isSelectionEllipseChecked = false;
         this.isSelectionRectangleChecked = false;
+        this.isFeatherChecked = false;
         this.isTextChecked = false;
     }
 
@@ -565,7 +576,6 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.control.c', ['$event']) copySelection(event: KeyboardEvent): void {
         event.preventDefault();
-        console.log('copy event');
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
             this.selectionRectangleService.copyImage();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
@@ -606,6 +616,29 @@ export class SidebarComponent {
             this.magnetismService.resetMagnetism();
         } else {
             this.magnetismService.isMagnetismActive = true;
+        }
+    }
+    @HostListener('window:keydown.p', ['$event'])
+    changeFeatherMode(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
+            this.resetCheckedButton();
+            this.isFeatherChecked = true;
+            this.pickFeather();
+        }
+    }
+
+    @HostListener('window:wheel', ['$event'])
+    changeAngleWithWheel(event: WheelEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Feather) {
+            this.featherService.addOrRetract(event);
+            this.featherService.changeAngleWithScroll();
+        }
+    }
+
+    @HostListener('window:keydown.alt', ['$event'])
+    altPressed(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Feather) {
+            this.featherService.altPressed = true;
         }
     }
 }
