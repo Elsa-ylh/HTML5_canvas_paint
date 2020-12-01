@@ -833,10 +833,10 @@ describe('SidebarComponent', () => {
     it('should call changeFeatherAngle when scrolling using the mouse wheel', () => {
         toolServiceStub.currentToolName = ToolUsed.Feather;
         const event = new WheelEvent('window:wheel', {});
-        const changeFeatherAngleSpy = spyOn(component, 'changeFeatherAngle').and.callThrough();
+        const changeFeatherAngleSpy = spyOn(component, 'changeAngleWithWheel').and.callThrough();
         const changeAngleWithScrollSpy = spyOn(featherStub, 'changeAngleWithScroll').and.callThrough();
         window.dispatchEvent(event);
-        component.changeFeatherAngle(event);
+        component.changeAngleWithWheel(event);
         expect(changeFeatherAngleSpy).toHaveBeenCalled();
         expect(changeAngleWithScrollSpy).toHaveBeenCalled();
     });
@@ -846,7 +846,7 @@ describe('SidebarComponent', () => {
         const event = new WheelEvent('window:wheel', {});
         const addOrRetractSpy = spyOn(featherStub, 'addOrRetract').and.callThrough();
         window.dispatchEvent(event);
-        component.changeFeatherAngle(event);
+        component.changeAngleWithWheel(event);
         expect(addOrRetractSpy).toHaveBeenCalled();
     });
 

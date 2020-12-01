@@ -116,8 +116,6 @@ export class SidebarComponent {
 
     createNewDrawing(): void {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
-        this.undoRedoService.clearRedo();
-        this.undoRedoService.clearUndo();
         this.automaticSaveService.save();
     }
 
@@ -599,7 +597,7 @@ export class SidebarComponent {
     }
 
     @HostListener('window:wheel', ['$event'])
-    changeFeatherAngle(event: WheelEvent): void {
+    changeAngleWithWheel(event: WheelEvent): void {
         if (this.toolService.currentToolName === ToolUsed.Feather) {
             this.featherService.addOrRetract(event);
             this.featherService.changeAngleWithScroll();
