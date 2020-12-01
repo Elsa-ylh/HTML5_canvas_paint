@@ -12,6 +12,7 @@ export enum ToolUsed {
     Ellipse = 6,
     Polygon = 7,
     PaintBucket = 8,
+    Feather = 9,
     Text = 50,
     Color = 1000,
     Dropper = 1003,

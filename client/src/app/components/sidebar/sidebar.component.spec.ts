@@ -28,6 +28,7 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { DropperService } from '@app/services/tools/dropper.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { FeatherService } from '@app/services/tools/feather.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
@@ -67,6 +68,7 @@ describe('SidebarComponent', () => {
     let selectionStub: SelectionService;
     let textServiceStub: TextService;
     let automaticSaveStub: AutomaticSaveService;
+    let featherStub: FeatherService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -88,6 +90,7 @@ describe('SidebarComponent', () => {
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, automaticSaveStub);
             selectionStub = new SelectionService(drawingStub);
             textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
+            featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -100,6 +103,7 @@ describe('SidebarComponent', () => {
                 paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
+                featherStub,
                 textServiceStub,
             );
 
@@ -158,6 +162,7 @@ describe('SidebarComponent', () => {
                     { provide: Observable, useValue: {} },
                     { provide: SelectionService, useValue: selectionStub },
                     { provide: UndoRedoService, useValue: undoRedoStub },
+                    { provide: FeatherService, useValue: featherStub },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);
@@ -797,5 +802,68 @@ describe('SidebarComponent', () => {
         const spyUndo = spyOn(undoRedoStub, 'undo').and.stub();
         component.btnCallUndo();
         expect(spyUndo).toHaveBeenCalled();
+    });
+
+    it('should pick text', () => {
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
+        component.pickText();
+        expect(drawingStub.cursorUsed).toEqual('text');
+        expect(switchToolSpy).toHaveBeenCalled();
+        expect(component.isDialogloadSaveEport).toEqual(false);
+    });
+
+    it('should pick feather', () => {
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
+        component.pickFeather();
+        expect(drawingStub.cursorUsed).toEqual(cursorName.none);
+        expect(switchToolSpy).toHaveBeenCalled();
+    });
+
+    it('should call resetChecked button, set isFeatherChecked to true and call pickFeather when pressing p', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new KeyboardEvent('window:keydown.p', {});
+        const resetCheckedButtonSpy = spyOn(component, 'resetCheckedButton').and.callThrough();
+        const spyPickFeather = spyOn(component, 'pickFeather').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeFeatherMode(event);
+        expect(resetCheckedButtonSpy).toHaveBeenCalled();
+        expect(spyPickFeather).toHaveBeenCalled();
+    });
+
+    it('should call changeFeatherAngle when scrolling using the mouse wheel', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new WheelEvent('window:wheel', {});
+        const changeFeatherAngleSpy = spyOn(component, 'changeAngleWithWheel').and.callThrough();
+        const changeAngleWithScrollSpy = spyOn(featherStub, 'changeAngleWithScroll').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeAngleWithWheel(event);
+        expect(changeFeatherAngleSpy).toHaveBeenCalled();
+        expect(changeAngleWithScrollSpy).toHaveBeenCalled();
+    });
+
+    it('should call addOrRetract when scrolling using the mouse wheel and changeFeatherAngle is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new WheelEvent('window:wheel', {});
+        const addOrRetractSpy = spyOn(featherStub, 'addOrRetract').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeAngleWithWheel(event);
+        expect(addOrRetractSpy).toHaveBeenCalled();
+    });
+
+    it('should change altPressed value to true when alt is pressed ', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new KeyboardEvent('window:keydown.alt', {});
+        const altPressedSpy = spyOn(component, 'altPressed').and.stub();
+        window.dispatchEvent(event);
+        component.altPressed(event);
+        expect(altPressedSpy).toHaveBeenCalled();
+    });
+
+    it('should change featherStub altpressed to true', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new KeyboardEvent('window:keydown.alt', {});
+        window.dispatchEvent(event);
+        component.altPressed(event);
+        expect(featherStub.altPressed).toEqual(true);
     });
 });

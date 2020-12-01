@@ -64,17 +64,23 @@
                     >
                         <mat-icon>crop_free</mat-icon>
                     </mat-button-toggle>
+                    <<<<<<< HEAD
                     <mat-button-toggle
                         (click)="pickMagicWandSelection()"
                         [checked]="MagicWandSelectionChecked"
                         matTooltip="Sélection par baguette magique"
                         matTooltipPosition="right"
                     >
-                    <mat-icon>accessible_forward</mat-icon>
+                        <mat-icon>accessible_forward</mat-icon>
                     </mat-button-toggle>
                     <mat-button-toggle (click)="pickGridSettings()" matTooltip="Paramètres pour la grille" matTooltipPosition="right"
                         ><mat-icon>tune</mat-icon></mat-button-toggle
                     >
+                    =======
+                    <mat-button-toggle (click)="pickFeather()" [checked]="selectionFeatherChecked" matTooltip="Outil plume" matTooltipPosition="right"
+                        ><mat-icon svgIcon="feather"></mat-icon>
+                    </mat-button-toggle>
+                    >>>>>>> dev
                 </mat-button-toggle-group>
             </mat-list>
 
@@ -259,20 +265,19 @@
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6"
                     ><samp>épaisseur du contour: {{ polygonService.lineWidth }}px</samp></mat-grid-tile
-                ></mat-grid-list>
-
+                ></mat-grid-list
+            >
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.MagicWandSelection">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
-                    <mat-grid-tile colspan="6" rowspan="4">
-                        <mat-button-toggle-group vertical="true">
-                            <mat-button-toggle class="sub-button" mat-button color="primary" [checked]="true" (click)="pickMagicWandSelection()">
-                                MagicWand
-                            </mat-button-toggle>
-                        </mat-button-toggle-group>
-                    </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">
+                    <mat-button-toggle-group vertical="true">
+                        <mat-button-toggle class="sub-button" mat-button color="primary" [checked]="true" (click)="pickMagicWandSelection()">
+                            MagicWand
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+                </mat-grid-tile>
             </mat-grid-list>
-
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.SelectionRectangle">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
@@ -359,6 +364,24 @@
                     ></mat-slider>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6" aria-rowspan="8"> Taille en pixels d'un côté : {{ gridService.squareWidth }} px </mat-grid-tile>
+                <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Feather">
+                    <mat-grid-tile> </mat-grid-tile>
+                    <mat-grid-tile colspan="6"> Changer la longueur du trait </mat-grid-tile>
+                    <mat-grid-tile colspan="6">
+                        <mat-slider max="50" min="1" [(ngModel)]="featherService.featherLength"> </mat-slider
+                        ><samp>{{ featherService.featherLength }}px</samp>
+                    </mat-grid-tile>
+
+                    <mat-grid-tile> </mat-grid-tile>
+                    <mat-grid-tile colspan="6"> Changer l'angle du trait </mat-grid-tile>
+                    <mat-grid-tile colspan="6">
+                        <mat-slider max="360" min="0" [(ngModel)]="featherService.featherAngle"> </mat-slider>
+                        <samp>{{ featherService.featherAngle }}degré</samp>
+                    </mat-grid-tile>
+                    <mat-grid-tile colspan="6" rowspan="2">
+                        Il est possible de changer l'angle de la ligne avec : la roulette (15 degrés) ou avec alt et la roulette (1 degré)
+                    </mat-grid-tile>
+                </mat-grid-list>
             </mat-grid-list>
         </div>
     </div>
