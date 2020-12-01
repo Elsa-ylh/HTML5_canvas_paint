@@ -52,9 +52,9 @@ export class MagnetismService {
                     x: ajustedPosition.x - selectionSize.x,
                     y: ajustedPosition.y - selectionSize.y / 2,
                 };
-            case ControlPointName.bottomRight:
+            case ControlPointName.bottomLeft:
                 return {
-                    x: ajustedPosition.x,
+                    x: ajustedPosition.x - selectionSize.x,
                     y: ajustedPosition.y - selectionSize.y,
                 };
             case ControlPointName.bottom:
@@ -62,9 +62,9 @@ export class MagnetismService {
                     x: ajustedPosition.x - selectionSize.x / 2,
                     y: ajustedPosition.y - selectionSize.y,
                 };
-            case ControlPointName.bottomLeft:
+            case ControlPointName.bottomRight:
                 return {
-                    x: ajustedPosition.x - selectionSize.x,
+                    x: ajustedPosition.x,
                     y: ajustedPosition.y - selectionSize.y,
                 };
             case ControlPointName.none:
