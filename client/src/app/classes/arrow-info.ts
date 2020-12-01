@@ -48,6 +48,7 @@ export class ArrowInfo {
                 );
 
                 this.arrowPressed = true;
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.selectionService.drawSelection(this.selectionService.selection.imagePosition);
             } else {
                 if (!this.arrowPressed) {
