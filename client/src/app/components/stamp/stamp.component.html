@@ -1,7 +1,17 @@
+<mat-slider min="0" max="360" value="1" step="1" [(ngModel)]="this.stampService.angle"> </mat-slider>
 <div>Angle de l'etampe : {{ this.stampService.angle }}</div>
+<br />
 
+<div class="row">
+    <button mat-raised-button class="add" style="text-align: left" (click)="this.stampService.increaseSize()">augmenter</button>
+    &nbsp; &nbsp; &nbsp;
+    <button mat-raised-button class="substract" (click)="this.stampService.decreaseSize()">diminuer</button>
+</div>
+<br />
+<br />
 <div>largeur de l'etampe : {{ this.drawingService.cursorCtx.canvas.width }}</div>
 <div>taille de l'etampe : {{ this.drawingService.cursorCtx.canvas.height }}</div>
+<br />
+<br />
 
-<button mat-button (click)="this.stampService.increaseSize()">augmenter</button>
-<button mat-button (click)="this.stampService.decreaseSize()">diminuer</button>
+<canvas #stamp1 style="width: 90px; height: 90px"></canvas>

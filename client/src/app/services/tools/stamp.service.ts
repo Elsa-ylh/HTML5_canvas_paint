@@ -105,7 +105,8 @@ export class StampService extends Tool {
         this.mouseCenterY = event.offsetY - this.canvasHeight; // updates the current mouse position in y
 
         this.currentStamp2.onload = () => {
-            this.drawingService.baseCtx.drawImage(this.currentStamp2, this.mouseCenterX, this.mouseCenterY, this.newWidth, this.newHeight);
+            // this.drawingService.baseCtx.drawImage(this.currentStamp2, this.mouseCenterX, this.mouseCenterY, this.newWidth, this.newHeight);
+            this.drawingService.baseCtx.drawImage(this.currentStamp2, this.mouseCenterX, this.mouseCenterY);
         };
     }
 
