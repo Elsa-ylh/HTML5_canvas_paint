@@ -279,6 +279,17 @@
                 <mat-grid-tile colspan="6">
                     <button mat-raised-button (click)="selectionRectangleService.selectAll()">Selectionner tout le dessin</button>
                 </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <button mat-raised-button (click)="rotationService.rotate()">Rotation de la selection</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6"> Changer l'angle de rotation </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider max="360" min="0" [(ngModel)]="rotationService.rotationAngle"> </mat-slider>
+                    <samp>{{ rotationService.rotationAngle }}degré</samp>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2">
+                    Il est possible de changer l'angle de la ligne avec : la roulette (15 degrés) ou avec alt et la roulette (1 degré)
+                </mat-grid-tile>
             </mat-grid-list>
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.SelectionEllipse">
@@ -301,6 +312,17 @@
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6">
                     <button mat-raised-button (click)="selectionEllipseService.selectAll()">Selectionner tout le dessin</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <button mat-raised-button (click)="rotationService.rotate()">Rotation de la selection</button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6"> Changer l'angle de rotation </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider max="360" min="0" [(ngModel)]="rotationService.rotationAngle"> </mat-slider>
+                    <samp>{{ rotationService.rotationAngle }}degré</samp>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2">
+                    Il est possible de changer l'angle de la ligne avec : la roulette (15 degrés) ou avec alt et la roulette (1 degré)
                 </mat-grid-tile>
             </mat-grid-list>
 
