@@ -7,6 +7,7 @@ export class TextControl {
     private textStack: string[] = [];
     private indexLine: number = 0;
     private indexLastLine: number = 0;
+    private indexOfLettersInLine: number = 0;
     private nbOfLettersInLine: number = 0;
     private ctx: CanvasRenderingContext2D;
     constructor(ctx: CanvasRenderingContext2D, sizeFont: number, height?: number, width?: number /*text?: string*/) {
@@ -37,37 +38,45 @@ export class TextControl {
         this.ctx.font = font;
     }
     addLetter(letter: string): void {
-        if (this.nbOfLettersInLine && this.indexLine && this.indexLastLine) {
+        if (this.indexOfLettersInLine && this.indexLine && this.indexLastLine) {
             console.log(this.textLine);
         }
         this.textLine.push(letter);
-        this.nbOfLettersInLine++;
+        this.indexOfLettersInLine++;
     }
     // this.checkWidthText(this.ctx,this.tmpLineText(this.textLine,letter))
     arrowTop(): void {
+        if (!this.nbOfLettersInLine) {
+        }
+        if (this.nbOfLettersInLine) {
+        }
         console.log(this.textLine);
     }
     arrowBottom(): void {
+        if (!this.nbOfLettersInLine) {
+        }
+        if (this.nbOfLettersInLine) {
+        }
         console.log(this.textLine);
     }
 
     arrowLeft(): void {
-        if (this.textLine.length > 0 && this.nbOfLettersInLine) {
+        this.indexOfLettersInLine--;
+        if (this.textLine.length >= 0) {
             const letter: string | undefined = this.textLine.pop();
             if (letter !== undefined) {
                 this.textStack.push(letter);
-                this.nbOfLettersInLine--;
             }
         }
-        if (!this.nbOfLettersInLine && this.indexLine >= 1) {
+        if (this.indexOfLettersInLine < 0 && this.indexLine >= 1) {
             this.getText();
             this.textLine = [];
             this.textStack = [];
             this.indexLine--;
-            const line: string = this.textPreview[this.indexLine];
-            this.nbOfLettersInLine = line.length - 1;
-            for (let index = 0; index <= this.nbOfLettersInLine; index++) {
-                this.textLine.push(line[index]);
+            const lineText: string = this.textPreview[this.indexLine];
+            this.indexOfLettersInLine = lineText.length;
+            for (let index = 0; index <= this.indexOfLettersInLine - 1; index++) {
+                this.textLine.push(lineText[index]);
             }
         }
     }
@@ -77,25 +86,46 @@ export class TextControl {
             const letter: string | undefined = this.textStack.pop();
             if (letter !== undefined) {
                 this.textLine.push(letter);
-                this.nbOfLettersInLine++;
+                this.indexOfLettersInLine++;
             }
         }
+        if (this.textStack.length === 0 && this.indexLine < this.indexLastLine) {
+            this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '');
+            this.textLine = [];
+            this.textStack = [];
+            this.indexOfLettersInLine = 0;
+            const lineText = this.textPreview[this.indexLine];
+            for (let index = lineText.length - 1; index >= 0; index--) {
+                this.textStack.push(lineText[index]);
+            }
+            this.indexLine++;
+        }
+        console.log(this.indexOfLettersInLine);
     }
 
     backspace(): void {
-        if (this.nbOfLettersInLine) {
+        if (this.indexOfLettersInLine) {
             this.textLine.pop();
-            this.nbOfLettersInLine--;
+            this.indexOfLettersInLine--;
+        }
+        if (!this.indexOfLettersInLine && this.indexLine >= 1) {
         }
     }
 
     delete(): void {
-        console.log(this.textLine);
+        if (this.textStack.length) {
+            this.textStack.pop();
+        }
+        if (!this.textStack.length) {
+        }
     }
 
     enter(): void {
-        this.textPreview.push(this.tmpLineText(this.textLine, ''));
-        this.nbOfLettersInLine = 0;
+        this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '');
+        for (let index = this.textPreview.length - 1; index > this.indexLine; index--) {
+            this.textPreview[index + 1] = this.textPreview[index];
+        }
+        this.indexOfLettersInLine = 0;
         this.textLine = [];
         this.indexLine++;
         this.indexLastLine = this.textPreview.length;
@@ -121,19 +151,62 @@ export class TextControl {
     }
 
     getText(): string[] {
+        let tmpText: string[] = [];
         this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + this.tmpLineTextStack();
-        return this.textPreview;
+        for (let index = 0; index < this.textPreview.length; index++) {
+            let element = this.textPreview[index];
+            if (this.nbLetterInLine(this.ctx, element)) {
+                tmpText = this.divisePourUneLine(tmpText, element, this.nbOfLettersInLine);
+            } else {
+                tmpText.push(element);
+            }
+        }
+        return tmpText;
     }
 
     getTextWithCursor(): string[] {
         let tmpText: string[] = [];
-        this.textPreview.forEach((element) => {
-            tmpText.push(element);
-        });
-        tmpText[this.indexLine] = this.tmpLineText(this.textLine, '') + '|' + this.tmpLineTextStack();
+        this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + '|' + this.tmpLineTextStack();
+        for (let index = 0; index < this.textPreview.length; index++) {
+            let element = this.textPreview[index];
+            if (this.nbLetterInLine(this.ctx, element)) {
+                tmpText = this.divisePourUneLine(tmpText, element, this.nbOfLettersInLine);
+            } else {
+                tmpText.push(element);
+            }
+        }
         return tmpText;
     }
+    private divisePourUneLine(text: string[], line: string, nbOfLettersInLine: number): string[] {
+        let oneLine: string = '';
+        for (let index = 0; index < line.length; index++) {
+            const element = line[index];
+            if (oneLine.length + 1 >= nbOfLettersInLine) {
+                oneLine += element;
+                text.push(oneLine);
+                oneLine = '';
+            } else {
+                oneLine += element;
+            }
+        }
+        text.push(oneLine);
+        return text;
+    }
+
     // creer une fonction donnant le nombre de lettre dans une ligne
+    private nbLetterInLine(ctx: CanvasRenderingContext2D, text: string): boolean {
+        let check: boolean = false;
+        let mtp: string = '';
+        for (let index = 0; index < text.length; index++) {
+            mtp += text[index];
+            if (!this.checkWidthText(ctx, mtp) && !check) {
+                check = true;
+                this.nbOfLettersInLine = index;
+                return check;
+            }
+        }
+        return false;
+    }
 
     checkWidthText(ctx: CanvasRenderingContext2D, text: string): boolean {
         return Math.abs(ctx.measureText(text).width) <= Math.abs(this.width);
