@@ -3,9 +3,9 @@ export class TextControl {
     private width: number = 0;
     private sizeFont: number = 0;
     private textPreview: string[] = [];
-    private textLine: string[] = [];
+    textLine: string[] = [];
     private textStack: string[] = [];
-    private indexLine: number = 0;
+    indexLine: number = 0;
     private indexLastLine: number = 0;
     private indexOfLettersInLine: number = 0;
     private nbOfLettersInLine: number = 0;
