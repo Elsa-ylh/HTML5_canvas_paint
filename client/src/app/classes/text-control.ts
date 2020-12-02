@@ -3,9 +3,9 @@ export class TextControl {
     private width: number = 0;
     private sizeFont: number = 0;
     private textPreview: string[] = [];
-    textLine: string[] = [];
+    private textLine: string[] = [];
     private textStack: string[] = [];
-    indexLine: number = 0;
+    private indexLine: number = 0;
     private indexLastLine: number = 0;
     private indexOfLettersInLine: number = 0;
     private nbOfLettersInLine: number = 0;
@@ -18,6 +18,13 @@ export class TextControl {
     }
 
     clearText(): void {
+        this.height = 0;
+        this.width = 0;
+        this.sizeFont = 0;
+        this.indexLine = 0;
+        this.indexLastLine = 0;
+        this.indexOfLettersInLine = 0;
+        this.nbOfLettersInLine = 0;
         this.textPreview = [];
         this.textLine = [];
         this.textStack = [];
@@ -79,36 +86,52 @@ export class TextControl {
                 this.textLine.push(lineText[index]);
             }
         }
+        console.log(this.indexOfLettersInLine);
     }
 
     arrowRight(): void {
-        if (this.textStack.length > 0) {
+        let checkArrowRigh: boolean = true;
+        if (this.textStack.length >= 0) {
             const letter: string | undefined = this.textStack.pop();
             if (letter !== undefined) {
                 this.textLine.push(letter);
                 this.indexOfLettersInLine++;
+                checkArrowRigh = false;
             }
         }
-        if (this.textStack.length === 0 && this.indexLine < this.indexLastLine) {
+        if (checkArrowRigh && this.textStack.length === 0 && this.indexLine < this.indexLastLine) {
             this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '');
             this.textLine = [];
             this.textStack = [];
             this.indexOfLettersInLine = 0;
+            this.indexLine++;
             const lineText = this.textPreview[this.indexLine];
             for (let index = lineText.length - 1; index >= 0; index--) {
                 this.textStack.push(lineText[index]);
             }
-            this.indexLine++;
         }
         console.log(this.indexOfLettersInLine);
     }
 
     backspace(): void {
-        if (this.indexOfLettersInLine) {
+        this.indexOfLettersInLine--;
+        if (this.indexOfLettersInLine >= 0) {
             this.textLine.pop();
-            this.indexOfLettersInLine--;
         }
-        if (!this.indexOfLettersInLine && this.indexLine >= 1) {
+        if (this.indexOfLettersInLine < 0 && this.indexLine >= 1) {
+            this.textPreview[this.indexLine] = '';
+            for (let index = this.indexLine; index < this.indexLastLine; index++) {
+                this.textPreview[index] = this.textPreview[index + 1];
+            }
+            this.indexLastLine--;
+            this.textPreview.pop();
+            this.indexLine--;
+            this.textLine = [];
+            const textLine = this.textPreview[this.indexLine];
+            for (let index = 0; index < textLine.length; index++) {
+                this.textLine[index] = textLine[index];
+            }
+            this.indexOfLettersInLine = this.textLine.length;
         }
     }
 
@@ -116,7 +139,16 @@ export class TextControl {
         if (this.textStack.length) {
             this.textStack.pop();
         }
-        if (!this.textStack.length) {
+        if (!this.textStack.length && this.indexLine < this.indexLastLine) {
+            const textLine = this.textPreview[this.indexLine + 1];
+            for (let index = this.indexLine + 1; index < this.indexLastLine; index++) {
+                this.textPreview[index] = this.textPreview[index + 1];
+            }
+            this.textPreview.pop();
+            this.indexLastLine--;
+            for (let index = 0; index < textLine.length; index++) {
+                this.textStack.push(textLine[index]);
+            }
         }
     }
 
@@ -175,6 +207,7 @@ export class TextControl {
                 tmpText.push(element);
             }
         }
+        console.log(this.textPreview);
         return tmpText;
     }
     private divisePourUneLine(text: string[], line: string, nbOfLettersInLine: number): string[] {
