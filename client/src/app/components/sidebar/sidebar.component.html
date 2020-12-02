@@ -56,6 +56,7 @@
                     <mat-button-toggle (click)="pickDropper()" [checked]="dropperChecked" matTooltip="Outil pipette" matTooltipPosition="right">
                         <mat-icon>colorize</mat-icon>
                     </mat-button-toggle>
+
                     <mat-button-toggle
                         (click)="pickSelectionRectangle()"
                         [checked]="selectionRectangleChecked"
@@ -67,6 +68,10 @@
                     <mat-button-toggle (click)="pickGridSettings()" matTooltip="Paramètres pour la grille" matTooltipPosition="right"
                         ><mat-icon>tune</mat-icon></mat-button-toggle
                     >
+
+                    <mat-button-toggle (click)="pickSprayer()" [checked]="sprayChecked" matTooltip="Sélection l'aerosol" matTooltipPosition="right">
+                        <mat-icon>blur_on</mat-icon>
+                    </mat-button-toggle>
                     <mat-button-toggle (click)="pickFeather()" [checked]="selectionFeatherChecked" matTooltip="Outil plume" matTooltipPosition="right"
                         ><mat-icon svgIcon="feather"></mat-icon>
                     </mat-button-toggle>
@@ -342,6 +347,9 @@
                     ></mat-slider>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6" aria-rowspan="8"> Taille en pixels d'un côté : {{ gridService.squareWidth }} px </mat-grid-tile>
+            </mat-grid-list>
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Spray">
+                <app-spray></app-spray>
             </mat-grid-list>
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Feather">
