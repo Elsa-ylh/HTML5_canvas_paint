@@ -47,21 +47,6 @@ export class SprayService extends Tool {
         this.mouseDown = false;
 
         this.currentColor = this.colorService.primaryColor;
-        // undo - redo
-        const sprayAction = new SprayAction(
-            this.density,
-            this.currentColor,
-            this.zoneDiameter,
-            this.dropDiameter,
-            this.angle,
-            this.radius,
-            this.position,
-            this.drawingService,
-            this,
-        );
-        this.undoRedoService.addUndo(sprayAction);
-        this.undoRedoService.clearRedo();
-        this.automaticSaveService.save();
     }
 
     transform(toolInfo: ToolInfoSpray, isTransformUndo: boolean): void {
@@ -74,8 +59,26 @@ export class SprayService extends Tool {
 
         for (let i = this.density; i--; ) {
             if (!isTransformUndo) {
-                this.angle.push(this.generateRandomValue(this.minAngle, this.maxAngle));
-                this.radius.push(this.generateRandomValue(this.minLength, this.zoneDiameter / 2)); // the max interval is the diameter of the zone
+                this.angle[i] = this.generateRandomValue(this.minAngle, this.maxAngle);
+                this.radius[i] = this.generateRandomValue(this.minLength, this.zoneDiameter / 2); // the max interval is the diameter of the zone
+                toolInfo.angle[i] = this.angle[i];
+                toolInfo.radius[i] = this.radius[i];
+                if (i === 0) {
+                    const sprayAction = new SprayAction(
+                        toolInfo.density,
+                        toolInfo.color,
+                        toolInfo.zoneDiameter,
+                        toolInfo.dropDiameter,
+                        toolInfo.angle,
+                        toolInfo.radius,
+                        toolInfo.position,
+                        this.drawingService,
+                        this,
+                    );
+                    this.undoRedoService.addUndo(sprayAction);
+                    this.undoRedoService.clearRedo();
+                    this.automaticSaveService.save();
+                }
             } else {
                 this.angle[i] = toolInfo.angle[i];
                 this.radius[i] = toolInfo.radius[i];
@@ -105,8 +108,8 @@ export class SprayService extends Tool {
                 color: this.currentColor,
                 zoneDiameter: this.zoneDiameter,
                 dropDiameter: this.dropDiameter,
-                angle: this.angle,
-                radius: this.radius,
+                angle: [],
+                radius: [],
                 position: this.position,
             },
             false,
@@ -118,8 +121,8 @@ export class SprayService extends Tool {
                     color: this.currentColor,
                     zoneDiameter: this.zoneDiameter,
                     dropDiameter: this.dropDiameter,
-                    angle: this.angle,
-                    radius: this.radius,
+                    angle: [],
+                    radius: [],
                     position: this.position,
                 },
                 false,
