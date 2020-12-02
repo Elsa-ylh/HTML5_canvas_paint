@@ -19,7 +19,7 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { FeatherService } from '@app/services/tools/feather.service';
-import { GridService } from '@app/services/tools/grid.service';
+import { GridService, MAX_SQUARE_WIDTH, SQUARE_STEP_SIZE } from '@app/services/tools/grid.service';
 import { LineService } from '@app/services/tools/line.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
@@ -610,7 +610,31 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.m', ['$event']) activateMagnetism(event: MouseEvent): void {
+    @HostListener('window:keydown.g', ['$event']) activateGrid(event: KeyboardEvent): void {
+        if (this.gridService.isGridSettingsChecked) {
+            this.gridService.isGridSettingsChecked = false;
+            this.gridService.deactivateGrid();
+        } else {
+            this.gridService.isGridSettingsChecked = true;
+            this.gridService.activateGrid();
+        }
+    }
+
+    @HostListener('window:keydown.add', ['$event']) increaseSquareGrid(event: KeyboardEvent): void {
+        alert();
+        if (this.toolService.currentToolName === ToolUsed.Grid && this.gridService.squareWidth + SQUARE_STEP_SIZE <= MAX_SQUARE_WIDTH) {
+            this.gridService.squareWidth += SQUARE_STEP_SIZE;
+        }
+    }
+
+    @HostListener('window:keydown.subtract', ['$event']) decreaseSquareGrid(event: KeyboardEvent): void {
+        alert();
+        if (this.toolService.currentToolName === ToolUsed.Grid && this.gridService.squareWidth - SQUARE_STEP_SIZE >= MAX_SQUARE_WIDTH) {
+            this.gridService.squareWidth -= SQUARE_STEP_SIZE;
+        }
+    }
+
+    @HostListener('window:keydown.m', ['$event']) activateMagnetism(event: KeyboardEvent): void {
         if (this.magnetismService.isMagnetismActive) {
             this.magnetismService.isMagnetismActive = false;
             this.magnetismService.resetMagnetism();
@@ -618,6 +642,7 @@ export class SidebarComponent {
             this.magnetismService.isMagnetismActive = true;
         }
     }
+
     @HostListener('window:keydown.p', ['$event'])
     changeFeatherMode(event: KeyboardEvent): void {
         if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
