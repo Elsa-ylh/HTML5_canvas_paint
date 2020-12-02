@@ -3,7 +3,7 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { TextControl } from '@app/classes/text-control';
 import { Tool } from '@app/classes/tool';
-//import { TextAction } from '@app/classes/undo-redo/text-action';
+// import { TextAction } from '@app/classes/undo-redo/text-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -248,7 +248,7 @@ export class TextService extends Tool {
     private checkHeightText(nbLineBreak: number): boolean {
         return (nbLineBreak + 1) * this.sizeFont <= Math.abs(this.height + 1);
     }
-    private setCTXFont(ctx: CanvasRenderingContext2D) {
+    private setCTXFont(ctx: CanvasRenderingContext2D): void {
         // set font and size for text with or without italic or bold
         ctx.font = (this.getBold() + this.getItalic() + this.sizeFont + 'px' + "'" + this.fontStyle + "'").toString();
         this.textControl.setCtx(ctx);
