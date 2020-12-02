@@ -276,6 +276,7 @@ export class SelectionService extends Tool {
     }
 
     copySelection(): void {
+        // rotation : translate to middle pt and add a img rotation.
         this.selection.getImage({ x: this.selection.width, y: this.selection.height });
         this.baseImageData = this.selection.imageData;
         this.baseImage = new Image();
@@ -285,7 +286,9 @@ export class SelectionService extends Tool {
         // this.selection.image.src = this.getImageURL(this.selection.imageData, this.selection.width, this.selection.height);
     }
 
-    pasteSelection(selection: SelectionImage): void {}
+    pasteSelection(selection: SelectionImage): void {
+        // rotation : translate to middle pt and add a img rotation.
+    }
 
     updateSelectionPositions(): Vec2 {
         const xSign = Math.sign(this.selection.endingPos.x - this.selection.imagePosition.x);
