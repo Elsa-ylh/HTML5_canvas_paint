@@ -41,7 +41,7 @@ export class ArrowInfo {
                     {
                         imagePosition: this.selectionService.selection.imagePosition,
                         endingPosition: this.selectionService.selection.endingPos,
-                        controlGroup: controlGroup,
+                        controlGroup,
                         selectionSize: { x: this.selectionService.selection.width, y: this.selectionService.selection.height } as Vec2,
                     } as MagnetismParams,
                     this.direction,
