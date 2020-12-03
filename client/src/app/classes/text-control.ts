@@ -1,7 +1,5 @@
 export class TextControl {
-    private height: number = 0;
     private width: number = 0;
-    private sizeFont: number = 0;
     private textPreview: string[] = [];
     private textLine: string[] = [];
     private textStack: string[] = [];
@@ -10,17 +8,15 @@ export class TextControl {
     private indexOfLettersInLine: number = 0;
     private nbOfLettersInLine: number = 0;
     private ctx: CanvasRenderingContext2D;
-    constructor(ctx: CanvasRenderingContext2D, sizeFont: number, height?: number, width?: number /*text?: string*/) {
-        if (height !== undefined) this.setHeight(height);
+    constructor(ctx: CanvasRenderingContext2D, width?: number /*text?: string*/) {
+        // if (height !== undefined) this.setHeight(height);
         if (width !== undefined) this.setWidth(width);
-        this.setSizeFont(sizeFont);
+        //this.setSizeFont(sizeFont);
         this.ctx = ctx;
     }
 
     clearText(): void {
-        this.height = 0;
         this.width = 0;
-        this.sizeFont = 0;
         this.indexLine = 0;
         this.indexLastLine = 0;
         this.indexOfLettersInLine = 0;
@@ -32,52 +28,87 @@ export class TextControl {
     setCtx(ctx: CanvasRenderingContext2D): void {
         this.ctx = ctx;
     }
-    setHeight(height: number): void {
-        this.height = Math.abs(height);
-    }
     setWidth(width: number): void {
         this.width = Math.abs(width);
-    }
-    setSizeFont(sizeFont: number): void {
-        this.sizeFont = Math.abs(sizeFont);
     }
     textFont(font: string): void {
         this.ctx.font = font;
     }
     addLetter(letter: string): void {
-        this.textLine.push(letter);
-        this.indexOfLettersInLine++;
+        // tslint:disable:prefer-for-of
+        for (let index = 0; index < letter.length; index++) {
+            this.textLine.push(letter[index]);
+            this.indexOfLettersInLine++;
+        }
     }
-
+    getFont(): string {
+        return this.ctx.font;
+    }
     arrowTop(): void {
         if (this.indexLine >= 1) {
             if (!this.nbOfLettersInLine) {
                 this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + this.tmpLineTextStack();
                 this.indexLine--;
+                this.setCursorPos();
             }
             if (this.nbOfLettersInLine && this.nbOfLettersInLine > this.textLine.length) {
                 this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + this.tmpLineTextStack();
                 this.indexLine--;
+                const textLine = this.textPreview[this.indexLine];
+                if (this.checkWidthText(this.ctx, textLine, this.width)) {
+                    this.setCursorPos();
+                } else {
+                    const nbLine = Math.trunc(this.textPreview[this.indexLine].length / this.nbOfLettersInLine);
+                    if (nbLine * this.nbOfLettersInLine + this.indexLastLine > this.textPreview[this.indexLine].length) {
+                        this.indexLastLine = this.textPreview[this.indexLine].length;
+                    } else {
+                        this.indexLastLine = nbLine * this.nbOfLettersInLine + this.indexLastLine;
+                    }
+                    this.setCursorPos();
+                }
             }
         }
+        console.log(this.nbOfLettersInLine);
         if (this.nbOfLettersInLine && this.nbOfLettersInLine < this.textLine.length) {
-            console.log(this.indexLine);
+            this.indexOfLettersInLine -= this.nbOfLettersInLine;
+            this.setCursorPos();
         }
     }
+
     arrowBottom(): void {
         if (this.indexLine < this.indexLastLine) {
             if (!this.nbOfLettersInLine) {
                 this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + this.tmpLineTextStack();
-                this.indexLine--;
+                this.indexLine++;
+                this.setCursorPos();
             }
             if (this.nbOfLettersInLine && this.nbOfLettersInLine > this.textStack.length) {
                 this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + this.tmpLineTextStack();
-                this.indexLine--;
+                this.indexLine++;
+                this.setCursorPos();
             }
         }
+        console.log(this.nbOfLettersInLine);
         if (this.nbOfLettersInLine && this.nbOfLettersInLine < this.textStack.length) {
-            console.log(this.indexLine);
+            this.indexOfLettersInLine += this.nbOfLettersInLine;
+            this.setCursorPos();
         }
+    }
+
+    private setCursorPos(): void {
+        const textLine: string = this.textPreview[this.indexLine];
+        this.textLine = [];
+        this.textStack = [];
+        for (let index = 0; index < textLine.length; index++) {
+            const element = textLine[index];
+            if (this.indexOfLettersInLine >= index) {
+                this.textLine.push(element);
+            }
+        }
+        for (let index = textLine.length - 1; index > this.indexOfLettersInLine; index--) {
+            this.textStack.push(textLine[index]);
+        }
+        console.log(this.indexOfLettersInLine);
     }
 
     arrowLeft(): void {
@@ -201,7 +232,7 @@ export class TextControl {
         this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + this.tmpLineTextStack();
         this.textPreview.forEach((element) => {
             if (this.nbLetterInLine(this.ctx, element)) {
-                tmpText = this.divisePourUneLine(tmpText, element, this.nbOfLettersInLine);
+                tmpText = this.endLineReturn(tmpText, element, this.nbOfLettersInLine);
             } else {
                 tmpText.push(element);
             }
@@ -214,14 +245,14 @@ export class TextControl {
         this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + '|' + this.tmpLineTextStack();
         this.textPreview.forEach((element) => {
             if (this.nbLetterInLine(this.ctx, element)) {
-                tmpText = this.divisePourUneLine(tmpText, element, this.nbOfLettersInLine);
+                tmpText = this.endLineReturn(tmpText, element, this.nbOfLettersInLine);
             } else {
                 tmpText.push(element);
             }
         });
         return tmpText;
     }
-    private divisePourUneLine(text: string[], line: string, nbOfLettersInLine: number): string[] {
+    private endLineReturn(text: string[], line: string, nbOfLettersInLine: number): string[] {
         let oneLine = '';
         // tslint:disable:prefer-for-of
         for (let index = 0; index < line.length; index++) {
@@ -238,13 +269,14 @@ export class TextControl {
         return text;
     }
 
-    // creer une fonction donnant le nombre de lettre dans une ligne
+    // number of letters in a single line
     private nbLetterInLine(ctx: CanvasRenderingContext2D, text: string): boolean {
         let check = false;
         let mtp = '';
+        // tslint:disable:prefer-for-of
         for (let index = 0; index < text.length; index++) {
             mtp += text[index];
-            if (!this.checkWidthText(ctx, mtp) && !check) {
+            if (!this.checkWidthText(ctx, mtp, this.width) && !check) {
                 check = true;
                 this.nbOfLettersInLine = index;
                 return check;
@@ -253,10 +285,13 @@ export class TextControl {
         return false;
     }
 
-    checkWidthText(ctx: CanvasRenderingContext2D, text: string): boolean {
-        return Math.abs(ctx.measureText(text).width) <= Math.abs(this.width);
+    //Check if text size < preview rectangle width (line return)
+    checkWidthText(ctx: CanvasRenderingContext2D, text: string, width: number): boolean {
+        return Math.abs(ctx.measureText(text).width) <= Math.abs(width);
     }
-    checkHeightText(nbLineBreak: number): boolean {
-        return (nbLineBreak + 1) * this.sizeFont <= Math.abs(this.height + 1);
+
+    //Check if text size < preview rectangle height (do not show text in the opposite case)
+    checkHeightText(nbLineBreak: number, sizeFont: number, height: number): boolean {
+        return (nbLineBreak + 1) * sizeFont <= Math.abs(height + 1);
     }
 }

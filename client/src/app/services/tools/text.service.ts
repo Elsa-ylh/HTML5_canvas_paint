@@ -3,7 +3,8 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { TextControl } from '@app/classes/text-control';
 import { Tool } from '@app/classes/tool';
-// import { TextAction } from '@app/classes/undo-redo/text-action';
+import { ToolInfoText } from '@app/classes/tool-info-text';
+import { TextAction } from '@app/classes/undo-redo/text-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -48,13 +49,15 @@ export class TextService extends Tool {
     private lineWidth: number = 2;
     textValue: string = 'initial value';
     writeOnPreviewCtx: boolean = false;
+    isRenderingBase: boolean;
     distanceX: number = 0;
     distanceY: number = 0;
+    infoText: ToolInfoText;
     private textAlign: number = 2;
     private textControl: TextControl;
     constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
-        this.textControl = new TextControl(this.drawingService.previewCtx, this.sizeFont);
+        this.textControl = new TextControl(this.drawingService.previewCtx);
     }
 
     formatLabel(value: number): number {
@@ -69,20 +72,31 @@ export class TextService extends Tool {
             this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoords, this.mousePosition);
         }
         if (this.writeOnPreviewCtx) {
+            this.setCTXFont(this.drawingService.baseCtx);
             this.drawText();
-            // const textAction = new TextAction(
-            //   this.mousePosition,
-            //   this.mouseDownCoords,
-            //   this.colorService.primaryColor,
-            //   this.sizeFont, this.fontStyle,
-            //   this.textAlign,
-            //   this.fontStyleItalic,
-            //   this.fontStyleBold,
-            //   this.subToolSelect,
-            //   this,
-            //   this.drawingService
-            //   );
-            // this.undoRedoService.addUndo(textAction);
+            // this.drawTextUndo({
+            //     primaryColor: this.colorService.primaryColor,
+            //     sizeFont: this.sizeFont,
+            //     fontStyle: this.fontStyle,
+            //     textAlign: this.textAlign,
+            //     FontStyleItalic: this.fontStyleBold,
+            //     FontStyleBold: this.fontStyleItalic,
+            // });
+
+            const textAction = new TextAction(
+                this.colorService.primaryColor,
+                this.sizeFont,
+                this.fontStyle,
+                this.textAlign,
+                this.fontStyleBold,
+                this.fontStyleItalic,
+                this.mousePosition,
+                this.textControl.getText(),
+                this,
+                this.drawingService,
+            );
+
+            this.undoRedoService.addUndo(textAction);
             this.undoRedoService.clearRedo();
 
             this.writeOnPreviewCtx = false;
@@ -179,7 +193,6 @@ export class TextService extends Tool {
                 this.width = Math.abs(this.width) > TEXTZONEMINWIDTH ? this.width : TEXTZONEMINWIDTH;
                 this.height = Math.abs(this.height) > this.sizeFont ? this.height : this.sizeFont + 1;
             }
-            this.textControl.setHeight(this.height);
             this.textControl.setWidth(this.width);
             if (mousePosition.x >= mouseDownCoord.x && mousePosition.y >= mouseDownCoord.y) {
                 ctx.strokeRect(
@@ -221,12 +234,25 @@ export class TextService extends Tool {
         }
     }
 
+    // Necessary for undo-redo. We have similar function.
+    drawTextUndo(toolInfo: ToolInfoText, text: string[]): void {
+        this.textAlign = toolInfo.textAlign;
+        this.sizeFont = toolInfo.sizeFont;
+        this.fontStyle = toolInfo.fontStyle;
+        this.fontStyleItalic = toolInfo.FontStyleItalic;
+        this.fontStyleBold = toolInfo.FontStyleBold;
+        this.mousePosition = toolInfo.mousePosition;
+
+        this.drawingService.baseCtx.strokeStyle = toolInfo.primaryColor; // text color
+        this.drawingService.baseCtx.fillStyle = toolInfo.primaryColor;
+        this.position(this.drawingService.baseCtx, text, this.textAlign, this.mouseDownCoords, this.mousePosition, this.width);
+    }
+
     drawText(): void {
         this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // text color
         this.drawingService.baseCtx.fillStyle = this.colorService.primaryColor;
-        this.setCTXFont(this.drawingService.baseCtx);
         const textPreview: string[] = this.textControl.getText();
-        this.position(this.drawingService.baseCtx, textPreview, this.textAlign);
+        this.position(this.drawingService.baseCtx, textPreview, this.textAlign, this.mouseDownCoords, this.mousePosition, this.width);
     }
 
     previewText(): void {
@@ -234,49 +260,62 @@ export class TextService extends Tool {
         this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoords, this.mousePosition);
         this.setCTXFont(this.drawingService.previewCtx);
         const textPreview: string[] = this.textControl.getTextWithCursor();
-        this.position(this.drawingService.previewCtx, textPreview, this.textAlign);
+        this.position(this.drawingService.previewCtx, textPreview, this.textAlign, this.mouseDownCoords, this.mousePosition, this.width);
     }
 
-    private xTop(width: number): number {
-        return (this.mouseDownCoords.x < this.mousePosition.x ? this.mouseDownCoords.x : this.mousePosition.x) + width;
+    private xTop(width: number, mouseDownCoords: Vec2, mousePosition: Vec2): number {
+        return (mouseDownCoords.x < mousePosition.x ? mouseDownCoords.x : mousePosition.x) + width;
     }
 
-    private yTop(): number {
-        return (this.mouseDownCoords.y < this.mousePosition.y ? this.mouseDownCoords.y : this.mousePosition.y) + this.sizeFont;
+    private yTop(sizeFont: number, mouseDownCoords: Vec2, mousePosition: Vec2): number {
+        return (mouseDownCoords.y < mousePosition.y ? mouseDownCoords.y : mousePosition.y) + sizeFont;
     }
 
-    private checkHeightText(nbLineBreak: number): boolean {
-        return (nbLineBreak + 1) * this.sizeFont <= Math.abs(this.height + 1);
-    }
     private setCTXFont(ctx: CanvasRenderingContext2D): void {
         // set font and size for text with or without italic or bold
         ctx.font = (this.getBold() + this.getItalic() + this.sizeFont + 'px' + "'" + this.fontStyle + "'").toString();
         this.textControl.setCtx(ctx);
     }
 
-    private position(ctx: CanvasRenderingContext2D, texts: string[], align: number): void {
+    private position(ctx: CanvasRenderingContext2D, text: string[], align: number, mouseDownCoords: Vec2, mousePosition: Vec2, width: number): void {
+        //todo
         let lineBreak = 0;
         switch (align) {
             case SubToolselected.tool1:
-                texts.forEach((element) => {
-                    if (this.checkHeightText(lineBreak)) {
-                        ctx.fillText(element, this.xTop(this.width / 2), this.yTop() + lineBreak * this.sizeFont, Math.abs(this.width));
+                text.forEach((element) => {
+                    if (this.textControl.checkHeightText(lineBreak, this.sizeFont, this.height)) {
+                        ctx.fillText(
+                            element,
+                            this.xTop(width / 2, mouseDownCoords, mousePosition),
+                            this.yTop(this.sizeFont, mouseDownCoords, mousePosition) + lineBreak * this.sizeFont,
+                            Math.abs(width),
+                        );
                         lineBreak++;
                     }
                 });
                 break;
             case SubToolselected.tool2:
-                texts.forEach((element) => {
-                    if (this.checkHeightText(lineBreak)) {
-                        ctx.fillText(element, this.xTop(0), this.yTop() + lineBreak * this.sizeFont, Math.abs(this.width));
+                text.forEach((element) => {
+                    if (this.textControl.checkHeightText(lineBreak, this.sizeFont, this.height)) {
+                        ctx.fillText(
+                            element,
+                            this.xTop(0, mouseDownCoords, mousePosition),
+                            this.yTop(this.sizeFont, mouseDownCoords, mousePosition) + lineBreak * this.sizeFont,
+                            Math.abs(width),
+                        );
                         lineBreak++;
                     }
                 });
                 break;
             case SubToolselected.tool3:
-                texts.forEach((element) => {
-                    if (this.checkHeightText(lineBreak)) {
-                        ctx.fillText(element, this.xTop(this.width), this.yTop() + lineBreak * this.sizeFont, Math.abs(this.width));
+                text.forEach((element) => {
+                    if (this.textControl.checkHeightText(lineBreak, this.sizeFont, this.height)) {
+                        ctx.fillText(
+                            element,
+                            this.xTop(width, mouseDownCoords, mousePosition),
+                            this.yTop(this.sizeFont, mouseDownCoords, mousePosition) + lineBreak * this.sizeFont,
+                            Math.abs(width),
+                        );
                         lineBreak++;
                     }
                 });

@@ -69,7 +69,7 @@ describe('DrawingComponent', () => {
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, autoSaveStub);
             selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
-            textServiceStub = new TextService(drawingStub, colorStub);
+            textServiceStub = new TextService(drawingStub, colorStub, undoRedoStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             toolServiceStub = new ToolService(
                 pencilStub,
