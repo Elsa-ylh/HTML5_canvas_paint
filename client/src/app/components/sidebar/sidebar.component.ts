@@ -539,9 +539,9 @@ export class SidebarComponent {
 
     @HostListener('window:keyup.ArrowUp', ['$event']) onUpArrowUp(event: KeyboardEvent): void {
         event.preventDefault();
-        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
             this.selectionRectangleService.onUpArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
             this.selectionEllipseService.onUpArrowUp();
         }
     }
@@ -600,7 +600,8 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.a', ['$event'])
     changeSprayMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color) {
+        event.preventDefault();
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
             this.resetCheckedButton();
             this.isSprayChecked = true;
             this.pickSprayer();
@@ -618,7 +619,8 @@ export class SidebarComponent {
 
     @HostListener('window:wheel', ['$event'])
     changeAngleWithWheel(event: WheelEvent): void {
-        if (this.toolService.currentToolName === ToolUsed.Feather) {
+        event.preventDefault();
+        if (this.toolService.currentToolName === ToolUsed.Feather && this.isDialogloadSaveEport) {
             this.featherService.addOrRetract(event);
             this.featherService.changeAngleWithScroll();
         }
@@ -626,7 +628,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.alt', ['$event'])
     altPressed(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName === ToolUsed.Feather) {
+        if (this.toolService.currentToolName === ToolUsed.Feather && this.isDialogloadSaveEport) {
             this.featherService.altPressed = true;
         }
     }

@@ -1,7 +1,7 @@
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TextService } from '@app/services/tools/text.service';
-import { Vec2 } from '@app/classes/vec2';
 
 export class TextAction extends AbsUndoRedo {
     constructor(
@@ -11,8 +11,8 @@ export class TextAction extends AbsUndoRedo {
         private sizeFont: number,
         private fontStyle: string,
         private textAlign: number,
-        private FontStyleItalic: boolean,
-        private FontStyleBold: boolean,
+        private fontStyleItalic: boolean,
+        private fontStyleBold: boolean,
         private mousePos: Vec2,
         private text: string[],
         private textService: TextService,
@@ -30,13 +30,13 @@ export class TextAction extends AbsUndoRedo {
                 sizeFont: this.sizeFont,
                 fontStyle: this.fontStyle,
                 textAlign: this.textAlign,
-                FontStyleItalic: this.FontStyleBold,
-                FontStyleBold: this.FontStyleItalic,
+                fontStyleItalic: this.fontStyleItalic,
+                fontStyleBold: this.fontStyleBold,
                 mousePosition: this.mousePos,
             },
             this.text,
             this.mousePosition,
-            this.mouseDownCoords
+            this.mouseDownCoords,
         );
         this.textService.clearEffectTool();
     }

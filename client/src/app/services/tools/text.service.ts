@@ -280,7 +280,7 @@ export class TextService extends Tool {
     }
 
     private position(ctx: CanvasRenderingContext2D, text: string[], align: number, mouseDownCoords: Vec2, mousePosition: Vec2, width: number): void {
-        //todo
+        // todo
         let lineBreak = 0;
         switch (align) {
             case SubToolselected.tool1:
