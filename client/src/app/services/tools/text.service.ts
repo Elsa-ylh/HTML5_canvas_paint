@@ -241,8 +241,8 @@ export class TextService extends Tool {
         this.textAlign = toolInfo.textAlign;
         this.sizeFont = toolInfo.sizeFont;
         this.fontStyle = toolInfo.fontStyle;
-        this.fontStyleItalic = toolInfo.FontStyleItalic;
-        this.fontStyleBold = toolInfo.FontStyleBold;
+        this.fontStyleItalic = toolInfo.fontStyleItalic;
+        this.fontStyleBold = toolInfo.fontStyleBold;
         this.mousePosition = toolInfo.mousePosition;
 
         this.drawingService.baseCtx.strokeStyle = toolInfo.primaryColor; // text color
@@ -280,7 +280,7 @@ export class TextService extends Tool {
     }
 
     private position(ctx: CanvasRenderingContext2D, text: string[], align: number, mouseDownCoords: Vec2, mousePosition: Vec2, width: number): void {
-        //todo
+        // todo
         let lineBreak = 0;
         switch (align) {
             case SubToolselected.tool1:

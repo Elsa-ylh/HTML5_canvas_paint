@@ -37,9 +37,8 @@ export class ToolService {
         private selectionEllipseService: SelectionEllipseService,
         private sprayService: SprayService,
         private featherService: FeatherService,
-        private textService: TextService,
-    ) //  private infoText: ToolInfoText,
-    {
+        private textService: TextService, //  private infoText: ToolInfoText,
+    ) {
         this.tableTool[ToolUsed.NONE] = this.pencilService;
         this.tableTool[ToolUsed.Pencil] = this.pencilService;
         this.tableTool[ToolUsed.Eraser] = this.eraserService;

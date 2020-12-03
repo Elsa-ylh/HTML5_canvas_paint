@@ -5,7 +5,7 @@ export class ToolInfoText {
     sizeFont: number;
     fontStyle: string;
     textAlign: number;
-    FontStyleItalic: boolean;
-    FontStyleBold: boolean;
+    fontStyleItalic: boolean;
+    fontStyleBold: boolean;
     mousePosition: Vec2;
 }
