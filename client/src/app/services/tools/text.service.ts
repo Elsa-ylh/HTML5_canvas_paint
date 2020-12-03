@@ -84,6 +84,8 @@ export class TextService extends Tool {
             // });
 
             const textAction = new TextAction(
+                this.mousePosition,
+                this.mouseDownCoords,
                 this.colorService.primaryColor,
                 this.sizeFont,
                 this.fontStyle,
@@ -181,9 +183,9 @@ export class TextService extends Tool {
         this.previewText();
     }
 
-    drawPreviewRect(ctx: CanvasRenderingContext2D, mouseDownCoord: Vec2, mousePosition: Vec2): void {
-        this.distanceX = mousePosition.x - mouseDownCoord.x;
-        this.distanceY = mousePosition.y - mouseDownCoord.y;
+    drawPreviewRect(ctx: CanvasRenderingContext2D, mouseDownCoords: Vec2, mousePosition: Vec2): void {
+        this.distanceX = mousePosition.x - mouseDownCoords.x;
+        this.distanceY = mousePosition.y - mouseDownCoords.y;
         ctx.strokeStyle = STROKECOLOR;
         ctx.fillStyle = STROKECOLOR;
         ctx.lineWidth = this.lineWidth;
@@ -194,38 +196,38 @@ export class TextService extends Tool {
                 this.height = Math.abs(this.height) > this.sizeFont ? this.height : this.sizeFont + 1;
             }
             this.textControl.setWidth(this.width);
-            if (mousePosition.x >= mouseDownCoord.x && mousePosition.y >= mouseDownCoord.y) {
+            if (mousePosition.x >= mouseDownCoords.x && mousePosition.y >= mouseDownCoords.y) {
                 ctx.strokeRect(
-                    mouseDownCoord.x - this.lineWidth / 2,
-                    mouseDownCoord.y - this.lineWidth / 2,
+                    mouseDownCoords.x - this.lineWidth / 2,
+                    mouseDownCoords.y - this.lineWidth / 2,
                     this.width + this.lineWidth,
                     this.height + this.lineWidth,
                 );
 
                 return;
             }
-            if (mousePosition.x < mouseDownCoord.x && mousePosition.y < mouseDownCoord.y) {
+            if (mousePosition.x < mouseDownCoords.x && mousePosition.y < mouseDownCoords.y) {
                 ctx.strokeRect(
-                    mouseDownCoord.x + this.lineWidth / 2,
-                    mouseDownCoord.y + this.lineWidth / 2,
+                    mouseDownCoords.x + this.lineWidth / 2,
+                    mouseDownCoords.y + this.lineWidth / 2,
                     this.width - this.lineWidth,
                     this.height - this.lineWidth,
                 );
                 return;
             }
-            if (mousePosition.x > mouseDownCoord.x && mousePosition.y < mouseDownCoord.y) {
+            if (mousePosition.x > mouseDownCoords.x && mousePosition.y < mouseDownCoords.y) {
                 ctx.strokeRect(
-                    mouseDownCoord.x - this.lineWidth / 2,
-                    mouseDownCoord.y + this.lineWidth / 2,
+                    mouseDownCoords.x - this.lineWidth / 2,
+                    mouseDownCoords.y + this.lineWidth / 2,
                     this.width + this.lineWidth,
                     this.height - this.lineWidth,
                 );
                 return;
             }
-            if (mousePosition.x < mouseDownCoord.x && mousePosition.y > mouseDownCoord.y) {
+            if (mousePosition.x < mouseDownCoords.x && mousePosition.y > mouseDownCoords.y) {
                 ctx.strokeRect(
-                    mouseDownCoord.x + this.lineWidth / 2,
-                    mouseDownCoord.y - this.lineWidth / 2,
+                    mouseDownCoords.x + this.lineWidth / 2,
+                    mouseDownCoords.y - this.lineWidth / 2,
                     this.width - this.lineWidth,
                     this.height + this.lineWidth,
                 );
@@ -235,7 +237,7 @@ export class TextService extends Tool {
     }
 
     // Necessary for undo-redo. We have similar function.
-    drawTextUndo(toolInfo: ToolInfoText, text: string[]): void {
+    drawTextUndo(toolInfo: ToolInfoText, text: string[], mousePosition: Vec2, mouseDownCord: Vec2): void {
         this.textAlign = toolInfo.textAlign;
         this.sizeFont = toolInfo.sizeFont;
         this.fontStyle = toolInfo.fontStyle;

@@ -1,10 +1,12 @@
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TextService } from '@app/services/tools/text.service';
-import { Vec2 } from '../vec2';
+import { Vec2 } from '@app/classes/vec2';
 
 export class TextAction extends AbsUndoRedo {
     constructor(
+        private mousePosition: Vec2,
+        private mouseDownCoords: Vec2,
         private primaryColor: string,
         private sizeFont: number,
         private fontStyle: string,
@@ -33,6 +35,8 @@ export class TextAction extends AbsUndoRedo {
                 mousePosition: this.mousePos,
             },
             this.text,
+            this.mousePosition,
+            this.mouseDownCoords
         );
         this.textService.clearEffectTool();
     }
