@@ -5,15 +5,16 @@ import { SelectionImage } from '@app/classes/selection';
 // import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MagnetismService } from '@app/services/tools/magnetism.service';
+import { MagnetismService } from '../magnetism.service';
+import { RotationService } from './rotation.service';
 import { SelectionService } from './selection-service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionRectangleService extends SelectionService {
-    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService) {
-        super(drawingService, magnetismService);
+    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService, protected rotateService: RotationService) {
+        super(drawingService, magnetismService, rotateService);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -176,6 +177,11 @@ export class SelectionRectangleService extends SelectionService {
             // this.flip.y = 1;
         }
         this.drawingService.previewCtx.save();
+        // rotation
+        this.rotationService.rotateRect(imagePosition);
+        // this.drawingService.previewCtx.translate(imagePosition.x + this.selection.width / 2, imagePosition.y + this.selection.height / 2);
+        // this.drawingService.previewCtx.rotate(this.rotationService.rotationAngle);
+
         this.drawingService.previewCtx.drawImage(this.selection.image, imagePosition.x, imagePosition.y, this.selection.width, this.selection.height);
         this.drawingService.previewCtx.restore();
         this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);

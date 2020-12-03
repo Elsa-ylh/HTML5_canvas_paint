@@ -10,6 +10,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism.service';
 import { interval, Subscription } from 'rxjs';
+import { RotationService } from './rotation.service';
 
 @Injectable({
     providedIn: 'root',
@@ -20,7 +21,7 @@ import { interval, Subscription } from 'rxjs';
 // This file is larger than 350 lines but is entirely used by the methods.
 // tslint:disable:max-file-line-count
 export class SelectionService extends Tool {
-    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService) {
+    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService, protected rotationService: RotationService) {
         super(drawingService);
     }
 
