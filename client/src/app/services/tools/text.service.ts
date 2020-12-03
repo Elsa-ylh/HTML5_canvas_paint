@@ -92,7 +92,6 @@ export class TextService extends Tool {
                 this.textAlign,
                 this.fontStyleBold,
                 this.fontStyleItalic,
-                this.mousePosition,
                 this.textControl.getText(),
                 this,
                 this.drawingService,
@@ -243,7 +242,6 @@ export class TextService extends Tool {
         this.fontStyle = toolInfo.fontStyle;
         this.fontStyleItalic = toolInfo.fontStyleItalic;
         this.fontStyleBold = toolInfo.fontStyleBold;
-        this.mousePosition = toolInfo.mousePosition;
 
         this.drawingService.baseCtx.strokeStyle = toolInfo.primaryColor; // text color
         this.drawingService.baseCtx.fillStyle = toolInfo.primaryColor;
