@@ -69,8 +69,9 @@ export class TextControl {
             }
         }
         console.log(this.nbOfLettersInLine);
-        if (this.nbOfLettersInLine && this.nbOfLettersInLine < this.textLine.length) {
+        if (this.nbOfLettersInLine && this.nbOfLettersInLine <= this.textLine.length) {
             this.indexOfLettersInLine -= this.nbOfLettersInLine;
+            this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + this.tmpLineTextStack();
             this.setCursorPos();
         }
     }
@@ -89,8 +90,9 @@ export class TextControl {
             }
         }
         console.log(this.nbOfLettersInLine);
-        if (this.nbOfLettersInLine && this.nbOfLettersInLine < this.textStack.length) {
+        if (this.nbOfLettersInLine && this.nbOfLettersInLine <= this.textStack.length) {
             this.indexOfLettersInLine += this.nbOfLettersInLine;
+            this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + this.tmpLineTextStack();
             this.setCursorPos();
         }
     }
