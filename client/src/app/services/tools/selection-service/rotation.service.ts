@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { SelectionImage } from '@app/classes/selection';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-export const FIFTEEN = 15;
-export const ONE = 1;
+const FIFTEEN: number = 15;
+const ONE: number = 1;
+const ONEHUNDREDEIGHTY: number = 180;
 
 @Injectable({
     providedIn: 'root',
@@ -16,25 +17,15 @@ export class RotationService extends Tool {
         super(drawingService);
     }
 
-    rotateEllipse(): void {
-        // rotate logic. translate and rotate.
-        // this.drawingService.baseCtx.translate(
-        //     imagePosition.x + this.selectionEllipseService.selection.width / 2,
-        //     imagePosition.y + this.selectionEllipseService.height / 2,
-        // );
-        // this.drawingService.baseCtx.rotate(this.rotationAngle);
+    rotateSelection(selection: SelectionImage, ctx: CanvasRenderingContext2D): void {
+        const angleEnRadiant = (this.rotationAngle * Math.PI) / ONEHUNDREDEIGHTY;
+        ctx.translate(selection.imagePosition.x + selection.width / 2, selection.imagePosition.y + selection.height / 2);
+        ctx.rotate(angleEnRadiant);
+        ctx.translate(-selection.imagePosition.x - selection.width / 2, -selection.imagePosition.y - selection.height / 2);
     }
 
-    rotateSelection(selection:SelectionImage, ctx:CanvasRenderingContext2D): void {
-        ctx.translate(
-            selection.imagePosition.x + selection.width / 2,
-            selection.imagePosition.y + selection.height / 2,
-        );
-        ctx.rotate(this.rotationAngle * Math.PI / 180);
-        ctx.translate(
-          - selection.imagePosition.x - selection.width / 2,
-          - selection.imagePosition.y - selection.height / 2,
-      );
+    resetAngle(): void {
+        this.rotationAngle = 0;
     }
 
     changeAngleWithScroll(): void {
