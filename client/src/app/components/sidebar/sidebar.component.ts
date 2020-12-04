@@ -19,7 +19,7 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { FeatherService } from '@app/services/tools/feather.service';
-import { GridService, MAX_SQUARE_WIDTH, SQUARE_STEP_SIZE } from '@app/services/tools/grid.service';
+import { GridService, MAX_SQUARE_WIDTH, MIN_SQUARE_WIDTH, SQUARE_STEP_SIZE } from '@app/services/tools/grid.service';
 import { LineService } from '@app/services/tools/line.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
@@ -632,13 +632,15 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.-', ['$event']) decreaseSquareGrid(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName === ToolUsed.Grid) {
+        if (this.toolService.currentToolName === ToolUsed.Grid && this.gridService.squareWidth - SQUARE_STEP_SIZE >= MIN_SQUARE_WIDTH) {
             this.gridService.squareWidth -= SQUARE_STEP_SIZE;
         }
     }
 
-    @HostListener('window:keydown.shift.=', ['$event']) increaseSquareGrid(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName === ToolUsed.Grid) {
+    @HostListener('window:keydown.+', ['$event'])
+    @HostListener('window:keydown.shift.+', ['$event'])
+    increaseSquareGrid(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Grid && this.gridService.squareWidth + SQUARE_STEP_SIZE <= MAX_SQUARE_WIDTH) {
             this.gridService.squareWidth += SQUARE_STEP_SIZE;
         }
     }
