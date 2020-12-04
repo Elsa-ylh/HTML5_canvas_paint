@@ -3,22 +3,25 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { TextControl } from './text-control';
 
 // tslint:disable:no-magic-numbers
+// tslint:disable:no-any
+// tslint:disable:no-string-literal
 
-describe('TextControl', () => {
-    let previewStub: CanvasRenderingContext2D;
-    let baseStub: CanvasRenderingContext2D;
+
+fdescribe('TextControl', () => {
+    let baseCtxStub: CanvasRenderingContext2D;
+    let previewCtxStub: CanvasRenderingContext2D;
     let textControl: TextControl;
     beforeEach(() => {
-        previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        baseStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        previewStub.canvas.width = 100;
-        previewStub.canvas.height = 100;
-        textControl = new TextControl(previewStub);
-        // baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-    });
+        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub.canvas.width = 100;
+        previewCtxStub.canvas.height = 100;
+        textControl = new TextControl(previewCtxStub);
+
+        });
 
     it('should create an instance', () => {
-        expect(new TextControl(previewStub)).toBeTruthy();
+        expect(new TextControl(previewCtxStub)).toBeTruthy();
     });
 
     it('should setWidth 50', () => {
@@ -27,35 +30,44 @@ describe('TextControl', () => {
     });
 
     it('should setCtx previewCtx', () => {
-        textControl.setCtx(previewStub);
-        expect(textControl['ctx']).toEqual(previewStub);
+        textControl.setCtx(previewCtxStub);
+        expect(textControl['ctx']).toEqual(previewCtxStub);
     });
 
     it('getFont should return Times New Roman', () => {
-        const font = 'Times New Roman';
-        let canvas: CanvasRenderingContext2D;
-        canvas = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        canvas.font = font;
-        textControl.setCtx(canvas);
+        const font = '20px "Times New Roman"';
+        baseCtxStub.font= font;
+        textControl.setCtx(baseCtxStub);
         expect(textControl.getFont()).toEqual(font);
     });
 
     it('getText should return text', () => {
-        const text = 'test';
+        let text : string = "test";
         textControl.addLetter(text);
         expect(textControl.getText()).toEqual(text);
     });
     it('getTextWithCursor should return text', () => {
-        const text = 'tests';
-        textControl['textPreview'][0] = text;
-        textControl.getText();
-        expect(textControl.getText()).toEqual(text);
+        const textTest = 'test';
+        textControl['nbOfLettersInLine']=50;
+        for (let index = 0; index < textTest.length; index++) {
+            textControl['textLine'][index] = textTest[index];
+        }
+        const text= textControl.getTextWithCursor();
+        console.log(text);
+        console.log (textControl[`textPreview`]);
+        expect(text).toEqual(textTest+"|");
+    });
+
+    it('checkWidthText should return false if text size < width ', () => {
+        const textOnCanvas = 'test';
+        const width = 10;
+        expect(textControl.checkWidthText(baseCtxStub, textOnCanvas, width)).toEqual(false);
     });
 
     it('checkWidthText should return true if text size < width ', () => {
         const textOnCanvas = 'test';
         const width = 150;
-        expect(textControl.checkWidthText(baseStub, textOnCanvas, width)).toEqual(true);
+        expect(textControl.checkWidthText(baseCtxStub, textOnCanvas, width)).toEqual(true);
     });
 
     it('checkHeightText should return true', () => {
@@ -64,4 +76,28 @@ describe('TextControl', () => {
         const height = 150;
         expect(textControl.checkHeightText(nbLine, sizeFont, height)).toEqual(true);
     });
+
+    it('checkHeightText should return false', () => {
+      const nbLine = 3;
+      const sizeFont = 20;
+      const height = 10;
+      expect(textControl.checkHeightText(nbLine, sizeFont, height)).toEqual(false);
+  });
+  it('should nbLetterInLineSpy',()=>{
+     textControl['width'] = 20;
+    const textOnCanvas = 'test';
+    textControl.checkWidthText(previewCtxStub, textOnCanvas, textControl['width']);
+     spyOn<any>(textControl, 'nbLetterInLine').and.callThrough();
+    expect(textControl['nbLetterInLine'](previewCtxStub, textOnCanvas)).toEqual(false);
+
+  })
+  it('should nbLetterInLineSpy equal true',()=>{
+    textControl['width'] = 20;
+   const textOnCanvas = 'test               ';
+   textControl.checkWidthText(previewCtxStub, textOnCanvas, textControl['width']);
+    spyOn<any>(textControl, 'nbLetterInLine').and.callThrough();
+   expect(textControl['nbLetterInLine'](previewCtxStub, textOnCanvas)).toEqual(true);
+
+ })
+
 });

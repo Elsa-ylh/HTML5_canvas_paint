@@ -26,6 +26,7 @@ import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
+import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Component({
@@ -42,7 +43,7 @@ export class SidebarComponent {
     toolUsed = ToolUsed;
 
     isDialogOpen: boolean = false;
-    isDialogloadSaveEport: boolean = true;
+    isDialogLoadSaveExport: boolean = true;
     lineWidth: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
@@ -105,11 +106,11 @@ export class SidebarComponent {
     }
 
     exportDrawing(): void {
-        if (this.isDialogloadSaveEport) {
+        if (this.isDialogLoadSaveExport) {
             this.exportDrawingRef = this.dialogCreator.open(DialogExportDrawingComponent);
-            this.isDialogloadSaveEport = false;
+            this.isDialogLoadSaveExport = false;
             this.exportDrawingRef.afterClosed().subscribe(() => {
-                this.isDialogloadSaveEport = true;
+                this.isDialogLoadSaveExport = true;
             });
             this.automaticSaveService.save();
         }
@@ -121,26 +122,26 @@ export class SidebarComponent {
     }
 
     openCarrousel(): void {
-        if (this.isDialogloadSaveEport) {
-            this.isDialogloadSaveEport = false;
+        if (this.isDialogLoadSaveExport) {
+            this.isDialogLoadSaveExport = false;
             this.dialogLoadRef = this.dialogCreator.open(CarrouselPictureComponent, {
                 width: '90%',
                 height: '90%',
             });
             this.dialogLoadRef.afterClosed().subscribe(() => {
-                this.isDialogloadSaveEport = true;
+                this.isDialogLoadSaveExport = true;
             });
         }
     }
     openSaveServer(): void {
-        if (this.isDialogloadSaveEport) {
-            this.isDialogloadSaveEport = false;
+        if (this.isDialogLoadSaveExport) {
+            this.isDialogLoadSaveExport = false;
             this.dialogSaveRef = this.dialogCreator.open(DialogUploadComponent, {
                 width: '90%',
                 height: '90%',
             });
             this.dialogSaveRef.afterClosed().subscribe(() => {
-                this.isDialogloadSaveEport = true;
+                this.isDialogLoadSaveExport = true;
             });
         }
     }
@@ -156,7 +157,7 @@ export class SidebarComponent {
     pickPencil(): void {
         this.drawingService.cursorUsed = cursorName.pencil;
         this.toolService.switchTool(ToolUsed.Pencil);
-        this.isDialogloadSaveEport = true;
+        this.isDialogLoadSaveExport = true;
     }
 
     // the following get are used to make sure the display of sidebar tools are
@@ -168,7 +169,7 @@ export class SidebarComponent {
     pickEraser(): void {
         this.drawingService.cursorUsed = cursorName.eraser;
         this.toolService.switchTool(ToolUsed.Eraser);
-        this.isDialogloadSaveEport = true;
+        this.isDialogLoadSaveExport = true;
     }
 
     get eraserChecked(): boolean {
@@ -182,7 +183,7 @@ export class SidebarComponent {
         if (this.drawingService.baseCtx.lineWidth < this.brushService.pixelMinBrush) {
             this.drawingService.baseCtx.lineWidth = this.drawingService.previewCtx.lineWidth = this.brushService.pixelMinBrush;
         } else this.drawingService.previewCtx.lineWidth = this.drawingService.baseCtx.lineWidth;
-        this.isDialogloadSaveEport = true;
+        this.isDialogLoadSaveExport = true;
     }
 
     get brushChecked(): boolean {
@@ -193,7 +194,7 @@ export class SidebarComponent {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Line);
         this.toolService.currentTool.subToolSelect = SubToolselected.tool1;
-        this.isDialogloadSaveEport = true;
+        this.isDialogLoadSaveExport = true;
     }
 
     get lineChecked(): boolean {
@@ -204,7 +205,7 @@ export class SidebarComponent {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Rectangle);
         this.toolService.currentTool.subToolSelect = subTool;
-        this.isDialogloadSaveEport = true;
+        this.isDialogLoadSaveExport = true;
     }
 
     get rectangleChecked(): boolean {
@@ -215,7 +216,7 @@ export class SidebarComponent {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Ellipse);
         this.toolService.currentTool.subToolSelect = subTool2;
-        this.isDialogloadSaveEport = true;
+        this.isDialogLoadSaveExport = true;
     }
 
     get ellipseChecked(): boolean {
@@ -226,7 +227,7 @@ export class SidebarComponent {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Polygon);
         this.toolService.currentTool.subToolSelect = subTool3;
-        this.isDialogloadSaveEport = true;
+        this.isDialogLoadSaveExport = true;
     }
 
     get polygonChecked(): boolean {
@@ -236,7 +237,7 @@ export class SidebarComponent {
     pickColor(): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Color);
-        this.isDialogloadSaveEport = true;
+        this.isDialogLoadSaveExport = true;
     }
 
     get colorChecked(): boolean {
@@ -247,7 +248,7 @@ export class SidebarComponent {
         // debugger;
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.PaintBucket);
-        this.isDialogloadSaveEport = true;
+        this.isDialogLoadSaveExport = true;
     }
 
     get paintBucketChecked(): boolean {
@@ -256,7 +257,7 @@ export class SidebarComponent {
     pickDropper(): void {
         this.drawingService.cursorUsed = 'pointer';
         this.toolService.switchTool(ToolUsed.Dropper);
-        this.isDialogloadSaveEport = true;
+        this.isDialogLoadSaveExport = true;
     }
 
     get dropperChecked(): boolean {
@@ -266,7 +267,7 @@ export class SidebarComponent {
     pickSelectionRectangle(): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.SelectionRectangle);
-        this.isDialogloadSaveEport = true;
+        this.isDialogLoadSaveExport = true;
     }
 
     get selectionRectangleChecked(): boolean {
@@ -276,7 +277,7 @@ export class SidebarComponent {
     pickSelectionEllipse(): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.SelectionEllipse);
-        this.isDialogloadSaveEport = true;
+        this.isDialogLoadSaveExport = true;
     }
 
     get selectionEllipseChecked(): boolean {
@@ -295,9 +296,13 @@ export class SidebarComponent {
     pickText(): void {
         this.drawingService.cursorUsed = 'text';
         this.toolService.switchTool(ToolUsed.Text);
-        this.isDialogloadSaveEport = false;
     }
-
+    private isOnPreviewCtx(): boolean {
+        if (this.toolService.currentToolName === ToolUsed.Text) {
+            return !(this.toolService.currentTool as TextService).isOnPreviewCanvas();
+        }
+        return true;
+    }
     get textChecked(): boolean {
         return this.isTextChecked;
     }
@@ -344,14 +349,14 @@ export class SidebarComponent {
 
     // keybind control o for new drawing
     @HostListener('window:keydown.control.o', ['$event']) onKeyDown(event: KeyboardEvent): void {
-        if (!this.isDialogOpen && !this.drawingService.isCanvasBlank() && this.isDialogloadSaveEport) {
+        if (!this.isDialogOpen && !this.drawingService.isCanvasBlank() && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             event.preventDefault();
             this.clearCanvas();
         }
     }
 
     @HostListener('window:keydown.1', ['$event']) changeRectangleMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isRectangleChecked = true;
             this.pickRectangle(1);
@@ -359,7 +364,7 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.2', ['$event']) changleEllipseMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isEllipseChecked = true;
             this.pickEllipse(SubToolselected.tool1);
@@ -368,7 +373,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.3', ['$event'])
     changePolygonMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isPolygonChecked = true;
             this.pickPolygon(SubToolselected.tool3);
@@ -377,7 +382,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.e', ['$event'])
     changeEraserMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isEraserChecked = true;
             this.pickEraser();
@@ -386,7 +391,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.c', ['$event'])
     changePencilMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isPencilChecked = true;
             this.pickPencil();
@@ -395,7 +400,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.w', ['$event'])
     changeBrushMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isBrushChecked = true;
             this.pickBrush(SubToolselected.tool1);
@@ -404,7 +409,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.l', ['$event'])
     changeLineMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isLineChecked = true;
             this.pickLine();
@@ -413,7 +418,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.b', ['$event'])
     changePaintBucketMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.PaintBucket && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.PaintBucket && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isPaintBucketChecked = true;
             this.pickPaintBucket();
@@ -422,7 +427,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.t', ['$event'])
     changeTextMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Text && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Text && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isTextChecked = true;
             this.pickText();
@@ -431,7 +436,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.i', ['$event'])
     changeDropperMode(event: KeyboardEvent): void {
-        if (this.isDialogloadSaveEport) {
+        if (this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isDropperChecked = true;
             this.pickDropper();
@@ -440,7 +445,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.r', ['$event'])
     changeSelectionRectangleMode(event: KeyboardEvent): void {
-        if (this.isDialogloadSaveEport) {
+        if (this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isSelectionRectangleChecked = true;
             this.pickSelectionRectangle();
@@ -448,7 +453,7 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.s', ['$event']) changeSelectionEllipseMode(event: KeyboardEvent): void {
-        if (this.isDialogloadSaveEport) {
+        if (this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isSelectionEllipseChecked = true;
             this.pickSelectionEllipse();
@@ -456,20 +461,26 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.control.g', ['$event']) openCarrouselKey(event: KeyboardEvent): void {
-        event.preventDefault();
-        this.openCarrousel();
+        if (this.isOnPreviewCtx()) {
+            event.preventDefault();
+            this.openCarrousel();
+        }
     }
     @HostListener('window:keydown.control.s', ['$event']) openSaveServerKey(event: KeyboardEvent): void {
-        event.preventDefault();
-        this.openSaveServer();
+        if (this.isOnPreviewCtx()) {
+            event.preventDefault();
+            this.openSaveServer();
+        }
     }
     @HostListener('window:keydown.control.e', ['$event']) exportDrawingKey(event: KeyboardEvent): void {
-        event.preventDefault();
-        this.exportDrawing();
+        if (this.isOnPreviewCtx()) {
+            event.preventDefault();
+            this.exportDrawing();
+        }
     }
     @HostListener('window:keydown.control.a', ['$event']) selectAllCanvas(event: KeyboardEvent): void {
         event.preventDefault();
-        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
             this.selectionRectangleService.selectAll();
         } else {
             this.selectionEllipseService.selectAll();
@@ -478,61 +489,61 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.ArrowLeft', ['$event']) onLeftArrow(event: KeyboardEvent): void {
         event.preventDefault();
-        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
             this.selectionRectangleService.onLeftArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
             this.selectionEllipseService.onLeftArrow();
         }
     }
     @HostListener('window:keydown.ArrowRight', ['$event']) onRightArrow(event: KeyboardEvent): void {
         event.preventDefault();
-        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
             this.selectionRectangleService.onRightArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
             this.selectionEllipseService.onRightArrow();
         }
     }
 
     @HostListener('window:keydown.ArrowDown', ['$event']) onDownArrow(event: KeyboardEvent): void {
         event.preventDefault();
-        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
             this.selectionRectangleService.onDownArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
             this.selectionEllipseService.onDownArrow();
         }
     }
 
     @HostListener('window:keydown.ArrowUp', ['$event']) onUpArrow(event: KeyboardEvent): void {
         event.preventDefault();
-        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
             this.selectionRectangleService.onUpArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
             this.selectionEllipseService.onUpArrow();
         }
     }
     @HostListener('window:keyup.ArrowLeft', ['$event']) onLeftArrowUp(event: KeyboardEvent): void {
         event.preventDefault();
-        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
             this.selectionRectangleService.onLeftArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
             this.selectionEllipseService.onLeftArrowUp();
         }
     }
 
     @HostListener('window:keyup.ArrowRight', ['$event']) onRightArrowUp(event: KeyboardEvent): void {
         event.preventDefault();
-        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
             this.selectionRectangleService.onRightArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
             this.selectionEllipseService.onRightArrowUp();
         }
     }
 
     @HostListener('window:keyup.ArrowDown', ['$event']) onDownArrowUp(event: KeyboardEvent): void {
         event.preventDefault();
-        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
             this.selectionRectangleService.onDownArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
             this.selectionEllipseService.onDownArrowUp();
         }
     }
@@ -548,7 +559,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.control.z', ['$event'])
     callUndo(eventK: KeyboardEvent): void {
-        if (!this.undoRedoService.isUndoDisabled && this.isDialogloadSaveEport) {
+        if (!this.undoRedoService.isUndoDisabled && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.undoRedoService.undo();
             this.automaticSaveService.save();
         }
@@ -556,7 +567,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.control.shift.z', ['$event'])
     callRedo(eventK: KeyboardEvent): void {
-        if (!this.undoRedoService.isRedoDisabled && this.isDialogloadSaveEport) {
+        if (!this.undoRedoService.isRedoDisabled && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.undoRedoService.redo();
             this.automaticSaveService.save();
         }
@@ -601,7 +612,7 @@ export class SidebarComponent {
     @HostListener('window:keydown.a', ['$event'])
     changeSprayMode(event: KeyboardEvent): void {
         event.preventDefault();
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isSprayChecked = true;
             this.pickSprayer();
@@ -610,7 +621,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.p', ['$event'])
     changeFeatherMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isFeatherChecked = true;
             this.pickFeather();
@@ -620,7 +631,7 @@ export class SidebarComponent {
     @HostListener('window:wheel', ['$event'])
     changeAngleWithWheel(event: WheelEvent): void {
         event.preventDefault();
-        if (this.toolService.currentToolName === ToolUsed.Feather && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName === ToolUsed.Feather && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.featherService.addOrRetract(event);
             this.featherService.changeAngleWithScroll();
         }
@@ -628,7 +639,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.alt', ['$event'])
     altPressed(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName === ToolUsed.Feather && this.isDialogloadSaveEport) {
+        if (this.toolService.currentToolName === ToolUsed.Feather && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.featherService.altPressed = true;
         }
     }

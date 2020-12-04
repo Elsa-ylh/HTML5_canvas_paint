@@ -37,7 +37,7 @@ export class WriteTextOptionComponent {
     }*/
 
     @HostListener('window:keydown', ['$event']) keyUpHandler(event: KeyboardEvent): void {
-        event.preventDefault();
+        if (this.textService.isOnPreviewCanvas()) event.preventDefault();
         this.textService.keyUpHandler(event);
     }
 

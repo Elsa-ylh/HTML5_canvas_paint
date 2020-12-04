@@ -48,18 +48,21 @@ export class TextService extends Tool {
     width: number = 0;
     private lineWidth: number = 2;
     textValue: string = 'initial value';
-    writeOnPreviewCtx: boolean = false;
+    private writeOnPreviewCtx: boolean = false;
     isRenderingBase: boolean;
     distanceX: number = 0;
     distanceY: number = 0;
     infoText: ToolInfoText;
+
     private textAlign: number = 2;
     private textControl: TextControl;
     constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
         super(drawingService);
         this.textControl = new TextControl(this.drawingService.previewCtx);
     }
-
+    isOnPreviewCanvas(): boolean {
+        return this.writeOnPreviewCtx;
+    }
     formatLabel(value: number): number {
         return value;
     }

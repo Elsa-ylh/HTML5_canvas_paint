@@ -229,7 +229,7 @@ describe('SidebarComponent', () => {
     });
 
     it('should export Drawing ', () => {
-        component.isDialogloadSaveEport = true;
+        component.isDialogLoadSaveExport = true;
         const closedSubject = new Subject<any>();
 
         const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
@@ -237,11 +237,11 @@ describe('SidebarComponent', () => {
         dialogMock.open.and.returnValue(dialogRefMock);
 
         component.exportDrawing();
-        expect(component.isDialogloadSaveEport).toEqual(false);
+        expect(component.isDialogLoadSaveExport).toEqual(false);
 
         closedSubject.next();
 
-        expect(component.isDialogloadSaveEport).toEqual(true);
+        expect(component.isDialogLoadSaveExport).toEqual(true);
     });
 
     it(' should create new drawing dialog', () => {
@@ -258,17 +258,17 @@ describe('SidebarComponent', () => {
         const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
         dialogRefMock.afterClosed.and.returnValue(closedSubject.asObservable());
         dialogMock.open.and.returnValue(dialogRefMock);
-        component.isDialogloadSaveEport = true;
+        component.isDialogLoadSaveExport = true;
         component.openCarrousel();
-        expect(component.isDialogloadSaveEport).toEqual(false);
+        expect(component.isDialogLoadSaveExport).toEqual(false);
 
         closedSubject.next();
 
-        expect(component.isDialogloadSaveEport).toEqual(true);
+        expect(component.isDialogLoadSaveExport).toEqual(true);
     });
 
     it('should open save server ', () => {
-        component.isDialogloadSaveEport = true;
+        component.isDialogLoadSaveExport = true;
         const closedSubject = new Subject<any>();
 
         const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
@@ -276,21 +276,21 @@ describe('SidebarComponent', () => {
         dialogMock.open.and.returnValue(dialogRefMock);
 
         component.openSaveServer();
-        expect(component.isDialogloadSaveEport).toEqual(false);
+        expect(component.isDialogLoadSaveExport).toEqual(false);
 
         closedSubject.next();
 
-        expect(component.isDialogloadSaveEport).toEqual(true);
+        expect(component.isDialogLoadSaveExport).toEqual(true);
     });
 
     it('should open writeTextDialogUserComponent', () => {
-        const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+        const matDialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
         component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
-            return matdialogRef;
+            return matDialogRef;
         });
         component.openUserGuide();
-        expect(component.checkDocumentationRef).toEqual(matdialogRef);
+        expect(component.checkDocumentationRef).toEqual(matDialogRef);
     });
     it(' should pick pencil', () => {
         const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
@@ -556,7 +556,7 @@ describe('SidebarComponent', () => {
         const event = new KeyboardEvent('window:keydown.s', {});
         const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
         const spyPickSelectionEllipse = spyOn(component, 'pickSelectionEllipse').and.stub();
-        component.isDialogloadSaveEport = true;
+        component.isDialogLoadSaveExport = true;
         window.dispatchEvent(event);
         component.changeSelectionEllipseMode(event);
         expect(spyReset).toHaveBeenCalled();
@@ -830,7 +830,7 @@ describe('SidebarComponent', () => {
         component.pickText();
         expect(drawingStub.cursorUsed).toEqual('text');
         expect(switchToolSpy).toHaveBeenCalled();
-        expect(component.isDialogloadSaveEport).toEqual(false);
+        expect(component.isDialogLoadSaveExport).toEqual(false);
     });
 
     it('should pick feather', () => {

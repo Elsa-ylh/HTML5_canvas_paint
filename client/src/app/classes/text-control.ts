@@ -29,9 +29,9 @@ export class TextControl {
     setWidth(width: number): void {
         this.width = Math.abs(width);
     }
-    // textFont(font: string): void {
-    //     this.ctx.font = font;
-    // }
+    textFont(font: string): void {
+        this.ctx.font = font;
+    }
     addLetter(letter: string): void {
         // tslint:disable:prefer-for-of
         for (let index = 0; index < letter.length; index++) {
@@ -239,15 +239,13 @@ export class TextControl {
 
     // number of letters in a single line
     private nbLetterInLine(ctx: CanvasRenderingContext2D, text: string): boolean {
-        let check = false;
-        let mtp = '';
+        let nbOfLetters = '';
         // tslint:disable:prefer-for-of
         for (let index = 0; index < text.length; index++) {
-            mtp += text[index];
-            if (!this.checkWidthText(ctx, mtp, this.width) && !check) {
-                check = true;
+            nbOfLetters += text[index];
+            if (!this.checkWidthText(ctx, nbOfLetters, this.width)) {
                 this.nbOfLettersInLine = index;
-                return check;
+                return true;
             }
         }
         return false;
