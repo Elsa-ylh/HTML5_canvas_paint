@@ -11,7 +11,7 @@ import { SelectionEllipseService } from '@app/services/tools/selection-service/s
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { SelectionImage } from '../selection';
 
-fdescribe('SelectionEllipseAction', () => {
+describe('SelectionEllipseAction', () => {
     let selectionEllipseActionStub: SelectionEllipseAction;
     let drawingStub: DrawingService;
     let colorStub: ColorService;
@@ -29,7 +29,9 @@ fdescribe('SelectionEllipseAction', () => {
     let canvas: HTMLCanvasElement;
 
     beforeEach(() => {
-        // tslint:disable:no-magic-numbers
+        selection = new SelectionImage(drawingStub);
+        selection.image = new Image();
+        selection.image.src = selection.image.src;
 
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);

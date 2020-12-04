@@ -30,6 +30,10 @@ describe('SelectionRectAction', () => {
     let canvas: HTMLCanvasElement;
 
     beforeEach(() => {
+        selection = new SelectionImage(drawingStub);
+        selection.image = new Image();
+        selection.image.src = selection.image.src;
+
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
