@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { STAMP } from '@app/classes/stamp';
 import { StampComponent } from '@app/components/stamp/stamp.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { StampService } from '@app/services/tools/stamp.service';
@@ -40,5 +41,10 @@ describe('StampComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should set cursor', () => {
+        component.pickStamp(STAMP.stamp1);
+        expect(stampStub.currentStampName).toEqual(STAMP.stamp1);
     });
 });

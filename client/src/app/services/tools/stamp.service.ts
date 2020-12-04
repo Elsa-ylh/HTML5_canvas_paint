@@ -105,7 +105,6 @@ export class StampService extends Tool {
         this.mouseCenterY = event.offsetY - this.canvasHeight; // updates the current mouse position in y
 
         this.currentStamp2.onload = () => {
-            // this.drawingService.baseCtx.drawImage(this.currentStamp2, this.mouseCenterX, this.mouseCenterY, this.newWidth, this.newHeight);
             this.drawingService.baseCtx.drawImage(this.currentStamp2, this.mouseCenterX, this.mouseCenterY);
         };
     }
@@ -117,6 +116,7 @@ export class StampService extends Tool {
     }
 
     onMouseOut(event: MouseEvent): void {
+        this.drawingService.cursorCtx.clearRect(0, 0, this.drawingService.cursorCtx.canvas.width, this.drawingService.cursorCtx.canvas.height);
         this.drawingService.cursorCtx.canvas.style.display = 'none';
     }
 
