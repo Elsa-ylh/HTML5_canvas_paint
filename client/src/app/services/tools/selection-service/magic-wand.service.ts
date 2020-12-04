@@ -304,21 +304,24 @@ export class MagicWandService extends SelectionService {
         );
     }
 
-    drawPreviewRect(): void  {
-        if (this.selection.imagePosition !== this.selection.endingPos) {
-            this.drawingService.previewCtx.setLineDash([this.dottedSpace, this.dottedSpace]);
-            this.selection.height = this.selection.endingPos.y - this.selection.imagePosition.y;
-            this.selection.width = this.selection.endingPos.x - this.selection.imagePosition.x;
+    drawSelection(): void  {
+        if (this.scaled) {
+            this.flipImage();
+            this.scaled = false;
         }
-        this.drawingService.previewCtx.strokeRect(this.selection.imagePosition.x, this.selection.imagePosition.y, this.selection.width, this.selection.height);
+        this.drawingService.previewCtx.save();
+        this.drawingService.previewCtx.drawImage(this.selection.image, this.selection.imagePosition.x, this.selection.imagePosition.y, this.selection.width, this.selection.height);
+        this.drawingService.previewCtx.restore();
+        this.drawSelectionRect(this.selection.imagePosition, this.selection.width, this.selection.height);
     }
 
     onMouseDown(event: MouseEvent): void {
         this.clearEffectTool();
         if (event.button === MouseButton.Left) {
+            this.mouseDown = true;
             const toBeSelectedPixels: ImageData = this.selectedFloodFill(event.offsetX, event.offsetY, this.replacementColor);
             this.saveSelectionData(toBeSelectedPixels);
-            this.drawPreviewRect();
+            this.drawSelection();
             // debugger;
             // this.drawSelection(this.selection.imagePosition);
             // this.drawingService.previewCtx.fillRect(0,0,100,100);
@@ -326,14 +329,11 @@ export class MagicWandService extends SelectionService {
 
         // The entire canvas is being verified if the target color plus tolerance can be colored with the replacement color.
         if (event.button === MouseButton.Right) {
-            this.mouseDown = false;
+            this.mouseDown = true;
             const toBeSelectedPixels: ImageData = this.selectAllSimilar(event.offsetX, event.offsetY, this.replacementColor);
             this.saveSelectionData(toBeSelectedPixels);
             return;
         }
     }
 
-    onMouseUp(event: MouseEvent): void {
-        return;
-    }
 }
