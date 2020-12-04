@@ -15,6 +15,8 @@ export class ControlGroup {
     constructor(drawingService: DrawingService) {
         this.drawingService = drawingService;
 
+        this.controlPoints.set(ControlPointName.center, new ControlPoint(this.drawingService));
+
         this.controlPoints.set(ControlPointName.topLeft, new ControlPoint(this.drawingService));
         this.controlPoints.set(ControlPointName.top, new ControlPoint(this.drawingService));
         this.controlPoints.set(ControlPointName.topRight, new ControlPoint(this.drawingService));
@@ -35,6 +37,11 @@ export class ControlGroup {
     }
 
     setPositions(startingPos: Vec2, endingPos: Vec2, size: Vec2): void {
+        (this.controlPoints.get(ControlPointName.center) as ControlPoint).setPosition({
+            x: startingPos.x + size.x / 2 - CPSIZE / 2,
+            y: startingPos.y + size.y / 2 - CPSIZE / 2,
+        });
+
         (this.controlPoints.get(ControlPointName.topLeft) as ControlPoint).setPosition({
             x: startingPos.x - CPSIZE / 2,
             y: startingPos.y - CPSIZE / 2,

@@ -30,6 +30,11 @@ export class MagnetismService {
     // we need to bring it back for image position compatible
     private convertCalculatingPosition(ajustedPosition: Vec2, controlPointname: ControlPointName, selectionSize: Vec2): Vec2 {
         switch (controlPointname) {
+            case ControlPointName.center:
+                return {
+                    x: ajustedPosition.x - selectionSize.x / 2,
+                    y: ajustedPosition.y - selectionSize.y / 2,
+                };
             case ControlPointName.topLeft:
                 return ajustedPosition;
             case ControlPointName.top:
