@@ -238,14 +238,21 @@ export class SelectionService extends Tool {
     }
 
     selectAll(): void {
+        if (!this.drawingService.isPreviewCanvasBlank()) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.pasteSelection(this.selection);
+        }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.isAllSelect = true;
         this.selection.width = this.drawingService.canvas.width;
         this.selection.height = this.drawingService.canvas.height;
         this.selection.endingPos = { x: this.selection.width, y: this.selection.height };
         this.selection.imagePosition = this.selection.copyImageInitialPos = { x: 1, y: 1 };
-        this.selection.imageData = this.drawingService.baseCtx.getImageData(0, 0, this.selection.width, this.selection.height);
+        this.controlGroup = new ControlGroup(this.drawingService);
+        this.drawSelectionRect({ x: 1, y: 1 }, this.selection.width, this.selection.height);
+        this.copySelection();
         this.drawSelection({ x: 0, y: 0 });
+        this.cleared = false;
     }
 
     drawPreviewRect(ctx: CanvasRenderingContext2D, shiftPressed: boolean): void {
@@ -486,7 +493,7 @@ export class SelectionService extends Tool {
                     this.selection.endingPos.x += mouseMovement.x;
                     this.selection.imagePosition.y += mouseMovement.y;
                     break;
-                case ControlPointName.bottomLeft:
+                case ControlPointName.bottomRight:
                     this.selection.ellipseRad.x -= mouseMovement.x / 2;
                     this.selection.ellipseRad.y += mouseMovement.y / 2;
                     this.selection.width -= mouseMovement.x;
@@ -494,7 +501,7 @@ export class SelectionService extends Tool {
                     this.selection.imagePosition.x += mouseMovement.x;
                     this.selection.endingPos.y += mouseMovement.y;
                     break;
-                case ControlPointName.bottomRight:
+                case ControlPointName.bottomLeft:
                     this.selection.ellipseRad.x += mouseMovement.x / 2;
                     this.selection.ellipseRad.y += mouseMovement.y / 2;
                     this.selection.width += mouseMovement.x;
@@ -579,52 +586,37 @@ export class SelectionService extends Tool {
     flipImage(): void {
         if (this.selection.width < 0 && this.selection.height < 0 && this.flip !== FlipDirection.diagonal) {
             this.flip = FlipDirection.diagonal;
-            this.drawFlippedImage({ x: -1, y: -1 }, this.selection.imageSize);
+            this.saveFlippedImage({ x: -1, y: -1 }, this.selection.imageSize);
             return;
         }
         if (this.selection.width > 0 && this.selection.height < 0 && this.flip !== FlipDirection.vertical) {
-            this.drawFlippedImage({ x: 1, y: -1 }, { x: 0, y: this.selection.imageSize.y });
-            // ctx.save();
-            // ctx.translate(0, canvas.height);
-            // ctx.scale(1,-1);
-            // ctx.drawImage(this.baseImage, 0, 0, canvas.width,canvas.height);
-            // ctx.restore();
-            // this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
-            // this.selection.image = new Image();
-            // tslint:disable-next-line:max-line-length
-            // this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+            this.saveFlippedImage({ x: 1, y: -1 }, { x: 0, y: this.selection.imageSize.y });
             this.flip = FlipDirection.vertical;
             return;
         }
         if (this.selection.width < 0 && this.selection.height > 0 && this.flip !== FlipDirection.horizontal) {
-            this.drawFlippedImage({ x: -1, y: 1 }, { x: this.selection.imageSize.x, y: 0 });
+            this.saveFlippedImage({ x: -1, y: 1 }, { x: this.selection.imageSize.x, y: 0 });
             this.flip = FlipDirection.horizontal;
             return;
         }
         if (this.selection.width > 0 && this.selection.height > 0 && this.flip !== FlipDirection.none) {
             this.flip = FlipDirection.none;
-            this.drawFlippedImage({ x: 1, y: 1 }, { x: 0, y: 0 });
-            // ctx.drawImage(this.baseImage, 0, 0, canvas.width,canvas.height);
-            // ctx.restore();
-            // this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
-            // this.selection.image = new Image();
-            // tslint:disable-next-line:max-line-length
-            // this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+            this.saveFlippedImage({ x: 1, y: 1 }, { x: 0, y: 0 });
         }
     }
 
-    drawFlippedImage(scale: Vec2, translation: Vec2): void {}
-
-    // flipDirection(selection:SelectionImage) : FlipDirection {
-    //   if(selection.width < 0 && selection.height <0){
-    //     return FlipDirection.diagonal;
-    //   }
-    //   if(selection.width > 0 && selection.height <0){
-    //     return  FlipDirection.vertical;
-    //   }
-    //   if(selection.width < 0 && selection.height > 0){
-    //     return FlipDirection.horizontal;
-    //   }
-    //   return FlipDirection.none;
-    // }
+    saveFlippedImage(scale: Vec2, translation: Vec2): void {
+        const canvas = document.createElement('canvas') as HTMLCanvasElement;
+        const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
+        canvas.width = Math.abs(this.selection.imageSize.x);
+        canvas.height = Math.abs(this.selection.imageSize.y);
+        ctx.save();
+        ctx.translate(translation.x, translation.y);
+        ctx.scale(scale.x, scale.y);
+        ctx.drawImage(this.baseImage, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+        this.selection.imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        this.selection.image = new Image();
+        this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+    }
 }

@@ -1,26 +1,28 @@
 import { AbsUndoRedo } from '@app//classes/undo-redo/abs-undo-redo';
-import { Vec2 } from '@app/classes/vec2';
+import { SelectionImage } from '@app/classes/selection';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 
 export class SelectionEllipseAction extends AbsUndoRedo {
-    constructor(
-        private pastePosition: Vec2,
-        private imageData: ImageData,
-        private copyPosition: Vec2,
-        private width: number,
-        private height: number,
-        private selectionEllService: SelectionEllipseService,
-        private ellipseRad: Vec2,
-    ) {
+    private selection: SelectionImage;
+    constructor(private selectionService: SelectionEllipseService, private drawingService: DrawingService, selection: SelectionImage) {
         super();
+        this.selection = new SelectionImage(this.drawingService);
+        this.selection.copyImageInitialPos = { x: selection.copyImageInitialPos.x, y: selection.copyImageInitialPos.y };
+        this.selection.imagePosition = { x: selection.imagePosition.x, y: selection.imagePosition.y };
+        this.selection.endingPos = { x: selection.endingPos.x, y: selection.endingPos.y };
+        this.selection.imageSize = { x: selection.imageSize.x, y: selection.imageSize.y };
+        this.selection.ellipseRad = { x: selection.ellipseRad.x, y: selection.ellipseRad.y };
+        this.selection.width = selection.width;
+        this.selection.height = selection.height;
+        this.selection.imageData = selection.imageData;
+        this.selection.image = new Image();
+        this.selection.image.src = selection.image.src;
     }
 
     apply(): void {
-        const image = new Image();
-        image.src = this.selectionEllService.getImageURL(this.imageData, this.width, this.height);
-        this.selectionEllService.ellipseRad = this.ellipseRad;
-        console.log(this.ellipseRad);
-        this.selectionEllService.clearSelection(this.copyPosition, this.width, this.height);
-        this.selectionEllService.pasteSelection(this.pastePosition, image, { x: this.width, y: this.height });
+        this.selectionService.selection.ellipseRad = { x: this.selection.ellipseRad.x, y: this.selection.ellipseRad.y };
+        this.selectionService.clearSelection(this.selection.copyImageInitialPos, this.selection.width, this.selection.height);
+        this.selectionService.pasteSelection(this.selection);
     }
 }
