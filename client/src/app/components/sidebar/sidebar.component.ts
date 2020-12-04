@@ -667,5 +667,8 @@ export class SidebarComponent {
         if (this.toolService.currentToolName === ToolUsed.Feather) {
             this.featherService.altPressed = false;
         }
+        if (this.toolService.currentToolName === ToolUsed.Stamp) {
+            this.stampService.isAltPressed = false;
+        }
     }
 }
