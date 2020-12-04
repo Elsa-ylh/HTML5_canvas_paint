@@ -635,9 +635,18 @@ export class SidebarComponent {
             this.featherService.addOrRetract(event);
             this.featherService.changeAngleWithScroll();
         }
-        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse || this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
             this.rotationService.addOrRetract(event);
             this.rotationService.changeAngleWithScroll();
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.selectionEllipseService.drawSelection(this.selectionEllipseService.selection.imagePosition);
+
+        }
+        if(this.toolService.currentToolName === ToolUsed.SelectionRectangle){
+          this.rotationService.addOrRetract(event);
+          this.rotationService.changeAngleWithScroll();
+          this.drawingService.clearCanvas(this.drawingService.previewCtx);
+          this.selectionRectangleService.drawSelection(this.selectionRectangleService.selection.imagePosition);
         }
     }
 
