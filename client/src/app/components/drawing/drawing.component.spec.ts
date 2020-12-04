@@ -4,6 +4,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { cursorName } from '@app/classes/cursor-name';
 import { RESIZE_MIDDLE_LOWER_PROPORTION } from '@app/classes/resize-canvas';
 import { Tool } from '@app/classes/tool';
+import { DrawingComponent } from '@app/components/drawing/drawing.component';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -12,6 +14,7 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { DropperService } from '@app/services/tools/dropper.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { FeatherService } from '@app/services/tools/feather.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
@@ -19,8 +22,9 @@ import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
+import { SprayService } from '@app/services/tools/spray.service';
+import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
 // tslint:disable:no-any
@@ -32,7 +36,8 @@ describe('DrawingComponent', () => {
     let drawingStub: DrawingService;
     let toolServiceStub: ToolService;
     let canvasResizerStub: CanvasResizerService;
-
+    let autoSaveStub: AutomaticSaveService;
+    let featherStub: FeatherService;
     let pencilStub: PencilService;
     let eraserStub: EraserService;
     let brushStub: BrushService;
@@ -46,25 +51,31 @@ describe('DrawingComponent', () => {
     let selectionRectangleStub: SelectionRectangleService;
     let selectionEllipseStub: SelectionEllipseService;
     let undoRedoStub: UndoRedoService;
+    let sprayStub: SprayService;
 
+    let textServiceStub: TextService;
     beforeEach(
         waitForAsync(() => {
             drawingStub = new DrawingService();
             undoRedoStub = new UndoRedoService(drawingStub);
             canvasResizerStub = new CanvasResizerService(undoRedoStub);
             colorStub = new ColorService(drawingStub);
-            pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub);
-            eraserStub = new EraserService(drawingStub, undoRedoStub);
-            brushStub = new BrushService(drawingStub, colorStub, undoRedoStub);
-            lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
-            rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub);
-            ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub);
-            dropperStub = new DropperService(drawingStub, colorStub);
-            polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub);
-            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub);
+            autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+            pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
+            eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
+            brushStub = new BrushService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
+            lineStub = new LineService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
+            rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
+            ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
+            dropperStub = new DropperService(drawingStub, colorStub, autoSaveStub);
+            polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
+            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, autoSaveStub);
             selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
+            sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
+            textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
+            featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -77,6 +88,9 @@ describe('DrawingComponent', () => {
                 paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
+                sprayStub,
+                featherStub,
+                textServiceStub,
             );
 
             toolStub = toolServiceStub.currentTool;

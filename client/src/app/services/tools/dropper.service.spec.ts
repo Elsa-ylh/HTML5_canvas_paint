@@ -25,7 +25,7 @@ describe('DropperService', () => {
         dropperService = TestBed.inject(DropperService);
         colorServiceMock = TestBed.inject(ColorService) as jasmine.SpyObj<ColorService>;
         // tslint:disable:no-string-literal
-        dropperService['drawingService'].dropperCtx = dropperStubCtx;
+        dropperService['drawingService'].cursorCtx = dropperStubCtx;
         dropperService.circleCtx = circleCtxStub;
     });
 

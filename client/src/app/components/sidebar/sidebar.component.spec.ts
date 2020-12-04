@@ -19,6 +19,7 @@ import { ColorComponent } from '@app/components/color/color.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DropperColorComponent } from '@app/components/dropper-color/dropper-color.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -27,6 +28,7 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { DropperService } from '@app/services/tools/dropper.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { FeatherService } from '@app/services/tools/feather.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
@@ -35,6 +37,8 @@ import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
+import { SprayService } from '@app/services/tools/spray.service';
+import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Observable, Subject } from 'rxjs';
 import { SidebarComponent } from './sidebar.component';
@@ -43,7 +47,6 @@ import { SidebarComponent } from './sidebar.component';
 // tslint:disable:no-magic-numbers
 // tslint:disable:max-file-line-count
 // tslint:disable:prefer-const
-
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
@@ -64,6 +67,10 @@ describe('SidebarComponent', () => {
     let selectionEllipseStub: SelectionEllipseService;
     let undoRedoStub: UndoRedoService;
     let selectionStub: SelectionService;
+    let sprayStub: SprayService;
+    let textServiceStub: TextService;
+    let automaticSaveStub: AutomaticSaveService;
+    let featherStub: FeatherService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -72,17 +79,21 @@ describe('SidebarComponent', () => {
     beforeEach(
         waitForAsync(async () => {
             drawingStub = new DrawingService();
+            automaticSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
             colorStub = new ColorService(drawingStub);
             undoRedoStub = new UndoRedoService(drawingStub);
-            rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub);
-            ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub);
-            brushStub = new BrushService(drawingStub, colorStub, undoRedoStub);
-            pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub);
-            eraserStub = new EraserService(drawingStub, undoRedoStub);
-            lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
-            dropperServiceStub = new DropperService(drawingStub, colorStub);
-            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub);
+            rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            brushStub = new BrushService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            eraserStub = new EraserService(drawingStub, undoRedoStub, automaticSaveStub);
+            lineStub = new LineService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            dropperServiceStub = new DropperService(drawingStub, colorStub, automaticSaveStub);
+            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, automaticSaveStub);
             selectionStub = new SelectionService(drawingStub);
+            sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
+            featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -95,11 +106,14 @@ describe('SidebarComponent', () => {
                 paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
+                sprayStub,
+                featherStub,
+                textServiceStub,
             );
 
             selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
-            polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub);
+            polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             canvas = canvasTestHelper.canvas;
             canvas.width = 100;
             canvas.height = 100;
@@ -133,6 +147,7 @@ describe('SidebarComponent', () => {
                     HttpClientModule,
                 ],
                 providers: [
+                    { provide: AutomaticSaveService, useValue: { save: () => '' } },
                     { provide: DrawingService, useValue: drawingStub },
                     { provide: ToolService, useValue: toolServiceStub },
                     { provide: RectangleService, useValue: rectangleStub },
@@ -151,6 +166,8 @@ describe('SidebarComponent', () => {
                     { provide: Observable, useValue: {} },
                     { provide: SelectionService, useValue: selectionStub },
                     { provide: UndoRedoService, useValue: undoRedoStub },
+                    { provide: SprayService, useValue: sprayStub },
+                    { provide: FeatherService, useValue: featherStub },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);
@@ -368,6 +385,12 @@ describe('SidebarComponent', () => {
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
     });
+    it('should pick sprayer', () => {
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.callThrough();
+        component.pickSprayer();
+        expect(drawingStub.cursorUsed).toEqual(cursorName.default);
+        expect(switchToolSpy).toHaveBeenCalled();
+    });
     it('should set all checked to false', () => {
         component.resetCheckedButton();
         expect(component.pencilChecked).toEqual(false);
@@ -383,6 +406,7 @@ describe('SidebarComponent', () => {
         expect(component.selectionEllipseChecked).toEqual(false);
         expect(component.selectionEllipseChecked).toEqual(false);
         expect(component.selectionRectangleChecked).toEqual(false);
+        expect(component.sprayChecked).toEqual(false);
     });
 
     it('should set subtoolselected as tool 2', () => {
@@ -778,5 +802,89 @@ describe('SidebarComponent', () => {
         window.dispatchEvent(event);
         component.callRedo(event);
         expect(spyRedo).toHaveBeenCalled();
+    });
+
+    it('should change to spray mode if a is pressed', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new KeyboardEvent('window:keydown.a', {});
+        const spySprayer = spyOn(component, 'pickSprayer').and.stub();
+        window.dispatchEvent(event);
+        component.changeSprayMode(event);
+        expect(spySprayer).toHaveBeenCalled();
+    });
+
+    it('should call btnCallRedo', () => {
+        const spyRedo = spyOn(undoRedoStub, 'redo').and.stub();
+        component.btnCallRedo();
+        expect(spyRedo).toHaveBeenCalled();
+    });
+
+    it('should call btnCallUndo', () => {
+        const spyUndo = spyOn(undoRedoStub, 'undo').and.stub();
+        component.btnCallUndo();
+        expect(spyUndo).toHaveBeenCalled();
+    });
+
+    it('should pick text', () => {
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
+        component.pickText();
+        expect(drawingStub.cursorUsed).toEqual('text');
+        expect(switchToolSpy).toHaveBeenCalled();
+        expect(component.isDialogloadSaveEport).toEqual(false);
+    });
+
+    it('should pick feather', () => {
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
+        component.pickFeather();
+        expect(drawingStub.cursorUsed).toEqual(cursorName.none);
+        expect(switchToolSpy).toHaveBeenCalled();
+    });
+
+    it('should call resetChecked button, set isFeatherChecked to true and call pickFeather when pressing p', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new KeyboardEvent('window:keydown.p', {});
+        const resetCheckedButtonSpy = spyOn(component, 'resetCheckedButton').and.callThrough();
+        const spyPickFeather = spyOn(component, 'pickFeather').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeFeatherMode(event);
+        expect(resetCheckedButtonSpy).toHaveBeenCalled();
+        expect(spyPickFeather).toHaveBeenCalled();
+    });
+
+    it('should call changeFeatherAngle when scrolling using the mouse wheel', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new WheelEvent('window:wheel', {});
+        const changeFeatherAngleSpy = spyOn(component, 'changeAngleWithWheel').and.callThrough();
+        const changeAngleWithScrollSpy = spyOn(featherStub, 'changeAngleWithScroll').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeAngleWithWheel(event);
+        expect(changeFeatherAngleSpy).toHaveBeenCalled();
+        expect(changeAngleWithScrollSpy).toHaveBeenCalled();
+    });
+
+    it('should call addOrRetract when scrolling using the mouse wheel and changeFeatherAngle is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new WheelEvent('window:wheel', {});
+        const addOrRetractSpy = spyOn(featherStub, 'addOrRetract').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeAngleWithWheel(event);
+        expect(addOrRetractSpy).toHaveBeenCalled();
+    });
+
+    it('should change altPressed value to true when alt is pressed ', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new KeyboardEvent('window:keydown.alt', {});
+        const altPressedSpy = spyOn(component, 'altPressed').and.stub();
+        window.dispatchEvent(event);
+        component.altPressed(event);
+        expect(altPressedSpy).toHaveBeenCalled();
+    });
+
+    it('should change featherStub altpressed to true', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new KeyboardEvent('window:keydown.alt', {});
+        window.dispatchEvent(event);
+        component.altPressed(event);
+        expect(featherStub.altPressed).toEqual(true);
     });
 });
