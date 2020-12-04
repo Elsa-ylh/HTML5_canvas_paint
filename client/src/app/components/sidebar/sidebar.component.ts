@@ -636,20 +636,20 @@ export class SidebarComponent {
             this.featherService.changeAngleWithScroll();
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
-          if(!this.drawingService.isPreviewCanvasBlank()){
-            this.rotationService.addOrRetract(event);
-            this.rotationService.changeAngleWithScroll();
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.selectionEllipseService.drawSelection(this.selectionEllipseService.selection.imagePosition);
-          }
+            if (!this.drawingService.isPreviewCanvasBlank()) {
+                this.rotationService.addOrRetract(event);
+                this.rotationService.changeAngleWithScroll();
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.selectionEllipseService.drawSelection(this.selectionEllipseService.selection.imagePosition);
+            }
         }
-        if(this.toolService.currentToolName === ToolUsed.SelectionRectangle){
-          if(!this.drawingService.isPreviewCanvasBlank()){
-          this.rotationService.addOrRetract(event);
-          this.rotationService.changeAngleWithScroll();
-          this.drawingService.clearCanvas(this.drawingService.previewCtx);
-          this.selectionRectangleService.drawSelection(this.selectionRectangleService.selection.imagePosition);
-          }
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            if (!this.drawingService.isPreviewCanvasBlank()) {
+                this.rotationService.addOrRetract(event);
+                this.rotationService.changeAngleWithScroll();
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.selectionRectangleService.drawSelection(this.selectionRectangleService.selection.imagePosition);
+            }
         }
     }
 

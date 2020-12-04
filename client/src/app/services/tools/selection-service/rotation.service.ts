@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { SelectionImage } from '@app/classes/selection';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-const FIFTEEN: number = 15;
-const ONE: number = 1;
-const ONEHUNDREDEIGHTY: number = 180;
+const FIFTEEN = 15;
+const ONE = 1;
+const ONEHUNDREDEIGHTY = 180;
 
 @Injectable({
     providedIn: 'root',
