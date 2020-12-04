@@ -208,11 +208,11 @@ export class MagicWandService extends SelectionService {
             } else {
                 // rgba(255, 255, 255, 0) means transparent -> magic number for white color
                 // tslint:disable-next-line:no-magic-numbers
-                previewLayer.data[i * this.COLORATTRIBUTES] = 255;
+                // previewLayer.data[i * this.COLORATTRIBUTES] = 255;
                 // tslint:disable-next-line:no-magic-numbers
-                previewLayer.data[i * this.COLORATTRIBUTES + 1] = 255;
+                // previewLayer.data[i * this.COLORATTRIBUTES + 1] = 255;
                 // tslint:disable-next-line:no-magic-numbers
-                previewLayer.data[i * this.COLORATTRIBUTES + 2] = 255;
+                // previewLayer.data[i * this.COLORATTRIBUTES + 2] = 255;
                 // +3 means at alpha position
                 // tslint:disable-next-line:no-magic-numbers
                 previewLayer.data[i * this.COLORATTRIBUTES + 3] = 0;
@@ -223,9 +223,9 @@ export class MagicWandService extends SelectionService {
 
     private checkNotTransparentPixel(previewLayer: ImageData, pixelPosition: number, transparentColor: RGBA): boolean {
         return (
-            previewLayer.data[pixelPosition] !== transparentColor.red &&
-            previewLayer.data[pixelPosition + 1] !== transparentColor.green &&
-            previewLayer.data[pixelPosition + 2] !== transparentColor.blue &&
+            //previewLayer.data[pixelPosition] !== transparentColor.red &&
+            //previewLayer.data[pixelPosition + 1] !== transparentColor.green &&
+            //previewLayer.data[pixelPosition + 2] !== transparentColor.blue &&
             // tslint:disable-next-line:no-magic-numbers
             previewLayer.data[pixelPosition + 3] !== transparentColor.alpha
         );
@@ -283,8 +283,6 @@ export class MagicWandService extends SelectionService {
     }
 
     private saveSelectionData(selectedPixels: ImageData): void {
-        // const ctx: CanvasRenderingContext2D = this.drawingService.previewCtx;
-
         // the next steps removes anything other than the selected pixels to become transparent
         // and it keeps the selected pixels in the layer
         const previewLayer: ImageData = this.preparePreviewLayer(selectedPixels);
@@ -294,35 +292,35 @@ export class MagicWandService extends SelectionService {
         const leftBoundPos: Vec2 = this.findBound(Bound.LEFT, previewLayer);
         const rightBoundPos: Vec2 = this.findBound(Bound.RIGHT, previewLayer);
 
-        this.selection.imagePosition = { x: leftBoundPos.x, y: upperBoundPos.y } as Vec2;
-        this.selection.endingPos = { x: rightBoundPos.x, y: lowerBoundPos.y } as Vec2;
+        // +-1 is to give one more pixel to the selection rectangle and not be too cramped
+        this.selection.imagePosition = { x: leftBoundPos.x - 1, y: upperBoundPos.y - 1 } as Vec2;
+        this.selection.endingPos = { x: rightBoundPos.x + 1, y: lowerBoundPos.y + 1 } as Vec2;
 
         this.selection.image = new Image();
         this.selection.image.src = this.getImageURL(
             previewLayer,
-            this.selection.endingPos.x - this.selection.imagePosition.x,
-            this.selection.endingPos.y - this.selection.imagePosition.y,
+            rightBoundPos.x - leftBoundPos.x,
+            lowerBoundPos.y - upperBoundPos.y,
         );
     }
 
-    drawSelection(imagePosition: Vec2): void {
-        if (this.scaled) {
-            this.flipImage();
-            this.scaled = false;
+    drawPreviewRect(): void  {
+        if (this.selection.imagePosition !== this.selection.endingPos) {
+            this.drawingService.previewCtx.setLineDash([this.dottedSpace, this.dottedSpace]);
+            this.selection.height = this.selection.endingPos.y - this.selection.imagePosition.y;
+            this.selection.width = this.selection.endingPos.x - this.selection.imagePosition.x;
         }
-        this.drawingService.previewCtx.save();
-        this.drawingService.previewCtx.drawImage(this.selection.image, imagePosition.x, imagePosition.y, this.selection.width, this.selection.height);
-        this.drawingService.previewCtx.restore();
-        this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
+        this.drawingService.previewCtx.strokeRect(this.selection.imagePosition.x, this.selection.imagePosition.y, this.selection.width, this.selection.height);
     }
 
     onMouseDown(event: MouseEvent): void {
-        console.log(event.offsetX, event.offsetY);
+        this.clearEffectTool();
         if (event.button === MouseButton.Left) {
             const toBeSelectedPixels: ImageData = this.selectedFloodFill(event.offsetX, event.offsetY, this.replacementColor);
             this.saveSelectionData(toBeSelectedPixels);
+            this.drawPreviewRect();
             // debugger;
-            this.drawSelection(this.selection.imagePosition);
+            // this.drawSelection(this.selection.imagePosition);
             // this.drawingService.previewCtx.fillRect(0,0,100,100);
         }
 

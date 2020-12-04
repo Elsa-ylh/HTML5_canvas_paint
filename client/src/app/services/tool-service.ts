@@ -34,9 +34,9 @@ export class ToolService {
         private paintBucketService: PaintBucketService,
         private selectionRectangleService: SelectionRectangleService,
         private selectionEllipseService: SelectionEllipseService,
+        private magicWandService: MagicWandService,
         private featherService: FeatherService,
         private textService: TextService,
-        private magicWandService: MagicWandService,
     ) {
         this.tableTool[ToolUsed.NONE] = this.pencilService;
         this.tableTool[ToolUsed.Pencil] = this.pencilService;
@@ -52,7 +52,7 @@ export class ToolService {
         this.tableTool[ToolUsed.PaintBucket] = this.paintBucketService;
         this.tableTool[ToolUsed.Feather] = this.featherService;
         this.tableTool[ToolUsed.Text] = this.textService;
-        this.tableTool[ToolUsed.MagicWandSelection] = this.magicWandService;
+        this.tableTool[ToolUsed.MagicWand] = this.magicWandService;
 
         this.switchTool(ToolUsed.NONE); // default tools if all else fail in the sidebar usually
     }

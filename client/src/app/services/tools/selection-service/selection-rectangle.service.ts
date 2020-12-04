@@ -43,7 +43,7 @@ export class SelectionRectangleService extends SelectionService {
             if (this.drawingService.isPreviewCanvasBlank()) {
                 this.selection.imagePosition = this.mouseDownCoords;
 
-                // for  pasting selection
+            // for  pasting selection
             } else if (!this.inSelection && !this.drawingService.isPreviewCanvasBlank() && this.controlPointName === ControlPointName.none) {
                 // paste image
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -59,7 +59,7 @@ export class SelectionRectangleService extends SelectionService {
         }
     }
 
-    onKeyEscape(event: KeyboardEvent): void {
+    onKeyEscape(): void {
         if (!this.drawingService.isPreviewCanvasBlank()) {
             // paste image
             this.drawingService.clearCanvas(this.drawingService.previewCtx);

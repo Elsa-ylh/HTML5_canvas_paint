@@ -303,7 +303,7 @@ export class SidebarComponent {
 
     pickMagicWandSelection(): void {
         this.drawingService.cursorUsed = cursorName.default;
-        this.toolService.switchTool(ToolUsed.MagicWandSelection);
+        this.toolService.switchTool(ToolUsed.MagicWand);
         this.isDialogloadSaveEport = true;
     }
 
