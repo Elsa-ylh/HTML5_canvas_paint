@@ -630,4 +630,11 @@ export class SidebarComponent {
             this.featherService.altPressed = true;
         }
     }
+
+    @HostListener('window:keyup.alt', ['$event'])
+    allReleased(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Feather) {
+            this.featherService.altPressed = false;
+        }
+    }
 }
