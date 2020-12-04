@@ -25,13 +25,13 @@ export class RotationService extends Tool {
         // this.drawingService.baseCtx.rotate(this.rotationAngle);
     }
 
-    rotateSelection(selection:SelectionImage): void {
-        this.drawingService.previewCtx.translate(
+    rotateSelection(selection:SelectionImage, ctx:CanvasRenderingContext2D): void {
+        ctx.translate(
             selection.imagePosition.x + selection.width / 2,
             selection.imagePosition.y + selection.height / 2,
         );
-        this.drawingService.previewCtx.rotate(this.rotationAngle * Math.PI / 180);
-        this.drawingService.previewCtx.translate(
+        ctx.rotate(this.rotationAngle * Math.PI / 180);
+        ctx.translate(
           - selection.imagePosition.x - selection.width / 2,
           - selection.imagePosition.y - selection.height / 2,
       );

@@ -158,7 +158,7 @@ export class SelectionRectangleService extends SelectionService {
         }
         this.drawingService.previewCtx.save();
         // rotation
-        this.rotationService.rotateSelection(this.selection);
+        this.rotationService.rotateSelection(this.selection, this.drawingService.previewCtx);
         // this.drawingService.previewCtx.translate(imagePosition.x + this.selection.width / 2, imagePosition.y + this.selection.height / 2);
         // this.drawingService.previewCtx.rotate(this.rotationService.rotationAngle);
 
@@ -169,6 +169,8 @@ export class SelectionRectangleService extends SelectionService {
     }
 
     pasteSelection(selection: SelectionImage): void {
+      this.drawingService.baseCtx.save();
+      this.rotationService.rotateSelection(selection, this.drawingService.baseCtx);
         this.drawingService.baseCtx.drawImage(
             selection.image,
             selection.imagePosition.x,
@@ -176,6 +178,9 @@ export class SelectionRectangleService extends SelectionService {
             selection.width,
             selection.height,
         );
+        this.drawingService.baseCtx.restore();
+        this.rotateService.rotationAngle= 0;
+
     }
 
     protected drawPreview(): void {
