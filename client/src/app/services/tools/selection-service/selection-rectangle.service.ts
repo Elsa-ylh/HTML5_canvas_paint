@@ -2,18 +2,19 @@ import { Injectable } from '@angular/core';
 import { ControlPointName } from '@app/classes/control-points';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SelectionImage } from '@app/classes/selection';
-// import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
+import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MagnetismService } from '../magnetism.service';
 import { RotationService } from './rotation.service';
+import { MagnetismService } from '@app/services/tools/magnetism.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { SelectionService } from './selection-service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionRectangleService extends SelectionService {
-    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService, protected rotateService: RotationService) {
+    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService, protected rotateService: RotationService, private undoRedoService: UndoRedoService) {
         super(drawingService, magnetismService, rotateService);
     }
 
@@ -48,13 +49,9 @@ export class SelectionRectangleService extends SelectionService {
                 // paste image
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.pasteSelection(this.selection);
-                // undo redo
-                //     const selectRectAc = new SelectionRectAction(
-                //         this.selection,
-                //         this,
-                //     );
-                //     this.undoRedoService.addUndo(selectRectAc);
-                //     this.undoRedoService.clearRedo();
+                const selectRectAc = new SelectionRectAction(this, this.drawingService, this.selection);
+                this.undoRedoService.addUndo(selectRectAc);
+                this.undoRedoService.clearRedo();
                 this.mouseMovement = { x: 0, y: 0 };
                 this.isAllSelect = false;
                 this.selection.endingPos = this.mouseDownCoord;
@@ -84,16 +81,9 @@ export class SelectionRectangleService extends SelectionService {
             // paste image
             this.pasteSelection(this.selection);
             // undo redo
-            // const selectRectAc = new SelectionRectAction(
-            //     this.imagePosition,
-            //     this.imageData,
-            //     this.copyImageInitialPos,
-            //     Math.abs(this.width),
-            //     Math.abs(this.height),
-            //     this,
-            // );
-            // this.undoRedoService.addUndo(selectRectAc);
-            // this.undoRedoService.clearRedo();
+            const selectRectAc = new SelectionRectAction(this, this.drawingService, this.selection);
+            this.undoRedoService.addUndo(selectRectAc);
+            this.undoRedoService.clearRedo();
             this.mouseMovement = { x: 0, y: 0 };
             this.isAllSelect = false;
             this.selection.endingPos = this.selection.imagePosition = this.mouseDownCoord;
@@ -163,22 +153,12 @@ export class SelectionRectangleService extends SelectionService {
 
     drawSelection(imagePosition: Vec2): void {
         if (this.scaled) {
-            // this.drawingService.previewCtx.save();
-            // this.drawingService.previewCtx.translate(this.drawingService.canvas.width, this.drawingService.canvas.height);
-            // this.drawingService.previewCtx.scale(-1,-1);
-            // this.drawingService.previewCtx.drawImage(this.selection.image, this.drawingService.canvas.width - imagePosition.x, this.drawingService.canvas.height - imagePosition.y, this.selection.width*-1, this.selection.height*-1);
-            // this.drawingService.previewCtx.restore();
-            // this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
-            // this.scaled =false;
-            // this.selection.getImage({x:this.selection.width, y:this.selection.height});
             this.flipImage();
             this.scaled = false;
-            // this.flip.x = 1;
-            // this.flip.y = 1;
         }
         this.drawingService.previewCtx.save();
         // rotation
-        this.rotationService.rotateRect(imagePosition, {x:this.selection.width,y:this.selection.height});
+        this.rotationService.rotate(this.selection);
         // this.drawingService.previewCtx.translate(imagePosition.x + this.selection.width / 2, imagePosition.y + this.selection.height / 2);
         // this.drawingService.previewCtx.rotate(this.rotationService.rotationAngle);
 
@@ -192,8 +172,8 @@ export class SelectionRectangleService extends SelectionService {
             selection.image,
             selection.imagePosition.x,
             selection.imagePosition.y,
-            this.selection.width,
-            this.selection.height,
+            selection.width,
+            selection.height,
         );
     }
 
@@ -206,18 +186,18 @@ export class SelectionRectangleService extends SelectionService {
         this.drawingService.baseCtx.fillRect(position.x, position.y, width, height);
     }
 
-    drawFlippedImage(scale: Vec2, translation: Vec2): void {
-        const canvas = document.createElement('canvas') as HTMLCanvasElement;
-        const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
-        canvas.width = Math.abs(this.selection.imageSize.x);
-        canvas.height = Math.abs(this.selection.imageSize.y);
-        ctx.save();
-        ctx.translate(translation.x, translation.y);
-        ctx.scale(scale.x, scale.y);
-        ctx.drawImage(this.baseImage, 0, 0, canvas.width, canvas.height);
-        ctx.restore();
-        this.selection.imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        this.selection.image = new Image();
-        this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
-    }
+    // saveFlippedImage(scale: Vec2, translation: Vec2): void {
+    //     const canvas = document.createElement('canvas') as HTMLCanvasElement;
+    //     const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
+    //     canvas.width = Math.abs(this.selection.imageSize.x);
+    //     canvas.height = Math.abs(this.selection.imageSize.y);
+    //     ctx.save();
+    //     ctx.translate(translation.x, translation.y);
+    //     ctx.scale(scale.x, scale.y);
+    //     ctx.drawImage(this.baseImage, 0, 0, canvas.width, canvas.height);
+    //     ctx.restore();
+    //     this.selection.imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    //     this.selection.image = new Image();
+    //     this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+    // }
 }

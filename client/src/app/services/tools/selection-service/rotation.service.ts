@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
+import { SelectionImage } from '@app/classes/selection';
 import { Tool } from '@app/classes/tool';
-import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SelectionRectangleService } from './selection-rectangle.service';
 export const FIFTEEN = 15;
 export const ONE = 1;
 
@@ -13,7 +12,7 @@ export class RotationService extends Tool {
     altPressed: boolean = false;
     isWheelAdd: boolean = false;
     rotationAngle: number = 0;
-    constructor(drawingService: DrawingService, private selectionRectService: SelectionRectangleService) {
+    constructor(drawingService: DrawingService) {
         super(drawingService);
     }
 
@@ -26,15 +25,15 @@ export class RotationService extends Tool {
         // this.drawingService.baseCtx.rotate(this.rotationAngle);
     }
 
-    rotateRect(imagePosition: Vec2, size:Vec2): void {
+    rotate(selection:SelectionImage): void {
         this.drawingService.previewCtx.translate(
-            imagePosition.x + size.x / 2,
-            imagePosition.y + size.y / 2,
+            selection.imagePosition.x + selection.width / 2,
+            selection.imagePosition.y + selection.height / 2,
         );
         this.drawingService.previewCtx.rotate(this.rotationAngle);
         this.drawingService.previewCtx.translate(
-          - imagePosition.x - size.x / 2,
-          - imagePosition.y - size.y / 2,
+          - selection.imagePosition.x - selection.width / 2,
+          - selection.imagePosition.y - selection.height / 2,
       );
     }
 

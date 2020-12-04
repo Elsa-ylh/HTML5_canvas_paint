@@ -62,28 +62,28 @@ export class ControlPoint {
         this.position = position;
     }
 
-//     scale(selection:SelectionImage, movement:Vec2, shiftPressed:boolean):SelectionImage {
+    //     scale(selection:SelectionImage, movement:Vec2, shiftPressed:boolean):SelectionImage {
 
-//       if( shiftPressed){
-//         selection.ellipseRad.x += this.ellipseRadSign.x*movement.x;
-//         selection.ellipseRad.y += this.ellipseRadSign.y*movement.y;
-//         selection.width += this.sizeSign.x*movement.x * 2;
-//         selection.height += this.sizeSign.y*movement.y * 2;
-//         selection.endingPos.x += this.endingPosSign.x*movement.x;
-//         selection.endingPos.y += this.endingPosSign.y*movement.y;
-//         selection.imagePosition.x += this.imagePositionSign.x*movement.x;
-//         selection.imagePosition.y += this.imagePositionSign.y*movement.y;
-//         return selection;
-//       }
-//       selection.ellipseRad.x += this.ellipseRadSign.x*movement.x / 2;
-//       selection.ellipseRad.y += this.ellipseRadSign.y*movement.y / 2;
-//       selection.width += this.sizeSign.x*movement.x;
-//       selection.height += this.sizeSign.y*movement.y;
-//       selection.imagePosition.x += this.endingPosSign.x*movement.x;
-//       selection.imagePosition.y += this.endingPosSign.y*movement.y;
-//       selection.endingPos.x += this.imagePositionSign.x*movement.x;
-//       selection.endingPos.y += this.imagePositionSign.y*movement.y;
-//       return selection;
+    //       if( shiftPressed){
+    //         selection.ellipseRad.x += this.ellipseRadSign.x*movement.x;
+    //         selection.ellipseRad.y += this.ellipseRadSign.y*movement.y;
+    //         selection.width += this.sizeSign.x*movement.x * 2;
+    //         selection.height += this.sizeSign.y*movement.y * 2;
+    //         selection.endingPos.x += this.endingPosSign.x*movement.x;
+    //         selection.endingPos.y += this.endingPosSign.y*movement.y;
+    //         selection.imagePosition.x += this.imagePositionSign.x*movement.x;
+    //         selection.imagePosition.y += this.imagePositionSign.y*movement.y;
+    //         return selection;
+    //       }
+    //       selection.ellipseRad.x += this.ellipseRadSign.x*movement.x / 2;
+    //       selection.ellipseRad.y += this.ellipseRadSign.y*movement.y / 2;
+    //       selection.width += this.sizeSign.x*movement.x;
+    //       selection.height += this.sizeSign.y*movement.y;
+    //       selection.imagePosition.x += this.endingPosSign.x*movement.x;
+    //       selection.imagePosition.y += this.endingPosSign.y*movement.y;
+    //       selection.endingPos.x += this.imagePositionSign.x*movement.x;
+    //       selection.endingPos.y += this.imagePositionSign.y*movement.y;
+    //       return selection;
 
-//     }
+    //     }
 }
