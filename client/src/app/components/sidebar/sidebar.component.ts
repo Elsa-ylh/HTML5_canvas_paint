@@ -629,7 +629,7 @@ export class SidebarComponent {
             this.pickFeather();
         }
     }
-
+    // ~
     @HostListener('window:wheel', ['$event'])
     changeAngleWithWheel(event: WheelEvent): void {
         if (this.toolService.currentToolName === ToolUsed.Feather) {
@@ -652,6 +652,7 @@ export class SidebarComponent {
                 this.selectionRectangleService.drawSelection(this.selectionRectangleService.selection.imagePosition);
             }
         }
+        event.stopPropagation();
     }
 
     @HostListener('window:keydown.alt', ['$event'])
@@ -661,6 +662,16 @@ export class SidebarComponent {
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionEllipse || this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
             this.rotationService.altPressed = true;
+        }
+    }
+
+    @HostListener('window:keyup.alt', ['$event'])
+    altReleased(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Feather) {
+            this.featherService.altPressed = false;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse || this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.rotationService.altPressed = false;
         }
     }
 }
