@@ -123,6 +123,7 @@ export class SidebarComponent {
     createNewDrawing(): void {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
         this.automaticSaveService.save();
+        this.rotationService.resetAngle();
     }
 
     openCarrousel(): void {
