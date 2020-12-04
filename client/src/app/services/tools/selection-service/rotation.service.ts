@@ -26,12 +26,16 @@ export class RotationService extends Tool {
         // this.drawingService.baseCtx.rotate(this.rotationAngle);
     }
 
-    rotateRect(imagePosition: Vec2): void {
+    rotateRect(imagePosition: Vec2, size:Vec2): void {
         this.drawingService.previewCtx.translate(
-            imagePosition.x + this.selectionRectService.selection.width / 2,
-            imagePosition.y + this.selectionRectService.selection.height / 2,
+            imagePosition.x + size.x / 2,
+            imagePosition.y + size.y / 2,
         );
         this.drawingService.previewCtx.rotate(this.rotationAngle);
+        this.drawingService.previewCtx.translate(
+          - imagePosition.x - size.x / 2,
+          - imagePosition.y - size.y / 2,
+      );
     }
 
     changeAngleWithScroll(): void {

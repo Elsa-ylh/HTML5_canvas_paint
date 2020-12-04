@@ -178,7 +178,7 @@ export class SelectionRectangleService extends SelectionService {
         }
         this.drawingService.previewCtx.save();
         // rotation
-        this.rotationService.rotateRect(imagePosition);
+        this.rotationService.rotateRect(imagePosition, {x:this.selection.width,y:this.selection.height});
         // this.drawingService.previewCtx.translate(imagePosition.x + this.selection.width / 2, imagePosition.y + this.selection.height / 2);
         // this.drawingService.previewCtx.rotate(this.rotationService.rotationAngle);
 
