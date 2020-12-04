@@ -631,17 +631,15 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keydown.add', ['$event']) increaseSquareGrid(event: KeyboardEvent): void {
-        alert();
-        if (this.toolService.currentToolName === ToolUsed.Grid && this.gridService.squareWidth + SQUARE_STEP_SIZE <= MAX_SQUARE_WIDTH) {
-            this.gridService.squareWidth += SQUARE_STEP_SIZE;
+    @HostListener('window:keydown.-', ['$event']) decreaseSquareGrid(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Grid) {
+            this.gridService.squareWidth -= SQUARE_STEP_SIZE;
         }
     }
 
-    @HostListener('window:keydown.subtract', ['$event']) decreaseSquareGrid(event: KeyboardEvent): void {
-        alert();
-        if (this.toolService.currentToolName === ToolUsed.Grid && this.gridService.squareWidth - SQUARE_STEP_SIZE >= MAX_SQUARE_WIDTH) {
-            this.gridService.squareWidth -= SQUARE_STEP_SIZE;
+    @HostListener('window:keydown.shift.=', ['$event']) increaseSquareGrid(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Grid) {
+            this.gridService.squareWidth += SQUARE_STEP_SIZE;
         }
     }
 
