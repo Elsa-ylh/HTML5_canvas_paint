@@ -661,4 +661,14 @@ export class SidebarComponent {
             this.stampService.isAltPressed = true;
         }
     }
+
+    @HostListener('window:keyup.alt', ['$event'])
+    allReleased(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Feather) {
+            this.featherService.altPressed = false;
+        }
+        if (this.toolService.currentToolName === ToolUsed.Stamp) {
+            this.stampService.isAltPressed = false;
+        }
+    }
 }
