@@ -63,15 +63,15 @@ export class RotationService extends Tool {
     updateImageWithRotation(selectionService:SelectionService):void {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
-        const ADDED_WIDTH = Math.sin(selectionService.selection.rotationAngle*TO_RAD)*selectionService.selection.height/2;
-        const ADDED_HEIGHT = Math.sin(selectionService.selection.rotationAngle*TO_RAD)*selectionService.selection.width/2;
+        const ADDED_WIDTH = Math.abs(Math.sin(selectionService.selection.rotationAngle*TO_RAD)*selectionService.selection.width);
+        const ADDED_HEIGHT = Math.abs(Math.sin(selectionService.selection.rotationAngle*TO_RAD)*selectionService.selection.height);
         canvas.width = Math.abs(selectionService.selection.width +ADDED_WIDTH);
         canvas.height = Math.abs(selectionService.selection.height+ ADDED_HEIGHT);
         ctx.save();
         ctx.translate(canvas.width/2, canvas.height/2);
         ctx.rotate(selectionService.selection.rotationAngle * TO_RAD);
         ctx.translate(-canvas.width/2, -canvas.height/2);
-        ctx.drawImage(selectionService.selection.image, canvas.width/2 - selectionService.selection.imageSize.x/2 , canvas.height/2 - selectionService.selection.imageSize.y/2);
+        ctx.drawImage(selectionService.baseImage, canvas.width/2 - selectionService.selection.imageSize.x/2 , canvas.height/2 - selectionService.selection.imageSize.y/2);
         selectionService.selection.imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         ctx.restore();
         // selectionService.selection.imageSize = {x:selectionService.selection.width, y: selectionService.selection.height};
@@ -82,12 +82,12 @@ export class RotationService extends Tool {
         selectionService.selection.image.src = selectionService.selection.getImageURL(selectionService.selection.imageData, selectionService.selection.width + ADDED_WIDTH, selectionService.selection.height+ ADDED_HEIGHT);
         console.log(selectionService.selection.width);
         console.log("added " + ADDED_WIDTH);
-        selectionService.selection.width +=  ADDED_WIDTH;
-        selectionService.selection.height += ADDED_HEIGHT;
+        //selectionService.selection.width =  ADDED_WIDTH;
+        // selectionService.selection.height = ADDED_HEIGHT;
         //selectionService.selection.resetAngle();
-
+        console.log(selectionService.selection.image.naturalHeight);
         console.log(selectionService.selection.width);
 
-        // console.log(selectionService.selection.image.src);
+        console.log(selectionService.selection.image.src);
     }
 }
