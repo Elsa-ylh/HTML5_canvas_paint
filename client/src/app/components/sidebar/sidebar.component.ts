@@ -19,7 +19,9 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { FeatherService } from '@app/services/tools/feather.service';
+import { GridService, MAX_SQUARE_WIDTH, MIN_SQUARE_WIDTH, SQUARE_STEP_SIZE } from '@app/services/tools/grid.service';
 import { LineService } from '@app/services/tools/line.service';
+import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
@@ -83,6 +85,8 @@ export class SidebarComponent {
         public undoRedoService: UndoRedoService,
         public selectionRectangleService: SelectionRectangleService,
         public selectionEllipseService: SelectionEllipseService,
+        public gridService: GridService,
+        public magnetismService: MagnetismService,
         public featherService: FeatherService,
         private automaticSaveService: AutomaticSaveService,
     ) {
@@ -267,6 +271,7 @@ export class SidebarComponent {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.SelectionRectangle);
         this.isDialogloadSaveEport = true;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     get selectionRectangleChecked(): boolean {
@@ -277,6 +282,7 @@ export class SidebarComponent {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.SelectionEllipse);
         this.isDialogloadSaveEport = true;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     get selectionEllipseChecked(): boolean {
@@ -302,6 +308,11 @@ export class SidebarComponent {
         return this.isTextChecked;
     }
 
+    pickGridSettings(): void {
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.Grid);
+        this.isDialogloadSaveEport = true;
+    }
     pickFeather(): void {
         this.drawingService.cursorUsed = cursorName.none;
         this.toolService.switchTool(ToolUsed.Feather);
@@ -340,6 +351,18 @@ export class SidebarComponent {
     btnCallUndo(): void {
         this.undoRedoService.undo();
         this.automaticSaveService.save();
+    }
+
+    btnCallGrid(): void {
+        if (this.gridService.isGridSettingsChecked) {
+            this.gridService.isGridSettingsChecked = false;
+            this.gridService.deactivateGrid();
+            return;
+        } else {
+            this.gridService.isGridSettingsChecked = true;
+            this.gridService.activateGrid();
+            return;
+        }
     }
 
     // keybind control o for new drawing
@@ -598,6 +621,38 @@ export class SidebarComponent {
         }
     }
 
+    @HostListener('window:keydown.g', ['$event']) activateGrid(event: KeyboardEvent): void {
+        if (this.gridService.isGridSettingsChecked) {
+            this.gridService.isGridSettingsChecked = false;
+            this.gridService.deactivateGrid();
+        } else {
+            this.gridService.isGridSettingsChecked = true;
+            this.gridService.activateGrid();
+        }
+    }
+
+    @HostListener('window:keydown.-', ['$event']) decreaseSquareGrid(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Grid && this.gridService.squareWidth - SQUARE_STEP_SIZE >= MIN_SQUARE_WIDTH) {
+            this.gridService.squareWidth -= SQUARE_STEP_SIZE;
+        }
+    }
+
+    @HostListener('window:keydown.+', ['$event'])
+    @HostListener('window:keydown.shift.+', ['$event'])
+    increaseSquareGrid(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Grid && this.gridService.squareWidth + SQUARE_STEP_SIZE <= MAX_SQUARE_WIDTH) {
+            this.gridService.squareWidth += SQUARE_STEP_SIZE;
+        }
+    }
+
+    @HostListener('window:keydown.m', ['$event']) activateMagnetism(event: KeyboardEvent): void {
+        if (this.magnetismService.isMagnetismActive) {
+            this.magnetismService.isMagnetismActive = false;
+            this.magnetismService.resetMagnetism();
+        } else {
+            this.magnetismService.isMagnetismActive = true;
+        }
+    }
     @HostListener('window:keydown.a', ['$event'])
     changeSprayMode(event: KeyboardEvent): void {
         if (this.toolService.currentToolName !== ToolUsed.Color) {
