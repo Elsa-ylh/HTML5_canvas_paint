@@ -1,11 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SelectionEllipseAction } from '@app/classes/undo-redo/selection-ellipse-action';
-import { Vec2 } from '@app/classes/vec2';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/tools/grid.service';
+import { MagnetismService } from '@app/services/tools/magnetism.service';
+import { RotationService } from '@app/services/tools/selection-service/rotation.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { SelectionImage } from '../selection';
 
 describe('SelectionEllipseAction', () => {
     let selectionEllipseActionStub: SelectionEllipseAction;
@@ -13,38 +17,31 @@ describe('SelectionEllipseAction', () => {
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
     let selectionEllipseStub: SelectionEllipseService;
-    let copyPosition: Vec2;
-    let imageData: ImageData;
-    let selectionRect: Vec2;
-    let ellipseRad: Vec2;
-    let width: number;
-    let height: number;
+    let magnetismStub: MagnetismService;
+    let gridService: GridService;
+    let rotationStub: RotationService;
+    let canvasResizeStub: CanvasResizerService;
+
+    let selection: SelectionImage;
+
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
 
     beforeEach(() => {
-        // tslint:disable:no-magic-numbers
-        copyPosition = { x: 5, y: 5 };
-        imageData = new ImageData(10, 10);
-        selectionRect = { x: 6, y: 7 };
-        ellipseRad = { x: 5, y: 5 };
-        width = 10;
-        // tslint:disable:no-magic-numbers
-        height = 10;
+        selection = new SelectionImage(drawingStub);
+        selection.image = new Image();
+        selection.image.src = selection.image.src;
+
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
-        selectionEllipseActionStub = new SelectionEllipseAction(
-            copyPosition,
-            imageData,
-            selectionRect,
-            width,
-            height,
-            selectionEllipseStub,
-            ellipseRad,
-        );
+        rotationStub = new RotationService(drawingStub);
+        canvasResizeStub = new CanvasResizerService(undoRedoStub);
+        gridService = new GridService(drawingStub, canvasResizeStub);
+        magnetismStub = new MagnetismService(gridService);
+        selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
+        selectionEllipseActionStub = new SelectionEllipseAction(selectionEllipseStub, drawingStub, selection);
         canvas = canvasTestHelper.canvas;
         // tslint:disable:no-magic-numbers
         canvas.width = 100;
