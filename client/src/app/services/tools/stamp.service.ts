@@ -53,6 +53,7 @@ export class StampService extends Tool {
 
     // https://stackoverflow.com/questions/39619967/js-center-image-inside-canvas-element/39620144
     drawCursorImage(): void {
+        this.drawingService.cursorCtx.clearRect(0, 0, this.drawingService.cursorCtx.canvas.width, this.drawingService.cursorCtx.canvas.height);
         const wrh = this.currentStamp.width / this.currentStamp.height;
         this.newWidth = this.drawingService.cursorCtx.canvas.width;
         this.newHeight = this.newWidth / wrh;
