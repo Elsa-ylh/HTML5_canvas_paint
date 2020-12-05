@@ -3,6 +3,7 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ControlGroup } from '@app/classes/control-group';
+import { ControlPointName } from '@app/classes/control-points';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SelectionImage } from '@app/classes/selection';
 import { Vec2 } from '@app/classes/vec2';
@@ -60,6 +61,7 @@ fdescribe('Service: SelectionRectangle', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    let canvas: HTMLCanvasElement;
 
     beforeEach(() => {
         drawingStub = new DrawingService();
@@ -75,9 +77,12 @@ fdescribe('Service: SelectionRectangle', () => {
         selectionStub.controlGroup = controlMock;
 
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        canvas = canvasTestHelper.canvas as HTMLCanvasElement;
 
         canvasTestHelper.drawCanvas.width = 1000;
         canvasTestHelper.drawCanvas.height = 1000;
+        canvas.height = 1000;
+        canvas.width = 1000;
 
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
@@ -136,14 +141,24 @@ fdescribe('Service: SelectionRectangle', () => {
         expect(isInControlPointSpy).toHaveBeenCalled();
     });
 
-    // it('onmouseDown should call clearCanvas  ', () => {
-    //     const clearCanvasSpy = spyOn(drawingStub, 'clearCanvas').and.stub();
-    //     service.inSelection = false;
+    it('onmouseDown should call clearCanvas  ', () => {
+        service.mouseDown = true;
+        service.inSelection = false;
 
-    //     service.controlPointName === ControlPointName.none;
-    //     service.onMouseDown(mouseEvent);
-    //     expect(clearCanvasSpy).toHaveBeenCalled();
-    // });
+        const clearCanvasSpy = spyOn(drawingStub, 'clearCanvas').and.stub();
+        service.inSelection = false;
+        const controlGroup = new ControlGroup(drawingStub);
+        controlGroup.setPositions({ x: 10, y: 10 } as Vec2, { x: 30, y: 30 } as Vec2, { x: 20, y: 20 } as Vec2);
+        const previewCanvas = document.createElement('canvas');
+        drawingStub.previewCtx = previewCanvas.getContext('2d') as CanvasRenderingContext2D;
+        drawingStub.previewCtx.fillRect(0, 0, 10, 10);
+        service.controlGroup = controlGroup;
+        service.onMouseDown(mouseEvent);
+        service.controlPointName === ControlPointName.none;
+
+        service.onMouseDown(mouseEvent);
+        expect(clearCanvasSpy).toHaveBeenCalled();
+    });
 
     // it('onmouseDown should call pasteSelection  ', () => {
     //     const pasteSelectionSpy = spyOn(service, 'pasteSelection').and.stub();
