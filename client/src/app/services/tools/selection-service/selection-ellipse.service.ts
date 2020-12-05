@@ -146,7 +146,7 @@ export class SelectionEllipseService extends SelectionService {
             this.drawSelectionAll();
         } else {
             if (this.scaled) {
-                this.flipImage();
+                this.flipImage(this.selection.rotationAngle);
                 this.scaled = false;
             }
             this.drawingService.previewCtx.save();
@@ -209,7 +209,7 @@ export class SelectionEllipseService extends SelectionService {
                 selection.height,
             );
             this.drawingService.baseCtx.restore();
-            this.rotationService.resetAngle();
+            this.selection.resetAngle();
         }
     }
 

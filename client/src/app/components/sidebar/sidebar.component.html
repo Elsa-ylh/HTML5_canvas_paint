@@ -283,8 +283,8 @@
                 <mat-grid-tile> </mat-grid-tile>
                 <mat-grid-tile colspan="6"> Changer l'angle de rotation du rectangle </mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-slider max="360" min="0" [(ngModel)]="rotationService.rotationAngle"> </mat-slider>
-                    <samp>{{ rotationService.rotationAngle }}degré</samp>
+                    <mat-slider max="360" min="0" [(ngModel)]="selectionRectangleService.selection.rotationAngle"> </mat-slider>
+                    <samp>{{ selectionRectangleService.selection.rotationAngle }}degré</samp>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="2">
                     Il est possible de changer l'angle de rotation du rectangle avec : la roulette (15 degrés) ou avec alt et la roulette (1 degré)
@@ -316,8 +316,8 @@
                 <mat-grid-tile> </mat-grid-tile>
                 <mat-grid-tile colspan="6"> Changer l'angle de rotation de l'ellipse</mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-slider max="360" min="0" [(ngModel)]="rotationService.rotationAngle"> </mat-slider>
-                    <samp>{{ rotationService.rotationAngle }}degré</samp>
+                    <mat-slider max="360" min="0" [(ngModel)]="selectionEllipseService.selection.rotationAngle"> </mat-slider>
+                    <samp>{{ selectionEllipseService.selection.rotationAngle }}degré</samp>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="2">
                     Il est possible de changer l'angle de rotation de l'ellipse avec : la roulette (15 degrés) ou avec alt et la roulette (1 degré)

@@ -123,7 +123,7 @@ export class SidebarComponent {
     createNewDrawing(): void {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
         this.automaticSaveService.save();
-        this.rotationService.resetAngle();
+        // this.rotationService.resetAngle();
     }
 
     openCarrousel(): void {
@@ -637,20 +637,10 @@ export class SidebarComponent {
             this.featherService.changeAngleWithScroll();
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
-            if (!this.drawingService.isPreviewCanvasBlank()) {
-                this.rotationService.addOrRetract(event);
-                this.rotationService.changeAngleWithScroll();
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.selectionEllipseService.drawSelection(this.selectionEllipseService.selection.imagePosition);
-            }
+            this.rotationService.onWheelScroll(this.selectionEllipseService, event);
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
-            if (!this.drawingService.isPreviewCanvasBlank()) {
-                this.rotationService.addOrRetract(event);
-                this.rotationService.changeAngleWithScroll();
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.selectionRectangleService.drawSelection(this.selectionRectangleService.selection.imagePosition);
-            }
+          this.rotationService.onWheelScroll(this.selectionRectangleService, event);
         }
         event.stopPropagation();
     }

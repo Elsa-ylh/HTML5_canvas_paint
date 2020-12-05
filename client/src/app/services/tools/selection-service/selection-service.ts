@@ -275,10 +275,10 @@ export class SelectionService extends Tool {
 
     drawSelectionRect(mouseDownCoord: Vec2, width: number, height: number): void {
         this.drawingService.previewCtx.setLineDash([this.dottedSpace, this.dottedSpace]);
-        this.drawingService.previewCtx.strokeRect(mouseDownCoord.x, mouseDownCoord.y, width, height);
+        this.drawingService.previewCtx.strokeRect(mouseDownCoord.x, mouseDownCoord.y , width, height);
         this.drawingService.previewCtx.setLineDash([]);
 
-        this.controlGroup.setPositions(this.selection.imagePosition, this.selection.endingPos, { x: this.selection.width, y: this.selection.height });
+        this.controlGroup.setPositions(this.selection.imagePosition , this.selection.endingPos, { x: this.selection.width, y: this.selection.height });
 
         this.controlGroup.draw();
     }
@@ -288,7 +288,7 @@ export class SelectionService extends Tool {
         this.selection.getImage({ x: this.selection.width, y: this.selection.height });
         this.baseImageData = this.selection.imageData;
         this.baseImage = new Image();
-        this.baseImage.src = this.getImageURL(this.baseImageData, this.selection.width, this.selection.height);
+        this.baseImage.src = this.getImageURL(this.baseImageData, {x:this.selection.width, y:this.selection.height}, this.selection.rotationAngle);
         // this.selection.imageData = this.drawingService.baseCtx.getImageData(this.selection.imagePosition.x,
         // this.selection.imagePosition.y, this.selection.width, this.selection.height);
         // this.selection.image.src = this.getImageURL(this.selection.imageData, this.selection.width, this.selection.height);
@@ -344,11 +344,14 @@ export class SelectionService extends Tool {
 
     drawSelection(imagePosition: Vec2): void {}
 
-    getImageURL(imgData: ImageData, width: number, height: number): string {
+    getImageURL(imgData: ImageData, size:Vec2, rotationAngle:number): string {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
-        canvas.width = Math.abs(width);
-        canvas.height = Math.abs(height);
+        canvas.width = Math.abs(size.x);
+        canvas.height = Math.abs(size.y);
+        ctx.translate(canvas.width/2, canvas.height/2);
+        ctx.rotate(rotationAngle);
+        ctx.translate(-canvas.width/2, -canvas.height/2);
         ctx.putImageData(imgData, 0, 0);
         return canvas.toDataURL();
     }
@@ -413,7 +416,7 @@ export class SelectionService extends Tool {
         // this.clipboard.copyImage(this.selection);
         this.clipboard.imageData = this.selection.imageData;
         this.clipboard.image = new Image();
-        this.clipboard.image.src = this.getImageURL(this.clipboard.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+        this.clipboard.image.src = this.getImageURL(this.clipboard.imageData, {x:this.selection.imageSize.x, y:this.selection.imageSize.y}, this.selection.rotationAngle);
         this.clipboard.imagePosition = this.selection.imagePosition;
         this.clipboard.width = this.selection.width;
         this.clipboard.height = this.selection.height;
@@ -453,7 +456,7 @@ export class SelectionService extends Tool {
         this.selection.ellipseRad = { x: this.clipboard.ellipseRad.x, y: this.clipboard.ellipseRad.y };
         this.selection.endingPos = { x: Math.abs(this.selection.width), y: Math.abs(this.selection.height) };
         this.selection.image = new Image();
-        this.selection.image.src = this.getImageURL(this.clipboard.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+        this.selection.image.src = this.getImageURL(this.clipboard.imageData, {x:this.selection.imageSize.x, y:this.selection.imageSize.y}, this.selection.rotationAngle);
         this.drawSelection({ x: 1, y: 1 });
     }
 
@@ -587,29 +590,29 @@ export class SelectionService extends Tool {
         // this.flip = this.flipDirection(this.selection);
     }
 
-    flipImage(): void {
+    flipImage(rotationAngle:number): void {
         if (this.selection.width < 0 && this.selection.height < 0 && this.flip !== FlipDirection.diagonal) {
             this.flip = FlipDirection.diagonal;
-            this.saveFlippedImage({ x: -1, y: -1 }, this.selection.imageSize);
+            this.saveFlippedImage({ x: -1, y: -1 }, this.selection.imageSize, rotationAngle);
             return;
         }
         if (this.selection.width > 0 && this.selection.height < 0 && this.flip !== FlipDirection.vertical) {
-            this.saveFlippedImage({ x: 1, y: -1 }, { x: 0, y: this.selection.imageSize.y });
+            this.saveFlippedImage({ x: 1, y: -1 }, { x: 0, y: this.selection.imageSize.y }, rotationAngle);
             this.flip = FlipDirection.vertical;
             return;
         }
         if (this.selection.width < 0 && this.selection.height > 0 && this.flip !== FlipDirection.horizontal) {
-            this.saveFlippedImage({ x: -1, y: 1 }, { x: this.selection.imageSize.x, y: 0 });
+            this.saveFlippedImage({ x: -1, y: 1 }, { x: this.selection.imageSize.x, y: 0 }, rotationAngle);
             this.flip = FlipDirection.horizontal;
             return;
         }
         if (this.selection.width > 0 && this.selection.height > 0 && this.flip !== FlipDirection.none) {
             this.flip = FlipDirection.none;
-            this.saveFlippedImage({ x: 1, y: 1 }, { x: 0, y: 0 });
+            this.saveFlippedImage({ x: 1, y: 1 }, { x: 0, y: 0 }, rotationAngle);
         }
     }
 
-    saveFlippedImage(scale: Vec2, translation: Vec2): void {
+    saveFlippedImage(scale: Vec2, translation: Vec2, rotationAngle:number): void {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
         canvas.width = Math.abs(this.selection.imageSize.x);
@@ -617,10 +620,18 @@ export class SelectionService extends Tool {
         ctx.save();
         ctx.translate(translation.x, translation.y);
         ctx.scale(scale.x, scale.y);
+        //rotate
+
         ctx.drawImage(this.baseImage, 0, 0, canvas.width, canvas.height);
         ctx.restore();
         this.selection.imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         this.selection.image = new Image();
         this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+        // this.selection.resetAngle();
     }
+
+    // updateSelectionWithRotation():void {
+    //   this.selection.width += Math.sin(this.selection.rotationAngle)*this.selection.width / 2;
+    //   this.selection.height += Math.sin(this.selection.rotationAngle)*this.selection.height / 2;
+    // }
 }

@@ -10,6 +10,7 @@ export class SelectionImage {
         this.endingPos = { x: 0, y: 0 };
         this.ellipseRad = { x: 0, y: 0 };
         this.drawingService = drawingService;
+        this.rotationAngle = 0;
     }
     drawingService: DrawingService;
     copyImageInitialPos: Vec2;
@@ -21,6 +22,7 @@ export class SelectionImage {
     height: number;
     width: number;
     ellipseRad: Vec2;
+    rotationAngle: number;
 
     getImage(size: Vec2): void {
         this.imageSize = size;
@@ -56,5 +58,9 @@ export class SelectionImage {
             }
         }
         return false;
+    }
+
+    resetAngle(): void {
+      this.rotationAngle = 0;
     }
 }

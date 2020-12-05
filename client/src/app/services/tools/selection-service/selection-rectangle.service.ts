@@ -158,12 +158,15 @@ export class SelectionRectangleService extends SelectionService {
 
     drawSelection(imagePosition: Vec2): void {
         if (this.scaled) {
-            this.flipImage();
+            this.flipImage(this.selection.rotationAngle);
             this.scaled = false;
         }
         this.drawingService.previewCtx.save();
         // rotation
-        this.rotationService.rotateSelection(this.selection, this.drawingService.previewCtx);
+        if(this.selection.rotationAngle !== 0){
+          this.rotationService.rotateSelection(this.selection, this.drawingService.previewCtx);
+          this.rotationService.updateImageWithRotation(this);
+        }
         this.drawingService.previewCtx.drawImage(this.selection.image, imagePosition.x, imagePosition.y, this.selection.width, this.selection.height);
         this.drawingService.previewCtx.restore();
         this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
@@ -180,7 +183,7 @@ export class SelectionRectangleService extends SelectionService {
             selection.height,
         );
         this.drawingService.baseCtx.restore();
-        this.rotationService.resetAngle();
+        this.selection.resetAngle();
     }
 
     protected drawPreview(): void {

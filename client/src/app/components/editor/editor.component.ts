@@ -12,4 +12,5 @@ export class EditorComponent {
     /* onMouseUp(event: MouseEvent): void {
         this.toolService.currentTool.onMouseUp(event);
     } */
+
 }
