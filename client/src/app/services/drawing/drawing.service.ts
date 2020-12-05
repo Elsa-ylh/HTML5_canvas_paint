@@ -10,6 +10,9 @@ export class DrawingService {
     canvas: HTMLCanvasElement;
     cursorCtx: CanvasRenderingContext2D;
 
+    gridCanvas: HTMLCanvasElement;
+    gridCtx: CanvasRenderingContext2D;
+
     whichTools: ToolUsed = ToolUsed.Pencil;
     currentTool: Tool;
     cursorUsed: string = cursorName.default;
