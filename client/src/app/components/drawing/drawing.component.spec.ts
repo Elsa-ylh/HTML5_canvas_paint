@@ -15,7 +15,9 @@ import { DropperService } from '@app/services/tools/dropper.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { FeatherService } from '@app/services/tools/feather.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { LineService } from '@app/services/tools/line.service';
+import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
@@ -52,6 +54,8 @@ describe('DrawingComponent', () => {
     let selectionEllipseStub: SelectionEllipseService;
     let undoRedoStub: UndoRedoService;
     let sprayStub: SprayService;
+    let gridStub: GridService;
+    let magnetismStub: MagnetismService;
 
     let textServiceStub: TextService;
     beforeEach(
@@ -68,10 +72,12 @@ describe('DrawingComponent', () => {
             rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             dropperStub = new DropperService(drawingStub, colorStub, autoSaveStub);
+            gridStub = new GridService(drawingStub, canvasResizerStub);
+            magnetismStub = new MagnetismService(gridStub);
             polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, autoSaveStub);
-            selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
-            selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
+            selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub);
+            selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub);
             textServiceStub = new TextService(drawingStub, colorStub, undoRedoStub);
             sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 

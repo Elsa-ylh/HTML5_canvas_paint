@@ -30,6 +30,7 @@ import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { FeatherService } from '@app/services/tools/feather.service';
 import { LineService } from '@app/services/tools/line.service';
+import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
@@ -71,6 +72,7 @@ describe('SidebarComponent', () => {
     let textServiceStub: TextService;
     let automaticSaveStub: AutomaticSaveService;
     let featherStub: FeatherService;
+    let magnetismStub: MagnetismService;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
@@ -90,7 +92,7 @@ describe('SidebarComponent', () => {
             lineStub = new LineService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             dropperServiceStub = new DropperService(drawingStub, colorStub, automaticSaveStub);
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, automaticSaveStub);
-            selectionStub = new SelectionService(drawingStub);
+            selectionStub = new SelectionService(drawingStub, magnetismStub);
             textServiceStub = new TextService(drawingStub, colorStub, undoRedoStub);
             sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
@@ -111,8 +113,8 @@ describe('SidebarComponent', () => {
                 textServiceStub,
             );
 
-            selectionRectangleStub = new SelectionRectangleService(drawingStub, undoRedoStub);
-            selectionEllipseStub = new SelectionEllipseService(drawingStub, undoRedoStub);
+            selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub);
+            selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub);
             polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             canvas = canvasTestHelper.canvas;
             canvas.width = 100;
