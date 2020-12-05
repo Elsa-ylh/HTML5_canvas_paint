@@ -5,6 +5,7 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ControlGroup } from '@app/classes/control-group';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SelectionImage } from '@app/classes/selection';
+import { Vec2 } from '@app/classes/vec2';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -123,12 +124,15 @@ fdescribe('Service: SelectionRectangle', () => {
     });
 
     it('onmouseDown should call isInControlPoint if isPreviewCanvasBlank is false', () => {
-        const isInControlPointSpy = spyOn(controlMock, 'isInControlPoint').and.callThrough();
-
         service.mouseDown = true;
-        drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
-        service.mouseDownCoord = service.getPositionFromMouse(mouseEvent);
-        drawingStub.previewCtx = service.onMouseDown(mouseEvent);
+        const controlGroup = new ControlGroup(drawingStub);
+        controlGroup.setPositions({ x: 10, y: 10 } as Vec2, { x: 30, y: 30 } as Vec2, { x: 20, y: 20 } as Vec2);
+        const isInControlPointSpy = spyOn(controlGroup, 'isInControlPoint').and.callThrough();
+        const previewCanvas = document.createElement('canvas');
+        drawingStub.previewCtx = previewCanvas.getContext('2d') as CanvasRenderingContext2D;
+        drawingStub.previewCtx.fillRect(0, 0, 10, 10);
+        service.controlGroup = controlGroup;
+        service.onMouseDown(mouseEvent);
         expect(isInControlPointSpy).toHaveBeenCalled();
     });
 
