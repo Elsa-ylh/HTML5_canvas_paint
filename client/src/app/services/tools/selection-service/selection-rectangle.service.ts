@@ -165,7 +165,8 @@ export class SelectionRectangleService extends SelectionService {
             // this.drawingService.previewCtx.save();
             // this.drawingService.previewCtx.translate(this.drawingService.canvas.width, this.drawingService.canvas.height);
             // this.drawingService.previewCtx.scale(-1,-1);
-            // this.drawingService.previewCtx.drawImage(this.selection.image, this.drawingService.canvas.width - imagePosition.x, this.drawingService.canvas.height - imagePosition.y, this.selection.width*-1, this.selection.height*-1);
+            // this.drawingService.previewCtx.drawImage(this.selection.image, this.drawingService.canvas.width - imagePosition.x,
+            // this.drawingService.canvas.height - imagePosition.y, this.selection.width*-1, this.selection.height*-1);
             // this.drawingService.previewCtx.restore();
             // this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
             // this.scaled =false;

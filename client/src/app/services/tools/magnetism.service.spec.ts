@@ -1,19 +1,20 @@
 /* tslint:disable:no-unused-variable */
+/* tslint:disable: no-string-literal */
+/* tslint:disable: no-any */
 
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ControlGroup } from '@app/classes/control-group';
 import { ControlPointName } from '@app/classes/control-points';
 import { Vec2 } from '@app/classes/vec2';
-import { CanvasResizerService } from '../canvas/canvas-resizer.service';
-import { DrawingService } from '../drawing/drawing.service';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from './grid.service';
 import { MagnetismParams, MagnetismService } from './magnetism.service';
 
 let service: MagnetismService;
 
 let gridStub: GridService;
-let canvasResizerStub: CanvasResizerService;
 let drawingStub: DrawingService;
 
 let baseCtxStub: CanvasRenderingContext2D;
@@ -22,9 +23,10 @@ let previewCtxStub: CanvasRenderingContext2D;
 let ajustedPosition: Vec2;
 let selectionSize: Vec2;
 
-fdescribe('Service: Magnetism', () => {
+describe('Service: Magnetism', () => {
     beforeEach(() => {
         drawingStub = new DrawingService();
+        const canvasResizerStub = {} as CanvasResizerService;
         gridStub = new GridService(drawingStub, canvasResizerStub);
 
         TestBed.configureTestingModule({
@@ -54,6 +56,12 @@ fdescribe('Service: Magnetism', () => {
 
     it('should magnetismService exist', () => {
         expect(service).toBeTruthy();
+    });
+
+    it('should reset magnetism', () => {
+        const spy = spyOn(service, 'resetMagnetism').and.callThrough();
+        service.resetMagnetism();
+        expect(spy).toHaveBeenCalled();
     });
 
     it('should convert to position center', () => {
@@ -157,14 +165,116 @@ fdescribe('Service: Magnetism', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('should apply magnetism on mouse move', () => {
-        service.isMagnetismActive = true;
+    it('should NOT apply magnetism on mouse move', () => {
+        service.isMagnetismActive = false;
+        service['isMouseMagnetValueSet'] = false;
         const params = {
             imagePosition: { x: 100, y: 100 } as Vec2,
             endingPosition: { x: 300, y: 300 } as Vec2,
             controlGroup: {} as ControlGroup,
             selectionSize: { x: 200, y: 200 } as Vec2,
         } as MagnetismParams;
-        const spy = spyOn<any>();
+        const spy = spyOn(service, 'applyMagnetismMouseMove').and.callThrough();
+        service.applyMagnetismMouseMove(params);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should apply magnetism on mouse move first time', () => {
+        service.isMagnetismActive = true;
+        service['isMouseMagnetValueSet'] = false;
+
+        const controlGroup = new ControlGroup(drawingStub);
+        controlGroup.setPositions({ x: 100, y: 100 }, { x: 300, y: 300 }, { x: 200, y: 200 });
+        controlGroup['controlPointName'] = ControlPointName.topLeft;
+
+        const params = {
+            imagePosition: { x: 100, y: 100 } as Vec2,
+            endingPosition: { x: 300, y: 300 } as Vec2,
+            controlGroup: controlGroup as ControlGroup,
+            selectionSize: { x: 200, y: 200 } as Vec2,
+        } as MagnetismParams;
+        const spy = spyOn(service, 'applyMagnetismMouseMove').and.callThrough();
+        service.applyMagnetismMouseMove(params);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should apply magnetism on mouse move second time', () => {
+        service.isMagnetismActive = true;
+        service['isMouseMagnetValueSet'] = true;
+
+        const controlGroup = new ControlGroup(drawingStub);
+        controlGroup.setPositions({ x: 100, y: 100 }, { x: 300, y: 300 }, { x: 200, y: 200 });
+        controlGroup['controlPointName'] = ControlPointName.topLeft;
+
+        const params = {
+            imagePosition: { x: 100, y: 100 } as Vec2,
+            endingPosition: { x: 300, y: 300 } as Vec2,
+            controlGroup: controlGroup as ControlGroup,
+            selectionSize: { x: 200, y: 200 } as Vec2,
+        } as MagnetismParams;
+        const spy = spyOn(service, 'applyMagnetismMouseMove').and.callThrough();
+        service.applyMagnetismMouseMove(params);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should NOT apply magnetism on arrow key', () => {
+        service.isMagnetismActive = false;
+        service['isMouseMagnetValueSet'] = true;
+
+        const controlGroup = new ControlGroup(drawingStub);
+        controlGroup.setPositions({ x: 100, y: 100 }, { x: 300, y: 300 }, { x: 200, y: 200 });
+        controlGroup['controlPointName'] = ControlPointName.topLeft;
+
+        const params = {
+            imagePosition: { x: 100, y: 100 } as Vec2,
+            endingPosition: { x: 300, y: 300 } as Vec2,
+            controlGroup: controlGroup as ControlGroup,
+            selectionSize: { x: 200, y: 200 } as Vec2,
+        } as MagnetismParams;
+
+        const spy = spyOn(service, 'applyMagnetismArrowKey').and.callThrough();
+        service.applyMagnetismArrowKey(params, { x: 1, y: 0 } as Vec2);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should apply magnetism on arrow key first time', () => {
+        service.isMagnetismActive = true;
+        service['isFirstTimeArrow'] = true;
+
+        const controlGroup = new ControlGroup(drawingStub);
+        controlGroup.setPositions({ x: 100, y: 100 }, { x: 300, y: 300 }, { x: 200, y: 200 });
+        controlGroup['controlPointName'] = ControlPointName.topLeft;
+
+        const params = {
+            imagePosition: { x: 100, y: 100 } as Vec2,
+            endingPosition: { x: 300, y: 300 } as Vec2,
+            controlGroup: controlGroup as ControlGroup,
+            selectionSize: { x: 200, y: 200 } as Vec2,
+        } as MagnetismParams;
+
+        const spy = spyOn(service, 'applyMagnetismArrowKey').and.callThrough();
+        service.applyMagnetismArrowKey(params, { x: 1, y: 0 } as Vec2);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should apply magnetism on arrow key second time', () => {
+        service.isMagnetismActive = true;
+        service['prevControlPointName'] = ControlPointName.topLeft;
+        service['isFirstTimeArrow'] = false;
+
+        const controlGroup = new ControlGroup(drawingStub);
+        controlGroup.setPositions({ x: 100, y: 100 }, { x: 300, y: 300 }, { x: 200, y: 200 });
+        controlGroup['controlPointName'] = ControlPointName.topLeft;
+
+        const params = {
+            imagePosition: { x: 100, y: 100 } as Vec2,
+            endingPosition: { x: 300, y: 300 } as Vec2,
+            controlGroup: controlGroup as ControlGroup,
+            selectionSize: { x: 200, y: 200 } as Vec2,
+        } as MagnetismParams;
+
+        const spy = spyOn(service, 'applyMagnetismArrowKey').and.callThrough();
+        service.applyMagnetismArrowKey(params, { x: 1, y: 0 } as Vec2);
+        expect(spy).toHaveBeenCalled();
     });
 });

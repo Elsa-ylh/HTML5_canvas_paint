@@ -111,7 +111,7 @@ export class SelectionService extends Tool {
                 this.mouseMovement = { x: 0, y: 0 };
                 this.selection.imagePosition = this.updateSelectionPositions();
 
-                //reset baseImage to use when flipping the image
+                // reset baseImage to use when flipping the image
                 this.baseImage = new Image();
                 this.baseImage.src = this.selection.image.src;
                 // not in action anymore
@@ -591,7 +591,8 @@ export class SelectionService extends Tool {
             // ctx.restore();
             // this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
             // this.selection.image = new Image();
-            // this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+            // this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x,
+            // this.selection.imageSize.y);
             this.flip = FlipDirection.vertical;
             return;
         }
@@ -607,7 +608,8 @@ export class SelectionService extends Tool {
             // ctx.restore();
             // this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
             // this.selection.image = new Image();
-            // this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+            // this.selection.image.src = this.selection.getImageURL(this.selection.imageData,
+            // this.selection.imageSize.x, this.selection.imageSize.y);
         }
     }
 

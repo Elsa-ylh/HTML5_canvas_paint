@@ -1,10 +1,11 @@
 /* tslint:disable:no-unused-variable */
+/* tslint:disable:no-any */
 
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { CanvasResizerService } from '../canvas/canvas-resizer.service';
-import { DrawingService } from '../drawing/drawing.service';
-import { UndoRedoService } from '../undo-redo/undo-redo.service';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { GridService } from './grid.service';
 
 let service: GridService;
@@ -39,12 +40,12 @@ describe('Service: Grid', () => {
 
         const gridCtxStub = gridCanvas.getContext('2d') as CanvasRenderingContext2D;
 
-        drawingStub['canvas'] = canvasTestHelper.canvas;
-        drawingStub['gridCanvas'] = gridCanvas;
+        drawingStub.canvas = canvasTestHelper.canvas;
+        drawingStub.gridCanvas = gridCanvas;
 
-        drawingStub['baseCtx'] = baseCtxStub; // Jasmine doesnt copy properties with underlying data
-        drawingStub['previewCtx'] = previewCtxStub;
-        drawingStub['gridCtx'] = gridCtxStub;
+        drawingStub.baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        drawingStub.previewCtx = previewCtxStub;
+        drawingStub.gridCtx = gridCtxStub;
     });
 
     it('should gridService be truthy', () => {
