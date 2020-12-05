@@ -16,7 +16,7 @@ let canvasResizerStub: CanvasResizerService;
 let baseCtxStub: CanvasRenderingContext2D;
 let previewCtxStub: CanvasRenderingContext2D;
 
-fdescribe('Service: Grid', () => {
+describe('Service: Grid', () => {
     beforeEach(() => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
@@ -32,11 +32,41 @@ fdescribe('Service: Grid', () => {
 
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        const gridCanvas = document.createElement('canvas');
+        const largeCanvasSize = 1000;
+        gridCanvas.width = largeCanvasSize;
+        gridCanvas.height = largeCanvasSize;
+
+        const gridCtxStub = gridCanvas.getContext('2d') as CanvasRenderingContext2D;
+
+        drawingStub['canvas'] = canvasTestHelper.canvas;
+        drawingStub['gridCanvas'] = gridCanvas;
+
         drawingStub['baseCtx'] = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         drawingStub['previewCtx'] = previewCtxStub;
+        drawingStub['gridCtx'] = gridCtxStub;
     });
 
     it('should gridService be truthy', () => {
         expect(service).toBeTruthy();
+    });
+
+    it('should getGridData', () => {
+        const spy = spyOn<any>(service, 'getGridData').and.callThrough();
+        service.getGridData();
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should deactivateGrid', () => {
+        const spy = spyOn<any>(service, 'deactivateGrid').and.callThrough();
+        service.deactivateGrid();
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should activateGrid', () => {
+        service.isGridSettingsChecked = true;
+        const spy = spyOn<any>(service, 'activateGrid').and.callThrough();
+        service.activateGrid();
+        expect(spy).toHaveBeenCalled();
     });
 });

@@ -78,7 +78,7 @@ export class MagnetismService {
     }
 
     // the following methods calculate where to adjust the xy position
-    private calculateRemainder(squareWidth: number, calculatingPosition: Vec2, ajustedPosition: Vec2): void {
+    private calculateRemainder(squareWidth: number, calculatingPosition: Vec2): void {
         const remainderX = calculatingPosition.x % squareWidth;
         if (remainderX <= squareWidth / 2) this.ajustedPosition.x = calculatingPosition.x - remainderX;
         else this.ajustedPosition.x = calculatingPosition.x - remainderX + squareWidth;
@@ -106,7 +106,7 @@ export class MagnetismService {
 
                 const calculatingPosition = controlPoint.position;
 
-                this.calculateRemainder(squareWidth, calculatingPosition, this.ajustedPosition);
+                this.calculateRemainder(squareWidth, calculatingPosition);
 
                 this.ajustedPosition = this.convertCalculatingPosition(
                     this.ajustedPosition,
@@ -144,7 +144,7 @@ export class MagnetismService {
 
                 const calculatingPosition = controlPoint.position;
 
-                this.calculateRemainder(squareWidth, calculatingPosition, this.ajustedPosition);
+                this.calculateRemainder(squareWidth, calculatingPosition);
 
                 this.ajustedPosition = this.convertCalculatingPosition(
                     this.ajustedPosition,
