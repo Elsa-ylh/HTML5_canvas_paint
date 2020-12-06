@@ -342,7 +342,7 @@ export class SelectionService extends Tool {
 
     getImageURL(imgData: ImageData, width: number, height: number): string {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
-        const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
         canvas.width = Math.abs(width);
         canvas.height = Math.abs(height);
         ctx.putImageData(imgData, 0, 0);

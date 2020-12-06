@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ControlGroup } from '@app/classes/control-group';
 import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
 // import { PaintBucketAction } from '@app/classes/undo-redo/paint-bucket-action';
@@ -199,23 +200,18 @@ export class MagicWandService extends SelectionService {
                 // tslint:disable-next-line:no-magic-numbers
                 selectedPixels.data[i * this.COLORATTRIBUTES + 3] === this.replacementColor.alpha
             ) {
+                // +3 means at alpha position
+                // tslint:disable-next-line:no-magic-numbers
+                previewLayer.data[i * this.COLORATTRIBUTES + 3] = 0;
+            } else {
+
+
                 previewLayer.data[i * this.COLORATTRIBUTES] = originalLayer.data[i * this.COLORATTRIBUTES];
                 previewLayer.data[i * this.COLORATTRIBUTES + 1] = originalLayer.data[i * this.COLORATTRIBUTES + 1];
                 previewLayer.data[i * this.COLORATTRIBUTES + 2] = originalLayer.data[i * this.COLORATTRIBUTES + 2];
                 // +3 means at alpha position
                 // tslint:disable-next-line:no-magic-numbers
                 previewLayer.data[i * this.COLORATTRIBUTES + 3] = originalLayer.data[i * this.COLORATTRIBUTES + 3];
-            } else {
-                // rgba(255, 255, 255, 0) means transparent -> magic number for white color
-                // tslint:disable-next-line:no-magic-numbers
-                // previewLayer.data[i * this.COLORATTRIBUTES] = 255;
-                // tslint:disable-next-line:no-magic-numbers
-                // previewLayer.data[i * this.COLORATTRIBUTES + 1] = 255;
-                // tslint:disable-next-line:no-magic-numbers
-                // previewLayer.data[i * this.COLORATTRIBUTES + 2] = 255;
-                // +3 means at alpha position
-                // tslint:disable-next-line:no-magic-numbers
-                previewLayer.data[i * this.COLORATTRIBUTES + 3] = 0;
             }
         }
         return previewLayer;
@@ -282,6 +278,16 @@ export class MagicWandService extends SelectionService {
         return { x: NaN, y: NaN };
     }
 
+    // https://stackoverflow.com/a/55196211
+    private snipSelection(previewLayer: ImageData, upperCornerPosition: Vec2, selectionDimension: Vec2): string {
+      const cut = document.createElement('canvas');
+      cut.width = selectionDimension.x;
+      cut.height = selectionDimension.y;
+      const ctx = cut.getContext('2d') as CanvasRenderingContext2D;
+      ctx.putImageData(previewLayer, -upperCornerPosition.x, -upperCornerPosition.y);
+      return cut.toDataURL();
+    }
+
     private saveSelectionData(selectedPixels: ImageData): void {
         // the next steps removes anything other than the selected pixels to become transparent
         // and it keeps the selected pixels in the layer
@@ -297,11 +303,7 @@ export class MagicWandService extends SelectionService {
         this.selection.endingPos = { x: rightBoundPos.x + 1, y: lowerBoundPos.y + 1 } as Vec2;
 
         this.selection.image = new Image();
-        this.selection.image.src = this.getImageURL(
-            previewLayer,
-            rightBoundPos.x - leftBoundPos.x,
-            lowerBoundPos.y - upperBoundPos.y,
-        );
+        this.selection.image.src = this.snipSelection(previewLayer, { x: upperBoundPos.y, y: rightBoundPos.x } as Vec2, { x: rightBoundPos.x - leftBoundPos.x, y: lowerBoundPos.y - upperBoundPos.y} as Vec2);
     }
 
     drawSelection(): void  {
@@ -317,14 +319,15 @@ export class MagicWandService extends SelectionService {
 
     onMouseDown(event: MouseEvent): void {
         this.clearEffectTool();
+        event.preventDefault();
         if (event.button === MouseButton.Left) {
             this.mouseDown = true;
             const toBeSelectedPixels: ImageData = this.selectedFloodFill(event.offsetX, event.offsetY, this.replacementColor);
-            this.saveSelectionData(toBeSelectedPixels);
-            this.drawSelection();
-            // debugger;
-            // this.drawSelection(this.selection.imagePosition);
-            // this.drawingService.previewCtx.fillRect(0,0,100,100);
+            console.log(this.getImageURL(toBeSelectedPixels, this.canvasResizerService.canvasSize.x, this.canvasResizerService.canvasSize.y));
+
+
+            //this.saveSelectionData(toBeSelectedPixels);
+            //console.log(this.selection.image.src);
         }
 
         // The entire canvas is being verified if the target color plus tolerance can be colored with the replacement color.
@@ -336,4 +339,5 @@ export class MagicWandService extends SelectionService {
         }
     }
 
+    onMouseUp(event: MouseEvent): void {}
 }
