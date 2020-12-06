@@ -16,7 +16,7 @@ export class TextControl {
 
     clearText(): void {
         this.width = 0;
-        this.indexLine = 1;
+        this.indexLine = 0;
         this.indexOfLettersInLine = 0;
         this.nbOfLettersInLine = 0;
         this.textPreview = [];
@@ -220,6 +220,7 @@ export class TextControl {
         });
         return tmpText;
     }
+
     private endLineReturn(text: string[], line: string, nbOfLettersInLine: number): string[] {
         let oneLine = '';
         // tslint:disable:prefer-for-of

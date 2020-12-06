@@ -7,10 +7,11 @@ import { TextControl } from './text-control';
 // tslint:disable:no-string-literal
 // tslint:disable:max-file-line-count
 
-describe('TextControl', () => {
+fdescribe('TextControl', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let textControl: TextControl;
+
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -45,6 +46,7 @@ describe('TextControl', () => {
         textControl.addLetter(text);
         expect(textControl.getText()).toEqual(text);
     });
+
     it('getTextWithCursor should return text', () => {
         const textTest = 'test';
         textControl['nbOfLettersInLine'] = 50;
@@ -124,6 +126,15 @@ describe('TextControl', () => {
         textControl.arrowTop();
         expect(textControl['indexLine']).toEqual(2);
     });
+    it('arrowTop should call textPreview ', () => {
+        textControl['textPreview'] = ['as', 'bd', 'ct'];
+        textControl['indexLine'] = 2;
+        textControl['indexOfLettersInLine'] = 1;
+        textControl.arrowTop();
+        expect(textControl['indexLine']).toEqual(1);
+        expect(textControl['textLine']).toEqual(['b']);
+        expect(textControl['textStack']).toEqual(['d']);
+    });
 
     it('arrowBottom should call textPreview ', () => {
         textControl['textPreview'] = ['a', 'b', 'c'];
@@ -142,10 +153,28 @@ describe('TextControl', () => {
     });
 
     it('arrowRight should call textPreview ', () => {
-        textControl['textStack'] = ['t', 'e', 's', 't'];
+        textControl['textStack'] = ['t', 's', 'e', 't'];
         textControl['indexOfLettersInLine'] = 0;
         textControl.arrowRight();
         expect(textControl['indexOfLettersInLine']).toEqual(1);
         expect(textControl['textLine']).toEqual(['t']);
+        expect(textControl['textStack']).toEqual(['t', 's', 'e']);
+    });
+    it('should', () => {
+        textControl['width'] = 5;
+        textControl['indexLine'] = 2;
+        textControl['indexOfLettersInLine'] = 1;
+        textControl['nbOfLettersInLine'] = 5;
+        textControl['textPreview'] = ['as', 'bd', 'ct'];
+        textControl['textLine'] = ['b'];
+        textControl['textStack'] = ['b'];
+        textControl.clearText();
+        expect(textControl['width']).toEqual(0);
+        expect(textControl['indexLine']).toEqual(0);
+        expect(textControl['indexOfLettersInLine']).toEqual(0);
+        expect(textControl['nbOfLettersInLine']).toEqual(0);
+        expect(textControl['textPreview']).toEqual([]);
+        expect(textControl['textLine']).toEqual([]);
+        expect(textControl['textStack']).toEqual([]);
     });
 });
