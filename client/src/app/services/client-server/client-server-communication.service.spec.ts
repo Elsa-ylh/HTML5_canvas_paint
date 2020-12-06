@@ -66,6 +66,7 @@ describe('ClientServerCommunicationService', () => {
     });
 
     it('should return expected CanvasInformation (HttpClient called once)', () => {
+        // tslint:disable:next-line: no-shadowed-variable
         const expectedCanvasInformation: CanvasInformation = {
             _id: '',
             name: 'test5',

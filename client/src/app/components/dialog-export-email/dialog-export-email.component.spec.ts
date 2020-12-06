@@ -1,4 +1,7 @@
 /* tslint:disable:no-unused-variable */
+/* tslint:disable:no-string-literal */
+/* tslint:disable:no-magic-numbers */
+
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
@@ -228,7 +231,7 @@ fdescribe('DialogExportEmailComponent', () => {
         component.nameFormControl.setValue('god');
         component.emailFormControl.setValue('heaven@satan.com');
         const spy = spyOn(component, 'exportToEmail').and.callThrough();
-        const spyConfirm = spyOn(window, 'confirm').and.callFake(function () {
+        const spyConfirm = spyOn(window, 'confirm').and.callFake(() => {
             return true;
         });
         component.exportToEmail();
@@ -242,7 +245,7 @@ fdescribe('DialogExportEmailComponent', () => {
         component.nameFormControl.setValue('god');
         component.emailFormControl.setValue('heaven@satan.com');
         const spy = spyOn(component, 'exportToEmail').and.callThrough();
-        const spyConfirm = spyOn(window, 'confirm').and.callFake(function () {
+        const spyConfirm = spyOn(window, 'confirm').and.callFake(() => {
             return true;
         });
         component.exportToEmail();

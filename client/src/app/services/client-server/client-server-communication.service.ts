@@ -63,6 +63,8 @@ export class ClientServerCommunicationService {
     }
 
     sendEmail(formData: FormData): Observable<string> {
+        // the response wants an object as type but the containing data is not necessarily an object
+        // tslint:disable:next-line: ban-types
         const responseOption: Object = { responseType: 'text' };
         return this.http.post<string>(this.HTTP_SERVE_LOCAL_EMAIL, formData, responseOption);
     }
