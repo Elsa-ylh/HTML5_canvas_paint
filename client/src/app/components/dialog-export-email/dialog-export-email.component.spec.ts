@@ -20,7 +20,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { DialogExportEmailComponent } from './dialog-export-email.component';
 
-fdescribe('DialogExportEmailComponent', () => {
+describe('DialogExportEmailComponent', () => {
     let component: DialogExportEmailComponent;
     let fixture: ComponentFixture<DialogExportEmailComponent>;
 
