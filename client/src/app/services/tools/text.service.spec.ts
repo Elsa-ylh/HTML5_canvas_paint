@@ -2,7 +2,6 @@
 
 import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-// import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -16,327 +15,342 @@ import { TextService } from './text.service';
 // tslint:disable:max-file-line-count
 // tslint:disable:no-shadowed-variable
 
-describe('Service: Text', () => {
-  let textService: TextService;
-  let mouseEvent0: MouseEvent;
-  // let mouseEvent1: MouseEvent;
-  // let mouseEvent2: MouseEvent;
-  let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-  let colorServiceSpy: jasmine.SpyObj<ColorService>;
+fdescribe('Service: Text', () => {
+    let textService: TextService;
+    let mouseEvent0: MouseEvent;
+    // let mouseEvent1: MouseEvent;
+    // let mouseEvent2: MouseEvent;
+    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let colorServiceSpy: jasmine.SpyObj<ColorService>;
 
-  let baseCtxStub: CanvasRenderingContext2D;
-  let previewCtxStub: CanvasRenderingContext2D;
+    let baseCtxStub: CanvasRenderingContext2D;
+    let previewCtxStub: CanvasRenderingContext2D;
 
-  beforeEach(() => {
-   // textControlStub =new TextControl(previewCtxStub);
-    baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-    previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-    drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'clearEffectTool']);
-    colorServiceSpy = jasmine.createSpyObj('ColorService', ['getprimaryColor', 'getsecondaryColor']);
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: DrawingService, useValue: drawServiceSpy },
-        { provide: ColorService, useValue: colorServiceSpy },
-      ],
+    beforeEach(() => {
+        // textControlStub =new TextControl(previewCtxStub);
+        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'clearEffectTool']);
+        colorServiceSpy = jasmine.createSpyObj('ColorService', ['getprimaryColor', 'getsecondaryColor']);
+        TestBed.configureTestingModule({
+            providers: [
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: ColorService, useValue: colorServiceSpy },
+            ],
+        });
+        textService = TestBed.inject(TextService);
+        // Configuration du spy du service
+        // tslint:disable:no-string-literal
+        textService['drawingService'].baseCtx = baseCtxStub; // Jasmine doesn't copy properties with underlying data
+        textService['drawingService'].previewCtx = previewCtxStub;
+        textService['mouseDownCoords'] = { x: 100, y: 150 };
+        textService['mousePosition'] = { x: 40, y: 55 };
+
+        mouseEvent0 = {
+            offsetX: 25,
+            offsetY: 27,
+            button: 0,
+        } as MouseEvent;
+        // mouseEvent1 = {
+        //   offsetX: 150,
+        //   offsetY: 157,
+        //   button: 0,
+        // } as MouseEvent;
+        // mouseEvent2 = {
+        //   offsetX: 35,
+        //   offsetY: 29,
+        //   button: 0,
+        // } as MouseEvent;
     });
-    textService = TestBed.inject(TextService);
-    // Configuration du spy du service
-    // tslint:disable:no-string-literal
-    textService['drawingService'].baseCtx = baseCtxStub; // Jasmine doesn't copy properties with underlying data
-    textService['drawingService'].previewCtx = previewCtxStub;
-    textService['mouseDownCoords'] = { x: 100, y: 150 };
-    textService['mousePosition'] = { x: 40, y: 55 };
 
-    mouseEvent0 = {
-      offsetX: 25,
-      offsetY: 27,
-      button: 0,
-    } as MouseEvent;
-    // mouseEvent1 = {
-    //   offsetX: 150,
-    //   offsetY: 157,
-    //   button: 0,
-    // } as MouseEvent;
-    // mouseEvent2 = {
-    //   offsetX: 35,
-    //   offsetY: 29,
-    //   button: 0,
-    // } as MouseEvent;
-  });
+    it('should be created', inject([TextService], (textService: TextService) => {
+        expect(textService).toBeTruthy();
+    }));
 
-  it('should be created', inject([TextService], (textService: TextService) => {
-    expect(textService).toBeTruthy();
-  }));
+    // mouseEvent
+    it(' mouseDown should set mouseDown property to false on right click', () => {
+        const mouseEventRClick = {
+            offsetX: 25,
+            offsetY: 25,
+            button: 1,
+        } as MouseEvent;
+        textService.onMouseDown(mouseEventRClick);
+        expect(textService.mouseDown).toEqual(false);
+    });
 
-  // mouseEvent
-  it(' mouseDown should set mouseDown property to false on right click', () => {
-    const mouseEventRClick = {
-      offsetX: 25,
-      offsetY: 25,
-      button: 1,
-    } as MouseEvent;
-    textService.onMouseDown(mouseEventRClick);
-    expect(textService.mouseDown).toEqual(false);
-  });
+    it(' mouseDown should not call setCtxFont & drawText but call drawPreviewRect', () => {
+        spyOn<any>(textService, 'setCtxFont');
+        spyOn<any>(textService, 'drawPreviewRect');
+        textService['writeOnPreviewCtx'] = false;
+        textService['mouseEnter'] = true;
+        textService['mouseOut'] = false;
+        textService['mouseDown'] = true;
+        textService.onMouseDown(mouseEvent0);
+        expect(textService['drawPreviewRect']).toHaveBeenCalled();
+        expect(textService['setCtxFont']).not.toHaveBeenCalled();
+    });
 
-  it(' mouseDown should not call setCtxFont & drawText but call drawPreviewRect', () => {
-    spyOn<any>(textService, 'setCtxFont');
-    spyOn<any>(textService, 'drawPreviewRect');
-    textService['writeOnPreviewCtx']=false;
-    textService['mouseEnter'] = true;
-    textService['mouseOut'] = false;
-    textService['mouseDown'] = true;
-    textService.onMouseDown(mouseEvent0);
-    expect(textService['drawPreviewRect']).toHaveBeenCalled();
-    expect(textService['setCtxFont']).not.toHaveBeenCalled();
-  });
+    it(' mouseDown should call setCtxFont & drawText', () => {
+        spyOn<any>(textService, 'setCtxFont');
+        textService['writeOnPreviewCtx'] = true;
+        textService.onMouseDown(mouseEvent0);
+        expect(textService['setCtxFont']).toHaveBeenCalled();
+    });
 
-  it(' mouseDown should call setCtxFont & drawText', () => {
-    spyOn<any>(textService, 'setCtxFont');
-    textService['writeOnPreviewCtx']=true;
-    textService.onMouseDown(mouseEvent0);
-    expect(textService['setCtxFont']).toHaveBeenCalled();
-  });
+    it(' mouseUp should not call drawPreviewRect', () => {
+        spyOn<any>(textService, 'drawPreviewRect');
+        textService['mouseDown'] = false;
+        textService.onMouseUp(mouseEvent0);
+        expect(textService['drawPreviewRect']).not.toHaveBeenCalled();
+    });
 
-  it(' mouseUp should not call drawPreviewRect', () => {
-    spyOn<any>(textService, 'drawPreviewRect');
-    textService['mouseDown']=false;
-    textService.onMouseUp(mouseEvent0);
-    expect(textService['drawPreviewRect']).not.toHaveBeenCalled();
-  });
+    it(' mouseUp should call drawPreviewRect', () => {
+        spyOn<any>(textService, 'drawPreviewRect');
+        textService['mouseDown'] = true;
+        textService.onMouseUp(mouseEvent0);
+        expect(textService['drawPreviewRect']).toHaveBeenCalled();
+    });
 
-  it(' mouseUp should call drawPreviewRect', () => {
-    spyOn<any>(textService, 'drawPreviewRect');
-    textService['mouseDown']=true;
-    textService.onMouseUp(mouseEvent0);
-    expect(textService['drawPreviewRect']).toHaveBeenCalled();
-  });
+    it(' mouseMove should not call drawPreviewRect', () => {
+        spyOn<any>(textService, 'drawPreviewRect');
+        textService['mouseMove'] = false;
+        textService.onMouseMove(mouseEvent0);
+        expect(textService['drawPreviewRect']).not.toHaveBeenCalled();
+    });
 
-  it(' mouseMove should not call drawPreviewRect', () => {
-    spyOn<any>(textService, 'drawPreviewRect');
-    textService['mouseMove']=false;
-    textService.onMouseMove(mouseEvent0);
-    expect(textService['drawPreviewRect']).not.toHaveBeenCalled();
-  });
+    it(' mouseMove should call drawPreviewRect', () => {
+        spyOn<any>(textService, 'drawPreviewRect');
+        textService['mouseMove'] = true;
+        textService['mouseEnter'] = true;
+        textService['mouseOut'] = false;
+        textService['mouseDown'] = true;
+        textService.onMouseMove(mouseEvent0);
+        expect(textService['drawPreviewRect']).toHaveBeenCalled();
+    });
 
-  it(' mouseMove should call drawPreviewRect', () => {
-    spyOn<any>(textService, 'drawPreviewRect');
-    textService['mouseMove']=true;
-    textService['mouseEnter'] = true;
-    textService['mouseOut'] = false;
-    textService['mouseDown'] = true;
-    textService.onMouseMove(mouseEvent0);
-    expect(textService['drawPreviewRect']).toHaveBeenCalled();
-  });
+    it(' should change mouseOut value to true when the mouse is living the canvas while left click is pressed', () => {
+        textService.mouseDown = true;
+        textService.onMouseOut(mouseEvent0);
+        expect(textService['mouseOut']).toEqual(true);
+    });
 
-  it(' should change mouseOut value to true when the mouse is living the canvas while left click is pressed', () => {
-    textService.mouseDown = true;
-    textService.onMouseOut(mouseEvent0);
-    expect(textService['mouseOut']).toEqual(true);
-  });
+    it(' should not change mouseOut value to true when the mouse is living the canvas while left click is not pressed', () => {
+        textService.mouseDown = false;
+        textService.onMouseOut(mouseEvent0);
+        expect(textService['mouseOut']).toEqual(false);
+    });
 
-  it(' should not change mouseOut value to true when the mouse is living the canvas while left click is not pressed', () => {
-    textService.mouseDown = false;
-    textService.onMouseOut(mouseEvent0);
-    expect(textService['mouseOut']).toEqual(false);
-  });
+    it(' should change mouseEnter value to true when the mouse is entering the canvas after leaving it while drawing', () => {
+        textService['mouseOut'] = true;
+        textService.onMouseEnter(mouseEvent0);
+        expect(textService['mouseEnter']).toEqual(true);
+    });
 
-  it(' should change mouseEnter value to true when the mouse is entering the canvas after leaving it while drawing', () => {
-    textService['mouseOut'] = true;
-    textService.onMouseEnter(mouseEvent0);
-    expect(textService['mouseEnter']).toEqual(true);
-  });
+    // getters
+    it(' should return italic if text is in italic', () => {
+        textService.setItalic(true);
+        spyOn<any>(textService, 'getItalic').and.callThrough();
+        expect(textService['getItalic']()).toEqual('italic ');
+    });
 
-  // getters
-  it(' should return italic if text is in italic', () => {
-    textService.setItalic(true);
-    spyOn<any>(textService, 'getItalic').and.callThrough();
-    expect(textService['getItalic']()).toEqual('italic ');
-  });
+    it(' should not return italic if text is not in italic', () => {
+        textService.setItalic(false);
+        spyOn<any>(textService, 'getItalic').and.callThrough();
+        expect(textService['getItalic']()).toEqual('');
+    });
 
-  it(' should not return italic if text is not in italic', () => {
-    textService.setItalic(false);
-    spyOn<any>(textService, 'getItalic').and.callThrough();
-    expect(textService['getItalic']()).toEqual('');
-  });
+    it(' should return bold if text is in bold', () => {
+        textService.setBold(true);
+        spyOn<any>(textService, 'getBold').and.callThrough();
+        expect(textService['getBold']()).toEqual('bold ');
+    });
+    it(' should return bold if text is in ', () => {
+        textService.setBold(false);
+        spyOn<any>(textService, 'getBold').and.callThrough();
+        expect(textService['getBold']()).toEqual('');
+    });
 
-  it(' should return bold if text is in bold', () => {
-    textService.setBold(true);
-    spyOn<any>(textService, 'getBold').and.callThrough();
-    expect(textService['getBold']()).toEqual('bold ');
-  });
-  it(' should return bold if text is in ', () => {
-    textService.setBold(false);
-    spyOn<any>(textService, 'getBold').and.callThrough();
-    expect(textService['getBold']()).toEqual('');
-  });
+    // setters
+    it(' should setItalic false if text is in italic ', () => {
+        textService.setItalic(false);
+        expect(textService['fontStyleItalic']).toEqual(false);
+    });
 
-  // setters
-  it(' should setItalic false if text is in italic ', () => {
-    textService.setItalic(false);
-    expect(textService['fontStyleItalic']).toEqual(false);
-  });
+    it(' should setItalic true if text is in italic ', () => {
+        textService.setItalic(true);
+        const styleItalic = textService['fontStyleItalic'];
+        expect(styleItalic).toEqual(true);
+    });
+    it(' should setBold true if text is in bold', () => {
+        textService.setBold(true);
+        expect(textService['fontStyleBold']).toEqual(true);
+    });
+    it(' should setBold false if text is in bold', () => {
+        textService.setBold(false);
+        expect(textService['fontStyleBold']).toEqual(false);
+    });
 
-  it(' should setItalic true if text is in italic ', () => {
+    it(' should setCtxFont', () => {
+        const font = '18px Calibri';
+        previewCtxStub.font = font;
+        spyOn<any>(textService, 'setCtxFont').and.callThrough();
+        textService['setCtxFont'](previewCtxStub);
+        expect(previewCtxStub.font).toEqual('20px "Times New Roman"');
+    });
 
-    textService.setItalic(true);
-    const styleItalic = textService['fontStyleItalic'];
-    expect(styleItalic).toEqual(true);
-  });
-  it(' should setBold true if text is in bold', () => {
-    textService.setBold(true);
-    expect(textService['fontStyleBold']).toEqual(true);
-  });
-  it(' should setBold false if text is in bold', () => {
-    textService.setBold(false);
-    expect(textService['fontStyleBold']).toEqual(false);
-  });
+    it(' should setCtxFont', () => {
+        const font = '20px "Times New Roman"';
+        previewCtxStub.font = font;
+        spyOn<any>(textService, 'setCtxFont').and.callThrough();
+        textService.fontStyle = 'Calibri';
+        textService.setItalic(true);
+        textService.setBold(true);
+        textService.sizeFont = 8;
+        textService['setCtxFont'](previewCtxStub);
+        expect(previewCtxStub.font).toEqual('italic bold 8px Calibri');
+    });
 
-  it(' should setCtxFont', () => {
-    const font = '18px Calibri';
-    previewCtxStub.font = font;
-    spyOn<any>(textService, 'setCtxFont').and.callThrough();
-    textService['setCtxFont'](previewCtxStub);
-    expect(previewCtxStub.font).toEqual('20px "Times New Roman"');
-  });
+    // -------------------------------------------------------------------
 
-  it(' should setCtxFont', () => {
-    const font = '20px "Times New Roman"';
-    previewCtxStub.font = font;
-    spyOn<any>(textService, 'setCtxFont').and.callThrough();
-    textService.fontStyle = 'Calibri';
-    textService.setItalic(true);
-    textService.setBold(true);
-    textService.sizeFont = 8;
-    textService['setCtxFont'](previewCtxStub);
-    expect(previewCtxStub.font).toEqual('italic bold 8px Calibri');
-  });
+    it('selectTextPosition to center', () => {
+        previewCtxStub.textAlign = 'left';
+        textService.selectTextPosition(1);
+        expect(previewCtxStub.textAlign).toEqual('center');
+    });
 
-  // -------------------------------------------------------------------
+    it('selectTextPosition to left', () => {
+        previewCtxStub.textAlign = 'center';
+        textService.selectTextPosition(2);
+        expect(previewCtxStub.textAlign).toEqual('left');
+    });
 
-  it('selectTextPosition to center', ()=> {
-    previewCtxStub.textAlign = 'left';
-    textService.selectTextPosition(1);
-    expect(previewCtxStub.textAlign).toEqual('center');
-  });
+    it('selectTextPosition to right', () => {
+        previewCtxStub.textAlign = 'left';
+        textService.selectTextPosition(3);
+        expect(previewCtxStub.textAlign).toEqual('right');
+    });
 
-  it('selectTextPosition to left', ()=> {
-    previewCtxStub.textAlign = 'center';
-    textService.selectTextPosition(2);
-    expect(previewCtxStub.textAlign).toEqual('left');
-  });
+    it(' should return true if are writing some text', () => {
+        textService['writeOnPreviewCtx'] = true;
+        expect(textService.isOnPreviewCanvas()).toEqual(true);
+    });
 
-  it('selectTextPosition to right', ()=> {
-    previewCtxStub.textAlign = 'left';
-    textService.selectTextPosition(3);
-    expect(previewCtxStub.textAlign).toEqual('right');
-  });
+    it(' xTop should return mouseDownCoords + width', () => {
+        spyOn<any>(textService, 'xTop').and.callThrough();
+        const width = 150;
+        const mouseDownCoords: Vec2 = { x: 0, y: 0 };
+        const mousePos: Vec2 = { x: 50, y: 50 };
+        const test = textService['xTop'](width, mouseDownCoords, mousePos);
+        expect(test).toEqual(mouseDownCoords.x + width);
+    });
 
-  it(' should return true if are writing some text', () => {
-    textService['writeOnPreviewCtx'] = true;
-    expect(textService.isOnPreviewCanvas()).toEqual(true);
-  });
+    it(' xTop should return mousePosition + width', () => {
+        spyOn<any>(textService, 'xTop').and.callThrough();
+        const width = 150;
+        const mouseDownCoords: Vec2 = { x: 100, y: 100 };
+        const mousePos: Vec2 = { x: 50, y: 50 };
+        const test = textService['xTop'](width, mouseDownCoords, mousePos);
+        expect(test).toEqual(mousePos.x + width);
+    });
 
-  it(' xTop should return mouseDownCoords + width', () => {
-    spyOn<any>(textService, 'xTop').and.callThrough();
-    const width = 150;
-    const mouseDownCoords: Vec2 = { x: 0, y: 0 };
-    const mousePos: Vec2 = { x: 50, y: 50 };
-    const test = textService['xTop'](width, mouseDownCoords, mousePos);
-    expect(test).toEqual(mouseDownCoords.x + width);
-  });
+    it(' yTop should return mouseDownCoords + width', () => {
+        spyOn<any>(textService, 'yTop').and.callThrough();
+        const sizeFont = 20;
+        const mouseDownCoords: Vec2 = { x: 0, y: 0 };
+        const mousePos: Vec2 = { x: 50, y: 50 };
+        const test = textService['xTop'](sizeFont, mouseDownCoords, mousePos);
+        expect(test).toEqual(mouseDownCoords.x + sizeFont);
+    });
 
-  it(' xTop should return mousePosition + width', () => {
-    spyOn<any>(textService, 'xTop').and.callThrough();
-    const width = 150;
-    const mouseDownCoords: Vec2 = { x: 100, y: 100 };
-    const mousePos: Vec2 = { x: 50, y: 50 };
-    const test = textService['xTop'](width, mouseDownCoords, mousePos);
-    expect(test).toEqual(mousePos.x + width);
-  });
+    it(' yTop should return mousePosition + width', () => {
+        spyOn<any>(textService, 'yTop').and.callThrough();
+        const sizeFont = 20;
+        const mouseDownCoords: Vec2 = { x: 100, y: 100 };
+        const mousePos: Vec2 = { x: 50, y: 50 };
+        const test = textService['xTop'](sizeFont, mouseDownCoords, mousePos);
+        expect(test).toEqual(mousePos.y + sizeFont);
+    });
 
-  it(' yTop should return mouseDownCoords + width', () => {
-    spyOn<any>(textService, 'yTop').and.callThrough();
-    const sizeFont = 20;
-    const mouseDownCoords: Vec2 = { x: 0, y: 0 };
-    const mousePos: Vec2 = { x: 50, y: 50 };
-    const test = textService['xTop'](sizeFont, mouseDownCoords, mousePos);
-    expect(test).toEqual(mouseDownCoords.x + sizeFont);
-  });
+    // keyboard action
+    it('arrowTop should call textPreview ', () => {
+        textService['textControl']['textPreview'] = ['a', 'b', 'c'];
+        textService['textControl']['indexLine'] = 3;
+        textService.arrowTop();
+        expect(textService['textControl']['indexLine']).toEqual(2);
+    });
 
-  it(' yTop should return mousePosition + width', () => {
-    spyOn<any>(textService, 'yTop').and.callThrough();
-    const sizeFont = 20;
-    const mouseDownCoords: Vec2 = { x: 100, y: 100 };
-    const mousePos: Vec2 = { x: 50, y: 50 };
-    const test = textService['xTop'](sizeFont, mouseDownCoords, mousePos);
-    expect(test).toEqual(mousePos.y + sizeFont);
-  });
+    it('arrowBottom should call textPreview ', () => {
+        textService['textControl']['textPreview'] = ['a', 'b', 'c'];
+        textService['textControl']['indexLine'] = 1;
+        textService.arrowBottom();
+        expect(textService['textControl']['indexLine']).toEqual(2);
+    });
 
-  // keyboard action
-  it('arrowTop should call textPreview ', () => {
-    textService['textControl']['textPreview']=['a','b','c'];
-    textService['textControl']['indexLine'] = 3;
-    textService.arrowTop();
-    expect(textService['textControl']['indexLine']).toEqual(2);
-  });
+    it('arrowLeft should call textPreview ', () => {
+        textService['textControl']['textLine'] = ['t', 'e'];
+        textService['textControl']['textStack'] = ['s', 't'];
+        textService['textControl']['indexOfLettersInLine'] = 2;
+        textService.arrowLeft();
+        expect(textService['textControl']['indexOfLettersInLine']).toEqual(1);
+        expect(textService['textControl']['textLine']).toEqual(['t']);
+    });
 
-  it('arrowBottom should call textPreview ', () => {
-    textService['textControl']['textPreview']=['a','b','c'];
-    textService['textControl']['indexLine'] = 1;
-    textService.arrowBottom();
-    expect(textService['textControl']['indexLine']).toEqual(2);
-  });
+    it('arrowRight should call textPreview ', () => {
+        textService['textControl']['textStack'] = ['t', 'e', 's', 't'];
+        textService['textControl']['indexOfLettersInLine'] = 0;
+        textService.arrowRight();
+        expect(textService['textControl']['indexOfLettersInLine']).toEqual(1);
+        expect(textService['textControl']['textLine']).toEqual(['t']);
+    });
 
-  it('arrowLeft should call textPreview ', () => {
-    textService['textControl']['textLine']=['t','e'];
-    textService['textControl']['textStack']=['s','t'];
-    textService['textControl']['indexOfLettersInLine'] = 2;
-    textService.arrowLeft();
-    expect(textService['textControl']['indexOfLettersInLine']).toEqual(1);
-    expect(textService['textControl']['textLine']).toEqual(['t']);
-  });
+    it('backSpace should call textPreview ', () => {
+        textService['textControl']['textLine'] = ['t', 'e', 's', 't'];
+        textService['textControl']['indexOfLettersInLine'] = 4;
+        textService.backspace();
+        expect(textService['textControl']['indexOfLettersInLine']).toEqual(3);
+        expect(textService['textControl']['textLine']).toEqual(['t', 'e', 's']);
+    });
 
-  it('arrowRight should call textPreview ', () => {
-    textService['textControl']['textStack']=['t','e','s','t'];
-    textService['textControl']['indexOfLettersInLine'] = 0;
-    textService.arrowRight();
-    expect(textService['textControl']['indexOfLettersInLine']).toEqual(1);
-    expect(textService['textControl']['textLine']).toEqual(['t']);
-  });
+    // it('delete should call textPreview ', () => {
+    //   textService["textControl"]["textStack"]=["t","e","s","t"];
+    //   textService["textControl"]["indexOfLettersInLine"] = 2;
+    //   textService.delete();
+    //   expect(textService["textControl"]["indexOfLettersInLine"]).toEqual(2);
+    //   expect(textService["textControl"]["textStack"]).toEqual(["t","e","t"]);
+    // });
 
-  it('backSpace should call textPreview ', () => {
-    textService['textControl']['textLine']=['t','e','s','t'];
-    textService['textControl']['indexOfLettersInLine'] = 4;
-    textService.backspace();
-    expect(textService['textControl']['indexOfLettersInLine']).toEqual(3);
-    expect(textService['textControl']['textLine']).toEqual(['t','e','s']);
-  });
+    it('enter should call textPreview ', () => {
+        textService['textControl']['textLine'] = ['t', 'e'];
+        textService['textControl']['textStack'] = ['t', 's'];
+        textService['textControl']['indexOfLettersInLine'] = 2;
+        textService['textControl']['indexLine'] = 0;
+        textService.enter();
+        expect(textService['textControl']['indexLine']).toEqual(1);
+        expect(textService['textControl']['textPreview']).toEqual(['te', '|st']);
+    });
 
-  // it('delete should call textPreview ', () => {
-  //   textService["textControl"]["textStack"]=["t","e","s","t"];
-  //   textService["textControl"]["indexOfLettersInLine"] = 2;
-  //   textService.delete();
-  //   expect(textService["textControl"]["indexOfLettersInLine"]).toEqual(2);
-  //   expect(textService["textControl"]["textStack"]).toEqual(["t","e","t"]);
-  // });
+    it('clearEffectTool should call clearText', () => {
+        textService['width'] = 200;
+        textService['height'] = 250;
+        textService.clearEffectTool();
+        expect(textService['width']).toEqual(0);
+        expect(textService['height']).toEqual(0);
+    });
 
-  it('enter should call textPreview ', () => {
-    textService['textControl']['textLine']=['t','e'];
-    textService['textControl']['textStack']=['t','s'];
-    textService['textControl']['indexOfLettersInLine'] = 2;
-    textService['textControl']['indexLine'] =  0;
-    textService.enter();
-    expect(textService['textControl']['indexLine']).toEqual(1);
-    expect(textService['textControl']['textPreview']).toEqual(['te','|st',]);
-  });
+    it(' drawPreviewRect should draw a preview rectangle in the preview canvas', () => {
+        textService['mousePosition'] = { x: 167, y: 237 };
+        textService['mouseDownCoords'] = { x: 167, y: 237 };
+        textService['drawPreviewRect'](previewCtxStub, textService['mouseDownCoords'], textService['mousePosition']);
 
-  it('clearEffectTool should call clearText', () =>{
-    textService['width'] = 200;
-    textService['height'] = 250;
-    textService.clearEffectTool();
-    expect(textService['width']).toEqual(0);
-    expect(textService['height']).toEqual(0);
-  });
+        expect(textService['width']).toEqual(100);
+        expect(textService['height']).toEqual(21);
+    });
 
+    //     it('keyUpHandler should call addLetter & textPreview ', () => {
+    //       textService["writeOnPreviewCtx"] = true;
+    //       const keyEventData = { isTrusted: true, code: 'KeyA' };
+    //       const keyEvent = new KeyboardEvent('keydown', keyEventData);
+    //       textService.keyUpHandler(keyEvent);
+    //       expect(textService["textControl"].addLetter).toHaveBeenCalled();
+    //   });
 });
