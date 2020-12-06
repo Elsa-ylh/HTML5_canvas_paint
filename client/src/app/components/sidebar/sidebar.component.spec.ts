@@ -49,7 +49,7 @@ import { SidebarComponent } from './sidebar.component';
 // tslint:disable:no-magic-numbers
 // tslint:disable:max-file-line-count
 // tslint:disable:prefer-const
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let drawingStub: DrawingService;
@@ -1047,25 +1047,23 @@ fdescribe('SidebarComponent', () => {
         expect(activateGridSpy).toHaveBeenCalled();
     });
 
-    // it('should decrement the value of squareWidth', () => {
-    //     const oldValue = gridStub.squareWidth;
-    //     console.log(oldValue);
-    //     const event = new KeyboardEvent('window:keydown.-', {});
-    //     toolServiceStub.currentToolName === ToolUsed.Grid;
-    //     window.dispatchEvent(event);
-    //     component.decreaseSquareGrid(event);
-    //     console.log('grid', gridStub.squareWidth);
-    //     expect(gridStub.squareWidth).toEqual(oldValue - 5);
-    // });
+    it('should decrement the value of squareWidth', () => {
+        const event = new KeyboardEvent('window:keydown.-', {});
+        toolServiceStub.currentToolName = ToolUsed.Grid;
+        const oldValue = gridStub.squareWidth;
+        window.dispatchEvent(event);
+        component.decreaseSquareGrid(event);
+        expect(gridStub.squareWidth).toEqual(oldValue - 5);
+    });
 
-    // it('should increment the value of squareWidth', () => {
-    //     const oldValue = gridStub.squareWidth;
-    //     const event = new KeyboardEvent('window:keydown.+', {});
-    //     toolServiceStub.currentToolName === ToolUsed.Grid;
-    //     window.dispatchEvent(event);
-    //     component.increaseSquareGrid(event);
-    //     expect(gridStub.squareWidth).toEqual(oldValue + 5);
-    // });
+    it('should increment the value of squareWidth', () => {
+        toolServiceStub.currentToolName = ToolUsed.Grid;
+        const event = new KeyboardEvent('window:keydown.+', {});
+        const oldValue = gridStub.squareWidth;
+        window.dispatchEvent(event);
+        component.increaseSquareGrid(event);
+        expect(gridStub.squareWidth).toEqual(oldValue + 5);
+    });
 
     it('should call resetMagnetism if isMagnetismActive = true', () => {
         const event = new KeyboardEvent('window:keydown.m', {});
@@ -1076,7 +1074,7 @@ fdescribe('SidebarComponent', () => {
         expect(resetMagnetismSpy).toHaveBeenCalled();
     });
 
-    it('should call resetMagnetism if isMagnetismActive = false', () => {
+    it('should call resetMagnetism if isMagnetismActive = false and set isMagentismActive to true', () => {
         magnetismStub.isMagnetismActive = false;
         const event = new KeyboardEvent('window:keydown.m', {});
         window.dispatchEvent(event);
