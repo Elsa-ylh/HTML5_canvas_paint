@@ -10,7 +10,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism.service';
 import { interval, Subscription } from 'rxjs';
-import { RotationService, TO_RAD } from './rotation.service';
+import { RotationService } from './rotation.service';
 
 @Injectable({
     providedIn: 'root',
@@ -280,15 +280,8 @@ export class SelectionService extends Tool {
         this.drawingService.previewCtx.strokeRect(mouseDownCoord.x, mouseDownCoord.y , width, height);
         this.drawingService.previewCtx.setLineDash([]);
 
-        if(this.selection.rotationAngle !== 0){
-          const ADDED_WIDTH = Math.abs(Math.sin(this.selection.rotationAngle*TO_RAD)*this.selection.width/2);
-          const ADDED_HEIGHT = Math.abs(Math.sin(this.selection.rotationAngle*TO_RAD)*this.selection.height/2);
-          this.controlGroup.setPositions({x:this.selection.imagePosition.x - ADDED_WIDTH / 2,y:this.selection.imagePosition.y - ADDED_WIDTH / 2},
-             {x:this.selection.endingPos.x + ADDED_WIDTH / 2,y:this.selection.endingPos.y + ADDED_WIDTH / 2},
-              { x: this.selection.width + ADDED_WIDTH, y: this.selection.height +ADDED_HEIGHT });
-        }else{
+
           this.controlGroup.setPositions(this.selection.imagePosition , this.selection.endingPos, { x: this.selection.width, y: this.selection.height });
-        }
 
         this.controlGroup.draw();
     }
@@ -298,7 +291,7 @@ export class SelectionService extends Tool {
         this.selection.getImage({ x: this.selection.width, y: this.selection.height });
         this.baseImageData = this.selection.imageData;
         this.baseImage = new Image();
-        this.baseImage.src = this.getImageURL(this.baseImageData, {x:this.selection.width, y:this.selection.height}, this.selection.rotationAngle);
+        this.baseImage.src = this.selection.getImageURL(this.baseImageData, this.selection.width, this.selection.height);
         // this.selection.imageData = this.drawingService.baseCtx.getImageData(this.selection.imagePosition.x,
         // this.selection.imagePosition.y, this.selection.width, this.selection.height);
         // this.selection.image.src = this.getImageURL(this.selection.imageData, this.selection.width, this.selection.height);
@@ -354,17 +347,17 @@ export class SelectionService extends Tool {
 
     drawSelection(imagePosition: Vec2): void {}
 
-    getImageURL(imgData: ImageData, size:Vec2, rotationAngle:number): string {
-        const canvas = document.createElement('canvas') as HTMLCanvasElement;
-        const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
-        canvas.width = Math.abs(size.x);
-        canvas.height = Math.abs(size.y);
-        ctx.translate(canvas.width/2, canvas.height/2);
-        ctx.rotate(rotationAngle);
-        ctx.translate(-canvas.width/2, -canvas.height/2);
-        ctx.putImageData(imgData, 0, 0);
-        return canvas.toDataURL();
-    }
+    // getImageURL(imgData: ImageData, size:Vec2, rotationAngle:number): string {
+    //     const canvas = document.createElement('canvas') as HTMLCanvasElement;
+    //     const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
+    //     canvas.width = Math.abs(size.x);
+    //     canvas.height = Math.abs(size.y);
+    //     ctx.translate(canvas.width/2, canvas.height/2);
+    //     ctx.rotate(rotationAngle);
+    //     ctx.translate(-canvas.width/2, -canvas.height/2);
+    //     ctx.putImageData(imgData, 0, 0);
+    //     return canvas.toDataURL();
+    // }
 
     clearSelection(position: Vec2, width: number, height: number): void {}
 
@@ -426,7 +419,7 @@ export class SelectionService extends Tool {
         // this.clipboard.copyImage(this.selection);
         this.clipboard.imageData = this.selection.imageData;
         this.clipboard.image = new Image();
-        this.clipboard.image.src = this.getImageURL(this.clipboard.imageData, {x:this.selection.imageSize.x, y:this.selection.imageSize.y}, this.selection.rotationAngle);
+        this.clipboard.image.src = this.selection.getImageURL(this.clipboard.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
         this.clipboard.imagePosition = this.selection.imagePosition;
         this.clipboard.width = this.selection.width;
         this.clipboard.height = this.selection.height;
@@ -466,7 +459,7 @@ export class SelectionService extends Tool {
         this.selection.ellipseRad = { x: this.clipboard.ellipseRad.x, y: this.clipboard.ellipseRad.y };
         this.selection.endingPos = { x: Math.abs(this.selection.width), y: Math.abs(this.selection.height) };
         this.selection.image = new Image();
-        this.selection.image.src = this.getImageURL(this.clipboard.imageData, {x:this.selection.imageSize.x, y:this.selection.imageSize.y}, this.selection.rotationAngle);
+        this.selection.image.src = this.selection.getImageURL(this.clipboard.imageData,this.selection.imageSize.x, this.selection.imageSize.y);
         this.drawSelection({ x: 1, y: 1 });
     }
 
