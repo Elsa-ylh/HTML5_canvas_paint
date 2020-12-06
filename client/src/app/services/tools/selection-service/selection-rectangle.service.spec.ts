@@ -1,5 +1,7 @@
 /* tslint:disable:no-unused-variable */
 
+/*
+
 import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -342,3 +344,5 @@ describe('Service: SelectionRectangle', () => {
     //         // expect(pasteArrowSelectionSpy).not.toHaveBeenCalled();
     //     });
 });
+
+*/

@@ -56,6 +56,7 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizingPreview', { static: false }) canvasResizingPreview: ElementRef<HTMLCanvasElement>;
+    @ViewChild('gridLayer', { static: false }) gridLayer: ElementRef<HTMLCanvasElement>;
     @ViewChild('cursorCanvas', { static: false }) cursorCanvas: ElementRef<HTMLCanvasElement>;
 
     baseCtx: CanvasRenderingContext2D;
@@ -75,6 +76,8 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.drawingService.gridCanvas = this.gridLayer.nativeElement;
+        this.drawingService.gridCtx = this.gridLayer.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.cursorCtx = this.cursorCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.cursorCtx = this.cursorCtx;
         this.setCanvasBackgroundColor();

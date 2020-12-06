@@ -65,6 +65,9 @@
                     >
                         <mat-icon>crop_free</mat-icon>
                     </mat-button-toggle>
+                    <mat-button-toggle (click)="pickGridSettings()" matTooltip="Paramètres pour la grille" matTooltipPosition="right"
+                        ><mat-icon>tune</mat-icon></mat-button-toggle
+                    >
 
                     <mat-button-toggle (click)="pickStamp()" [checked]="stampChecked" matTooltip="Outil Etampe" matTooltipPosition="right">
                         <mat-icon>radio_button_checked</mat-icon>
@@ -73,7 +76,6 @@
                     <mat-button-toggle (click)="pickSprayer()" [checked]="sprayChecked" matTooltip="Sélection l'aerosol" matTooltipPosition="right">
                         <mat-icon>blur_on</mat-icon>
                     </mat-button-toggle>
-
                     <mat-button-toggle (click)="pickFeather()" [checked]="selectionFeatherChecked" matTooltip="Outil plume" matTooltipPosition="right"
                         ><mat-icon svgIcon="feather"></mat-icon>
                     </mat-button-toggle>
@@ -100,6 +102,15 @@
                     >
                         <mat-icon> redo </mat-icon>
                     </button>
+                    <mat-button-toggle
+                        mat-button
+                        matTooltip="Grille"
+                        matToolTipPosition="right"
+                        (click)="btnCallGrid()"
+                        [checked]="gridService.isGridSettingsChecked"
+                    >
+                        <mat-icon>grid_on</mat-icon>
+                    </mat-button-toggle>
                     <mat-button-toggle-group vertical="true">
                         <mat-button-toggle (click)="openSaveServer()" matTooltip="Téléverser vers le serveur" matTooltipPosition="right">
                             <mat-icon>cloud_upload</mat-icon>
@@ -318,6 +329,33 @@
                 <app-stamp></app-stamp>
             </mat-grid-list>
 
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Grid">
+                <mat-grid-tile colspan="6">
+                    <b>Paramètres pour la grille</b>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" aria-rowspan="8"> Changer l'opacité du quadrillé </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider
+                        min="0"
+                        max="1"
+                        step="0.1"
+                        [(ngModel)]="gridService.opacity"
+                        (ngModelChange)="gridService.activateGrid()"
+                    ></mat-slider>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" aria-rowspan="8"> La valeur alpha : {{ gridService.opacity }} </mat-grid-tile>
+                <mat-grid-tile colspan="6" aria-rowspan="8"> Changer la largeur de chaque carrée </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <mat-slider
+                        min="5"
+                        max="500"
+                        step="1"
+                        [(ngModel)]="gridService.squareWidth"
+                        (ngModelChange)="gridService.activateGrid()"
+                    ></mat-slider>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" aria-rowspan="8"> Taille en pixels d'un côté : {{ gridService.squareWidth }} px </mat-grid-tile>
+            </mat-grid-list>
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Spray">
                 <app-spray></app-spray>
             </mat-grid-list>
