@@ -77,7 +77,6 @@ export class StampService extends Tool {
     saveCanvas(): void {
         // saves the current cursor image so that it can be used on the main canvas
         this.currentStamp2Name = this.drawingService.cursorCtx.canvas.toDataURL();
-        console.log(this.currentStamp2Name);
     }
 
     increaseSize(): void {

@@ -671,4 +671,13 @@ export class SidebarComponent {
             this.stampService.isAltPressed = false;
         }
     }
+
+    @HostListener('window:keydown.d', ['$event'])
+    changeStampMode(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isStampChecked = true;
+            this.pickStamp();
+        }
+    }
 }
