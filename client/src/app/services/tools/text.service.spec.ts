@@ -2,7 +2,6 @@
 
 import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -16,7 +15,7 @@ import { TextService } from './text.service';
 // tslint:disable:max-file-line-count
 // tslint:disable:no-shadowed-variable
 
-describe('Service: Text', () => {
+fdescribe('Service: Text', () => {
   let textService: TextService;
   let mouseEvent0: MouseEvent;
   // let mouseEvent1: MouseEvent;
@@ -338,5 +337,22 @@ describe('Service: Text', () => {
     expect(textService['width']).toEqual(0);
     expect(textService['height']).toEqual(0);
   });
+
+  it(' drawPreviewRect should draw a preview rectangle in the preview canvas', () => {
+        textService['mousePosition'] = { x: 167, y: 237 };
+        textService['mouseDownCoords'] = { x: 167, y: 237 };
+        textService['drawPreviewRect'](previewCtxStub, textService['mouseDownCoords'], textService['mousePosition']);
+
+        expect(textService['width']).toEqual(100);
+        expect(textService['height']).toEqual(21);
+    });
+
+//     it('keyUpHandler should call addLetter & textPreview ', () => {
+//       textService["writeOnPreviewCtx"] = true;
+//       const keyEventData = { isTrusted: true, code: 'KeyA' };
+//       const keyEvent = new KeyboardEvent('keydown', keyEventData);
+//       textService.keyUpHandler(keyEvent);
+//       expect(textService["textControl"].addLetter).toHaveBeenCalled();
+//   });
 
 });
