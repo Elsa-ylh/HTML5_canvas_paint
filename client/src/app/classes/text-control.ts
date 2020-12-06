@@ -74,8 +74,6 @@ export class TextControl {
         for (let index = textLine.length - 1; index >= this.indexOfLettersInLine; index--) {
             this.textStack.push(textLine[index]);
         }
-
-        console.log(this.indexOfLettersInLine);
     }
 
     arrowLeft(): void {
@@ -100,7 +98,6 @@ export class TextControl {
         if (this.indexOfLettersInLine < 0) {
             this.indexOfLettersInLine = 0;
         }
-        console.log(this.indexOfLettersInLine);
     }
 
     arrowRight(): void {
@@ -124,7 +121,6 @@ export class TextControl {
                 this.textStack.push(lineText[index]);
             }
         }
-        console.log(this.indexOfLettersInLine);
     }
 
     backspace(): void {
@@ -142,17 +138,19 @@ export class TextControl {
             this.indexLine--;
             this.textLine = [];
             const textLine = this.textPreview[this.indexLine];
-            for (let index = 0; index < textLine.length; index++) {
-                this.textLine[index] = textLine[index];
+            if (textLine !== undefined) {
+                for (let index = 0; index < textLine.length; index++) {
+                    this.textLine[index] = textLine[index];
+                }
+                this.indexOfLettersInLine = this.textLine.length;
             }
-            this.indexOfLettersInLine = this.textLine.length;
+        }
+        if (this.indexOfLettersInLine < 0) {
+            this.indexOfLettersInLine = 0;
         }
     }
 
     delete(): void {
-        console.log('avant stack', this.textStack, this.textStack.length);
-        console.log(this.textPreview);
-        console.log(this.indexLine, this.textPreview.length);
         if (this.textStack.length) {
             this.textStack.pop();
         } else if (!this.textStack.length && this.indexLine < this.textPreview.length - 1) {
@@ -161,14 +159,11 @@ export class TextControl {
                 this.textPreview[index] = this.textPreview[index + 1];
             }
             this.textPreview.pop();
-            this.textPreview.length--;
             // tslint:disable:prefer-for-of
             for (let index = 0; index < textLine.length; index++) {
                 this.textStack.push(textLine[index]);
             }
         }
-        console.log('stack', this.textStack, this.textStack.length);
-        console.log(this.textPreview);
     }
 
     enter(): void {
