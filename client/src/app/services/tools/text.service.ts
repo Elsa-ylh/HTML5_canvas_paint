@@ -181,8 +181,6 @@ export class TextService extends Tool {
         ctx.fillStyle = STROKECOLOR;
         ctx.lineWidth = this.lineWidth;
         ctx.setLineDash([DOTTEDSPACE, DOTTEDSPACE]);
-        console.log(mousePosition, mouseDownCoords);
-        console.log('height :', this.height, ' width :', this.width);
         if (this.drawingService.previewCtx === ctx) {
             if (Math.abs(this.width) <= TEXTZONEMINWIDTH || Math.abs(this.height) <= this.sizeFont) {
                 this.width = Math.abs(this.width) > TEXTZONEMINWIDTH ? this.width : TEXTZONEMINWIDTH;

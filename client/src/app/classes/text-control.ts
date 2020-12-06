@@ -47,6 +47,7 @@ export class TextControl {
             this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + this.tmpLineTextStack();
             this.indexLine--;
             this.setCursorPos();
+            this.indexOfLettersInLine = this.textLine.length;
         }
     }
 
@@ -55,6 +56,7 @@ export class TextControl {
             this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + this.tmpLineTextStack();
             this.indexLine++;
             this.setCursorPos();
+            this.indexOfLettersInLine = this.textLine.length;
         }
     }
 
@@ -72,6 +74,7 @@ export class TextControl {
         for (let index = textLine.length - 1; index >= this.indexOfLettersInLine; index--) {
             this.textStack.push(textLine[index]);
         }
+
         console.log(this.indexOfLettersInLine);
     }
 
@@ -119,7 +122,6 @@ export class TextControl {
             const lineText = this.textPreview[this.indexLine];
             for (let index = lineText.length - 1; index >= 0; index--) {
                 this.textStack.push(lineText[index]);
-                this.indexOfLettersInLine++;
             }
         }
         console.log(this.indexOfLettersInLine);
@@ -148,10 +150,12 @@ export class TextControl {
     }
 
     delete(): void {
+        console.log('avant stack', this.textStack, this.textStack.length);
+        console.log(this.textPreview);
+        console.log(this.indexLine, this.textPreview.length);
         if (this.textStack.length) {
             this.textStack.pop();
-        }
-        if (!this.textStack.length && this.indexLine < this.textPreview.length) {
+        } else if (!this.textStack.length && this.indexLine < this.textPreview.length - 1) {
             const textLine = this.textPreview[this.indexLine + 1];
             for (let index = this.indexLine + 1; index < this.textPreview.length; index++) {
                 this.textPreview[index] = this.textPreview[index + 1];
@@ -163,6 +167,8 @@ export class TextControl {
                 this.textStack.push(textLine[index]);
             }
         }
+        console.log('stack', this.textStack, this.textStack.length);
+        console.log(this.textPreview);
     }
 
     enter(): void {
