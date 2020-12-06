@@ -40,8 +40,10 @@ describe('Email controller', () => {
         emailService.isEmailValid.resolves(false);
         emailService.isContentValid.resolves(false);
         const formData = new FormData();
-        formData.append('image', 'blob', 'aaa/image/jbg');
-        formData.append('email', 'a@a.com');
+        const obj = { hello: 'world' };
+        const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'image/jpg' });
+        formData.append('payload', blob, 'aaa/image/jbg');
+        formData.append('to', 'a@a.com');
 
         return supertest(app)
             .post('/api/email')
@@ -63,5 +65,4 @@ describe('Email controller', () => {
                 expect(response.text).to.deep.equal("Votre requête a besoin d'un courriel.");
             });
     });
-    
 });
