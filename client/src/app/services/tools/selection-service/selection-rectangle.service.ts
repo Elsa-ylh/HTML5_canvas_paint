@@ -5,8 +5,8 @@ import { SelectionImage } from '@app/classes/selection';
 // import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MagnetismService } from '../magnetism.service';
-import { SelectionService } from './selection-service';
+import { MagnetismService } from '@app/services/tools/magnetism.service';
+import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 
 @Injectable({
     providedIn: 'root',
