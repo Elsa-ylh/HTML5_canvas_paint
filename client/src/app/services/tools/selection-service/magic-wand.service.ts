@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ControlGroup } from '@app/classes/control-group';
 import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
 // import { PaintBucketAction } from '@app/classes/undo-redo/paint-bucket-action';
@@ -182,8 +181,8 @@ export class MagicWandService extends SelectionService {
         return pixels;
     }
 
-    private preparePreviewLayer(selectedPixels: ImageData): ImageData {
-        const size = selectedPixels.width * selectedPixels.height;
+    private preparePreviewLayer(coloredPixels: ImageData): ImageData {
+        const size = coloredPixels.width * coloredPixels.height;
         const originalLayer: ImageData = this.drawingService.baseCtx.getImageData(
             0,
             0,
@@ -193,25 +192,23 @@ export class MagicWandService extends SelectionService {
         const previewLayer = new ImageData(this.canvasResizerService.canvasSize.x, this.canvasResizerService.canvasSize.y);
         for (let i = 0; i < size; ++i) {
             if (
-                selectedPixels.data[i * this.COLORATTRIBUTES] === this.replacementColor.red &&
-                selectedPixels.data[i * this.COLORATTRIBUTES + 1] === this.replacementColor.green &&
-                selectedPixels.data[i * this.COLORATTRIBUTES + 2] === this.replacementColor.blue &&
+                coloredPixels.data[i * this.COLORATTRIBUTES] === this.replacementColor.red &&
+                coloredPixels.data[i * this.COLORATTRIBUTES + 1] === this.replacementColor.green &&
+                coloredPixels.data[i * this.COLORATTRIBUTES + 2] === this.replacementColor.blue &&
                 // +3 means at alpha position
                 // tslint:disable-next-line:no-magic-numbers
-                selectedPixels.data[i * this.COLORATTRIBUTES + 3] === this.replacementColor.alpha
+                coloredPixels.data[i * this.COLORATTRIBUTES + 3] === this.replacementColor.alpha
             ) {
-                // +3 means at alpha position
-                // tslint:disable-next-line:no-magic-numbers
-                previewLayer.data[i * this.COLORATTRIBUTES + 3] = 0;
-            } else {
-
-
                 previewLayer.data[i * this.COLORATTRIBUTES] = originalLayer.data[i * this.COLORATTRIBUTES];
                 previewLayer.data[i * this.COLORATTRIBUTES + 1] = originalLayer.data[i * this.COLORATTRIBUTES + 1];
                 previewLayer.data[i * this.COLORATTRIBUTES + 2] = originalLayer.data[i * this.COLORATTRIBUTES + 2];
                 // +3 means at alpha position
                 // tslint:disable-next-line:no-magic-numbers
                 previewLayer.data[i * this.COLORATTRIBUTES + 3] = originalLayer.data[i * this.COLORATTRIBUTES + 3];
+            } else {
+                // +3 means at alpha position
+                // tslint:disable-next-line:no-magic-numbers
+                previewLayer.data[i * this.COLORATTRIBUTES + 3] = 0;
             }
         }
         return previewLayer;
@@ -219,9 +216,6 @@ export class MagicWandService extends SelectionService {
 
     private checkNotTransparentPixel(previewLayer: ImageData, pixelPosition: number, transparentColor: RGBA): boolean {
         return (
-            //previewLayer.data[pixelPosition] !== transparentColor.red &&
-            //previewLayer.data[pixelPosition + 1] !== transparentColor.green &&
-            //previewLayer.data[pixelPosition + 2] !== transparentColor.blue &&
             // tslint:disable-next-line:no-magic-numbers
             previewLayer.data[pixelPosition + 3] !== transparentColor.alpha
         );
@@ -280,39 +274,48 @@ export class MagicWandService extends SelectionService {
 
     // https://stackoverflow.com/a/55196211
     private snipSelection(previewLayer: ImageData, upperCornerPosition: Vec2, selectionDimension: Vec2): string {
-      const cut = document.createElement('canvas');
-      cut.width = selectionDimension.x;
-      cut.height = selectionDimension.y;
-      const ctx = cut.getContext('2d') as CanvasRenderingContext2D;
-      ctx.putImageData(previewLayer, -upperCornerPosition.x, -upperCornerPosition.y);
-      return cut.toDataURL();
+        const cut = document.createElement('canvas');
+        cut.width = selectionDimension.x;
+        cut.height = selectionDimension.y;
+        const ctx = cut.getContext('2d') as CanvasRenderingContext2D;
+        ctx.putImageData(previewLayer, -upperCornerPosition.x, -upperCornerPosition.y);
+        return cut.toDataURL();
     }
 
-    private saveSelectionData(selectedPixels: ImageData): void {
+    private saveSelectionData(coloredPixels: ImageData): void {
         // the next steps removes anything other than the selected pixels to become transparent
         // and it keeps the selected pixels in the layer
-        const previewLayer: ImageData = this.preparePreviewLayer(selectedPixels);
+        const previewLayer: ImageData = this.preparePreviewLayer(coloredPixels);
 
         const upperBoundPos: Vec2 = this.findBound(Bound.UPPER, previewLayer);
         const lowerBoundPos: Vec2 = this.findBound(Bound.LOWER, previewLayer);
         const leftBoundPos: Vec2 = this.findBound(Bound.LEFT, previewLayer);
         const rightBoundPos: Vec2 = this.findBound(Bound.RIGHT, previewLayer);
 
-        // +-1 is to give one more pixel to the selection rectangle and not be too cramped
-        this.selection.imagePosition = { x: leftBoundPos.x - 1, y: upperBoundPos.y - 1 } as Vec2;
-        this.selection.endingPos = { x: rightBoundPos.x + 1, y: lowerBoundPos.y + 1 } as Vec2;
+        this.selection.imagePosition = { x: leftBoundPos.x, y: upperBoundPos.y } as Vec2;
+        this.selection.endingPos = { x: rightBoundPos.x, y: lowerBoundPos.y } as Vec2;
 
         this.selection.image = new Image();
-        this.selection.image.src = this.snipSelection(previewLayer, { x: upperBoundPos.y, y: rightBoundPos.x } as Vec2, { x: rightBoundPos.x - leftBoundPos.x, y: lowerBoundPos.y - upperBoundPos.y} as Vec2);
+        this.selection.image.src = this.snipSelection(
+            previewLayer,
+            this.selection.imagePosition as Vec2,
+            { x: rightBoundPos.x - leftBoundPos.x, y: lowerBoundPos.y - upperBoundPos.y } as Vec2,
+        );
     }
 
-    drawSelection(): void  {
+    drawSelection(): void {
         if (this.scaled) {
             this.flipImage();
             this.scaled = false;
         }
         this.drawingService.previewCtx.save();
-        this.drawingService.previewCtx.drawImage(this.selection.image, this.selection.imagePosition.x, this.selection.imagePosition.y, this.selection.width, this.selection.height);
+        this.drawingService.previewCtx.drawImage(
+            this.selection.image,
+            this.selection.imagePosition.x,
+            this.selection.imagePosition.y,
+            this.selection.width,
+            this.selection.height,
+        );
         this.drawingService.previewCtx.restore();
         this.drawSelectionRect(this.selection.imagePosition, this.selection.width, this.selection.height);
     }
@@ -322,12 +325,9 @@ export class MagicWandService extends SelectionService {
         event.preventDefault();
         if (event.button === MouseButton.Left) {
             this.mouseDown = true;
-            const toBeSelectedPixels: ImageData = this.selectedFloodFill(event.offsetX, event.offsetY, this.replacementColor);
-            console.log(this.getImageURL(toBeSelectedPixels, this.canvasResizerService.canvasSize.x, this.canvasResizerService.canvasSize.y));
-
-
-            //this.saveSelectionData(toBeSelectedPixels);
-            //console.log(this.selection.image.src);
+            const coloredToBeSelectedPixels: ImageData = this.selectedFloodFill(event.offsetX, event.offsetY, this.replacementColor);
+            this.saveSelectionData(coloredToBeSelectedPixels);
+            console.log(this.selection.image.src);
         }
 
         // The entire canvas is being verified if the target color plus tolerance can be colored with the replacement color.
