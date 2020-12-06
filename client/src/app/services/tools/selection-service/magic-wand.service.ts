@@ -322,19 +322,19 @@ export class MagicWandService extends SelectionService {
 
     onMouseDown(event: MouseEvent): void {
         this.clearEffectTool();
-        event.preventDefault();
         if (event.button === MouseButton.Left) {
             this.mouseDown = true;
             const coloredToBeSelectedPixels: ImageData = this.selectedFloodFill(event.offsetX, event.offsetY, this.replacementColor);
             this.saveSelectionData(coloredToBeSelectedPixels);
-            console.log(this.selection.image.src);
+            return;
         }
 
         // The entire canvas is being verified if the target color plus tolerance can be colored with the replacement color.
         if (event.button === MouseButton.Right) {
             this.mouseDown = true;
-            const toBeSelectedPixels: ImageData = this.selectAllSimilar(event.offsetX, event.offsetY, this.replacementColor);
-            this.saveSelectionData(toBeSelectedPixels);
+            const coloredToBeSelectedPixels: ImageData = this.selectAllSimilar(event.offsetX, event.offsetY, this.replacementColor);
+            this.saveSelectionData(coloredToBeSelectedPixels);
+            console.log(this.selection.image.src);
             return;
         }
     }
