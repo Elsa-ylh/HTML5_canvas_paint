@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
+import { ControlGroup } from '@app/classes/control-group';
+import { ControlPointName } from '@app/classes/control-points';
 import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
+import { SelectionImage } from '@app/classes/selection';
 // import { PaintBucketAction } from '@app/classes/undo-redo/paint-bucket-action';
 import { Vec2 } from '@app/classes/vec2';
 // import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MagnetismService } from '@app/services/tools/magnetism.service';
+import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism.service';
 // import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
@@ -28,6 +31,7 @@ enum Bound {
 export class MagicWandService extends SelectionService {
     private replacementColor: RGBA = { red: 101, green: 231, blue: 0, alpha: 1 };
     private readonly COLORATTRIBUTES: number = 4;
+    rightMouseDown: boolean;
     // private selectionBoxCreated: boolean = false;
 
     constructor(
@@ -322,22 +326,149 @@ export class MagicWandService extends SelectionService {
 
     onMouseDown(event: MouseEvent): void {
         this.clearEffectTool();
-        if (event.button === MouseButton.Left) {
-            this.mouseDown = true;
-            const coloredToBeSelectedPixels: ImageData = this.selectedFloodFill(event.offsetX, event.offsetY, this.replacementColor);
-            this.saveSelectionData(coloredToBeSelectedPixels);
-            return;
+        this.mouseDown = event.button === MouseButton.Left;
+        this.rightMouseDown = event.button === MouseButton.Right;
+
+        if (this.mouseDown) {
+          this.mouseDownCoords = this.getPositionFromMouse(event);
+          this.previousMousePos = this.getPositionFromMouse(event);
+            // check if mouse is inside selection
+            if (this.selection.imagePosition && this.selection.endingPos && !this.drawingService.isPreviewCanvasBlank()) {
+                console.log('selection');
+                this.inSelection = this.isInsideSelection(this.mouseDownCoords);
+            }
+
+            // check if mouse is inside a control point
+            if (!this.drawingService.isPreviewCanvasBlank()) {
+                console.log('controlpoint');
+                this.controlPointName = this.controlGroup.isInControlPoint(this.mouseDownCoords);
+            }
+
+            if (this.controlPointName === ControlPointName.none && !this.inSelection && this.drawingService.isPreviewCanvasBlank()) {
+                const coloredToBeSelectedPixels: ImageData = this.selectedFloodFill(event.offsetX, event.offsetY, this.replacementColor);
+                this.saveSelectionData(coloredToBeSelectedPixels);
+                console.log(this.selection.image.src);
+                this.selection.copyImageInitialPos = { x: this.selection.imagePosition.x, y: this.selection.imagePosition.x };
+                this.selection.width = this.selection.endingPos.x - this.selection.imagePosition.x;
+                this.selection.height = this.selection.endingPos.y - this.selection.imagePosition.y;
+                this.controlGroup = new ControlGroup(this.drawingService);
+                this.drawSelection();
+                this.mouseDown = false;
+                return;
+            }
+
+            if(!this.inSelection && this.controlPointName === ControlPointName.none && !this.drawingService.isPreviewCanvasBlank()) {
+              this.pasteSelection(this.selection);
+              return;
+            }
         }
 
         // The entire canvas is being verified if the target color plus tolerance can be colored with the replacement color.
-        if (event.button === MouseButton.Right) {
+        if (this.rightMouseDown) {
             this.mouseDown = true;
             const coloredToBeSelectedPixels: ImageData = this.selectAllSimilar(event.offsetX, event.offsetY, this.replacementColor);
             this.saveSelectionData(coloredToBeSelectedPixels);
-            console.log(this.selection.image.src);
             return;
         }
     }
 
-    onMouseUp(event: MouseEvent): void {}
+    onMouseMove(event: MouseEvent): void {
+      if (this.mouseDown) {
+          const mousePosition = this.getPositionFromMouse(event);
+          this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
+          // move selection
+          if (this.inSelection && this.controlPointName === ControlPointName.none) {
+              this.mouseMovement.x = mousePosition.x - this.previousMousePos.x;
+              this.mouseMovement.y = mousePosition.y - this.previousMousePos.y;
+              this.selection.imagePosition = {
+                  x: this.selection.imagePosition.x + this.mouseMovement.x,
+                  y: this.selection.imagePosition.y + this.mouseMovement.y,
+              };
+              this.selection.endingPos = {
+                  x: this.selection.endingPos.x + this.mouseMovement.x,
+                  y: this.selection.endingPos.y + this.mouseMovement.y,
+              };
+
+              // press "m" to activate the magnetism and sure there is a controlPointName selected
+              // this controlPointName is different from the one in selection service, as one if for resizing purpose
+              // and the following for the magnetism
+              if (this.controlGroup.controlPointName !== ControlPointName.none) {
+                  const magnetismReturn = this.magnetismService.applyMagnetismMouseMove({
+                      imagePosition: this.selection.imagePosition,
+                      endingPosition: this.selection.endingPos,
+                      controlGroup: this.controlGroup,
+                      selectionSize: { x: this.selection.width, y: this.selection.height } as Vec2,
+                  } as MagnetismParams);
+
+                  this.selection.imagePosition = magnetismReturn.imagePosition;
+                  this.selection.endingPos = magnetismReturn.endingPosition;
+                  this.controlGroup = magnetismReturn.controlGroup;
+              }
+              this.drawSelection();
+
+              this.previousMousePos = mousePosition;
+
+              // bypass bug clear selection
+              if (!this.cleared) {
+                  this.clearSelection(this.selection.copyImageInitialPos, this.selection.width, this.selection.height);
+                  this.cleared = true;
+              }
+
+              // scale selection
+          } else if (this.controlPointName !== ControlPointName.none) {
+              this.mouseMovement.x = mousePosition.x - this.previousMousePos.x;
+              this.mouseMovement.y = mousePosition.y - this.previousMousePos.y;
+
+              // bypass bug clear selection
+              if (!this.cleared) {
+                  this.clearSelection(this.selection.copyImageInitialPos, this.selection.width, this.selection.height);
+                  this.cleared = true;
+              }
+
+              this.scaleSelection(this.mouseMovement);
+              this.drawSelection();
+              this.previousMousePos = mousePosition;
+              // draw selection
+          }
+      }
+    }
+
+    onMouseUp(event: MouseEvent): void {
+      if (this.mouseDown) {
+          // const mousePosition = this.getPositionFromMouse(event);
+          this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
+          if (this.inSelection || this.controlPointName !== ControlPointName.none) {
+              this.drawSelection();
+              this.mouseMovement = { x: 0, y: 0 };
+              this.selection.imagePosition = this.updateSelectionPositions();
+              // reset baseImage to use when flipping the image
+              this.baseImage = new Image();
+              this.baseImage.src = this.selection.image.src;
+              // not in action anymore
+              // this.controlGroup.resetSelected();
+          }
+      }
+      // this.controlPointName = ControlPointName.none;
+      this.mouseDown = false;
+      this.rightMouseDown = false;
+      this.inSelection = false;
+    }
+
+    pasteSelection(selection: SelectionImage): void {
+      this.drawingService.baseCtx.drawImage(
+          selection.image,
+          selection.imagePosition.x,
+          selection.imagePosition.y,
+          selection.width,
+          selection.height,
+      );
+  }
+
+  clearSelection(position: Vec2, width: number, height: number): void {
+    this.drawingService.baseCtx.fillStyle = 'white';
+    this.drawingService.baseCtx.fillRect(position.x, position.y, width, height);
+  }
+
 }
