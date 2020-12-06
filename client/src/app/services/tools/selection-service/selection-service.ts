@@ -10,7 +10,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism.service';
 import { interval, Subscription } from 'rxjs';
-import { RotationService } from './rotation.service';
+import { RotationService, TO_RAD } from './rotation.service';
 
 @Injectable({
     providedIn: 'root',
@@ -34,6 +34,7 @@ export class SelectionService extends Tool {
 
     baseImage: HTMLImageElement;
     baseImageData: ImageData;
+    baseSize:Vec2;
     // height: number;
     // width: number;
     mouseMovement: Vec2 = { x: 0, y: 0 };
@@ -94,6 +95,7 @@ export class SelectionService extends Tool {
 
                 if (this.selection.width !== 0 && this.selection.height !== 0) {
                     this.copySelection();
+                    this.baseSize = {x: this.selection.width, y:this.selection.height};
                     this.selection.imageSize = { x: this.selection.width, y: this.selection.height };
                     this.selection.imagePosition = this.selection.copyImageInitialPos = this.updateSelectionPositions();
 
@@ -278,7 +280,15 @@ export class SelectionService extends Tool {
         this.drawingService.previewCtx.strokeRect(mouseDownCoord.x, mouseDownCoord.y , width, height);
         this.drawingService.previewCtx.setLineDash([]);
 
-        this.controlGroup.setPositions(this.selection.imagePosition , this.selection.endingPos, { x: this.selection.width, y: this.selection.height });
+        if(this.selection.rotationAngle !== 0){
+          const ADDED_WIDTH = Math.abs(Math.sin(this.selection.rotationAngle*TO_RAD)*this.selection.width/2);
+          const ADDED_HEIGHT = Math.abs(Math.sin(this.selection.rotationAngle*TO_RAD)*this.selection.height/2);
+          this.controlGroup.setPositions({x:this.selection.imagePosition.x - ADDED_WIDTH / 2,y:this.selection.imagePosition.y - ADDED_WIDTH / 2},
+             {x:this.selection.endingPos.x + ADDED_WIDTH / 2,y:this.selection.endingPos.y + ADDED_WIDTH / 2},
+              { x: this.selection.width + ADDED_WIDTH, y: this.selection.height +ADDED_HEIGHT });
+        }else{
+          this.controlGroup.setPositions(this.selection.imagePosition , this.selection.endingPos, { x: this.selection.width, y: this.selection.height });
+        }
 
         this.controlGroup.draw();
     }

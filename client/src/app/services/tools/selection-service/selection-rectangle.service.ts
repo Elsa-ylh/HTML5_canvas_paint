@@ -7,7 +7,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { RotationService } from './rotation.service';
+import { RotationService, TO_RAD } from './rotation.service';
 import { SelectionService } from './selection-service';
 
 @Injectable({
@@ -164,12 +164,19 @@ export class SelectionRectangleService extends SelectionService {
         this.drawingService.previewCtx.save();
         // rotation
         if(this.selection.rotationAngle !== 0){
+          const ADDED_WIDTH = Math.abs(Math.sin(this.selection.rotationAngle*TO_RAD)*this.selection.width/2);
+          const ADDED_HEIGHT = Math.abs(Math.sin(this.selection.rotationAngle*TO_RAD)*this.selection.height/2);
           this.rotationService.rotateSelection(this.selection, this.drawingService.previewCtx);
-          this.rotationService.updateImageWithRotation(this);
+          // this.rotationService.updateImageWithRotation(this);
+          this.drawingService.previewCtx.drawImage(this.selection.image, imagePosition.x, imagePosition.y, this.selection.width, this.selection.height);
+          this.drawingService.previewCtx.restore();
+          this.drawSelectionRect({x:imagePosition.x-ADDED_WIDTH/2, y:imagePosition.y-ADDED_HEIGHT/2}, this.selection.width+ADDED_WIDTH, this.selection.width+ADDED_HEIGHT);
+        }else {
+          this.drawingService.previewCtx.drawImage(this.selection.image, imagePosition.x, imagePosition.y, this.selection.width, this.selection.height);
+          this.drawingService.previewCtx.restore();
+          this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
         }
-        this.drawingService.previewCtx.drawImage(this.selection.image, imagePosition.x, imagePosition.y, this.selection.width, this.selection.height);
-        this.drawingService.previewCtx.restore();
-        this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
+
     }
 
     pasteSelection(selection: SelectionImage): void {

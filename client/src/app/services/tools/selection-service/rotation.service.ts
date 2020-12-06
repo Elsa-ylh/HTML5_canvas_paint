@@ -5,7 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionService } from './selection-service';
 const FIFTEEN = 15;
 const ONE = 1;
-const TO_RAD =  Math.PI / 180;
+export const TO_RAD =  Math.PI / 180;
 
 @Injectable({
     providedIn: 'root',
@@ -63,10 +63,10 @@ export class RotationService extends Tool {
     updateImageWithRotation(selectionService:SelectionService):void {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
-        const ADDED_WIDTH = Math.abs(Math.sin(selectionService.selection.rotationAngle*TO_RAD)*selectionService.selection.width);
-        const ADDED_HEIGHT = Math.abs(Math.sin(selectionService.selection.rotationAngle*TO_RAD)*selectionService.selection.height);
-        canvas.width = Math.abs(selectionService.selection.width +ADDED_WIDTH);
-        canvas.height = Math.abs(selectionService.selection.height+ ADDED_HEIGHT);
+        //const ADDED_WIDTH = Math.abs(Math.sin(selectionService.selection.rotationAngle*TO_RAD)*selectionService.selection.width);
+        //const ADDED_HEIGHT = Math.abs(Math.sin(selectionService.selection.rotationAngle*TO_RAD)*selectionService.selection.height);
+        canvas.width = Math.abs(selectionService.baseSize.x );
+        canvas.height = Math.abs(selectionService.baseSize.y);
         ctx.save();
         ctx.translate(canvas.width/2, canvas.height/2);
         ctx.rotate(selectionService.selection.rotationAngle * TO_RAD);
@@ -79,15 +79,9 @@ export class RotationService extends Tool {
         // selectionService.selection.imageSize = {x:selectionService.selection.width, y:selectionService.selection.height};
         // selectionService.selection.endingPos = {x:selectionService.selection.endingPos.x + ADDED_WIDTH/2, y:selectionService.selection.endingPos.y + ADDED_HEIGHT/2};
         selectionService.selection.image = new Image();
-        selectionService.selection.image.src = selectionService.selection.getImageURL(selectionService.selection.imageData, selectionService.selection.width + ADDED_WIDTH, selectionService.selection.height+ ADDED_HEIGHT);
-        console.log(selectionService.selection.width);
-        console.log("added " + ADDED_WIDTH);
-        //selectionService.selection.width =  ADDED_WIDTH;
-        // selectionService.selection.height = ADDED_HEIGHT;
-        //selectionService.selection.resetAngle();
-        console.log(selectionService.selection.image.naturalHeight);
-        console.log(selectionService.selection.width);
-
-        console.log(selectionService.selection.image.src);
+        selectionService.selection.image.src = selectionService.selection.getImageURL(selectionService.selection.imageData, canvas.width, canvas.height);
+        console.log(canvas.width);
+        //selectionService.selection.width = canvas.width;
+        //selectionService.selection.height = canvas.height;
     }
 }
