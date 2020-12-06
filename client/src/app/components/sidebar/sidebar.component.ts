@@ -633,13 +633,14 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.g', ['$event']) activateGrid(event: KeyboardEvent): void {
-        if (this.gridService.isGridSettingsChecked) {
-            this.gridService.isGridSettingsChecked = false;
-            this.gridService.deactivateGrid();
-        } else {
-            this.gridService.isGridSettingsChecked = true;
-            this.gridService.activateGrid();
-        }
+        if (this.isDialogLoadSaveExport && this.isOnPreviewCtx())
+            if (this.gridService.isGridSettingsChecked) {
+                this.gridService.isGridSettingsChecked = false;
+                this.gridService.deactivateGrid();
+            } else {
+                this.gridService.isGridSettingsChecked = true;
+                this.gridService.activateGrid();
+            }
     }
 
     @HostListener('window:keydown.-', ['$event']) decreaseSquareGrid(event: KeyboardEvent): void {

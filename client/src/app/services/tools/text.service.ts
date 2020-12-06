@@ -3,7 +3,6 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { TextControl } from '@app/classes/text-control';
 import { Tool } from '@app/classes/tool';
-import { ToolInfoText } from '@app/classes/tool-info-text';
 import { TextAction } from '@app/classes/undo-redo/text-action';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
@@ -38,21 +37,17 @@ export class TextService extends Tool {
     // tslint:disable-next-line:no-magic-numbers
     sizeFont: number = this.possibleSizeFont[6];
     possibleFont: string[] = ['Times New Roman', 'Calibri', 'Courier New', 'Verdana', 'Impact'];
-    mouseEnter: boolean = false;
-    mouseOut: boolean = false;
-    mousePosition: Vec2 = { x: 0, y: 0 };
+    private mouseEnter: boolean = false;
+    private mouseOut: boolean = false;
+    private mousePosition: Vec2 = { x: 0, y: 0 };
     canvasSelected: boolean;
-    fontStyleBold: boolean = false;
-    fontStyleItalic: boolean = false;
-    height: number = 0;
-    width: number = 0;
+    private fontStyleBold: boolean = false;
+    private fontStyleItalic: boolean = false;
+    private height: number = 0;
+    private width: number = 0;
     private lineWidth: number = 2;
-    textValue: string = 'initial value';
     private writeOnPreviewCtx: boolean = false;
-    isRenderingBase: boolean;
-    distanceX: number = 0;
-    distanceY: number = 0;
-    infoText: ToolInfoText;
+    // private infoText: ToolInfoText;
 
     private textAlign: number = 2;
     private textControl: TextControl;
@@ -63,9 +58,6 @@ export class TextService extends Tool {
     isOnPreviewCanvas(): boolean {
         return this.writeOnPreviewCtx;
     }
-    formatLabel(value: number): number {
-        return value;
-    }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
@@ -75,7 +67,7 @@ export class TextService extends Tool {
             this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoords, this.mousePosition);
         }
         if (this.writeOnPreviewCtx) {
-            this.setCTXFont(this.drawingService.baseCtx);
+            this.setCtxFont(this.drawingService.baseCtx);
             this.drawText();
             // this.drawTextUndo({
             //     primaryColor: this.colorService.primaryColor,
@@ -86,8 +78,8 @@ export class TextService extends Tool {
             //     FontStyleBold: this.fontStyleItalic,
             // });
 
-            const textAction = new TextAction(
-                this.mousePosition,
+            const textAction = new TextAction();
+            /*  this.mousePosition,
                 this.mouseDownCoords,
                 this.colorService.primaryColor,
                 this.sizeFont,
@@ -97,8 +89,7 @@ export class TextService extends Tool {
                 this.fontStyleItalic,
                 this.textControl.getText(),
                 this,
-                this.drawingService,
-            );
+                this.drawingService,*/
 
             this.undoRedoService.addUndo(textAction);
             this.undoRedoService.clearRedo();
@@ -185,9 +176,7 @@ export class TextService extends Tool {
         this.previewText();
     }
 
-    drawPreviewRect(ctx: CanvasRenderingContext2D, mouseDownCoords: Vec2, mousePosition: Vec2): void {
-        this.distanceX = mousePosition.x - mouseDownCoords.x;
-        this.distanceY = mousePosition.y - mouseDownCoords.y;
+    private drawPreviewRect(ctx: CanvasRenderingContext2D, mouseDownCoords: Vec2, mousePosition: Vec2): void {
         ctx.strokeStyle = STROKECOLOR;
         ctx.fillStyle = STROKECOLOR;
         ctx.lineWidth = this.lineWidth;
@@ -239,17 +228,17 @@ export class TextService extends Tool {
     }
 
     // Necessary for undo-redo. We have similar function.
-    drawTextUndo(toolInfo: ToolInfoText, text: string[], mousePosition: Vec2, mouseDownCord: Vec2): void {
-        this.textAlign = toolInfo.textAlign;
-        this.sizeFont = toolInfo.sizeFont;
-        this.fontStyle = toolInfo.fontStyle;
-        this.fontStyleItalic = toolInfo.fontStyleItalic;
-        this.fontStyleBold = toolInfo.fontStyleBold;
+    // drawTextUndo(toolInfo: ToolInfoText, text: string[], mousePosition: Vec2, mouseDownCord: Vec2): void {
+    //     this.textAlign = toolInfo.textAlign;
+    //     this.sizeFont = toolInfo.sizeFont;
+    //     this.fontStyle = toolInfo.fontStyle;
+    //     this.fontStyleItalic = toolInfo.fontStyleItalic;
+    //     this.fontStyleBold = toolInfo.fontStyleBold;
 
-        this.drawingService.baseCtx.strokeStyle = toolInfo.primaryColor; // text color
-        this.drawingService.baseCtx.fillStyle = toolInfo.primaryColor;
-        this.position(this.drawingService.baseCtx, text, this.textAlign, this.mouseDownCoords, this.mousePosition, this.width);
-    }
+    //     this.drawingService.baseCtx.strokeStyle = toolInfo.primaryColor; // text color
+    //     this.drawingService.baseCtx.fillStyle = toolInfo.primaryColor;
+    //     this.position(this.drawingService.baseCtx, text, this.textAlign, this.mouseDownCoords, this.mousePosition, this.width);
+    // }
 
     drawText(): void {
         this.drawingService.baseCtx.strokeStyle = this.colorService.primaryColor; // text color
@@ -261,7 +250,7 @@ export class TextService extends Tool {
     previewText(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreviewRect(this.drawingService.previewCtx, this.mouseDownCoords, this.mousePosition);
-        this.setCTXFont(this.drawingService.previewCtx);
+        this.setCtxFont(this.drawingService.previewCtx);
         const textPreview: string[] = this.textControl.getTextWithCursor();
         this.position(this.drawingService.previewCtx, textPreview, this.textAlign, this.mouseDownCoords, this.mousePosition, this.width);
     }
@@ -274,7 +263,7 @@ export class TextService extends Tool {
         return (mouseDownCoords.y < mousePosition.y ? mouseDownCoords.y : mousePosition.y) + sizeFont;
     }
 
-    private setCTXFont(ctx: CanvasRenderingContext2D): void {
+    private setCtxFont(ctx: CanvasRenderingContext2D): void {
         // set font and size for text with or without italic or bold
         ctx.font = (this.getBold() + this.getItalic() + this.sizeFont + 'px' + "'" + this.fontStyle + "'").toString();
         this.textControl.setCtx(ctx);
@@ -382,9 +371,5 @@ export class TextService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.height = 0;
         this.width = 0;
-    }
-
-    clearPreviewCtx(): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 }

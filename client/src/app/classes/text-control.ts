@@ -43,7 +43,7 @@ export class TextControl {
         return this.ctx.font;
     }
     arrowTop(): void {
-        if (this.indexLine >= 1) {
+        if (this.indexLine >= 1 && this.indexLine <= this.textPreview.length) {
             this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + this.tmpLineTextStack();
             this.indexLine--;
             this.setCursorPos();
