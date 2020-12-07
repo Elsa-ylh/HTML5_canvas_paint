@@ -1,10 +1,6 @@
 import { Component } from '@angular/core';
 import { ToolUsed } from '@app/classes/tool';
 import { ToolService } from '@app/services/tool-service';
-<<<<<<< HEAD
-=======
-
->>>>>>> 03ea3db4d702601470daee97f0b1ebe4171db172
 // import { ToolService } from '@app/services/tool-service';
 
 @Component({
@@ -14,10 +10,6 @@ import { ToolService } from '@app/services/tool-service';
 })
 export class EditorComponent {
     constructor(private toolService: ToolService) {}
-<<<<<<< HEAD
-=======
-
->>>>>>> 03ea3db4d702601470daee97f0b1ebe4171db172
     /* onMouseUp(event: MouseEvent): void {
         this.toolService.currentTool.onMouseUp(event);
     } */
