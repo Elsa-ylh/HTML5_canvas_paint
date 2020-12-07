@@ -51,16 +51,6 @@ fdescribe('Service: Text', () => {
             offsetY: 27,
             button: 0,
         } as MouseEvent;
-        // mouseEvent1 = {
-        //   offsetX: 150,
-        //   offsetY: 157,
-        //   button: 0,
-        // } as MouseEvent;
-        // mouseEvent2 = {
-        //   offsetX: 35,
-        //   offsetY: 29,
-        //   button: 0,
-        // } as MouseEvent;
     });
 
     it('should be created', inject([TextService], (textService: TextService) => {
@@ -311,13 +301,14 @@ fdescribe('Service: Text', () => {
         expect(textService['textControl']['textLine']).toEqual(['t', 'e', 's']);
     });
 
-    // it('delete should call textPreview ', () => {
-    //   textService["textControl"]["textStack"]=["t","e","s","t"];
-    //   textService["textControl"]["indexOfLettersInLine"] = 2;
-    //   textService.delete();
-    //   expect(textService["textControl"]["indexOfLettersInLine"]).toEqual(2);
-    //   expect(textService["textControl"]["textStack"]).toEqual(["t","e","t"]);
-    // });
+    it('delete should call textPreview ', () => {
+        textService['textControl']['textLine'] =[' ',' '];
+      textService['textControl']['textStack']=['t','e','s','t'];
+      textService['textControl']['indexOfLettersInLine'] = 2;
+      textService.delete();
+      expect(textService['textControl']['indexOfLettersInLine']).toEqual(2);
+      expect(textService['textControl']['textStack']).toEqual(['t','e','s']);
+    });
 
     it('enter should call textPreview ', () => {
         textService['textControl']['textLine'] = ['t', 'e'];
@@ -337,20 +328,102 @@ fdescribe('Service: Text', () => {
         expect(textService['height']).toEqual(0);
     });
 
-    it(' drawPreviewRect should draw a preview rectangle in the preview canvas', () => {
-        textService['mousePosition'] = { x: 167, y: 237 };
-        textService['mouseDownCoords'] = { x: 167, y: 237 };
-        textService['drawPreviewRect'](previewCtxStub, textService['mouseDownCoords'], textService['mousePosition']);
-
-        expect(textService['width']).toEqual(100);
-        expect(textService['height']).toEqual(21);
+    it(' drawPreviewRect should draw a preview rectangle in the preview canvas (1)', () => {
+      const mousePos = {
+        offsetX: 10,
+        offsetY: 15,
+        button: 0,
+      } as MouseEvent;
+      const mouseDown = {
+        offsetX: 20,
+        offsetY: 25,
+        button: 0,
+      } as MouseEvent;
+      textService['mouseEnter']=true;
+      textService.onMouseDown(mouseDown);
+      textService.onMouseMove(mousePos);
+      textService['drawPreviewRect'](previewCtxStub, textService['mouseDownCoords'], textService['mousePosition']);
+      expect(textService['width']).toEqual(100);
+      expect(textService['height']).toEqual(21);
     });
 
-    //     it('keyUpHandler should call addLetter & textPreview ', () => {
-    //       textService["writeOnPreviewCtx"] = true;
-    //       const keyEventData = { isTrusted: true, code: 'KeyA' };
-    //       const keyEvent = new KeyboardEvent('keydown', keyEventData);
-    //       textService.keyUpHandler(keyEvent);
-    //       expect(textService["textControl"].addLetter).toHaveBeenCalled();
-    //   });
+
+    it(' drawPreviewRect should draw a preview rectangle in the preview canvas (2)', () => {
+      const mousePos = {
+        offsetX: 128,
+        offsetY: 109,
+        button: 0,
+      } as MouseEvent;
+      const mouseDown = {
+        offsetX: 539,
+        offsetY: 317,
+        button: 0,
+      } as MouseEvent;
+      textService['mouseEnter']=true;
+      textService.onMouseDown(mouseDown);
+      textService.onMouseMove(mousePos);
+      textService['drawPreviewRect'](previewCtxStub, textService['mouseDownCoords'], textService['mousePosition']);
+      expect(textService['width']).toEqual(-411);
+      expect(textService['height']).toEqual(-208);
+    });
+
+    it(' drawPreviewRect should draw a preview rectangle in the preview canvas (3)', () => {
+      const mousePos = {
+        offsetX: 554,
+        offsetY: 119,
+        button: 0,
+      } as MouseEvent;
+      const mouseDown = {
+        offsetX: 264,
+        offsetY: 256,
+        button: 0,
+      } as MouseEvent;
+      textService['mouseEnter']=true;
+      textService.onMouseDown(mousePos);
+      textService.onMouseMove(mouseDown);
+      textService['drawPreviewRect'](previewCtxStub, textService['mouseDownCoords'], textService['mousePosition']);
+      expect(textService['width']).toEqual(-290);
+      expect(textService['height']).toEqual(137);
+    });
+
+    it(' drawPreviewRect should draw a preview rectangle in the preview canvas (4)', () => {
+        const mousePos = {
+          offsetX: 554,
+          offsetY: 119,
+          button: 0,
+        } as MouseEvent;
+        const mouseDown = {
+          offsetX: 264,
+          offsetY: 256,
+          button: 0,
+        } as MouseEvent;
+        textService['mouseEnter']=true;
+        textService.onMouseDown(mouseDown);
+        textService.onMouseMove(mousePos);
+        textService['drawPreviewRect'](previewCtxStub, textService['mouseDownCoords'], textService['mousePosition']);
+        expect(textService['width']).toEqual(290);
+        expect(textService['height']).toEqual(-137);
+      });
+
+      it('keyUpHandler should not call addLetter & textPreview ', () => {
+          textService['writeOnPreviewCtx'] = true;
+          const keyEventData = { isTrusted: true, key: 'Delete' };
+          const keyEvent = new KeyboardEvent('keydown', keyEventData);
+          textService.keyUpHandler(keyEvent);
+          expect(textService['textControl']['textLine']).toEqual([]);
+      });
+      it('keyUpHandler should call addLetter & textPreview "a"', () => {
+        textService['writeOnPreviewCtx'] = true;
+        const keyEventData = { isTrusted: true, key:'a', which: 65, keyCode: 65,shiftLey: false};
+        const keyEvent = new KeyboardEvent('keypress', keyEventData);
+        textService.keyUpHandler(keyEvent);
+        expect(textService['textControl'].getText()).toEqual(['a']);
+    });
+    it('keyUpHandler should call addLetter & textPreview "F2"', () => {
+        textService['writeOnPreviewCtx'] = true;
+        const keyEventData = { isTrusted: true, key:'F2', which: 123, keyCode: 123,shiftLey: false};
+        const keyEvent = new KeyboardEvent('keypress', keyEventData);
+        textService.keyUpHandler(keyEvent);
+        expect(textService['textControl'].getText()).toEqual(['']);
+    });
 });
