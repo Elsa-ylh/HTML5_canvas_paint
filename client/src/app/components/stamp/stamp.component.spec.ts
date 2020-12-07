@@ -7,6 +7,7 @@ import { STAMP } from '@app/classes/stamp';
 import { StampComponent } from '@app/components/stamp/stamp.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { StampService } from '@app/services/tools/stamp.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 describe('StampComponent', () => {
     let component: StampComponent;
@@ -14,10 +15,12 @@ describe('StampComponent', () => {
     let stampStub: StampService;
     let drawingStub: DrawingService;
     let cursorStubCtx: CanvasRenderingContext2D;
+    let undoRedoStub: UndoRedoService;
 
     beforeEach(async () => {
         drawingStub = new DrawingService();
-        stampStub = new StampService(drawingStub);
+        stampStub = new StampService(drawingStub, undoRedoStub);
+        undoRedoStub = new UndoRedoService(drawingStub);
         cursorStubCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         await TestBed.configureTestingModule({
             declarations: [StampComponent],

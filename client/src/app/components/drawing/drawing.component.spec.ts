@@ -83,7 +83,7 @@ describe('DrawingComponent', () => {
             sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
             textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
-            stampServiceStub = new StampService(drawingStub);
+            stampServiceStub = new StampService(drawingStub, undoRedoStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             toolServiceStub = new ToolService(
                 pencilStub,
