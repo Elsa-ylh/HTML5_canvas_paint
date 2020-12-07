@@ -46,7 +46,7 @@ export class EmailController {
             const expressImageName = imageFile.path as string;
             const properImageName = imageFile.originalname as string;
 
-            const isEmailValid = await this.emailService.isEmailValid(email);
+            const isEmailValid = this.emailService.isEmailValid(email);
             if (!isEmailValid) {
                 console.log("Le courriel fourni n'est pas d'un format valide. Le courriel doit être style abc@email.com");
                 res.status(BAD_EMAIL).send("Le courriel fourni n'est pas d'un format valide. Le courriel doit être style abc@email.com");

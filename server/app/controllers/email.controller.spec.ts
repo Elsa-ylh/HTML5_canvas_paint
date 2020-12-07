@@ -17,7 +17,7 @@ describe('Email controller', () => {
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
         container.rebind(TYPES.EmailService).toConstantValue({
-            isEmailValid: sandbox.stub().resolves(true),
+            isEmailValid: sandbox.stub().returns(true),
             isContentValid: sandbox.stub().resolves(true),
             sendEmail: sandbox.stub().resolves(),
         });
@@ -26,7 +26,7 @@ describe('Email controller', () => {
     });
 
     it('should undefined email', async () => {
-        emailService.isEmailValid.resolves(false);
+        emailService.isEmailValid.returns(false);
         emailService.isContentValid.resolves(false);
         return supertest(app)
             .post('/api/email')
@@ -36,31 +36,28 @@ describe('Email controller', () => {
             });
     });
 
-    it('should undefined imageFile', async () => {
-        emailService.isEmailValid.resolves(false);
+    it('should image be sent is good', async () => {
+        emailService.isEmailValid.returns(false);
         emailService.isContentValid.resolves(false);
-        const formData = new FormData();
-        const obj = { hello: 'world' };
-        const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'image/jpg' });
-        formData.append('payload', blob, 'aaa/image/jbg');
-        formData.append('to', 'a@a.com');
+        // const formData = new FormData();
+        // formData.append('payload', blob, 'aaa/image/jbg');
+        // formData.append('to', 'a@a.com');
 
         return supertest(app)
-            .post('/api/email')
-            .send(formData)
+            .post('/api/email').attach('payload', './default.jpeg').field('to', 'a@a.com')
             .expect(400)
             .then((response: any) => {
                 expect(response.text).to.deep.equal("Votre requête a besoin d'une image PNG ou JPG.");
             });
     });
 
-    it('should undefined imageFile', async () => {
-        emailService.isEmailValid.resolves(false);
+    it('should undefined imageFile because no formData was sent', async () => {
+        emailService.isEmailValid.returns(false);
         emailService.isContentValid.resolves(false);
 
         return supertest(app)
             .post('/api/email')
-            .expect(400)
+            .expect(500)
             .then((response: any) => {
                 expect(response.text).to.deep.equal("Votre requête a besoin d'un courriel.");
             });

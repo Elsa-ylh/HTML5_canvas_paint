@@ -1,5 +1,6 @@
 import { ImageFormat } from '@common/communication/image-format';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
+import { AxiosResponse } from 'axios';
 import * as FileType from 'file-type';
 import { FileTypeResult } from 'file-type/core';
 import * as FormData from 'form-data';
@@ -14,9 +15,8 @@ export class EmailService {
     // https://regexr.com/3e48o
     private readonly emailRegexValidation: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
 
-    async isEmailValid(email: string): Promise<boolean> {
-        if (email.match(this.emailRegexValidation)) return true;
-        return false;
+    isEmailValid(email: string): boolean {
+        return email.match(this.emailRegexValidation) !== null;
     }
 
     async getImageExtension(imagePath: string): Promise<ImageFormat> {
@@ -43,23 +43,21 @@ export class EmailService {
         return false;
     }
 
-    async sendEmail(emailAndImage: FormData): Promise<void> {
-        return new Promise(() => {
-            axios({
-                method: 'post',
-                url: this.url,
+    async sendEmail(emailAndImage: FormData): Promise<AxiosResponse> {
+        return axios
+            .post(this.url, emailAndImage, {
                 headers: {
                     'x-team-key': this.xTeamKey,
                     ...emailAndImage.getHeaders(),
                 },
-                data: emailAndImage,
             })
-                .then((response: AxiosResponse) => {
-                    console.log(response.data);
-                })
-                .catch((error: Error) => {
-                    console.log(error.message);
-                });
-        });
+            .then((response: AxiosResponse) => {
+                console.log(response.data);
+                return response;
+            })
+            .catch((error: Error) => {
+                console.log(error.message);
+                throw error;
+            });
     }
 }
