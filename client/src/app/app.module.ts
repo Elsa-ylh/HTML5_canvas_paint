@@ -52,7 +52,10 @@ import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { PaintBucketColorComponent } from './components/paint-bucket-color/paint-bucket-color.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { SprayComponent } from './components/spray/spray.component';
+import { StampComponent } from './components/stamp/stamp.component';
 import { WriteTextDialogUserGuideComponent } from './components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+import { WriteTextOptionComponent } from './components/write-text-option/write-text-option.component';
 
 @NgModule({
     declarations: [
@@ -68,12 +71,15 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         DialogCreateNewDrawingComponent,
         DialogExportDrawingComponent,
         SidebarComponent,
+        StampComponent,
+        SprayComponent,
         WriteTextDialogUserGuideComponent,
         ColorComponent,
         CarrouselPictureComponent,
         DropperColorComponent,
         DialogUploadComponent,
         PaintBucketColorComponent,
+        WriteTextOptionComponent,
     ],
     imports: [
         ReactiveFormsModule,

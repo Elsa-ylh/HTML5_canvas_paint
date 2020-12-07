@@ -9,7 +9,7 @@
             </button>
         </mat-list-item>
         <mat-list-item *ngIf="onGoingDrawing">
-            <button mat-raised-button class="main-menu-button">
+            <button mat-raised-button class="main-menu-button" (click)="continueDrawing()">
                 <mat-icon>play_arrow</mat-icon>
                 Continuer un dessin
             </button>

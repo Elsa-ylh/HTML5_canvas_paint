@@ -1,17 +1,6 @@
 <div id="canvas-container" [ngStyle]="{ 'min-width.px': cvsResizerService.resizeWidth, 'min-height.px': cvsResizerService.resizeHeight }">
-    <canvas
-        id="previewLayer"
-        #previewCanvas
-        [attr.width]="width"
-        [attr.height]="height"
-        [ngStyle]="{ cursor: cursorUsed }"
-        (mousedown)="onMouseDown($event)"
-        (mousemove)="onMouseMove($event); onMouseOverMainCanvas($event)"
-        (mouseup)="onMouseUp($event)"
-        (mouseout)="onMouseOut($event)"
-        (mouseenter)="onMouseEnter($event)"
-    ></canvas>
-    <canvas id="baseCanvas" #baseCanvas [attr.width]="width" [attr.height]="height" [ngStyle]="{ cursor: cursorUsed }"></canvas>
+    <canvas id="previewLayer" #previewCanvas [attr.width]="width" [attr.height]="height" [ngStyle]="{ cursor: cursorUsed }"></canvas>
+    <canvas id="baseCanvas" #baseCanvas [attr.width]="width" [attr.height]="height"></canvas>
     <div id="whiteBackground" [ngStyle]="{ 'width.px': width, 'height.px': height }"></div>
     <canvas
         id="canvasResizerPreview"
@@ -28,11 +17,25 @@
         (mouseout)="onResizeOut($event)"
     ></canvas>
     <canvas
-        id="dropperLayer"
-        #dropperLayer
+        id="cursorCanvas"
+        #cursorCanvas
         width="40px"
         height="40px"
-        [style.display]="toolService.currentToolName == dropper ? 'inline-block' : 'none'"
+        [style.display]="toolService.currentToolName == dropper || stamp ? 'inline-block' : 'none'"
+        [ngStyle]="{ cursor: cursorUsed }"
     ></canvas>
+    <canvas
+        id="gridLayer"
+        #gridLayer
+        [attr.width]="width"
+        [attr.height]="height"
+        [ngStyle]="{ cursor: cursorUsed }"
+        (mousedown)="onMouseDown($event)"
+        (mousemove)="onMouseMove($event); onMouseOverMainCanvas($event)"
+        (mouseup)="onMouseUp($event)"
+        (mouseout)="onMouseOut($event)"
+        (mouseenter)="onMouseEnter($event)"
+    >
+    </canvas>
     <div id="greyBackground" [ngStyle]="{ 'width.px': cvsResizerService.resizeWidth, 'height.px': cvsResizerService.resizeHeight }"></div>
 </div>

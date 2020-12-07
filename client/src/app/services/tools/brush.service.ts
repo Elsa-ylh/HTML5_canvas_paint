@@ -5,6 +5,7 @@ import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { BrushAction } from '@app/classes/undo-redo/brush-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -22,7 +23,12 @@ export class BrushService extends Tool {
     private pathData: Vec2[]; //
     private brush4Data: PointArc[]; //
     private mouseOut: boolean = false;
-    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private undoRedoService: UndoRedoService,
+        private automaticSaveService: AutomaticSaveService,
+    ) {
         super(drawingService);
         this.clearPath();
     }
@@ -135,6 +141,7 @@ export class BrushService extends Tool {
             ctx.stroke();
         }
         ctx.globalAlpha = tempAlpha;
+        this.automaticSaveService.save();
     }
 
     drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], subBrushTool: SubToolselected): void {
@@ -173,6 +180,7 @@ export class BrushService extends Tool {
                 this.drawLineBrush5(ctx, path);
                 break;
         }
+        this.automaticSaveService.save();
     }
     drawLinePattern(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const px2 = 2;

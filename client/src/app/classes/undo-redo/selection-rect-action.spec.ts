@@ -1,3 +1,5 @@
+/*
+
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
@@ -65,3 +67,5 @@ describe('SelectionRectAction', () => {
         expect(clearSelectionSpy).toHaveBeenCalled();
     });
 });
+
+*/

@@ -3,6 +3,7 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
 import { StrokeAction } from '@app/classes/undo-redo/stroke-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -17,7 +18,12 @@ export class PencilService extends Tool {
     private intiColor: string;
     private alpha: number = this.colorService.primaryColorTransparency;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private undoRedoService: UndoRedoService,
+        private automaticSaveService: AutomaticSaveService,
+    ) {
         super(drawingService);
         this.clearPath();
     }
@@ -65,6 +71,7 @@ export class PencilService extends Tool {
         this.undoRedoService.addUndo(actionPencil);
         this.undoRedoService.clearRedo();
         this.clearPath();
+        this.automaticSaveService.save();
     }
 
     onMouseMove(event: MouseEvent): void {
