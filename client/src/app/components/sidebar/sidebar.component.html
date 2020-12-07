@@ -69,6 +69,10 @@
                         ><mat-icon>tune</mat-icon></mat-button-toggle
                     >
 
+                    <mat-button-toggle (click)="pickStamp()" [checked]="stampChecked" matTooltip="Outil Etampe" matTooltipPosition="right">
+                        <mat-icon>radio_button_checked</mat-icon>
+                    </mat-button-toggle>
+
                     <mat-button-toggle (click)="pickSprayer()" [checked]="sprayChecked" matTooltip="Sélection l'aerosol" matTooltipPosition="right">
                         <mat-icon>blur_on</mat-icon>
                     </mat-button-toggle>
@@ -319,6 +323,10 @@
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Dropper">
                 <app-dropper-color></app-dropper-color>
+            </mat-grid-list>
+
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Stamp">
+                <app-stamp></app-stamp>
             </mat-grid-list>
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Grid">

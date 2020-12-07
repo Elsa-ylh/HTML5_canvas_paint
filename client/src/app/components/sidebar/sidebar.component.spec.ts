@@ -40,6 +40,7 @@ import { SelectionEllipseService } from '@app/services/tools/selection-service/s
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 import { SprayService } from '@app/services/tools/spray.service';
+import { StampService } from '@app/services/tools/stamp.service';
 import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Observable, Subject } from 'rxjs';
@@ -72,6 +73,7 @@ describe('SidebarComponent', () => {
     let sprayStub: SprayService;
     let textServiceStub: TextService;
     let automaticSaveStub: AutomaticSaveService;
+    let stampServiceStub: StampService;
     let featherStub: FeatherService;
     let magnetismStub: MagnetismService;
     let gridStub: GridService;
@@ -84,6 +86,7 @@ describe('SidebarComponent', () => {
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
+    let cursorStub: CanvasRenderingContext2D;
     let gridCtxStub: CanvasRenderingContext2D;
     let dialogMock: jasmine.SpyObj<MatDialog>;
     beforeEach(
@@ -103,8 +106,10 @@ describe('SidebarComponent', () => {
             selectionStub = new SelectionService(drawingStub, magnetismStub);
             sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
+            stampServiceStub = new StampService(drawingStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             gridStub = new GridService(drawingStub, canvasResizerStub);
+
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -120,6 +125,7 @@ describe('SidebarComponent', () => {
                 sprayStub,
                 featherStub,
                 textServiceStub,
+                stampServiceStub,
             );
 
             selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub);
@@ -131,12 +137,14 @@ describe('SidebarComponent', () => {
             canvas.height = 100;
             baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
             previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+            cursorStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
             gridCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
             // Configuration du spy du service
             // tslint:disable:no-string-literal
             drawingStub.canvas = canvas;
             drawingStub.baseCtx = baseStub; // Jasmine doesnt copy properties with underlying data
             drawingStub.previewCtx = previewStub;
+            drawingStub.cursorCtx = cursorStub;
             drawingStub.gridCtx = gridCtxStub;
             dialogMock = jasmine.createSpyObj('dialogCreator', ['open']);
 
@@ -180,6 +188,7 @@ describe('SidebarComponent', () => {
                     { provide: Observable, useValue: {} },
                     { provide: SelectionService, useValue: selectionStub },
                     { provide: UndoRedoService, useValue: undoRedoStub },
+                    { provide: StampService, useValue: stampServiceStub },
                     { provide: SprayService, useValue: sprayStub },
                     { provide: FeatherService, useValue: featherStub },
                     { provide: GridService, useValue: gridStub },
@@ -225,10 +234,6 @@ describe('SidebarComponent', () => {
     it('pickEllipse()', () => {
         component.pickEllipse(SubToolselected.tool1);
         expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Ellipse);
-    });
-    it('pickDropper()', () => {
-        component.pickDropper();
-        expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Dropper);
     });
 
     it(' should clear canvas dialog', () => {
@@ -390,9 +395,11 @@ describe('SidebarComponent', () => {
 
     it('should pick dropper', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
+        const resetCursor = spyOn(component, 'resetCursorCanvas').and.stub();
         component.pickDropper();
         expect(drawingStub.cursorUsed).toEqual('pointer');
         expect(switchToolSpy).toHaveBeenCalled();
+        expect(resetCursor).toHaveBeenCalled();
     });
     it('should pick selection rectangle', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
@@ -406,6 +413,15 @@ describe('SidebarComponent', () => {
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
     });
+    it('should pick stamp', () => {
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.callThrough();
+        const resetCursor = spyOn(component, 'resetCursorCanvas').and.stub();
+        component.pickStamp();
+        expect(drawingStub.cursorUsed).toEqual('none');
+        expect(switchToolSpy).toHaveBeenCalled();
+        expect(resetCursor).toHaveBeenCalled();
+    });
+
     it('should pick sprayer', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.callThrough();
         component.pickSprayer();
@@ -427,6 +443,8 @@ describe('SidebarComponent', () => {
         expect(component.selectionEllipseChecked).toEqual(false);
         expect(component.selectionEllipseChecked).toEqual(false);
         expect(component.selectionRectangleChecked).toEqual(false);
+        expect(component.textChecked).toEqual(false);
+        expect(component.stampChecked).toEqual(false);
         expect(component.sprayChecked).toEqual(false);
     });
 

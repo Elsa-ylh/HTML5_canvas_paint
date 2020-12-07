@@ -28,6 +28,7 @@ import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
+import { StampService } from '@app/services/tools/stamp.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Component({
@@ -66,6 +67,8 @@ export class SidebarComponent {
     private isSprayChecked: boolean = false;
     private isFeatherChecked: boolean = false;
     private isTextChecked: boolean = false;
+    private isStampChecked: boolean = false;
+    private curCanvasDefaultSize: number = 40;
 
     constructor(
         public drawingService: DrawingService,
@@ -89,6 +92,7 @@ export class SidebarComponent {
         public magnetismService: MagnetismService,
         public featherService: FeatherService,
         private automaticSaveService: AutomaticSaveService,
+        public stampService: StampService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
@@ -258,6 +262,7 @@ export class SidebarComponent {
         return this.isPaintBucketChecked;
     }
     pickDropper(): void {
+        this.resetCursorCanvas();
         this.drawingService.cursorUsed = 'pointer';
         this.toolService.switchTool(ToolUsed.Dropper);
         this.isDialogloadSaveEport = true;
@@ -308,18 +313,36 @@ export class SidebarComponent {
         return this.isTextChecked;
     }
 
+    pickStamp(): void {
+        this.resetCursorCanvas();
+        this.drawingService.cursorUsed = 'none';
+        this.toolService.switchTool(ToolUsed.Stamp);
+        this.isStampChecked = true;
+    }
+
+    get stampChecked(): boolean {
+        return this.isStampChecked;
+    }
+
     pickGridSettings(): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Grid);
         this.isDialogloadSaveEport = true;
     }
     pickFeather(): void {
+        this.resetCursorCanvas();
         this.drawingService.cursorUsed = cursorName.none;
         this.toolService.switchTool(ToolUsed.Feather);
     }
 
     get selectionFeatherChecked(): boolean {
         return this.isFeatherChecked;
+    }
+
+    resetCursorCanvas(): void {
+        this.drawingService.cursorCtx.canvas.width = this.curCanvasDefaultSize;
+        this.drawingService.cursorCtx.canvas.height = this.curCanvasDefaultSize;
+        this.drawingService.cursorCtx.clearRect(0, 0, this.drawingService.cursorCtx.canvas.width, this.drawingService.cursorCtx.canvas.height);
     }
 
     resetCheckedButton(): void {
@@ -337,6 +360,7 @@ export class SidebarComponent {
         this.isSprayChecked = false;
         this.isFeatherChecked = false;
         this.isTextChecked = false;
+        this.isStampChecked = false;
     }
 
     checkboxChangeToggle(args: MatCheckboxChange): void {
@@ -677,6 +701,10 @@ export class SidebarComponent {
             this.featherService.addOrRetract(event);
             this.featherService.changeAngleWithScroll();
         }
+        if (this.toolService.currentToolName === ToolUsed.Stamp) {
+            this.stampService.addOrRetract(event);
+            this.stampService.changeAngleWithScroll();
+        }
     }
 
     @HostListener('window:keydown.alt', ['$event'])
@@ -684,12 +712,27 @@ export class SidebarComponent {
         if (this.toolService.currentToolName === ToolUsed.Feather) {
             this.featherService.altPressed = true;
         }
+        if (this.toolService.currentToolName === ToolUsed.Stamp) {
+            this.stampService.isAltPressed = true;
+        }
     }
 
     @HostListener('window:keyup.alt', ['$event'])
     altReleased(event: KeyboardEvent): void {
         if (this.toolService.currentToolName === ToolUsed.Feather) {
             this.featherService.altPressed = false;
+        }
+        if (this.toolService.currentToolName === ToolUsed.Stamp) {
+            this.stampService.isAltPressed = false;
+        }
+    }
+
+    @HostListener('window:keydown.d', ['$event'])
+    changeStampMode(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isStampChecked = true;
+            this.pickStamp();
         }
     }
 }
