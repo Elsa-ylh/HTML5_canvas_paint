@@ -78,10 +78,10 @@ describe('Service: Feather', () => {
         expect(featherStub).toBeTruthy();
     });
 
-    it(' mouseDown should set mouseDownCoord to correct position', () => {
+    it(' mouseDown should set mouseDownCoords to correct position', () => {
         const expectedResult: Vec2 = { x: 10, y: 25 };
         featherStub.onMouseDown(mouseEvent);
-        expect(featherStub.mouseDownCoord).toEqual(expectedResult);
+        expect(featherStub.mouseDownCoords).toEqual(expectedResult);
     });
 
     it(' mouseDown should set mouseDown property to true on left click and right click', () => {
@@ -90,7 +90,7 @@ describe('Service: Feather', () => {
     });
 
     it(' onMouseUp should call drawFeather if mouse was already down', () => {
-        featherStub.mouseDownCoord = { x: 0, y: 0 };
+        featherStub.mouseDownCoords = { x: 0, y: 0 };
         featherStub.mouseDown = true;
         const drawFeatherSpy = spyOn(featherStub, 'drawFeather').and.callThrough();
         featherStub.onMouseUp(mouseEvent);

@@ -10,6 +10,7 @@ export class SelectionImage {
         this.endingPos = { x: 0, y: 0 };
         this.ellipseRad = { x: 0, y: 0 };
         this.drawingService = drawingService;
+        this.rotationAngle = 0;
     }
     drawingService: DrawingService;
     copyImageInitialPos: Vec2;
@@ -21,6 +22,7 @@ export class SelectionImage {
     height: number;
     width: number;
     ellipseRad: Vec2;
+    rotationAngle: number;
 
     getImage(size: Vec2): void {
         this.imageSize = size;
@@ -38,23 +40,7 @@ export class SelectionImage {
         return canvas.toDataURL();
     }
 
-    isInsideSelection(mouse: Vec2): boolean {
-        if (
-            this.imagePosition.x !== 0 &&
-            this.imagePosition.x !== 0 &&
-            this.endingPos.x !== 0 &&
-            this.endingPos.y !== 0 &&
-            !this.drawingService.isPreviewCanvasBlank()
-        ) {
-            const minX = Math.min(this.endingPos.x, this.imagePosition.x);
-            const maxX = Math.max(this.endingPos.x, this.imagePosition.x);
-            const minY = Math.min(this.endingPos.y, this.imagePosition.y);
-            const maxY = Math.max(this.endingPos.y, this.imagePosition.y);
-
-            if (mouse.x > minX && mouse.x < maxX && mouse.y > minY && mouse.y < maxY) {
-                return true;
-            }
-        }
-        return false;
+    resetAngle(): void {
+        this.rotationAngle = 0;
     }
 }

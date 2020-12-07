@@ -10,67 +10,60 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism.service';
 import { interval, Subscription } from 'rxjs';
+import { RotationService } from './rotation.service';
 
+export const LINEWIDTH = 1;
+export const DOTTEDSPACE = 10;
 @Injectable({
     providedIn: 'root',
 })
+
 // , private undoRedoService: UndoRedoService
 // The below is justified because the methods are implemented by their children.
 // tslint:disable:no-empty
 // This file is larger than 350 lines but is entirely used by the methods.
 // tslint:disable:max-file-line-count
 export class SelectionService extends Tool {
-    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService) {
+    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService, protected rotationService: RotationService) {
         super(drawingService);
     }
 
     // initialization of local const
-    minTimeMovement: number = 500;
-    lineWidth: number = 1;
-    dottedSpace: number = 10;
-    shiftPressed: boolean = false;
-    scaled: boolean = false;
 
-    baseImage: HTMLImageElement;
-    baseImageData: ImageData;
-    // height: number;
-    // width: number;
+    protected shiftPressed: boolean = false;
+    protected scaled: boolean = false;
+
+    // images infos used for flipping the image
+    protected baseImage: HTMLImageElement;
+    protected baseImageData: ImageData;
+    protected baseSize: Vec2;
     mouseMovement: Vec2 = { x: 0, y: 0 };
-    // startingPos: Vec2;
-    // endingPos: Vec2;
 
     // selection
     selection: SelectionImage = new SelectionImage(this.drawingService);
-    // = new SelectionImage({ x: 0, y: 0 }, 0, 0, { x: 0, y: 0 }, this.drawingService);
-
-    // imageData: ImageData;
-    // copyImageInitialPos: Vec2 = { x: 0, y: 0 };
-    // imagePosition: Vec2 = { x: 0, y: 0 };
-    inSelection: boolean = false;
-    // image: HTMLImageElement = new Image();
-    isAllSelect: boolean = false;
-    // ellipseRad: Vec2 = { x: 0, y: 0 };
-    previousMousePos: Vec2 = { x: 0, y: 0 };
+    protected inSelection: boolean = false;
+    protected isAllSelect: boolean = false;
+    protected previousMousePos: Vec2 = { x: 0, y: 0 };
 
     // initialization of variables needed for arrow movement
-    leftArrow: ArrowInfo = new ArrowInfo({ x: -PIXELMOVEMENT, y: 0 }, this.drawingService, this, this.magnetismService);
-    rightArrow: ArrowInfo = new ArrowInfo({ x: +PIXELMOVEMENT, y: 0 }, this.drawingService, this, this.magnetismService);
-    upArrow: ArrowInfo = new ArrowInfo({ x: 0, y: -PIXELMOVEMENT }, this.drawingService, this, this.magnetismService);
-    downArrow: ArrowInfo = new ArrowInfo({ x: 0, y: +PIXELMOVEMENT }, this.drawingService, this, this.magnetismService);
-    subscriptionTimer: Subscription;
+    protected leftArrow: ArrowInfo = new ArrowInfo({ x: -PIXELMOVEMENT, y: 0 }, this.drawingService, this, this.magnetismService);
+    protected rightArrow: ArrowInfo = new ArrowInfo({ x: +PIXELMOVEMENT, y: 0 }, this.drawingService, this, this.magnetismService);
+    protected upArrow: ArrowInfo = new ArrowInfo({ x: 0, y: -PIXELMOVEMENT }, this.drawingService, this, this.magnetismService);
+    protected downArrow: ArrowInfo = new ArrowInfo({ x: 0, y: +PIXELMOVEMENT }, this.drawingService, this, this.magnetismService);
+    protected subscriptionTimer: Subscription;
     time: number = 0;
-    timerStarted: boolean = false;
+    protected timerStarted: boolean = false;
 
     // bypass clear selection bug
     cleared: boolean = false;
 
     // initialization clipboard
-    clipboard: ImageClipboard = new ImageClipboard();
+    private clipboard: ImageClipboard = new ImageClipboard();
 
     // Control points
-    controlGroup: ControlGroup;
-    controlPointName: ControlPointName = ControlPointName.none;
-    flip: FlipDirection = FlipDirection.none;
+    protected controlGroup: ControlGroup;
+    protected controlPointName: ControlPointName = ControlPointName.none;
+    private flip: FlipDirection = FlipDirection.none;
 
     onMouseDown(event: MouseEvent): void {}
 
@@ -93,6 +86,7 @@ export class SelectionService extends Tool {
 
                 if (this.selection.width !== 0 && this.selection.height !== 0) {
                     this.copySelection();
+                    this.baseSize = { x: this.selection.width, y: this.selection.height };
                     this.selection.imageSize = { x: this.selection.width, y: this.selection.height };
                     this.selection.imagePosition = this.selection.copyImageInitialPos = this.updateSelectionPositions();
 
@@ -100,7 +94,6 @@ export class SelectionService extends Tool {
                     this.controlGroup = new ControlGroup(this.drawingService);
                     this.drawSelection(this.selection.imagePosition);
                     this.cleared = false;
-                    // ask about that
                 }
 
                 this.magnetismService.resetMagnetism();
@@ -162,7 +155,7 @@ export class SelectionService extends Tool {
 
                 // bypass bug clear selection
                 if (!this.cleared) {
-                    this.clearSelection(this.selection.copyImageInitialPos, this.selection.width, this.selection.height);
+                    this.clearSelection();
                     this.cleared = true;
                 }
 
@@ -173,7 +166,7 @@ export class SelectionService extends Tool {
 
                 // bypass bug clear selection
                 if (!this.cleared) {
-                    this.clearSelection(this.selection.copyImageInitialPos, this.selection.width, this.selection.height);
+                    this.clearSelection();
                     this.cleared = true;
                 }
 
@@ -192,11 +185,8 @@ export class SelectionService extends Tool {
 
     onMouseOut(event: MouseEvent): void {
         if (this.mouseDown && this.inSelection) {
-            this.drawingService.baseCtx.putImageData(
-                this.selection.imageData,
-                this.selection.copyImageInitialPos.x,
-                this.selection.copyImageInitialPos.y,
-            );
+            this.selection.imagePosition = this.selection.copyImageInitialPos;
+            this.pasteSelection(this.selection);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         } else {
             this.onMouseUp(event);
@@ -238,19 +228,26 @@ export class SelectionService extends Tool {
     }
 
     selectAll(): void {
+        if (!this.drawingService.isPreviewCanvasBlank()) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.pasteSelection(this.selection);
+        }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.isAllSelect = true;
         this.selection.width = this.drawingService.canvas.width;
         this.selection.height = this.drawingService.canvas.height;
         this.selection.endingPos = { x: this.selection.width, y: this.selection.height };
         this.selection.imagePosition = this.selection.copyImageInitialPos = { x: 1, y: 1 };
-        this.selection.imageData = this.drawingService.baseCtx.getImageData(0, 0, this.selection.width, this.selection.height);
+        this.controlGroup = new ControlGroup(this.drawingService);
+        this.drawSelectionRect({ x: 1, y: 1 }, this.selection.width, this.selection.height);
+        this.copySelection();
         this.drawSelection({ x: 0, y: 0 });
+        this.cleared = false;
     }
 
-    drawPreviewRect(ctx: CanvasRenderingContext2D, shiftPressed: boolean): void {
+    protected drawPreviewRect(ctx: CanvasRenderingContext2D, shiftPressed: boolean): void {
         if (this.selection.imagePosition !== this.selection.endingPos) {
-            ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
+            ctx.setLineDash([DOTTEDSPACE, DOTTEDSPACE]);
             if (shiftPressed) {
                 const distanceX = this.selection.endingPos.x - this.selection.imagePosition.x;
                 const distanceY = this.selection.endingPos.y - this.selection.imagePosition.y;
@@ -265,9 +262,9 @@ export class SelectionService extends Tool {
         }
     }
 
-    drawSelectionRect(mouseDownCoord: Vec2, width: number, height: number): void {
-        this.drawingService.previewCtx.setLineDash([this.dottedSpace, this.dottedSpace]);
-        this.drawingService.previewCtx.strokeRect(mouseDownCoord.x, mouseDownCoord.y, width, height);
+    protected drawSelectionRect(mouseDownCoords: Vec2, width: number, height: number): void {
+        this.drawingService.previewCtx.setLineDash([DOTTEDSPACE, DOTTEDSPACE]);
+        this.drawingService.previewCtx.strokeRect(mouseDownCoords.x, mouseDownCoords.y, width, height);
         this.drawingService.previewCtx.setLineDash([]);
 
         this.controlGroup.setPositions(this.selection.imagePosition, this.selection.endingPos, { x: this.selection.width, y: this.selection.height });
@@ -275,19 +272,16 @@ export class SelectionService extends Tool {
         this.controlGroup.draw();
     }
 
-    copySelection(): void {
+    protected copySelection(): void {
         this.selection.getImage({ x: this.selection.width, y: this.selection.height });
         this.baseImageData = this.selection.imageData;
         this.baseImage = new Image();
-        this.baseImage.src = this.getImageURL(this.baseImageData, this.selection.width, this.selection.height);
-        // this.selection.imageData = this.drawingService.baseCtx.getImageData(this.selection.imagePosition.x,
-        // this.selection.imagePosition.y, this.selection.width, this.selection.height);
-        // this.selection.image.src = this.getImageURL(this.selection.imageData, this.selection.width, this.selection.height);
+        this.baseImage.src = this.selection.getImageURL(this.baseImageData, this.selection.width, this.selection.height);
     }
 
-    pasteSelection(selection: SelectionImage): void {}
+    protected pasteSelection(selection: SelectionImage): void {}
 
-    updateSelectionPositions(): Vec2 {
+    protected updateSelectionPositions(): Vec2 {
         const xSign = Math.sign(this.selection.endingPos.x - this.selection.imagePosition.x);
         const ySign = Math.sign(this.selection.endingPos.y - this.selection.imagePosition.y);
         const tmpEndPos = this.selection.endingPos;
@@ -309,7 +303,7 @@ export class SelectionService extends Tool {
         }
     }
 
-    isInsideSelection(mouse: Vec2): boolean {
+    protected isInsideSelection(mouse: Vec2): boolean {
         if (
             this.selection.imagePosition.x !== 0 &&
             this.selection.imagePosition.x !== 0 &&
@@ -333,16 +327,7 @@ export class SelectionService extends Tool {
 
     drawSelection(imagePosition: Vec2): void {}
 
-    getImageURL(imgData: ImageData, width: number, height: number): string {
-        const canvas = document.createElement('canvas') as HTMLCanvasElement;
-        const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
-        canvas.width = Math.abs(width);
-        canvas.height = Math.abs(height);
-        ctx.putImageData(imgData, 0, 0);
-        return canvas.toDataURL();
-    }
-
-    clearSelection(position: Vec2, width: number, height: number): void {}
+    clearSelection(): void {}
 
     onLeftArrow(): void {
         this.leftArrow.onArrowDown(this.controlGroup);
@@ -358,6 +343,7 @@ export class SelectionService extends Tool {
 
     onDownArrow(): void {
         this.downArrow.onArrowDown(this.controlGroup);
+        console.log('down arrow');
     }
 
     onLeftArrowUp(): void {
@@ -402,7 +388,7 @@ export class SelectionService extends Tool {
         // this.clipboard.copyImage(this.selection);
         this.clipboard.imageData = this.selection.imageData;
         this.clipboard.image = new Image();
-        this.clipboard.image.src = this.getImageURL(this.clipboard.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+        this.clipboard.image.src = this.selection.getImageURL(this.clipboard.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
         this.clipboard.imagePosition = this.selection.imagePosition;
         this.clipboard.width = this.selection.width;
         this.clipboard.height = this.selection.height;
@@ -414,7 +400,7 @@ export class SelectionService extends Tool {
     cutImage(): void {
         // this.clipboard.cutImage();
         if (!this.cleared) {
-            this.clearSelection(this.selection.copyImageInitialPos, this.selection.width, this.selection.height);
+            this.clearSelection();
             this.cleared = true;
         }
 
@@ -424,7 +410,7 @@ export class SelectionService extends Tool {
 
     deleteImage(): void {
         // this.clipboard.deleteImage();
-        this.clearSelection(this.selection.copyImageInitialPos, this.selection.width, this.selection.height);
+        this.clearSelection();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
@@ -442,12 +428,12 @@ export class SelectionService extends Tool {
         this.selection.ellipseRad = { x: this.clipboard.ellipseRad.x, y: this.clipboard.ellipseRad.y };
         this.selection.endingPos = { x: Math.abs(this.selection.width), y: Math.abs(this.selection.height) };
         this.selection.image = new Image();
-        this.selection.image.src = this.getImageURL(this.clipboard.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+        this.selection.image.src = this.selection.getImageURL(this.clipboard.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
         this.drawSelection({ x: 1, y: 1 });
     }
 
     // tslint:disable:cyclomatic-complexity
-    scaleSelection(mouseMovement: Vec2): void {
+    protected scaleSelection(mouseMovement: Vec2): void {
         if (!this.shiftPressed) {
             switch (this.controlPointName) {
                 case ControlPointName.top:
@@ -576,55 +562,42 @@ export class SelectionService extends Tool {
         // this.flip = this.flipDirection(this.selection);
     }
 
-    flipImage(): void {
+    protected flipImage(): void {
         if (this.selection.width < 0 && this.selection.height < 0 && this.flip !== FlipDirection.diagonal) {
             this.flip = FlipDirection.diagonal;
-            this.drawFlippedImage({ x: -1, y: -1 }, this.selection.imageSize);
+            this.saveFlippedImage({ x: -1, y: -1 }, this.selection.imageSize);
             return;
         }
         if (this.selection.width > 0 && this.selection.height < 0 && this.flip !== FlipDirection.vertical) {
-            this.drawFlippedImage({ x: 1, y: -1 }, { x: 0, y: this.selection.imageSize.y });
-            // ctx.save();
-            // ctx.translate(0, canvas.height);
-            // ctx.scale(1,-1);
-            // ctx.drawImage(this.baseImage, 0, 0, canvas.width,canvas.height);
-            // ctx.restore();
-            // this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
-            // this.selection.image = new Image();
-            // this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x,
-            // this.selection.imageSize.y);
+            this.saveFlippedImage({ x: 1, y: -1 }, { x: 0, y: this.selection.imageSize.y });
             this.flip = FlipDirection.vertical;
             return;
         }
         if (this.selection.width < 0 && this.selection.height > 0 && this.flip !== FlipDirection.horizontal) {
-            this.drawFlippedImage({ x: -1, y: 1 }, { x: this.selection.imageSize.x, y: 0 });
+            this.saveFlippedImage({ x: -1, y: 1 }, { x: this.selection.imageSize.x, y: 0 });
             this.flip = FlipDirection.horizontal;
             return;
         }
         if (this.selection.width > 0 && this.selection.height > 0 && this.flip !== FlipDirection.none) {
             this.flip = FlipDirection.none;
-            this.drawFlippedImage({ x: 1, y: 1 }, { x: 0, y: 0 });
-            // ctx.drawImage(this.baseImage, 0, 0, canvas.width,canvas.height);
-            // ctx.restore();
-            // this.selection.imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
-            // this.selection.image = new Image();
-            // this.selection.image.src = this.selection.getImageURL(this.selection.imageData,
-            // this.selection.imageSize.x, this.selection.imageSize.y);
+            this.saveFlippedImage({ x: 1, y: 1 }, { x: 0, y: 0 });
         }
     }
 
-    drawFlippedImage(scale: Vec2, translation: Vec2): void {}
+    protected saveFlippedImage(scale: Vec2, translation: Vec2): void {
+        const canvas = document.createElement('canvas') as HTMLCanvasElement;
+        const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
+        canvas.width = Math.abs(this.selection.imageSize.x);
+        canvas.height = Math.abs(this.selection.imageSize.y);
+        ctx.save();
+        ctx.translate(translation.x, translation.y);
+        ctx.scale(scale.x, scale.y);
+        // rotate
 
-    // flipDirection(selection:SelectionImage) : FlipDirection {
-    //   if(selection.width < 0 && selection.height <0){
-    //     return FlipDirection.diagonal;
-    //   }
-    //   if(selection.width > 0 && selection.height <0){
-    //     return  FlipDirection.vertical;
-    //   }
-    //   if(selection.width < 0 && selection.height > 0){
-    //     return FlipDirection.horizontal;
-    //   }
-    //   return FlipDirection.none;
-    // }
+        ctx.drawImage(this.baseImage, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+        this.selection.imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        this.selection.image = new Image();
+        this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+    }
 }
