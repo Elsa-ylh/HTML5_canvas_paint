@@ -8,7 +8,7 @@ import { TextControl } from './text-control';
 // tslint:disable:max-file-line-count
 // tslint:disable:prefer-for-of
 
-fdescribe('TextControl', () => {
+describe('TextControl', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let textControl: TextControl;
@@ -22,7 +22,11 @@ fdescribe('TextControl', () => {
 
         textControl = new TextControl(previewCtxStub);
     });
-
+    it('should create an instance two ', () => {
+        textControl = new TextControl(previewCtxStub, 50);
+        expect(new TextControl(previewCtxStub, 50)).toBeTruthy();
+        expect(textControl['width']).toEqual(50);
+    });
     it('should create an instance', () => {
         expect(new TextControl(previewCtxStub)).toBeTruthy();
     });
@@ -110,15 +114,21 @@ fdescribe('TextControl', () => {
         spyOn<any>(textControl, 'nbLetterInLine').and.callThrough();
         expect(textControl['nbLetterInLine'](previewCtxStub, textOnCanvas)).toEqual(true);
     });
-    it('should endLineReturn', () => {
+    it('should call endLineReturn', () => {
         const text: string[] = [];
-        console.log(text);
         spyOn<any>(textControl, 'endLineReturn').and.callThrough();
         const texts = textControl['endLineReturn'](text, 'adce', 4);
         expect(text).toEqual(text);
         expect(texts[0]).toEqual('adce');
     });
-    it('should endLineReturn', () => {
+    it('should call endLineReturn (2)', () => {
+        const text: string[] = [];
+        spyOn<any>(textControl, 'endLineReturn').and.callThrough();
+        const texts = textControl['endLineReturn'](text, 'adc', 5);
+        expect(text).toEqual(text);
+        expect(texts[0]).toEqual('adc');
+    });
+    it('should call endLineReturn (3)', () => {
         const text: string[] = [];
         console.log(text);
         spyOn<any>(textControl, 'endLineReturn').and.callThrough();
@@ -138,7 +148,7 @@ fdescribe('TextControl', () => {
         textControl.arrowTop();
         expect(textControl['indexLine']).toEqual(2);
     });
-    it('arrowTop should call textPreview ', () => {
+    it('arrowTop should call textPreview (2)', () => {
         textControl['textPreview'] = ['as', 'bd', 'ct'];
         textControl['indexLine'] = 2;
         textControl['indexOfLettersInLine'] = 1;
@@ -147,10 +157,27 @@ fdescribe('TextControl', () => {
         expect(textControl['textLine']).toEqual(['b']);
         expect(textControl['textStack']).toEqual(['d']);
     });
+    it('arrowTop should call textPreview (3)', () => {
+        textControl['textPreview'] = ['as', 'bd', 'ct'];
+        textControl['textLine'] = ['a'];
+        textControl['textStack'] = ['s'];
+        textControl['indexLine'] = 0;
+        textControl['indexOfLettersInLine'] = 1;
+        textControl.arrowTop();
+        expect(textControl['indexLine']).toEqual(0);
+        expect(textControl['textLine']).toEqual(['a']);
+        expect(textControl['textStack']).toEqual(['s']);
+    });
 
     it('arrowBottom should call textPreview ', () => {
         textControl['textPreview'] = ['a', 'b', 'c'];
         textControl['indexLine'] = 1;
+        textControl.arrowBottom();
+        expect(textControl['indexLine']).toEqual(2);
+    });
+    it('arrowBottom should call textPreview (1)', () => {
+        textControl['textPreview'] = ['a', 'b', 'c'];
+        textControl['indexLine'] = 2;
         textControl.arrowBottom();
         expect(textControl['indexLine']).toEqual(2);
     });
@@ -297,7 +324,7 @@ fdescribe('TextControl', () => {
         expect(textControl['textStack']).toEqual(['e', 'd']);
     });
 
-    it('', () => {
+    it('should call getText', () => {
         textControl.setWidth(50);
         textControl['textPreview'] = ['as', 'bde', 'ct'];
         textControl['textLine'] = ['b'];
@@ -308,7 +335,7 @@ fdescribe('TextControl', () => {
         expect(fullText).toEqual(['as', 'bde', 'ct']);
     });
 
-    it('', () => {
+    it('should call getTextWithCursor', () => {
         textControl.setWidth(50);
         textControl['textPreview'] = ['as', 'bde', 'ct'];
         textControl['textLine'] = ['b'];
@@ -317,5 +344,26 @@ fdescribe('TextControl', () => {
         textControl['indexOfLettersInLine'] = 1;
         const fullText = textControl.getTextWithCursor();
         expect(fullText).toEqual(['as', 'b|de', 'ct']);
+    });
+    it('should call getText (2)', () => {
+        textControl.setWidth(20);
+        textControl['textPreview'] = ['as', 'b3de', 'ct'];
+        textControl['textLine'] = ['b', '3'];
+        textControl['textStack'] = ['e', 'd', 'd'];
+        textControl['indexLine'] = 1;
+        textControl['indexOfLettersInLine'] = 1;
+        const fullText = textControl.getText();
+        expect(fullText).toEqual(['as', 'b3d', 'ct']);
+    });
+
+    it('should call getTextWithCursor(2)', () => {
+        textControl.setWidth(20);
+        textControl['textPreview'] = ['as', 'b3de', 'ct'];
+        textControl['textLine'] = ['b', '3'];
+        textControl['textStack'] = ['e', 'd', 'd'];
+        textControl['indexLine'] = 1;
+        textControl['indexOfLettersInLine'] = 1;
+        const fullText = textControl.getTextWithCursor();
+        expect(fullText).toEqual(['as', 'b3|d', 'ct']);
     });
 });
