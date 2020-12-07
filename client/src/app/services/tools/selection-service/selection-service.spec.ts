@@ -2,6 +2,8 @@
 
 import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { ControlGroup } from '@app/classes/control-group';
+import { ControlPointName } from '@app/classes/control-points';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 // import { Subscription } from 'rxjs';
 import { SelectionService } from './selection-service';
@@ -20,7 +22,7 @@ describe('Service: SelectionService', () => {
     // let getPositionFromMouseSpy: jasmine.Spy<any>;
     // // let isInsideSelectionSpy: jasmine.Spy<any>;
     // let drawPreviewSpy: jasmine.Spy<any>;
-    // let drawSelectionSpy: jasmine.Spy<any>;
+    let drawSelectionSpy: jasmine.Spy<any>;
     // let onMouseUpSpy: jasmine.Spy<any>;
     // let fillRectSpy: jasmine.Spy<any>;
     // let getImageDataSpy: jasmine.Spy<any>;
@@ -33,6 +35,11 @@ describe('Service: SelectionService', () => {
     // let subscriptionMoveDownSubscribeSpy: jasmine.Spy<any>;
     // let subscriptionMoveLeftSubscribeSpy: jasmine.Spy<any>;
     // let subscriptionMoveRightSubscribeSpy: jasmine.Spy<any>;
+    let copySelectionSpy: jasmine.Spy<any>;
+    let scaleSelectionSpy: jasmine.Spy<any>;
+    let drawPreviewSpy: jasmine.Spy<any>;
+    let pasteSelectionSpy: jasmine.Spy<any>;
+    let onMouseUpSpy: jasmine.Spy<any>;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -49,6 +56,7 @@ describe('Service: SelectionService', () => {
         // getPositionFromMouseSpy = spyOn<any>(service, 'getPositionFromMouse').and.callThrough();
         // isInsideSelectionSpy = spyOn<any>(service, 'isInsideSelection').and.callThrough();
         // drawPreviewSpy = spyOn<any>(service, 'drawPreview').and.callThrough();
+        // copySelectionSpy = spyOn<any>(service, 'copySelection').and.callThrough();
 
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
@@ -58,6 +66,181 @@ describe('Service: SelectionService', () => {
     it('should be created', inject([SelectionService], (service: SelectionService) => {
         expect(service).toBeTruthy();
     }));
+
+    it(' onMouseUp should copy a selection and draw it if the selection is done being drawn', () => {
+        copySelectionSpy = spyOn<any>(service, 'copySelection').and.callThrough();
+        drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
+
+        const mouseEvent = {
+            button: 0,
+            offsetX: 11,
+            offsetY: 11,
+        } as MouseEvent;
+
+        service.mouseDown = true;
+        service['inSelection'] = false;
+        service.selection.imagePosition = { x: 1, y: 1 };
+        service.selection.endingPos = { x: 11, y: 11 };
+        service['controlPointName'] = ControlPointName.none;
+        service.selection.width = 10;
+        service.selection.height = 10;
+        service.selection.imageData = new ImageData(10, 10);
+        service.selection.image = new Image();
+        service.onMouseUp(mouseEvent);
+        expect(copySelectionSpy).toHaveBeenCalled();
+        expect(drawSelectionSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseUp should draw a selection that has been scaled or moved', () => {
+        drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
+
+        const mouseEvent = {
+            button: 0,
+            offsetX: 11,
+            offsetY: 11,
+        } as MouseEvent;
+
+        service.mouseDown = true;
+        service['inSelection'] = true;
+        service.selection.imagePosition = { x: 1, y: 1 };
+        service.selection.endingPos = { x: 11, y: 11 };
+        service['controlPointName'] = ControlPointName.none;
+        service.selection.width = 10;
+        service.selection.height = 10;
+        service.selection.imageData = new ImageData(10, 10);
+        service.selection.image = new Image();
+        service.onMouseUp(mouseEvent);
+        expect(drawSelectionSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should draw a selection with new coordinates when the selection has been moved', () => {
+        drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
+
+        const mouseEvent = {
+            button: 0,
+            offsetX: 20,
+            offsetY: 20,
+        } as MouseEvent;
+
+        service.mouseDown = true;
+        service['inSelection'] = true;
+        service.selection.imagePosition = { x: 1, y: 1 };
+        service.selection.endingPos = { x: 11, y: 11 };
+        service['previousMousePos'] = { x: 10, y: 10 };
+        service['controlPointName'] = ControlPointName.none;
+        service['controlGroup'] = new ControlGroup(service['drawingService']);
+        service.selection.width = 10;
+        service.selection.height = 10;
+        service.selection.imageData = new ImageData(10, 10);
+        service.selection.image = new Image();
+        service.onMouseMove(mouseEvent);
+        expect(service['mouseMovement']).toEqual({ x: 10, y: 10 });
+        expect(drawSelectionSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should scale and draw a selection if a control point has been selected', () => {
+        drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
+        scaleSelectionSpy = spyOn<any>(service, 'scaleSelection').and.callThrough();
+
+        const mouseEvent = {
+            button: 0,
+            offsetX: 20,
+            offsetY: 20,
+        } as MouseEvent;
+
+        service.mouseDown = true;
+        service['inSelection'] = true;
+        service.selection.imagePosition = { x: 1, y: 1 };
+        service.selection.endingPos = { x: 11, y: 11 };
+        service['previousMousePos'] = { x: 10, y: 10 };
+        service['controlPointName'] = ControlPointName.left;
+        service['controlGroup'] = new ControlGroup(service['drawingService']);
+        service.selection.width = 10;
+        service.selection.height = 10;
+        service.selection.imageData = new ImageData(10, 10);
+        service.selection.image = new Image();
+        service.onMouseMove(mouseEvent);
+        expect(scaleSelectionSpy).toHaveBeenCalled();
+        expect(drawSelectionSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should draw a preview of a selection if a selection is being drawn', () => {
+        drawPreviewSpy = spyOn<any>(service, 'drawPreview').and.callThrough();
+
+        const mouseEvent = {
+            button: 0,
+            offsetX: 20,
+            offsetY: 20,
+        } as MouseEvent;
+
+        service.mouseDown = true;
+        service['inSelection'] = false;
+        service.selection.imagePosition = { x: 1, y: 1 };
+        service.selection.endingPos = { x: 11, y: 11 };
+        service['previousMousePos'] = { x: 10, y: 10 };
+        service['controlPointName'] = ControlPointName.none;
+        service['controlGroup'] = new ControlGroup(service['drawingService']);
+        service.selection.width = 10;
+        service.selection.height = 10;
+        service.selection.imageData = new ImageData(10, 10);
+        service.selection.image = new Image();
+        service.onMouseMove(mouseEvent);
+        expect(drawPreviewSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseOut should put the image back on its initial position if a selection has been drawn', () => {
+        pasteSelectionSpy = spyOn<any>(service, 'pasteSelection').and.callThrough();
+
+        const mouseEvent = {
+            button: 0,
+            offsetX: 20,
+            offsetY: 20,
+        } as MouseEvent;
+
+        service.mouseDown = true;
+        service['inSelection'] = true;
+        service.selection.imagePosition = { x: 1, y: 1 };
+        service.selection.copyImageInitialPos = { x: 1, y: 1 };
+        service.selection.endingPos = { x: 11, y: 11 };
+        service['controlPointName'] = ControlPointName.none;
+        service['controlGroup'] = new ControlGroup(service['drawingService']);
+        service.selection.width = 10;
+        service.selection.height = 10;
+        service.selection.imageData = new ImageData(10, 10);
+        service.selection.image = new Image();
+        service.onMouseOut(mouseEvent);
+        expect(pasteSelectionSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseOut should call the onMouseUp function if a selection is being drawn', () => {
+        onMouseUpSpy = spyOn<any>(service, 'onMouseUp');
+
+        const mouseEvent = {
+            button: 0,
+            offsetX: 20,
+            offsetY: 20,
+        } as MouseEvent;
+
+        service.mouseDown = true;
+        service['inSelection'] = false;
+        service.selection.imagePosition = { x: 1, y: 1 };
+        service.selection.copyImageInitialPos = { x: 1, y: 1 };
+        service.selection.endingPos = { x: 11, y: 11 };
+        service.onMouseOut(mouseEvent);
+        expect(onMouseUpSpy).toHaveBeenCalled();
+    });
+
+    it(' onShiftKeyDown should redraw the preview selection with the appropriate size', () => {
+        drawPreviewSpy = spyOn<any>(service, 'drawPreview');
+        const keyEvent = {} as KeyboardEvent;
+
+        service.mouseDown = true;
+        service['inSelection'] = false;
+        service['controlPointName'] = ControlPointName.none;
+        service['controlGroup'] = new ControlGroup(service['drawingService']);
+        service.onShiftKeyDown(keyEvent);
+        expect(drawPreviewSpy).toHaveBeenCalled();
+    });
 
     // it(' onMouseMove should draw a preview if user is drawing a selection', () => {
     //     mouseEvent = {

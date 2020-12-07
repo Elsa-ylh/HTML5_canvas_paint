@@ -8,6 +8,7 @@ import { Vec2 } from './vec2';
 
 export const PIXELMOVEMENT = 3;
 export const MOVEMENTDELAY = 100;
+export const MINTIMEMOVEMENT = 500;
 export class ArrowInfo {
     constructor(
         private direction: Vec2,
@@ -65,7 +66,7 @@ export class ArrowInfo {
                 this.arrowPressed = true;
                 this.selectionService.startTimer();
                 // for continuous movement
-                if (this.selectionService.time >= this.selectionService.minTimeMovement) {
+                if (this.selectionService.time >= MINTIMEMOVEMENT) {
                     this.startMoveSelectionTimer();
                 }
             }

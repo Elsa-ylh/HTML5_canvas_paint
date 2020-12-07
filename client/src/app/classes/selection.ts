@@ -40,35 +40,6 @@ export class SelectionImage {
         return canvas.toDataURL();
     }
 
-    isInsideSelection(mouse: Vec2): boolean {
-        if (
-            this.imagePosition.x !== 0 &&
-            this.imagePosition.x !== 0 &&
-            this.endingPos.x !== 0 &&
-            this.endingPos.y !== 0 &&
-            !this.drawingService.isPreviewCanvasBlank()
-        ) {
-            const minX = Math.min(this.endingPos.x, this.imagePosition.x);
-            const maxX = Math.max(this.endingPos.x, this.imagePosition.x);
-            const minY = Math.min(this.endingPos.y, this.imagePosition.y);
-            const maxY = Math.max(this.endingPos.y, this.imagePosition.y);
-
-            if (mouse.x > minX && mouse.x < maxX && mouse.y > minY && mouse.y < maxY) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    resetSelection(): void {
-        this.copyImageInitialPos = this.imagePosition = { x: 0, y: 0 };
-        this.width = 0;
-        this.height = 0;
-        this.imageSize = { x: 0, y: 0 };
-        this.endingPos = { x: 0, y: 0 };
-        this.ellipseRad = { x: 0, y: 0 };
-        this.image = new Image();
-    }
     resetAngle(): void {
         this.rotationAngle = 0;
     }

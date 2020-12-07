@@ -7,20 +7,21 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SelectionImage } from '@app/classes/selection';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { GridService } from '../grid.service';
-import { MagnetismService } from '../magnetism.service';
-import { RotationService } from './rotation.service';
+import { GridService } from '@app/services/tools/grid.service';
+import { MagnetismService } from '@app/services/tools/magnetism.service';
+import { RotationService } from '@app/services/tools/selection-service/rotation.service';
 // import { Subscription } from 'rxjs/internal/Subscription';
 // import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SelectionRectangleService } from './selection-rectangle.service';
-import { SelectionService } from './selection-service';
+import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
+import { SelectionService } from '@app/services/tools/selection-service/selection-service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // tslint:disable:no-any
 // tslint:disable:no-magic-numbers
 // tslint:disable:no-string-literal
 // tslint:disable:max-file-line-count
 // tslint:disable:no-shadowed-variable
+// tslint:disable:prefer-const
 describe('Service: SelectionRectangle', () => {
     let service: SelectionRectangleService;
 
@@ -72,7 +73,7 @@ describe('Service: SelectionRectangle', () => {
         //   drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'isPreviewCanvasBlank']);
 
         controlMock = new ControlGroup(drawingStub);
-        selectionStub.controlGroup = controlMock;
+        selectionStub['controlGroup'] = controlMock;
 
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         canvas = canvasTestHelper.canvas as HTMLCanvasElement;

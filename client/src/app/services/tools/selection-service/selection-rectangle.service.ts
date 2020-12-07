@@ -6,9 +6,9 @@ import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-actio
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
-import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { RotationService } from '@app/services/tools/selection-service/rotation.service';
-import { SelectionService } from '@app/services/tools/selection-service/selection-service';
+import { LINEWIDTH, SelectionService } from '@app/services/tools/selection-service/selection-service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
@@ -25,7 +25,7 @@ export class SelectionRectangleService extends SelectionService {
 
     onMouseDown(event: MouseEvent): void {
         this.clearEffectTool();
-        this.drawingService.previewCtx.lineWidth = this.lineWidth;
+        this.drawingService.previewCtx.lineWidth = LINEWIDTH;
         this.drawingService.previewCtx.strokeStyle = 'black';
         this.drawingService.previewCtx.fillStyle = 'black';
 
@@ -113,7 +113,7 @@ export class SelectionRectangleService extends SelectionService {
         }
     }
 
-    updateSelectionPositions(): Vec2 {
+    protected updateSelectionPositions(): Vec2 {
         const xSign = Math.sign(this.selection.endingPos.x - this.selection.imagePosition.x);
         const ySign = Math.sign(this.selection.endingPos.y - this.selection.imagePosition.y);
         const tmpEndPos = this.selection.endingPos;

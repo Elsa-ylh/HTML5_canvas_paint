@@ -38,9 +38,8 @@ export class MagicWandService extends SelectionService {
     private replacementColor: RGBA = { red: 101, green: 231, blue: 0, alpha: 1 };
     private readonly COLORATTRIBUTES: number = 4;
     private rightMouseDown: boolean;
-    // private colorPosition: Vec2;
     originalColor: RGBA;
-    // private selectionBoxCreated: boolean = false;
+    tolerance: number = 0; // from 0 to 100 inclusively, look at paint bucket component
 
     constructor(
         drawingService: DrawingService,
@@ -52,7 +51,6 @@ export class MagicWandService extends SelectionService {
     ) {
         super(drawingService, magnetismService, rotationService);
     }
-    tolerance: number = 0; // from 0 to 100 inclusively, look at paint bucket component
 
     // the starting x and y means where the mouse was clicked down
     private selectedFloodFill(x: number, y: number, replacementColor: RGBA): ImageData {
@@ -578,7 +576,7 @@ export class MagicWandService extends SelectionService {
         this.clearSelectionWand(this.selection.copyImageInitialPos, this.originalColor);
     }
 
-    getColor(position: Vec2, ctx: CanvasRenderingContext2D): RGBA {
+    private getColor(position: Vec2, ctx: CanvasRenderingContext2D): RGBA {
         const imageData = ctx.getImageData(position.x, position.y, 1, 1).data;
         return { red: imageData[0], green: imageData[1], blue: imageData[2], alpha: imageData[3] };
     }

@@ -14,7 +14,7 @@ import { RotationService } from './rotation.service';
 import { SelectionRectangleService } from './selection-rectangle.service';
 // import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 // import { SelectionRectangleService } from './selection-rectangle.service';
-import { SelectionService } from './selection-service';
+import { DOTTEDSPACE, LINEWIDTH, SelectionService } from './selection-service';
 
 @Injectable({
     providedIn: 'root',
@@ -31,7 +31,7 @@ export class SelectionEllipseService extends SelectionService {
 
     onMouseDown(event: MouseEvent): void {
         this.clearEffectTool();
-        this.drawingService.previewCtx.lineWidth = this.lineWidth;
+        this.drawingService.previewCtx.lineWidth = LINEWIDTH;
         this.drawingService.previewCtx.strokeStyle = 'black';
         this.drawingService.previewCtx.fillStyle = 'black';
 
@@ -229,7 +229,7 @@ export class SelectionEllipseService extends SelectionService {
                     y: Math.min(Math.abs(this.selection.width / 2), Math.abs(this.selection.height / 2)),
                 };
             }
-            this.drawingService.previewCtx.setLineDash([this.dottedSpace, this.dottedSpace]);
+            this.drawingService.previewCtx.setLineDash([DOTTEDSPACE, DOTTEDSPACE]);
             this.drawPreviewRect(this.drawingService.previewCtx, false);
             this.drawingService.previewCtx.beginPath();
             this.drawEllipse(this.drawingService.previewCtx, this.selection.imagePosition, this.selection.width / 2, this.selection.height / 2);
@@ -237,7 +237,7 @@ export class SelectionEllipseService extends SelectionService {
         }
     }
 
-    drawEllipse(ctx: CanvasRenderingContext2D, mouseCoords: Vec2, radiusX: number, radiusY: number): void {
+    private drawEllipse(ctx: CanvasRenderingContext2D, mouseCoords: Vec2, radiusX: number, radiusY: number): void {
         let centerX = 0 as number;
         let centerY = 0 as number;
         centerX = mouseCoords.x + radiusX;

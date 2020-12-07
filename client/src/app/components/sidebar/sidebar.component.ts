@@ -318,7 +318,6 @@ export class SidebarComponent {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.MagicWand);
         this.isDialogloadSaveEport = true;
-        // this.magicWandService.selection.resetSelection();
     }
 
     get MagicWandSelectionChecked(): boolean {

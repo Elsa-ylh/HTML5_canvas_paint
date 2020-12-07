@@ -33,6 +33,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 class ToolStub extends Tool {}
 // tslint:disable:no-any
 // tslint:disable:no-magic-numbers
+// tslint:disable:prefer-const
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
