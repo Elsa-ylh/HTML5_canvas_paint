@@ -8,7 +8,7 @@ import { TextControl } from './text-control';
 // tslint:disable:max-file-line-count
 // tslint:disable:prefer-for-of
 
-fdescribe('TextControl', () => {
+describe('TextControl', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let textControl: TextControl;
@@ -297,7 +297,7 @@ fdescribe('TextControl', () => {
         expect(textControl['textStack']).toEqual(['e', 'd']);
     });
 
-    it('', () => {
+    it('full text (1)', () => {
         textControl.setWidth(50);
         textControl['textPreview'] = ['as', 'bde', 'ct'];
         textControl['textLine'] = ['b'];
@@ -308,7 +308,7 @@ fdescribe('TextControl', () => {
         expect(fullText).toEqual(['as', 'bde', 'ct']);
     });
 
-    it('', () => {
+    it('full text (2)', () => {
         textControl.setWidth(50);
         textControl['textPreview'] = ['as', 'bde', 'ct'];
         textControl['textLine'] = ['b'];

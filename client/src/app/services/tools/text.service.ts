@@ -314,6 +314,8 @@ export class TextService extends Tool {
                 break;
         }
     }
+
+    // keyboard action functions
     arrowTop(): void {
         this.textControl.arrowTop();
         this.previewText();
