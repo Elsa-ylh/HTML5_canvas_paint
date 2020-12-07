@@ -12,7 +12,7 @@ import { AutomaticSaveService } from '@app/services/automatic-save/automatic-sav
     styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent {
-    isDialogOpenSaveEport: boolean = false;
+    isDialogOpenSaveExport: boolean = false;
     onGoingDrawing: boolean;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     dialogLoadRef: MatDialogRef<CarrouselPictureComponent>;
@@ -29,18 +29,18 @@ export class MainPageComponent {
     }
 
     isThereExistingDrawing(): boolean {
-        return this.isDialogOpenSaveEport;
+        return this.isDialogOpenSaveExport;
     }
 
     openCarrousel(): void {
-        if (!this.isDialogOpenSaveEport) {
-            this.isDialogOpenSaveEport = true;
+        if (!this.isDialogOpenSaveExport) {
+            this.isDialogOpenSaveExport = true;
             this.dialogLoadRef = this.dialogCreator.open(CarrouselPictureComponent, {
                 width: '90%',
                 height: '90%',
             });
             this.dialogLoadRef.afterClosed().subscribe(() => {
-                this.isDialogOpenSaveEport = false;
+                this.isDialogOpenSaveExport = false;
             });
         }
     }
