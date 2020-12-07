@@ -1,11 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
-import { Vec2 } from '@app/classes/vec2';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/tools/grid.service';
+import { MagnetismService } from '@app/services/tools/magnetism.service';
+import { RotationService } from '@app/services/tools/selection-service/rotation.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { SelectionImage } from '../selection';
 
 // tslint:disable:prefer-const
 // tslint:disable:no-magic-numbers
@@ -15,27 +19,30 @@ describe('SelectionRectAction', () => {
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
     let selectionRectStub: SelectionRectangleService;
-    let copyPosition: Vec2;
-    let selectionRect: Vec2;
-    let width: number;
-    let height: number;
-    let image: ImageData = new ImageData(10, 10);
+    let magnetismStub: MagnetismService;
+    let gridStub: GridService;
+    let canvasResizeStub: CanvasResizerService;
+    let rotationStub: RotationService;
+
+    let selection: SelectionImage;
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
 
     beforeEach(() => {
-        copyPosition = { x: 5, y: 5 };
-        // tslint:disable:no-magic-numbers
-        width = 10;
-        // tslint:disable:no-magic-numbers
-        height = 10;
-        image = new ImageData(width, height);
+        selection = new SelectionImage(drawingStub);
+        selection.image = new Image();
+        selection.image.src = selection.image.src;
+
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        selectionRectStub = new SelectionRectangleService(drawingStub, undoRedoStub);
-        selectionRectActionStub = new SelectionRectAction(copyPosition, image, selectionRect, width, height, selectionRectStub);
+        canvasResizeStub = new CanvasResizerService(undoRedoStub);
+        magnetismStub = new MagnetismService(gridStub);
+        gridStub = new GridService(drawingStub, canvasResizeStub);
+        rotationStub = new RotationService(drawingStub);
+        selectionRectStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
+        selectionRectActionStub = new SelectionRectAction(selectionRectStub, drawingStub, selection);
         canvas = canvasTestHelper.canvas;
         // tslint:disable:no-magic-numbers
         canvas.width = 100;

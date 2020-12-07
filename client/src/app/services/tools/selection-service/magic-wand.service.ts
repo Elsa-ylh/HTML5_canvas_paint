@@ -15,6 +15,7 @@ import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { RotationService } from './rotation.service';
 
 enum Bound {
     UPPER,
@@ -47,8 +48,9 @@ export class MagicWandService extends SelectionService {
         private paintBucketService: PaintBucketService,
         protected magnetismService: MagnetismService,
         protected undoRedoService: UndoRedoService,
+        protected rotationService: RotationService,
     ) {
-        super(drawingService, magnetismService);
+        super(drawingService, magnetismService, rotationService);
     }
     tolerance: number = 0; // from 0 to 100 inclusively, look at paint bucket component
 

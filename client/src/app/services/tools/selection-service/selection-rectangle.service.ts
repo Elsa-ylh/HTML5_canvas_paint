@@ -7,14 +7,20 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { RotationService } from './rotation.service';
 import { SelectionService } from './selection-service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionRectangleService extends SelectionService {
-    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService, private undoRedoService: UndoRedoService) {
-        super(drawingService, magnetismService);
+    constructor(
+        drawingService: DrawingService,
+        protected magnetismService: MagnetismService,
+        protected rotationService: RotationService,
+        private undoRedoService: UndoRedoService,
+    ) {
+        super(drawingService, magnetismService, rotationService);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -156,12 +162,23 @@ export class SelectionRectangleService extends SelectionService {
             this.scaled = false;
         }
         this.drawingService.previewCtx.save();
-        this.drawingService.previewCtx.drawImage(this.selection.image, imagePosition.x, imagePosition.y, this.selection.width, this.selection.height);
-        this.drawingService.previewCtx.restore();
-        this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
+        // rotation
+        if(this.selection.rotationAngle !== 0){
+          // const ADDED_WIDTH = Math.abs(Math.sin(this.selection.rotationAngle*TO_RAD)*this.selection.width/2);
+          // const ADDED_HEIGHT = Math.abs(Math.sin(this.selection.rotationAngle*TO_RAD)*this.selection.height/2);
+          this.rotationService.rotateSelection(this.selection, this.drawingService.previewCtx);
+          // this.rotationService.updateImageWithRotation(this);
+        }
+          this.drawingService.previewCtx.drawImage(this.selection.image, imagePosition.x, imagePosition.y, this.selection.width, this.selection.height);
+          this.drawingService.previewCtx.restore();
+          this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
+
+
     }
 
     pasteSelection(selection: SelectionImage): void {
+        this.drawingService.baseCtx.save();
+        this.rotationService.rotateSelection(selection, this.drawingService.baseCtx);
         this.drawingService.baseCtx.drawImage(
             selection.image,
             selection.imagePosition.x,
@@ -169,6 +186,8 @@ export class SelectionRectangleService extends SelectionService {
             selection.width,
             selection.height,
         );
+        this.drawingService.baseCtx.restore();
+        this.selection.resetAngle();
     }
 
     protected drawPreview(): void {
