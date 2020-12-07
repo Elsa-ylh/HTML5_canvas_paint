@@ -57,10 +57,7 @@ export class StampService extends Tool {
         const wrh = this.currentStamp.width / this.currentStamp.height;
         this.newWidth = this.drawingService.cursorCtx.canvas.width;
         this.newHeight = this.newWidth / wrh;
-        if (this.newHeight > this.drawingService.cursorCtx.canvas.height) {
-            this.newHeight = this.drawingService.cursorCtx.canvas.height;
-            this.newWidth = this.newHeight * wrh;
-        }
+
         this.offSetX =
             this.newWidth < this.drawingService.cursorCtx.canvas.width ? (this.drawingService.cursorCtx.canvas.width - this.newWidth) / 2 : 0;
         this.yOffset =
