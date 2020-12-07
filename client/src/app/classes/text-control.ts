@@ -7,10 +7,8 @@ export class TextControl {
     private indexOfLettersInLine: number = 0;
     private nbOfLettersInLine: number = 0;
     private ctx: CanvasRenderingContext2D;
-    constructor(ctx: CanvasRenderingContext2D, width?: number /*text?: string*/) {
-        // if (height !== undefined) this.setHeight(height);
+    constructor(ctx: CanvasRenderingContext2D, width?: number) {
         if (width !== undefined) this.setWidth(width);
-        // this.setSizeFont(sizeFont);
         this.ctx = ctx;
     }
 
@@ -213,7 +211,6 @@ export class TextControl {
     }
 
     getTextWithCursor(): string[] {
-        // debugger;
         let tmpText: string[] = [];
         this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + '|' + this.tmpLineTextStack();
         this.textPreview.forEach((element) => {
@@ -227,7 +224,6 @@ export class TextControl {
     }
 
     private endLineReturn(text: string[], line: string, nbOfLettersInLine: number): string[] {
-        // debugger;
         let oneLine = '';
         // tslint:disable:prefer-for-of
         for (let index = 0; index < line.length; index++) {

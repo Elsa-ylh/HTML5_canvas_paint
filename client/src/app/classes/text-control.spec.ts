@@ -324,7 +324,7 @@ describe('TextControl', () => {
         expect(textControl['textStack']).toEqual(['e', 'd']);
     });
 
-    it('should call getText', () => {
+    it('full text (1)  call getText', () => {
         textControl.setWidth(50);
         textControl['textPreview'] = ['as', 'bde', 'ct'];
         textControl['textLine'] = ['b'];
@@ -335,7 +335,7 @@ describe('TextControl', () => {
         expect(fullText).toEqual(['as', 'bde', 'ct']);
     });
 
-    it('should call getTextWithCursor', () => {
+    it('full text (1) call getTextWithCursor', () => {
         textControl.setWidth(50);
         textControl['textPreview'] = ['as', 'bde', 'ct'];
         textControl['textLine'] = ['b'];
@@ -345,7 +345,7 @@ describe('TextControl', () => {
         const fullText = textControl.getTextWithCursor();
         expect(fullText).toEqual(['as', 'b|de', 'ct']);
     });
-    it('should call getText (2)', () => {
+    it('should full text (2) call getText', () => {
         textControl.setWidth(20);
         textControl['textPreview'] = ['as', 'b3de', 'ct'];
         textControl['textLine'] = ['b', '3'];
@@ -356,7 +356,7 @@ describe('TextControl', () => {
         expect(fullText).toEqual(['as', 'b3d', 'ct']);
     });
 
-    it('should call getTextWithCursor(2)', () => {
+    it('should full text (2) call getTextWithCursor', () => {
         textControl.setWidth(20);
         textControl['textPreview'] = ['as', 'b3de', 'ct'];
         textControl['textLine'] = ['b', '3'];
