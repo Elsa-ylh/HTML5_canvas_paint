@@ -90,9 +90,11 @@ export class TextControl {
             this.textStack = [];
             this.indexLine--;
             const lineText: string = this.textPreview[this.indexLine];
-            this.indexOfLettersInLine = lineText.length;
-            for (let index = 0; index <= this.indexOfLettersInLine - 1; index++) {
-                this.textLine.push(lineText[index]);
+            if (lineText !== undefined) {
+                this.indexOfLettersInLine = lineText.length;
+                for (let index = 0; index <= this.indexOfLettersInLine - 1; index++) {
+                    this.textLine.push(lineText[index]);
+                }
             }
         }
         if (this.indexOfLettersInLine < 0) {
@@ -117,8 +119,10 @@ export class TextControl {
             this.indexOfLettersInLine = 0;
             this.indexLine++;
             const lineText = this.textPreview[this.indexLine];
-            for (let index = lineText.length - 1; index >= 0; index--) {
-                this.textStack.push(lineText[index]);
+            if (lineText !== undefined) {
+                for (let index = lineText.length - 1; index >= 0; index--) {
+                    this.textStack.push(lineText[index]);
+                }
             }
         }
     }
@@ -133,7 +137,6 @@ export class TextControl {
             for (let index = this.indexLine; index < this.textPreview.length; index++) {
                 this.textPreview[index] = this.textPreview[index + 1];
             }
-            this.textPreview.length--;
             this.textPreview.pop();
             this.indexLine--;
             this.textLine = [];

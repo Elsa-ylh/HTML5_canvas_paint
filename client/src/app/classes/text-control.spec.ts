@@ -31,8 +31,8 @@ fdescribe('TextControl', () => {
     });
 
     it('should setCtx previewCtx', () => {
-        textControl.setCtx(previewCtxStub);
-        expect(textControl['ctx']).toEqual(previewCtxStub);
+        textControl.setCtx(baseCtxStub);
+        expect(textControl['ctx']).toEqual(baseCtxStub);
     });
 
     it('getFont should return Times New Roman', () => {
@@ -42,12 +42,22 @@ fdescribe('TextControl', () => {
         expect(textControl.getFont()).toEqual(font);
     });
 
-    it('getText should return text', () => {
+    it('getText should addLetter ', () => {
         textControl['nbOfLettersInLine'] = 50;
-        const text = 'test';
+        const text = 'test2';
         textControl.addLetter(text);
-        console.log(textControl['textLine']);
-        expect(textControl.getText()).toEqual([text]);
+        expect(textControl['textLine'][0]).toEqual('t');
+        expect(textControl['textLine'][1]).toEqual('e');
+        expect(textControl['textLine'][2]).toEqual('s');
+        expect(textControl['textLine'][3]).toEqual('t');
+        expect(textControl['textLine'][4]).toEqual('2');
+    });
+
+    it('getText should addLetter a', () => {
+        textControl['nbOfLettersInLine'] = 50;
+        const text = 't';
+        textControl.addLetter(text);
+        expect(textControl['textLine']).toEqual([text]);
     });
 
     it('getTextWithCursor should return text', () => {
@@ -147,13 +157,31 @@ fdescribe('TextControl', () => {
         expect(textControl['indexLine']).toEqual(2);
     });
 
-    it('arrowLeft should call textPreview ', () => {
+    it('arrowLeft should call textPreview (1)', () => {
         textControl['textLine'] = ['t', 'e'];
         textControl['textStack'] = ['s', 't'];
         textControl['indexOfLettersInLine'] = 2;
         textControl.arrowLeft();
         expect(textControl['indexOfLettersInLine']).toEqual(1);
         expect(textControl['textLine']).toEqual(['t']);
+    });
+
+    it('arrowLeft should call textPreview (2)', () => {
+        textControl['indexOfLettersInLine'] = 0;
+        textControl['indexLine'] = 1;
+        textControl['textPreview'] = ['a', 's', '2'];
+        textControl['textStack'] = ['t', 's', 'e', 't'];
+        textControl.arrowLeft();
+        expect(textControl['indexOfLettersInLine']).toEqual(1);
+        expect(textControl['indexLine']).toEqual(0);
+        expect(textControl['textLine']).toEqual(['a']);
+        expect(textControl['textPreview'][1]).toEqual('test');
+    });
+
+    it('arrowLeft should call textPreview (3)', () => {
+        textControl['indexOfLettersInLine'] = -2;
+        textControl.arrowLeft();
+        expect(textControl['indexOfLettersInLine']).toEqual(0);
     });
 
     it('arrowRight should call textPreview ', () => {
@@ -164,6 +192,84 @@ fdescribe('TextControl', () => {
         expect(textControl['textLine']).toEqual(['t']);
         expect(textControl['textStack']).toEqual(['t', 's', 'e']);
     });
+
+    it('arrowRight should call textPreview (2)', () => {
+        textControl['textStack'] = ['t', 's', 'e', 't'];
+        textControl['indexLine'] = 0;
+        textControl['indexOfLettersInLine'] = 0;
+        textControl['textPreview'] = ['a', 's', '2'];
+        textControl.arrowRight();
+        expect(textControl['indexLine']).toEqual(0);
+        expect(textControl['indexOfLettersInLine']).toEqual(1);
+        expect(textControl['textLine']).toEqual(['t']);
+        expect(textControl['textStack']).toEqual(['t', 's', 'e']);
+    });
+    it('arrowRight should call textPreview (3)', () => {
+        textControl['textStack'] = [];
+        textControl['indexLine'] = 0;
+        textControl['indexOfLettersInLine'] = 1;
+        textControl['textPreview'] = ['a', 'sss', '2'];
+        textControl.arrowRight();
+        expect(textControl['indexLine']).toEqual(1);
+        expect(textControl['indexOfLettersInLine']).toEqual(0);
+        expect(textControl['textLine']).toEqual([]);
+        expect(textControl['textStack']).toEqual(['s', 's', 's']);
+    });
+
+    it('delete', () => {
+        textControl['textStack'] = ['t', 's', 'e', 't'];
+        textControl['indexLine'] = 0;
+        textControl['indexOfLettersInLine'] = 0;
+        textControl.delete();
+        expect(textControl['textStack']).toEqual(['t', 's', 'e']);
+    });
+    it('delete (2)', () => {
+        textControl['textPreview'] = ['tt', 'ss', 'e', 't'];
+        textControl['textLine'] = ['t', 't'];
+        textControl['indexLine'] = 0;
+        textControl['indexOfLettersInLine'] = 2;
+        textControl.delete();
+        expect(textControl['textStack']).toEqual(['s', 's']);
+        expect(textControl['textLine']).toEqual(['t', 't']);
+        expect(textControl['textPreview']).toEqual(['tt', 'e', 't']);
+    });
+    it('delete (3)', () => {
+        textControl['textStack'] = [];
+        textControl['textLine'] = ['t', 't'];
+        textControl['indexLine'] = 0;
+        textControl['indexOfLettersInLine'] = 2;
+        textControl.delete();
+        expect(textControl['textStack']).toEqual([]);
+        expect(textControl['textLine']).toEqual(['t', 't']);
+    });
+
+    it('backspace', () => {
+        textControl['textLine'] = ['t', 't'];
+        textControl['indexLine'] = 0;
+        textControl['indexOfLettersInLine'] = 2;
+        textControl.backspace();
+        expect(textControl['textLine']).toEqual(['t']);
+    });
+    it('backspace (2)', () => {
+        textControl['textLine'] = ['t', 't'];
+        textControl['indexLine'] = 0;
+        textControl['indexOfLettersInLine'] = 0;
+        textControl.backspace();
+        expect(textControl['textLine']).toEqual(['t', 't']);
+    });
+
+    it('backspace (3)', () => {
+        textControl['textPreview'] = ['tt', 'ss', 'e', 't'];
+        textControl['textStack'] = ['s', 's'];
+        textControl['textLine'] = [];
+        textControl['indexLine'] = 1;
+        textControl['indexOfLettersInLine'] = 0;
+        textControl.backspace();
+        expect(textControl['textStack']).toEqual(['s', 's']);
+        expect(textControl['textLine']).toEqual(['t', 't']);
+        expect(textControl['textPreview']).toEqual(['tt', 'e', 't']);
+    });
+
     it('should call clearText', () => {
         textControl['width'] = 5;
         textControl['indexLine'] = 2;
