@@ -177,7 +177,7 @@ export class TextControl {
         this.indexOfLettersInLine = 0;
         this.textLine = [];
         this.indexLine++;
-        this.textPreview.length = this.textPreview.length;
+        this.textPreview[this.indexLine] = this.tmpLineTextStack();
     }
 
     private tmpLineText(text: string[], addLetter: string): string {

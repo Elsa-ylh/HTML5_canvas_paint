@@ -8,16 +8,18 @@ import { TextControl } from './text-control';
 // tslint:disable:max-file-line-count
 // tslint:disable:prefer-for-of
 
-describe('TextControl', () => {
+fdescribe('TextControl', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let textControl: TextControl;
-
+    let previewCanvas: HTMLCanvasElement;
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        previewCtxStub.canvas.width = 100;
-        previewCtxStub.canvas.height = 100;
+        previewCanvas = document.createElement('canvas');
+        previewCanvas.width = 100;
+        previewCanvas.height = 100;
+        previewCtxStub = previewCanvas.getContext('2d') as CanvasRenderingContext2D;
+
         textControl = new TextControl(previewCtxStub);
     });
 
@@ -282,5 +284,38 @@ describe('TextControl', () => {
         expect(textControl['textPreview']).toEqual([]);
         expect(textControl['textLine']).toEqual([]);
         expect(textControl['textStack']).toEqual([]);
+    });
+    it('should call enter', () => {
+        textControl['textPreview'] = ['as', 'bde', 'ct'];
+        textControl['textLine'] = ['b'];
+        textControl['textStack'] = ['e', 'd'];
+        textControl['indexLine'] = 1;
+        textControl['indexOfLettersInLine'] = 1;
+        textControl.enter();
+        expect(textControl['textPreview']).toEqual(['as', 'b', 'de', 'ct']);
+        expect(textControl['textLine']).toEqual([]);
+        expect(textControl['textStack']).toEqual(['e', 'd']);
+    });
+
+    it('', () => {
+        textControl.setWidth(50);
+        textControl['textPreview'] = ['as', 'bde', 'ct'];
+        textControl['textLine'] = ['b'];
+        textControl['textStack'] = ['e', 'd'];
+        textControl['indexLine'] = 1;
+        textControl['indexOfLettersInLine'] = 1;
+        const fullText = textControl.getText();
+        expect(fullText).toEqual(['as', 'bde', 'ct']);
+    });
+
+    it('', () => {
+        textControl.setWidth(50);
+        textControl['textPreview'] = ['as', 'bde', 'ct'];
+        textControl['textLine'] = ['b'];
+        textControl['textStack'] = ['e', 'd'];
+        textControl['indexLine'] = 1;
+        textControl['indexOfLettersInLine'] = 1;
+        const fullText = textControl.getTextWithCursor();
+        expect(fullText).toEqual(['as', 'b|de', 'ct']);
     });
 });
