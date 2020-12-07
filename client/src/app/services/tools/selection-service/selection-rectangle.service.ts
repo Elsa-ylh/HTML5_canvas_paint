@@ -7,8 +7,8 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { RotationService } from './rotation.service';
-import { SelectionService } from './selection-service';
+import { RotationService } from '@app/services/tools/selection-service/rotation.service';
+import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 
 @Injectable({
     providedIn: 'root',
@@ -53,10 +53,10 @@ export class SelectionRectangleService extends SelectionService {
             } else if (!this.inSelection && !this.drawingService.isPreviewCanvasBlank() && this.controlPointName === ControlPointName.none) {
                 // paste image
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.pasteSelection(this.selection);
                 const selectRectAc = new SelectionRectAction(this, this.drawingService, this.selection);
                 this.undoRedoService.addUndo(selectRectAc);
                 this.undoRedoService.clearRedo();
+                this.pasteSelection(this.selection);
                 this.mouseMovement = { x: 0, y: 0 };
                 this.isAllSelect = false;
                 this.selection.endingPos = this.mouseDownCoords;
@@ -83,12 +83,13 @@ export class SelectionRectangleService extends SelectionService {
                     y: this.selection.imagePosition.y + this.mouseMovement.y,
                 };
             }
-            // paste image
-            this.pasteSelection(this.selection);
+
             // undo redo
             const selectRectAc = new SelectionRectAction(this, this.drawingService, this.selection);
             this.undoRedoService.addUndo(selectRectAc);
             this.undoRedoService.clearRedo();
+            // paste image
+            this.pasteSelection(this.selection);
             this.mouseMovement = { x: 0, y: 0 };
             this.isAllSelect = false;
             this.selection.endingPos = this.selection.imagePosition = this.mouseDownCoords;
@@ -163,17 +164,10 @@ export class SelectionRectangleService extends SelectionService {
         }
         this.drawingService.previewCtx.save();
         // rotation
-        if(this.selection.rotationAngle !== 0){
-          // const ADDED_WIDTH = Math.abs(Math.sin(this.selection.rotationAngle*TO_RAD)*this.selection.width/2);
-          // const ADDED_HEIGHT = Math.abs(Math.sin(this.selection.rotationAngle*TO_RAD)*this.selection.height/2);
-          this.rotationService.rotateSelection(this.selection, this.drawingService.previewCtx);
-          // this.rotationService.updateImageWithRotation(this);
-        }
-          this.drawingService.previewCtx.drawImage(this.selection.image, imagePosition.x, imagePosition.y, this.selection.width, this.selection.height);
-          this.drawingService.previewCtx.restore();
-          this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
-
-
+        this.rotationService.rotateSelection(this.selection, this.drawingService.previewCtx);
+        this.drawingService.previewCtx.drawImage(this.selection.image, imagePosition.x, imagePosition.y, this.selection.width, this.selection.height);
+        this.drawingService.previewCtx.restore();
+        this.drawSelectionRect(imagePosition, this.selection.width, this.selection.height);
     }
 
     pasteSelection(selection: SelectionImage): void {
@@ -203,19 +197,4 @@ export class SelectionRectangleService extends SelectionService {
             this.selection.height,
         );
     }
-
-    // saveFlippedImage(scale: Vec2, translation: Vec2): void {
-    //     const canvas = document.createElement('canvas') as HTMLCanvasElement;
-    //     const ctx = (canvas.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
-    //     canvas.width = Math.abs(this.selection.imageSize.x);
-    //     canvas.height = Math.abs(this.selection.imageSize.y);
-    //     ctx.save();
-    //     ctx.translate(translation.x, translation.y);
-    //     ctx.scale(scale.x, scale.y);
-    //     ctx.drawImage(this.baseImage, 0, 0, canvas.width, canvas.height);
-    //     ctx.restore();
-    //     this.selection.imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    //     this.selection.image = new Image();
-    //     this.selection.image.src = this.selection.getImageURL(this.selection.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
-    // }
 }

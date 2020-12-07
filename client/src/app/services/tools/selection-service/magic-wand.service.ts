@@ -311,28 +311,13 @@ export class MagicWandService extends SelectionService {
         this.selection.endingPos = { x: rightBoundPos.x, y: lowerBoundPos.y } as Vec2;
 
         this.selection.image = new Image();
-        this.selection.image.src = this.snipSelection(
-            previewLayer,
-            this.selection.imagePosition as Vec2,
-            { x: rightBoundPos.x - leftBoundPos.x, y: lowerBoundPos.y - upperBoundPos.y } as Vec2,
-        );
-    }
-
-    drawSelection(): void {
-        if (this.scaled) {
-            this.flipImage();
-            this.scaled = false;
+        if (rightBoundPos.x - leftBoundPos.x !== 0 && lowerBoundPos.y - upperBoundPos.y !== 0) {
+            this.selection.image.src = this.snipSelection(
+                previewLayer,
+                this.selection.imagePosition as Vec2,
+                { x: rightBoundPos.x - leftBoundPos.x, y: lowerBoundPos.y - upperBoundPos.y } as Vec2,
+            );
         }
-        this.drawingService.previewCtx.save();
-        this.drawingService.previewCtx.drawImage(
-            this.selection.image,
-            this.selection.imagePosition.x,
-            this.selection.imagePosition.y,
-            this.selection.width,
-            this.selection.height,
-        );
-        this.drawingService.previewCtx.restore();
-        this.drawSelectionRect(this.selection.imagePosition, this.selection.width, this.selection.height);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -363,18 +348,20 @@ export class MagicWandService extends SelectionService {
                 this.selection.height = this.selection.endingPos.y - this.selection.imagePosition.y;
                 this.selection.imageSize = { x: this.selection.width, y: this.selection.height };
                 this.controlGroup = new ControlGroup(this.drawingService);
-                this.drawSelection();
+                this.baseImage = new Image();
+                this.baseImage.src = this.selection.image.src;
+                this.drawWandSelection();
                 this.mouseDown = false;
                 return;
             }
 
             if (!this.inSelection && this.controlPointName === ControlPointName.none && !this.drawingService.isPreviewCanvasBlank()) {
-                this.pasteSelection(this.selection);
                 this.cleared = false;
                 // undo redo
                 const selectWandAc = new SelectionWandAction(this, this.drawingService, this.selection, this.originalColor);
                 this.undoRedoService.addUndo(selectWandAc);
                 this.undoRedoService.clearRedo();
+                this.pasteSelection(this.selection);
                 return;
             }
         }
@@ -384,12 +371,15 @@ export class MagicWandService extends SelectionService {
             const coloredToBeSelectedPixels: ImageData = this.selectAllSimilar(event.offsetX, event.offsetY, this.replacementColor);
             this.saveSelectionData(coloredToBeSelectedPixels);
             // this.colorPosition = { x: event.offsetX, y: event.offsetY };
+            this.originalColor = this.getColor({ x: event.offsetX, y: event.offsetY }, this.drawingService.baseCtx);
             this.selection.copyImageInitialPos = { x: this.selection.imagePosition.x, y: this.selection.imagePosition.y };
             this.selection.width = this.selection.endingPos.x - this.selection.imagePosition.x;
             this.selection.height = this.selection.endingPos.y - this.selection.imagePosition.y;
             this.selection.imageSize = { x: this.selection.width, y: this.selection.height };
             this.controlGroup = new ControlGroup(this.drawingService);
-            this.drawSelection();
+            this.baseImage = new Image();
+            this.baseImage.src = this.selection.image.src;
+            this.drawWandSelection();
             this.rightMouseDown = false;
             return;
         }
@@ -428,7 +418,7 @@ export class MagicWandService extends SelectionService {
                     this.selection.endingPos = magnetismReturn.endingPosition;
                     this.controlGroup = magnetismReturn.controlGroup;
                 }
-                this.drawSelection();
+                this.drawWandSelection();
 
                 this.previousMousePos = mousePosition;
 
@@ -450,7 +440,7 @@ export class MagicWandService extends SelectionService {
                 }
 
                 this.scaleSelection(this.mouseMovement);
-                this.drawSelection();
+                this.drawWandSelection();
                 this.previousMousePos = mousePosition;
                 // draw selection
             }
@@ -463,7 +453,7 @@ export class MagicWandService extends SelectionService {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             if (this.inSelection || this.controlPointName !== ControlPointName.none) {
-                this.drawSelection();
+                this.drawWandSelection();
                 this.mouseMovement = { x: 0, y: 0 };
                 this.selection.imagePosition = this.updateSelectionPositions();
                 // reset baseImage to use when flipping the image
@@ -497,12 +487,13 @@ export class MagicWandService extends SelectionService {
                     y: this.selection.imagePosition.y + this.mouseMovement.y,
                 };
             }
-            // paste image
-            this.pasteSelection(this.selection);
+
             // undo redo
             const selectWandAc = new SelectionWandAction(this, this.drawingService, this.selection, this.originalColor);
             this.undoRedoService.addUndo(selectWandAc);
             this.undoRedoService.clearRedo();
+            // paste image
+            this.pasteSelection(this.selection);
             this.mouseMovement = { x: 0, y: 0 };
             this.isAllSelect = false;
             this.selection.endingPos = this.selection.imagePosition = this.mouseDownCoords;
@@ -527,7 +518,29 @@ export class MagicWandService extends SelectionService {
         }
     }
 
+    drawWandSelection(): void {
+        if (this.scaled) {
+            this.flipImage();
+            this.scaled = false;
+        }
+        this.drawingService.previewCtx.save();
+        if (this.selection.rotationAngle !== 0) {
+            this.rotationService.rotateSelection(this.selection, this.drawingService.previewCtx);
+        }
+        this.drawingService.previewCtx.drawImage(
+            this.selection.image,
+            this.selection.imagePosition.x,
+            this.selection.imagePosition.y,
+            this.selection.width,
+            this.selection.height,
+        );
+        this.drawingService.previewCtx.restore();
+        this.drawSelectionRect(this.selection.imagePosition, this.selection.width, this.selection.height);
+    }
+
     pasteSelection(selection: SelectionImage): void {
+        this.drawingService.baseCtx.save();
+        this.rotationService.rotateSelection(this.selection, this.drawingService.baseCtx);
         this.drawingService.baseCtx.drawImage(
             selection.image,
             selection.imagePosition.x,
@@ -535,6 +548,8 @@ export class MagicWandService extends SelectionService {
             selection.width,
             selection.height,
         );
+        this.drawingService.baseCtx.restore();
+        this.selection.resetAngle();
     }
 
     clearSelectionWand(position: Vec2, originalColor: RGBA): void {
@@ -545,7 +560,7 @@ export class MagicWandService extends SelectionService {
                 tmpImageData.data[i] === originalColor.red &&
                 tmpImageData.data[i + 1] === originalColor.green &&
                 tmpImageData.data[i + 2] === originalColor.blue &&
-                tmpImageData.data[i + 3] === originalColor.alpha
+                tmpImageData.data[i + 3] !== 0
             ) {
                 // change to your new rgb
 
@@ -566,5 +581,9 @@ export class MagicWandService extends SelectionService {
     getColor(position: Vec2, ctx: CanvasRenderingContext2D): RGBA {
         const imageData = ctx.getImageData(position.x, position.y, 1, 1).data;
         return { red: imageData[0], green: imageData[1], blue: imageData[2], alpha: imageData[3] };
+    }
+
+    drawSelection(imagePosition: Vec2): void {
+        this.drawWandSelection();
     }
 }

@@ -17,9 +17,15 @@ export class SelectionRectAction extends AbsUndoRedo {
         this.selection.imageData = selection.imageData;
         this.selection.image = new Image();
         this.selection.image.src = selection.image.src;
+        this.selection.rotationAngle = selection.rotationAngle;
     }
 
     apply(): void {
+        this.selectionService.selection.width = this.selection.width;
+        this.selectionService.selection.height = this.selection.height;
+        this.selectionService.selection.copyImageInitialPos = this.selection.copyImageInitialPos;
+        this.selectionService.selection.rotationAngle = this.selection.rotationAngle;
+
         this.selectionService.clearSelection();
         this.selectionService.pasteSelection(this.selection);
     }

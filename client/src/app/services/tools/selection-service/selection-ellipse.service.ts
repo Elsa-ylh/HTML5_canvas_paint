@@ -66,17 +66,20 @@ export class SelectionEllipseService extends SelectionService {
                         this.rotationService,
                         this.undoRedoService,
                     );
-                    selectionRectService.pasteSelection(this.selection);
+
                     const selectRectAc = new SelectionRectAction(selectionRectService, this.drawingService, this.selection);
                     this.undoRedoService.addUndo(selectRectAc);
+                    this.undoRedoService.clearRedo();
+                    selectionRectService.pasteSelection(this.selection);
                 } else {
-                    // paste image
-                    this.pasteSelection(this.selection);
                     // undo redo
                     const selectEllAc = new SelectionEllipseAction(this, this.drawingService, this.selection);
                     this.undoRedoService.addUndo(selectEllAc);
+                    this.undoRedoService.clearRedo();
+                    // paste image
+                    this.pasteSelection(this.selection);
                 }
-                this.undoRedoService.clearRedo();
+
                 this.isAllSelect = false;
                 this.mouseMovement = { x: 0, y: 0 };
                 this.selection.width = 0;
@@ -108,17 +111,19 @@ export class SelectionEllipseService extends SelectionService {
                 this.rotationService,
                 this.undoRedoService,
             );
-            selectionRectService.pasteSelection(this.selection);
             const selectRectAc = new SelectionRectAction(selectionRectService, this.drawingService, this.selection);
             this.undoRedoService.addUndo(selectRectAc);
+            this.undoRedoService.clearRedo();
+            selectionRectService.pasteSelection(this.selection);
         } else {
-            // paste image
-            this.pasteSelection(this.selection);
             // undo redo
             const selectEllAc = new SelectionEllipseAction(this, this.drawingService, this.selection);
             this.undoRedoService.addUndo(selectEllAc);
+            this.undoRedoService.clearRedo();
+            // paste image
+            this.pasteSelection(this.selection);
         }
-        this.undoRedoService.clearRedo();
+
         this.isAllSelect = false;
         this.mouseMovement = { x: 0, y: 0 };
         this.selection.endingPos = this.selection.imagePosition = this.mouseDownCoords;
@@ -150,12 +155,13 @@ export class SelectionEllipseService extends SelectionService {
                 this.scaled = false;
             }
             this.drawingService.previewCtx.save();
+            // rotate
+            this.rotationService.rotateSelection(this.selection, this.drawingService.previewCtx);
             this.drawingService.previewCtx.beginPath();
             this.drawEllipse(this.drawingService.previewCtx, imagePosition, this.selection.width / 2, this.selection.height / 2);
             this.drawingService.previewCtx.stroke();
             this.drawingService.previewCtx.clip();
-            // rotate
-            this.rotationService.rotateSelection(this.selection, this.drawingService.previewCtx);
+
             this.drawingService.previewCtx.drawImage(
                 this.selection.image,
                 imagePosition.x,
@@ -193,14 +199,14 @@ export class SelectionEllipseService extends SelectionService {
             selectionRectService.pasteSelection(this.selection);
         } else {
             this.drawingService.baseCtx.save();
+            // rotate
+            this.rotationService.rotateSelection(this.selection, this.drawingService.baseCtx);
             this.drawingService.baseCtx.globalAlpha = 0;
             this.drawingService.baseCtx.beginPath();
             this.drawEllipse(this.drawingService.baseCtx, selection.imagePosition, selection.width / 2, selection.height / 2);
             this.drawingService.baseCtx.stroke();
             this.drawingService.baseCtx.clip();
             this.drawingService.baseCtx.globalAlpha = 1;
-            // rotate
-            this.rotationService.rotateSelection(this.selection, this.drawingService.baseCtx);
             this.drawingService.baseCtx.drawImage(
                 selection.image,
                 selection.imagePosition.x,
@@ -231,11 +237,11 @@ export class SelectionEllipseService extends SelectionService {
         }
     }
 
-    drawEllipse(ctx: CanvasRenderingContext2D, mouseCoord: Vec2, radiusX: number, radiusY: number): void {
+    drawEllipse(ctx: CanvasRenderingContext2D, mouseCoords: Vec2, radiusX: number, radiusY: number): void {
         let centerX = 0 as number;
         let centerY = 0 as number;
-        centerX = mouseCoord.x + radiusX;
-        centerY = mouseCoord.y + radiusY;
+        centerX = mouseCoords.x + radiusX;
+        centerY = mouseCoords.y + radiusY;
         ctx.ellipse(centerX, centerY, Math.abs(this.selection.ellipseRad.x), Math.abs(this.selection.ellipseRad.y), 0, 0, 2 * Math.PI);
     }
 

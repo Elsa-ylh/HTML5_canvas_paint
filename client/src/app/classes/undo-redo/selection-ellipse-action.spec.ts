@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { SelectionImage } from '@app/classes/selection';
 import { SelectionEllipseAction } from '@app/classes/undo-redo/selection-ellipse-action';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
@@ -9,7 +10,6 @@ import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { RotationService } from '@app/services/tools/selection-service/rotation.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { SelectionImage } from '../selection';
 
 describe('SelectionEllipseAction', () => {
     let selectionEllipseActionStub: SelectionEllipseAction;

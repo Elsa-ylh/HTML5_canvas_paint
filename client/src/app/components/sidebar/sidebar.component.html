@@ -295,13 +295,29 @@
                 </mat-grid-tile>
 
                 <mat-grid-tile> </mat-grid-tile>
-                <mat-grid-tile colspan="6"> Changer l'angle de rotation du rectangle </mat-grid-tile>
+                <mat-grid-tile colspan="6"> Valeur de l'angle de rotation </mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-slider max="360" min="0" [(ngModel)]="selectionRectangleService.selection.rotationAngle"> </mat-slider>
-                    <samp>{{ selectionRectangleService.selection.rotationAngle }}degré</samp>
+                    <samp>{{ selectionRectangleService.selection.rotationAngle }} degrés</samp>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="2">
                     Il est possible de changer l'angle de rotation du rectangle avec : la roulette (15 degrés) ou avec alt et la roulette (1 degré)
+                </mat-grid-tile>
+                <mat-grid-tile> </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">
+                    <mat-button-toggle-group vertical="true">
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionRectangleService.copyImage()">
+                            copier
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionRectangleService.pasteImage()">
+                            coller
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionRectangleService.cutImage()">
+                            couper
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionRectangleService.deleteImage()">
+                            supprimer
+                        </button>
+                    </mat-button-toggle-group>
                 </mat-grid-tile>
             </mat-grid-list>
 
@@ -335,6 +351,32 @@
                 <mat-grid-tile colspan="6">
                     <button mat-raised-button (click)="selectionEllipseService.selectAll()">Sélectionner tout le dessin</button>
                 </mat-grid-tile>
+
+                <mat-grid-tile> </mat-grid-tile>
+                <mat-grid-tile colspan="6"> Valeur de l'angle de rotation </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <samp>{{ selectionEllipseService.selection.rotationAngle }} degrés</samp>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2">
+                    Il est possible de changer l'angle de rotation du rectangle avec : la roulette (15 degrés) ou avec alt et la roulette (1 degré)
+                </mat-grid-tile>
+                <mat-grid-tile> </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">
+                    <mat-button-toggle-group vertical="true">
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionEllipseService.copyImage()">
+                            copier
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionEllipseService.pasteImage()">
+                            coller
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionEllipseService.cutImage()">
+                            couper
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionEllipseService.deleteImage()">
+                            supprimer
+                        </button>
+                    </mat-button-toggle-group>
+                </mat-grid-tile>
             </mat-grid-list>
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.MagicWand">
@@ -365,17 +407,33 @@
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="2"> Ce bouton permet de sélectionner tous le dessin</mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <button mat-raised-button (click)="selectionEllipseService.selectAll()">Sélectionner tout le dessin</button>
+                    <button mat-raised-button (click)="buttonSelectAllMagicWand()">Sélectionner tout le dessin</button>
                 </mat-grid-tile>
 
                 <mat-grid-tile> </mat-grid-tile>
-                <mat-grid-tile colspan="6"> Changer l'angle de rotation de l'ellipse</mat-grid-tile>
+                <mat-grid-tile colspan="6"> Valeur de l'angle de rotation </mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <mat-slider max="360" min="0" [(ngModel)]="selectionEllipseService.selection.rotationAngle"> </mat-slider>
-                    <samp>{{ selectionEllipseService.selection.rotationAngle }}degré</samp>
+                    <samp>{{ magicWandService.selection.rotationAngle }} degrés</samp>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6" rowspan="2">
-                    Il est possible de changer l'angle de rotation de l'ellipse avec : la roulette (15 degrés) ou avec alt et la roulette (1 degré)
+                    Il est possible de changer l'angle de rotation du rectangle avec : la roulette (15 degrés) ou avec alt et la roulette (1 degré)
+                </mat-grid-tile>
+                <mat-grid-tile> </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">
+                    <mat-button-toggle-group vertical="true">
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="magicWandService.copyImage()">
+                            copier
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="magicWandService.pasteImage()">
+                            coller
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="magicWandService.cutImage()">
+                            couper
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="magicWandService.deleteImage()">
+                            supprimer
+                        </button>
+                    </mat-button-toggle-group>
                 </mat-grid-tile>
             </mat-grid-list>
 

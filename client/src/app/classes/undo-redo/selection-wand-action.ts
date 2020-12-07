@@ -23,6 +23,7 @@ export class SelectionWandAction extends AbsUndoRedo {
         this.selection.imageData = selection.imageData;
         this.selection.image = new Image();
         this.selection.image.src = selection.image.src;
+        this.selection.rotationAngle = selection.rotationAngle;
     }
 
     apply(): void {
@@ -30,6 +31,8 @@ export class SelectionWandAction extends AbsUndoRedo {
         this.selectionService.selection.height = this.selection.height;
         this.selectionService.originalColor = this.originalColor;
         this.selectionService.selection.copyImageInitialPos = this.selection.copyImageInitialPos;
+        this.selectionService.selection.imagePosition = this.selection.imagePosition;
+        this.selectionService.selection.rotationAngle = this.selection.rotationAngle;
         this.selectionService.clearSelectionWand(this.selection.copyImageInitialPos, this.originalColor);
         this.selectionService.pasteSelection(this.selection);
     }

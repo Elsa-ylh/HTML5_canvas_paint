@@ -34,7 +34,7 @@ export class SelectionService extends Tool {
 
     baseImage: HTMLImageElement;
     baseImageData: ImageData;
-    baseSize:Vec2;
+    baseSize: Vec2;
     // height: number;
     // width: number;
     mouseMovement: Vec2 = { x: 0, y: 0 };
@@ -95,7 +95,7 @@ export class SelectionService extends Tool {
 
                 if (this.selection.width !== 0 && this.selection.height !== 0) {
                     this.copySelection();
-                    this.baseSize = {x: this.selection.width, y:this.selection.height};
+                    this.baseSize = { x: this.selection.width, y: this.selection.height };
                     this.selection.imageSize = { x: this.selection.width, y: this.selection.height };
                     this.selection.imagePosition = this.selection.copyImageInitialPos = this.updateSelectionPositions();
 
@@ -280,8 +280,7 @@ export class SelectionService extends Tool {
         this.drawingService.previewCtx.strokeRect(mouseDownCoords.x, mouseDownCoords.y, width, height);
         this.drawingService.previewCtx.setLineDash([]);
 
-
-          this.controlGroup.setPositions(this.selection.imagePosition , this.selection.endingPos, { x: this.selection.width, y: this.selection.height });
+        this.controlGroup.setPositions(this.selection.imagePosition, this.selection.endingPos, { x: this.selection.width, y: this.selection.height });
 
         this.controlGroup.draw();
     }
@@ -468,7 +467,7 @@ export class SelectionService extends Tool {
         this.selection.ellipseRad = { x: this.clipboard.ellipseRad.x, y: this.clipboard.ellipseRad.y };
         this.selection.endingPos = { x: Math.abs(this.selection.width), y: Math.abs(this.selection.height) };
         this.selection.image = new Image();
-        this.selection.image.src = this.selection.getImageURL(this.clipboard.imageData,this.selection.imageSize.x, this.selection.imageSize.y);
+        this.selection.image.src = this.selection.getImageURL(this.clipboard.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
         this.drawSelection({ x: 1, y: 1 });
     }
 
@@ -632,7 +631,7 @@ export class SelectionService extends Tool {
         ctx.save();
         ctx.translate(translation.x, translation.y);
         ctx.scale(scale.x, scale.y);
-        //rotate
+        // rotate
 
         ctx.drawImage(this.baseImage, 0, 0, canvas.width, canvas.height);
         ctx.restore();

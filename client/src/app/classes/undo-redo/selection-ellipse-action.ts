@@ -18,9 +18,15 @@ export class SelectionEllipseAction extends AbsUndoRedo {
         this.selection.imageData = selection.imageData;
         this.selection.image = new Image();
         this.selection.image.src = selection.image.src;
+        this.selection.rotationAngle = selection.rotationAngle;
     }
 
     apply(): void {
+        this.selectionService.selection.width = this.selection.width;
+        this.selectionService.selection.height = this.selection.height;
+        this.selectionService.selection.copyImageInitialPos = this.selection.copyImageInitialPos;
+        this.selectionService.selection.imagePosition = this.selection.imagePosition;
+        this.selectionService.selection.rotationAngle = this.selection.rotationAngle;
         this.selectionService.selection.ellipseRad = { x: this.selection.ellipseRad.x, y: this.selection.ellipseRad.y };
         this.selectionService.clearSelection();
         this.selectionService.pasteSelection(this.selection);

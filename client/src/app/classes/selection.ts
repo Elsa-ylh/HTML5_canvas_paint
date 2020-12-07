@@ -67,8 +67,9 @@ export class SelectionImage {
         this.imageSize = { x: 0, y: 0 };
         this.endingPos = { x: 0, y: 0 };
         this.ellipseRad = { x: 0, y: 0 };
+        this.image = new Image();
     }
-        resetAngle(): void {
-      this.rotationAngle = 0;
+    resetAngle(): void {
+        this.rotationAngle = 0;
     }
 }
