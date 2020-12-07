@@ -6,6 +6,7 @@ import { TextControl } from './text-control';
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
 // tslint:disable:max-file-line-count
+// tslint:disable:prefer-for-of
 
 fdescribe('TextControl', () => {
     let baseCtxStub: CanvasRenderingContext2D;
@@ -42,20 +43,23 @@ fdescribe('TextControl', () => {
     });
 
     it('getText should return text', () => {
+        textControl['nbOfLettersInLine'] = 50;
         const text = 'test';
         textControl.addLetter(text);
-        expect(textControl.getText()).toEqual(text);
+        console.log(textControl['textLine']);
+        expect(textControl.getText()).toEqual([text]);
     });
 
     it('getTextWithCursor should return text', () => {
-        const textTest = 'test';
         textControl['nbOfLettersInLine'] = 50;
+        const textTest = 'test';
         for (let index = 0; index < textTest.length; index++) {
-            textControl['textLine'][index] = textTest[index];
+            textControl.addLetter(textTest[index]);
         }
         const text = textControl.getTextWithCursor();
-        console.log(text);
+        console.log(text, textControl['textLine']);
         console.log(textControl['textPreview']);
+        console.log(textControl['nbOfLettersInLine']);
         expect(text).toEqual(textTest + '|');
     });
 
@@ -160,7 +164,7 @@ fdescribe('TextControl', () => {
         expect(textControl['textLine']).toEqual(['t']);
         expect(textControl['textStack']).toEqual(['t', 's', 'e']);
     });
-    it('should', () => {
+    it('should call clearText', () => {
         textControl['width'] = 5;
         textControl['indexLine'] = 2;
         textControl['indexOfLettersInLine'] = 1;

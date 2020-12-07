@@ -210,6 +210,7 @@ export class TextControl {
     }
 
     getTextWithCursor(): string[] {
+        // debugger;
         let tmpText: string[] = [];
         this.textPreview[this.indexLine] = this.tmpLineText(this.textLine, '') + '|' + this.tmpLineTextStack();
         this.textPreview.forEach((element) => {
@@ -223,6 +224,7 @@ export class TextControl {
     }
 
     private endLineReturn(text: string[], line: string, nbOfLettersInLine: number): string[] {
+        // debugger;
         let oneLine = '';
         // tslint:disable:prefer-for-of
         for (let index = 0; index < line.length; index++) {
