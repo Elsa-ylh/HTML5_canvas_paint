@@ -19,7 +19,7 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { FeatherService } from '@app/services/tools/feather.service';
-import { GridService } from '@app/services/tools/grid.service';
+import { GridService, MAX_SQUARE_WIDTH, MIN_SQUARE_WIDTH, SQUARE_STEP_SIZE } from '@app/services/tools/grid.service';
 import { LineService } from '@app/services/tools/line.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
@@ -30,6 +30,7 @@ import { MagicWandService } from '@app/services/tools/selection-service/magic-wa
 import { RotationService } from '@app/services/tools/selection-service/rotation.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
+import { StampService } from '@app/services/tools/stamp.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Component({
@@ -69,6 +70,8 @@ export class SidebarComponent {
     private isFeatherChecked: boolean = false;
     private isTextChecked: boolean = false;
     private isMagicWandSelectionChecked: boolean = false;
+    private isStampChecked: boolean = false;
+    private curCanvasDefaultSize: number = 40;
 
     constructor(
         public drawingService: DrawingService,
@@ -94,6 +97,7 @@ export class SidebarComponent {
         public featherService: FeatherService,
         private automaticSaveService: AutomaticSaveService,
         public rotationService: RotationService,
+        public stampService: StampService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
         this.iconRegistry.addSvgIcon('eraser', this.sanitizer.bypassSecurityTrustResourceUrl('assets/clarity_eraser-solid.svg'));
@@ -264,6 +268,7 @@ export class SidebarComponent {
         return this.isPaintBucketChecked;
     }
     pickDropper(): void {
+        this.resetCursorCanvas();
         this.drawingService.cursorUsed = 'pointer';
         this.toolService.switchTool(ToolUsed.Dropper);
         this.isDialogloadSaveEport = true;
@@ -323,6 +328,16 @@ export class SidebarComponent {
     get MagicWandSelectionChecked(): boolean {
         return this.isMagicWandSelectionChecked;
     }
+    pickStamp(): void {
+        this.resetCursorCanvas();
+        this.drawingService.cursorUsed = 'none';
+        this.toolService.switchTool(ToolUsed.Stamp);
+        this.isStampChecked = true;
+    }
+
+    get stampChecked(): boolean {
+        return this.isStampChecked;
+    }
 
     pickGridSettings(): void {
         this.drawingService.cursorUsed = cursorName.default;
@@ -330,12 +345,19 @@ export class SidebarComponent {
         this.isDialogloadSaveEport = true;
     }
     pickFeather(): void {
+        this.resetCursorCanvas();
         this.drawingService.cursorUsed = cursorName.none;
         this.toolService.switchTool(ToolUsed.Feather);
     }
 
     get selectionFeatherChecked(): boolean {
         return this.isFeatherChecked;
+    }
+
+    resetCursorCanvas(): void {
+        this.drawingService.cursorCtx.canvas.width = this.curCanvasDefaultSize;
+        this.drawingService.cursorCtx.canvas.height = this.curCanvasDefaultSize;
+        this.drawingService.cursorCtx.clearRect(0, 0, this.drawingService.cursorCtx.canvas.width, this.drawingService.cursorCtx.canvas.height);
     }
 
     resetCheckedButton(): void {
@@ -353,6 +375,7 @@ export class SidebarComponent {
         this.isSprayChecked = false;
         this.isFeatherChecked = false;
         this.isTextChecked = false;
+        this.isStampChecked = false;
     }
 
     checkboxChangeToggle(args: MatCheckboxChange): void {
@@ -700,7 +723,32 @@ export class SidebarComponent {
             this.pickMagicWandSelection();
         }
     }
-    @HostListener('window:keydown.m', ['$event']) activateMagnetism(event: MouseEvent): void {
+
+    @HostListener('window:keydown.g', ['$event']) activateGrid(event: KeyboardEvent): void {
+        if (this.gridService.isGridSettingsChecked) {
+            this.gridService.isGridSettingsChecked = false;
+            this.gridService.deactivateGrid();
+        } else {
+            this.gridService.isGridSettingsChecked = true;
+            this.gridService.activateGrid();
+        }
+    }
+
+    @HostListener('window:keydown.-', ['$event']) decreaseSquareGrid(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Grid && this.gridService.squareWidth - SQUARE_STEP_SIZE >= MIN_SQUARE_WIDTH) {
+            this.gridService.squareWidth -= SQUARE_STEP_SIZE;
+        }
+    }
+
+    @HostListener('window:keydown.+', ['$event'])
+    @HostListener('window:keydown.shift.+', ['$event'])
+    increaseSquareGrid(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName === ToolUsed.Grid && this.gridService.squareWidth + SQUARE_STEP_SIZE <= MAX_SQUARE_WIDTH) {
+            this.gridService.squareWidth += SQUARE_STEP_SIZE;
+        }
+    }
+
+    @HostListener('window:keydown.m', ['$event']) activateMagnetism(event: KeyboardEvent): void {
         if (this.magnetismService.isMagnetismActive) {
             this.magnetismService.isMagnetismActive = false;
             this.magnetismService.resetMagnetism();
@@ -725,7 +773,7 @@ export class SidebarComponent {
             this.pickFeather();
         }
     }
-    // ~
+
     @HostListener('window:wheel', ['$event'])
     changeAngleWithWheel(event: WheelEvent): void {
         if (this.toolService.currentToolName === ToolUsed.Feather) {
@@ -742,12 +790,19 @@ export class SidebarComponent {
             this.rotationService.onWheelScroll(this.magicWandService, event);
         }
         event.stopPropagation();
+        if (this.toolService.currentToolName === ToolUsed.Stamp) {
+            this.stampService.addOrRetract(event);
+            this.stampService.changeAngleWithScroll();
+        }
     }
 
     @HostListener('window:keydown.alt', ['$event'])
     altPressed(event: KeyboardEvent): void {
         if (this.toolService.currentToolName === ToolUsed.Feather) {
             this.featherService.altPressed = true;
+        }
+        if (this.toolService.currentToolName === ToolUsed.Stamp) {
+            this.stampService.isAltPressed = true;
         }
         if (
             this.toolService.currentToolName === ToolUsed.SelectionEllipse ||
@@ -763,6 +818,9 @@ export class SidebarComponent {
         if (this.toolService.currentToolName === ToolUsed.Feather) {
             this.featherService.altPressed = false;
         }
+        if (this.toolService.currentToolName === ToolUsed.Stamp) {
+            this.stampService.isAltPressed = false;
+        }
         if (
             this.toolService.currentToolName === ToolUsed.SelectionEllipse ||
             this.toolService.currentToolName === ToolUsed.SelectionRectangle ||
@@ -772,10 +830,12 @@ export class SidebarComponent {
         }
     }
 
-    @HostListener('window:keyup.alt', ['$event'])
-    allReleased(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName === ToolUsed.Feather) {
-            this.featherService.altPressed = false;
+    @HostListener('window:keydown.d', ['$event'])
+    changeStampMode(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName !== ToolUsed.Color) {
+            this.resetCheckedButton();
+            this.isStampChecked = true;
+            this.pickStamp();
         }
     }
 }

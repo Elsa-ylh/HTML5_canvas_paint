@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
+export const SQUARE_STEP_SIZE = 5;
+export const MIN_SQUARE_WIDTH = 5;
+export const MAX_SQUARE_WIDTH = 500;
+
 @Injectable({
     providedIn: 'root',
 })

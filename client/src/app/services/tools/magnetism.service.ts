@@ -30,6 +30,11 @@ export class MagnetismService {
     // we need to bring it back for image position compatible
     private convertCalculatingPosition(ajustedPosition: Vec2, controlPointname: ControlPointName, selectionSize: Vec2): Vec2 {
         switch (controlPointname) {
+            case ControlPointName.center:
+                return {
+                    x: ajustedPosition.x - selectionSize.x / 2,
+                    y: ajustedPosition.y - selectionSize.y / 2,
+                };
             case ControlPointName.topLeft:
                 return ajustedPosition;
             case ControlPointName.top:
@@ -73,7 +78,7 @@ export class MagnetismService {
     }
 
     // the following methods calculate where to adjust the xy position
-    private calculateRemainder(squareWidth: number, calculatingPosition: Vec2, ajustedPosition: Vec2): void {
+    private calculateRemainder(squareWidth: number, calculatingPosition: Vec2): void {
         const remainderX = calculatingPosition.x % squareWidth;
         if (remainderX <= squareWidth / 2) this.ajustedPosition.x = calculatingPosition.x - remainderX;
         else this.ajustedPosition.x = calculatingPosition.x - remainderX + squareWidth;
@@ -101,7 +106,7 @@ export class MagnetismService {
 
                 const calculatingPosition = controlPoint.position;
 
-                this.calculateRemainder(squareWidth, calculatingPosition, this.ajustedPosition);
+                this.calculateRemainder(squareWidth, calculatingPosition);
 
                 this.ajustedPosition = this.convertCalculatingPosition(
                     this.ajustedPosition,
@@ -139,7 +144,7 @@ export class MagnetismService {
 
                 const calculatingPosition = controlPoint.position;
 
-                this.calculateRemainder(squareWidth, calculatingPosition, this.ajustedPosition);
+                this.calculateRemainder(squareWidth, calculatingPosition);
 
                 this.ajustedPosition = this.convertCalculatingPosition(
                     this.ajustedPosition,

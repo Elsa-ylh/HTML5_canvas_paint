@@ -27,6 +27,7 @@ import { RotationService } from '@app/services/tools/selection-service/rotation.
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SprayService } from '@app/services/tools/spray.service';
+import { StampService } from '@app/services/tools/stamp.service';
 import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
@@ -62,6 +63,7 @@ describe('DrawingComponent', () => {
     let magnetismStub: MagnetismService;
     let gridStub: GridService;
     let rotationStub: RotationService;
+    let stampServiceStub: StampService;
 
     beforeEach(
         waitForAsync(() => {
@@ -77,13 +79,18 @@ describe('DrawingComponent', () => {
             rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             dropperStub = new DropperService(drawingStub, colorStub, autoSaveStub);
+            gridStub = new GridService(drawingStub, canvasResizerStub);
+            magnetismStub = new MagnetismService(gridStub);
             polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, autoSaveStub);
+            selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
+            selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
             selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
+            stampServiceStub = new StampService(drawingStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             gridStub = new GridService(drawingStub, canvasResizerStub);
             magnetismStub = new MagnetismService(gridStub);
@@ -103,6 +110,7 @@ describe('DrawingComponent', () => {
                 sprayStub,
                 featherStub,
                 textServiceStub,
+                stampServiceStub,
             );
 
             toolStub = toolServiceStub.currentTool;

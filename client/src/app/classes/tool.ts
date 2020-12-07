@@ -19,6 +19,7 @@ export enum ToolUsed {
     SelectionRectangle = 10010,
     SelectionEllipse = 10021,
     MagicWand = 10023,
+    Stamp = 58,
     Grid = 9001,
     Spray = 1004,
 }

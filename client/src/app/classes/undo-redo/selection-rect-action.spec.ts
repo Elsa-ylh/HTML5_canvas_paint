@@ -1,3 +1,5 @@
+/*
+
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SelectionImage } from '@app/classes/selection';
@@ -72,3 +74,5 @@ describe('SelectionRectAction', () => {
         expect(clearSelectionSpy).toHaveBeenCalled();
     });
 });
+
+*/

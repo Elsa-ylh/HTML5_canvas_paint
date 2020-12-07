@@ -21,18 +21,10 @@ export class ControlPoint {
     position: Vec2;
     drawingService: DrawingService;
     selected: boolean;
-    // ellipseRadSign: Vec2;
-    // sizeSign:Vec2;
-    // imagePositionSign:Vec2;
-    // endingPosSign:Vec2;
 
     constructor(drawingService: DrawingService) {
         this.drawingService = drawingService;
         this.selected = false;
-        // this.ellipseRadSign = ellipseRadSign;
-        // this.sizeSign = sizeSign;
-        // this.imagePositionSign = imagePositionSign;
-        // this.endingPosSign = endingPosSign;
     }
 
     draw(): void {
@@ -61,29 +53,4 @@ export class ControlPoint {
     setPosition(position: Vec2): void {
         this.position = position;
     }
-
-    //     scale(selection:SelectionImage, movement:Vec2, shiftPressed:boolean):SelectionImage {
-
-    //       if( shiftPressed){
-    //         selection.ellipseRad.x += this.ellipseRadSign.x*movement.x;
-    //         selection.ellipseRad.y += this.ellipseRadSign.y*movement.y;
-    //         selection.width += this.sizeSign.x*movement.x * 2;
-    //         selection.height += this.sizeSign.y*movement.y * 2;
-    //         selection.endingPos.x += this.endingPosSign.x*movement.x;
-    //         selection.endingPos.y += this.endingPosSign.y*movement.y;
-    //         selection.imagePosition.x += this.imagePositionSign.x*movement.x;
-    //         selection.imagePosition.y += this.imagePositionSign.y*movement.y;
-    //         return selection;
-    //       }
-    //       selection.ellipseRad.x += this.ellipseRadSign.x*movement.x / 2;
-    //       selection.ellipseRad.y += this.ellipseRadSign.y*movement.y / 2;
-    //       selection.width += this.sizeSign.x*movement.x;
-    //       selection.height += this.sizeSign.y*movement.y;
-    //       selection.imagePosition.x += this.endingPosSign.x*movement.x;
-    //       selection.imagePosition.y += this.endingPosSign.y*movement.y;
-    //       selection.endingPos.x += this.imagePositionSign.x*movement.x;
-    //       selection.endingPos.y += this.imagePositionSign.y*movement.y;
-    //       return selection;
-
-    //     }
 }

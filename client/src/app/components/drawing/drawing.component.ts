@@ -47,6 +47,10 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
         return ToolUsed.Dropper;
     }
 
+    get stamp(): ToolUsed.Stamp {
+        return ToolUsed.Stamp;
+    }
+
     // On utilise ce canvas pour dessiner sans affecter le dessin final, aussi utilisé pour sauvegarder
     // une version du dessin avant de l'appliquer au final.
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;

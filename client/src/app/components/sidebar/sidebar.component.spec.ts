@@ -42,6 +42,7 @@ import { SelectionEllipseService } from '@app/services/tools/selection-service/s
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 import { SprayService } from '@app/services/tools/spray.service';
+import { StampService } from '@app/services/tools/stamp.service';
 import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Observable, Subject } from 'rxjs';
@@ -74,15 +75,23 @@ describe('SidebarComponent', () => {
     let sprayStub: SprayService;
     let textServiceStub: TextService;
     let automaticSaveStub: AutomaticSaveService;
+    let stampServiceStub: StampService;
     let featherStub: FeatherService;
     let magnetismStub: MagnetismService;
     let gridStub: GridService;
     let rotationStub: RotationService;
     let magicWandStub: MagicWandService;
+    let pasteImageRectSpy: jasmine.SpyObj<any>;
+    let pasteImageEllipseSpy: jasmine.SpyObj<any>;
+    let deactivateGridSpy: jasmine.SpyObj<any>;
+    let activateGridSpy: jasmine.SpyObj<any>;
+    let resetMagnetismSpy: jasmine.SpyObj<any>;
 
     let canvas: HTMLCanvasElement;
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
+    let cursorStub: CanvasRenderingContext2D;
+    let gridCtxStub: CanvasRenderingContext2D;
     let dialogMock: jasmine.SpyObj<MatDialog>;
     beforeEach(
         waitForAsync(async () => {
@@ -100,9 +109,11 @@ describe('SidebarComponent', () => {
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, automaticSaveStub);
             // selectionStub = new SelectionService(drawingStub);
             magicWandStub = new MagicWandService(drawingStub, canvasResizerStub, paintBucketStub, magnetismStub, undoRedoStub, rotationStub);
+            selectionStub = new SelectionService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             selectionStub = new SelectionService(drawingStub, magnetismStub, rotationStub);
             textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
+            stampServiceStub = new StampService(drawingStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             magnetismStub = new MagnetismService(gridStub);
             gridStub = new GridService(drawingStub, canvasResizerStub);
@@ -124,8 +135,10 @@ describe('SidebarComponent', () => {
                 sprayStub,
                 featherStub,
                 textServiceStub,
+                stampServiceStub,
             );
 
+            magnetismStub = new MagnetismService(gridStub);
             selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
@@ -134,11 +147,15 @@ describe('SidebarComponent', () => {
             canvas.height = 100;
             baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
             previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+            cursorStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+            gridCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
             // Configuration du spy du service
             // tslint:disable:no-string-literal
             drawingStub.canvas = canvas;
             drawingStub.baseCtx = baseStub; // Jasmine doesnt copy properties with underlying data
             drawingStub.previewCtx = previewStub;
+            drawingStub.cursorCtx = cursorStub;
+            drawingStub.gridCtx = gridCtxStub;
             dialogMock = jasmine.createSpyObj('dialogCreator', ['open']);
 
             await TestBed.configureTestingModule({
@@ -181,8 +198,11 @@ describe('SidebarComponent', () => {
                     { provide: Observable, useValue: {} },
                     { provide: SelectionService, useValue: selectionStub },
                     { provide: UndoRedoService, useValue: undoRedoStub },
+                    { provide: StampService, useValue: stampServiceStub },
                     { provide: SprayService, useValue: sprayStub },
                     { provide: FeatherService, useValue: featherStub },
+                    { provide: GridService, useValue: gridStub },
+                    { provide: MagnetismService, useValue: magnetismStub },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);
@@ -190,6 +210,11 @@ describe('SidebarComponent', () => {
             selectionRectangleStub = TestBed.inject(SelectionRectangleService);
             selectionEllipseStub = TestBed.inject(SelectionEllipseService);
             fixture = TestBed.createComponent(SidebarComponent);
+            pasteImageRectSpy = spyOn<any>(selectionRectangleStub, 'pasteImage').and.stub();
+            pasteImageEllipseSpy = spyOn<any>(selectionEllipseStub, 'pasteImage').and.stub();
+            deactivateGridSpy = spyOn<any>(gridStub, 'deactivateGrid').and.stub();
+            activateGridSpy = spyOn<any>(gridStub, 'activateGrid').and.stub();
+            resetMagnetismSpy = spyOn<any>(magnetismStub, 'resetMagnetism').and.stub();
             component = fixture.componentInstance;
             fixture.detectChanges();
         }),
@@ -219,10 +244,6 @@ describe('SidebarComponent', () => {
     it('pickEllipse()', () => {
         component.pickEllipse(SubToolselected.tool1);
         expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Ellipse);
-    });
-    it('pickDropper()', () => {
-        component.pickDropper();
-        expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Dropper);
     });
 
     it(' should clear canvas dialog', () => {
@@ -384,9 +405,11 @@ describe('SidebarComponent', () => {
 
     it('should pick dropper', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
+        const resetCursor = spyOn(component, 'resetCursorCanvas').and.stub();
         component.pickDropper();
         expect(drawingStub.cursorUsed).toEqual('pointer');
         expect(switchToolSpy).toHaveBeenCalled();
+        expect(resetCursor).toHaveBeenCalled();
     });
     it('should pick selection rectangle', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
@@ -400,6 +423,15 @@ describe('SidebarComponent', () => {
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
     });
+    it('should pick stamp', () => {
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.callThrough();
+        const resetCursor = spyOn(component, 'resetCursorCanvas').and.stub();
+        component.pickStamp();
+        expect(drawingStub.cursorUsed).toEqual('none');
+        expect(switchToolSpy).toHaveBeenCalled();
+        expect(resetCursor).toHaveBeenCalled();
+    });
+
     it('should pick sprayer', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.callThrough();
         component.pickSprayer();
@@ -421,6 +453,8 @@ describe('SidebarComponent', () => {
         expect(component.selectionEllipseChecked).toEqual(false);
         expect(component.selectionEllipseChecked).toEqual(false);
         expect(component.selectionRectangleChecked).toEqual(false);
+        expect(component.textChecked).toEqual(false);
+        expect(component.stampChecked).toEqual(false);
         expect(component.sprayChecked).toEqual(false);
     });
 
@@ -840,6 +874,19 @@ describe('SidebarComponent', () => {
         expect(spyUndo).toHaveBeenCalled();
     });
 
+    it('should call deactivateGrid when clicking on button and isGridSettingsChecked =true', () => {
+        gridStub.isGridSettingsChecked = true;
+        component.btnCallGrid();
+        expect(deactivateGridSpy).toHaveBeenCalled();
+        expect(gridStub.isGridSettingsChecked).toEqual(false);
+    });
+
+    it('should call deactivateGrid when clicking on button and isGridSettingsChecked = false', () => {
+        gridStub.isGridSettingsChecked = false;
+        component.btnCallGrid();
+        expect(gridStub.isGridSettingsChecked).toEqual(true);
+    });
+
     it('should pick text', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         component.pickText();
@@ -901,5 +948,173 @@ describe('SidebarComponent', () => {
         window.dispatchEvent(event);
         component.altPressed(event);
         expect(featherStub.altPressed).toEqual(true);
+    });
+
+    it('should pickGridSettings', () => {
+        const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
+        component.pickGridSettings();
+        expect(drawingStub.cursorUsed).toEqual(cursorName.default);
+        expect(switchToolSpy).toHaveBeenCalled();
+    });
+
+    it('should call resetCheckButton and set isTextChecked to true when changeTextMode is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.Pencil;
+        const event = new KeyboardEvent('window:keydown.t', {});
+        const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeTextMode(event);
+        expect(spyReset).toHaveBeenCalled();
+        expect(component.textChecked).toEqual(true);
+    });
+
+    it('should call copyImage if control c is pressed for selection Rectangle', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle;
+        const event = new KeyboardEvent('window:keydown.control.c', {});
+        const preventDefaultSpy = spyOn(event, 'preventDefault').and.callThrough();
+        const copyImageSpy = spyOn(selectionRectangleStub, 'copyImage').and.stub();
+        window.dispatchEvent(event);
+        component.copySelection(event);
+        expect(copyImageSpy).toHaveBeenCalled();
+        expect(preventDefaultSpy).toHaveBeenCalled();
+    });
+
+    it('should call copyImage if control c is pressed for selection Ellipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new KeyboardEvent('window:keydown.control.c', {});
+        const preventDefaultSpy = spyOn(event, 'preventDefault').and.callThrough();
+        const copyImageSpy = spyOn(selectionEllipseStub, 'copyImage').and.stub();
+        window.dispatchEvent(event);
+        component.copySelection(event);
+        expect(copyImageSpy).toHaveBeenCalled();
+        expect(preventDefaultSpy).toHaveBeenCalled();
+    });
+
+    it('should call cutImage if control x is pressed for selection Rectangle', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle;
+        const event = new KeyboardEvent('window:keydown.control.x', {});
+        const preventDefaultSpy = spyOn(event, 'preventDefault').and.callThrough();
+        const cutSelectionSpy = spyOn(selectionRectangleStub, 'copyImage').and.stub();
+        window.dispatchEvent(event);
+        component.cutSelection(event);
+        expect(cutSelectionSpy).toHaveBeenCalled();
+        expect(preventDefaultSpy).toHaveBeenCalled();
+    });
+
+    it('should call cutImage if control x is pressed for selection Ellipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new KeyboardEvent('window:keydown.control.x', {});
+        const preventDefaultSpy = spyOn(event, 'preventDefault').and.callThrough();
+        const cutSelectionSpy = spyOn(selectionEllipseStub, 'copyImage').and.stub();
+        window.dispatchEvent(event);
+        component.cutSelection(event);
+        expect(cutSelectionSpy).toHaveBeenCalled();
+        expect(preventDefaultSpy).toHaveBeenCalled();
+    });
+
+    it('should call pasteImage if control v is pressed for selection Rectangle', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle;
+        const event = new KeyboardEvent('window:keydown.control.v', {});
+        const preventDefaultSpy = spyOn(event, 'preventDefault').and.callThrough();
+        window.dispatchEvent(event);
+        component.pasteSelection(event);
+        expect(pasteImageRectSpy).toHaveBeenCalled();
+        expect(preventDefaultSpy).toHaveBeenCalled();
+    });
+
+    it('should call pasteImage if control v is pressed for selection Ellipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new KeyboardEvent('window:keydown.control.v', {});
+        const preventDefaultSpy = spyOn(event, 'preventDefault').and.callThrough();
+        window.dispatchEvent(event);
+        component.pasteSelection(event);
+        expect(pasteImageEllipseSpy).toHaveBeenCalled();
+        expect(preventDefaultSpy).toHaveBeenCalled();
+    });
+
+    it('should call deleteSelection if delete is pressed for selection Rectangle', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle;
+        drawingStub.baseCtx.fillStyle = 'green';
+        drawingStub.baseCtx.fillRect(10, 10, drawingStub.canvas.width, drawingStub.canvas.height);
+        const event = new KeyboardEvent('window:keydown.Delete', {});
+        const preventDefaultSpy = spyOn(event, 'preventDefault').and.callThrough();
+        const delSelectionSpy = spyOn(selectionRectangleStub, 'deleteImage').and.stub();
+        window.dispatchEvent(event);
+        component.delSelection(event);
+        expect(delSelectionSpy).toHaveBeenCalled();
+        expect(preventDefaultSpy).toHaveBeenCalled();
+    });
+
+    it('should call deleteSelection if delete is pressed for selection Ellipse', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        drawingStub.baseCtx.fillStyle = 'green';
+        drawingStub.baseCtx.fillRect(10, 10, drawingStub.canvas.width, drawingStub.canvas.height);
+        const event = new KeyboardEvent('window:keydown.Delete', {});
+        const preventDefaultSpy = spyOn(event, 'preventDefault').and.callThrough();
+        const delSelectionSpy = spyOn(selectionEllipseStub, 'deleteImage').and.stub();
+        window.dispatchEvent(event);
+        component.delSelection(event);
+        expect(delSelectionSpy).toHaveBeenCalled();
+        expect(preventDefaultSpy).toHaveBeenCalled();
+    });
+
+    it('should call deactivateGrid if isGridSettingsChecked = true', () => {
+        const event = new KeyboardEvent('window:keydown.g', {});
+        gridStub.isGridSettingsChecked = true;
+        window.dispatchEvent(event);
+        component.activateGrid(event);
+        expect(gridStub.isGridSettingsChecked).toEqual(false);
+        expect(deactivateGridSpy).toHaveBeenCalled();
+    });
+
+    it('should call activateGrid if isGridSettingsChecked = false', () => {
+        const event = new KeyboardEvent('window:keydown.g', {});
+        gridStub.isGridSettingsChecked = false;
+        window.dispatchEvent(event);
+        component.activateGrid(event);
+        expect(gridStub.isGridSettingsChecked).toEqual(true);
+        expect(activateGridSpy).toHaveBeenCalled();
+    });
+
+    it('should decrement the value of squareWidth', () => {
+        const event = new KeyboardEvent('window:keydown.-', {});
+        toolServiceStub.currentToolName = ToolUsed.Grid;
+        const oldValue = gridStub.squareWidth;
+        window.dispatchEvent(event);
+        component.decreaseSquareGrid(event);
+        expect(gridStub.squareWidth).toEqual(oldValue - 5);
+    });
+
+    it('should increment the value of squareWidth', () => {
+        toolServiceStub.currentToolName = ToolUsed.Grid;
+        const event = new KeyboardEvent('window:keydown.+', {});
+        const oldValue = gridStub.squareWidth;
+        window.dispatchEvent(event);
+        component.increaseSquareGrid(event);
+        expect(gridStub.squareWidth).toEqual(oldValue + 5);
+    });
+
+    it('should call resetMagnetism if isMagnetismActive = true', () => {
+        const event = new KeyboardEvent('window:keydown.m', {});
+        magnetismStub.isMagnetismActive = true;
+        window.dispatchEvent(event);
+        component.activateMagnetism(event);
+        expect(magnetismStub.isMagnetismActive).toEqual(false);
+        expect(resetMagnetismSpy).toHaveBeenCalled();
+    });
+
+    it('should call resetMagnetism if isMagnetismActive = false and set isMagentismActive to true', () => {
+        magnetismStub.isMagnetismActive = false;
+        const event = new KeyboardEvent('window:keydown.m', {});
+        window.dispatchEvent(event);
+        component.activateMagnetism(event);
+        expect(magnetismStub.isMagnetismActive).toEqual(true);
+    });
+
+    it('should change altPressed value to false when releasing alt ', () => {
+        toolServiceStub.currentToolName = ToolUsed.Feather;
+        const event = new KeyboardEvent('window:keyup.alt', {});
+        window.dispatchEvent(event);
+        component.altReleased(event);
+        expect(featherStub.altPressed).toEqual(false);
     });
 });
