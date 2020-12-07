@@ -45,20 +45,11 @@ describe('StampService', () => {
 
     it('should call drawImageCursor() onMouseMove', () => {
         const event = { x: 15, y: 6 } as MouseEvent;
-        // const spyDrawImage = spyOn(stampService, 'drawCursorImage').and.stub();
         stampService.onMouseMove(event);
         expect(stampService['canvasWidth']).toEqual(drawingServiceMock.cursorCtx.canvas.offsetWidth / 2);
         expect(stampService['canvasHeight']).toEqual(drawingServiceMock.cursorCtx.canvas.offsetHeight / 2);
-        // expect(spyDrawImage).toHaveBeenCalled();
-
         expect(drawCursorImageSpy).toHaveBeenCalled();
     });
-
-    // it('should drawImage', () => {
-    //     stampService.drawCursorImage();
-    //     expect(stampService['newWidth']).toEqual(drawingServiceMock.cursorCtx.canvas.width);
-    //     expect(stampService['newHeight']).toEqual(stampService['newWidth'] / wrh);
-    // });
 
     it('should increase canvas size', () => {
         const previousWidth = drawingServiceMock.cursorCtx.canvas.width;
@@ -83,7 +74,7 @@ describe('StampService', () => {
 
         stampService.onMouseDown(event);
         const eventLoad = new Event('onload');
-        stampService['currentStamp2'].dispatchEvent(eventLoad);
+        stampService['stampToDraw'].dispatchEvent(eventLoad);
 
         expect(spySaveCanvas).toHaveBeenCalled();
         expect(stampService['mouseCenterX']).toEqual(event.offsetX - stampService['canvasWidth']);

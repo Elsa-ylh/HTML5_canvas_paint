@@ -18,8 +18,8 @@ export class StampService extends Tool {
 
     currentStamp: HTMLImageElement; // the image stamp
     currentStampName: string = STAMP.stamp1; // the path to the image
-    currentStamp2: HTMLImageElement;
-    currentStamp2Name: string;
+    stampToDraw: HTMLImageElement;
+    stampToDrawName: string;
 
     canvasScale: number = 10; // by how much to increase or decrease image size
     imageScale: number = 1;
@@ -27,7 +27,7 @@ export class StampService extends Tool {
     newHeight: number; // height after resize
 
     private offSetX: number;
-    private yOffset: number;
+    private offSetY: number;
     private mouseCenterX: number; // x position of the mouse
     private mouseCenterY: number; // y position of the mouse
 
@@ -60,20 +60,20 @@ export class StampService extends Tool {
 
         this.offSetX =
             this.newWidth < this.drawingService.cursorCtx.canvas.width ? (this.drawingService.cursorCtx.canvas.width - this.newWidth) / 2 : 0;
-        this.yOffset =
+        this.offSetY =
             this.newHeight < this.drawingService.cursorCtx.canvas.height ? (this.drawingService.cursorCtx.canvas.height - this.newHeight) / 2 : 0;
 
         this.drawingService.cursorCtx.save(); // this section applies the rotation
         this.drawingService.cursorCtx.translate(this.drawingService.cursorCtx.canvas.width / 2, this.drawingService.cursorCtx.canvas.height / 2);
         this.drawingService.cursorCtx.rotate(this.convertDegToRad(this.angle));
         this.drawingService.cursorCtx.translate(-this.drawingService.cursorCtx.canvas.width / 2, -this.drawingService.cursorCtx.canvas.height / 2);
-        this.drawingService.cursorCtx.drawImage(this.currentStamp, this.offSetX, this.yOffset, this.newWidth, this.newHeight);
+        this.drawingService.cursorCtx.drawImage(this.currentStamp, this.offSetX, this.offSetY, this.newWidth, this.newHeight);
         this.drawingService.cursorCtx.restore();
     }
 
     saveCanvas(): void {
         // saves the current cursor image so that it can be used on the main canvas
-        this.currentStamp2Name = this.drawingService.cursorCtx.canvas.toDataURL();
+        this.stampToDrawName = this.drawingService.cursorCtx.canvas.toDataURL();
     }
 
     increaseSize(): void {
@@ -96,13 +96,13 @@ export class StampService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.saveCanvas(); // on mouse down, calls function to save the current cursor image
-        this.currentStamp2 = new Image();
-        this.currentStamp2.src = this.currentStamp2Name;
+        this.stampToDraw = new Image();
+        this.stampToDraw.src = this.stampToDrawName;
         this.mouseCenterX = event.offsetX - this.canvasWidth; // updates the current mouse position in x
         this.mouseCenterY = event.offsetY - this.canvasHeight; // updates the current mouse position in y
 
-        this.currentStamp2.onload = () => {
-            this.drawingService.baseCtx.drawImage(this.currentStamp2, this.mouseCenterX, this.mouseCenterY);
+        this.stampToDraw.onload = () => {
+            this.drawingService.baseCtx.drawImage(this.stampToDraw, this.mouseCenterX, this.mouseCenterY);
         };
     }
 
