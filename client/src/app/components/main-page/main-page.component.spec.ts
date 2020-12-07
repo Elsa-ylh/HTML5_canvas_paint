@@ -9,16 +9,28 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { MainPageComponent } from '@app/components/main-page/main-page.component';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
+import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
     let dialogMock: jasmine.SpyObj<MatDialog>;
+    let automaticSaveStub: AutomaticSaveService;
+    let canvasReziseStub: CanvasResizerService;
+    let drawingStub: DrawingService;
+    let undoRedoStub: UndoRedoService;
 
     beforeEach(
         waitForAsync(() => {
             dialogMock = jasmine.createSpyObj('dialogCreator', ['open']);
+            drawingStub = new DrawingService();
+            canvasReziseStub = new CanvasResizerService(undoRedoStub);
+            undoRedoStub = new UndoRedoService(drawingStub);
+            automaticSaveStub = new AutomaticSaveService(canvasReziseStub, drawingStub);
 
             TestBed.configureTestingModule({
                 imports: [
@@ -34,6 +46,8 @@ describe('MainPageComponent', () => {
                 providers: [
                     { provide: MatDialog, useValue: dialogMock },
                     { provide: MatDialogRef, useValue: {} },
+                    { provide: AutomaticSaveService, useValue: { save: () => '', check: () => false } },
+                    { provide: AutomaticSaveService, useValue: automaticSaveStub },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);
@@ -54,10 +68,6 @@ describe('MainPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should have onGoingDrawing as false', () => {
-        expect(component.onGoingDrawing).toBeFalse();
-    });
-
     it('should open warning message when creating a new drawing', () => {
         const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
 
@@ -70,8 +80,8 @@ describe('MainPageComponent', () => {
         expect(component.newDrawingRef).toEqual(matdialogRef);
     });
 
-    it('should set isDialogOpenSaveEport to true after closed', () => {
-        component.isDialogOpenSaveEport = false;
+    it('should set isDialogOpenSaveExport to true after closed', () => {
+        component.isDialogOpenSaveExport = false;
         const closedSubject = new Subject<any>();
 
         const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
@@ -79,17 +89,17 @@ describe('MainPageComponent', () => {
         dialogMock.open.and.returnValue(dialogRefMock);
 
         component.openCarrousel();
-        expect(component.isDialogOpenSaveEport).toEqual(true);
+        expect(component.isDialogOpenSaveExport).toEqual(true);
 
         closedSubject.next();
 
-        expect(component.isDialogOpenSaveEport).toEqual(false);
+        expect(component.isDialogOpenSaveExport).toEqual(false);
     });
 
     it('should set isDialogOpenSaveEport to true after closed', () => {
-        component.isDialogOpenSaveEport = true;
+        component.isDialogOpenSaveExport = true;
         component.openCarrousel();
-        expect(component.isDialogOpenSaveEport).toEqual(true);
+        expect(component.isDialogOpenSaveExport).toEqual(true);
     });
 
     it('should open warning message when opening "guide dutilisation"', () => {
@@ -102,5 +112,11 @@ describe('MainPageComponent', () => {
 
         component.openUserGuide();
         expect(component.checkDocumentationRef).toEqual(matdialogRef);
+    });
+
+    it('should call getUpload ', () => {
+        const getUploadSpy = spyOn(automaticSaveStub, 'getUpload').and.stub();
+        component.continueDrawing();
+        expect(getUploadSpy).toHaveBeenCalled();
     });
 });

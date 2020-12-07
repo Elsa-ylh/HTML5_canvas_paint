@@ -4,19 +4,23 @@ import { SelectionEllipseService } from '@app/services/tools/selection-service/s
 
 export class SelectionEllipseAction extends AbsUndoRedo {
     constructor(
+        private pastePosition: Vec2,
+        private imageData: ImageData,
         private copyPosition: Vec2,
-        private selectionMove: Vec2,
-        private image: HTMLImageElement,
-        private selectionRect: Vec2,
         private width: number,
         private height: number,
         private selectionEllService: SelectionEllipseService,
+        private ellipseRad: Vec2,
     ) {
         super();
     }
 
     apply(): void {
-        this.selectionEllService.clearSelection(this.selectionRect, this.width, this.height);
-        this.selectionEllService.pasteSelection(this.copyPosition, this.selectionMove, this.image);
+        const image = new Image();
+        image.src = this.selectionEllService.getImageURL(this.imageData, this.width, this.height);
+        this.selectionEllService.ellipseRad = this.ellipseRad;
+        console.log(this.ellipseRad);
+        this.selectionEllService.clearSelection(this.copyPosition, this.width, this.height);
+        this.selectionEllService.pasteSelection(this.pastePosition, image, { x: this.width, y: this.height });
     }
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ToolUsed } from '@app/classes/tool';
 import { ToolService } from '@app/services/tool-service';
+
 // import { ToolService } from '@app/services/tool-service';
 
 @Component({
@@ -10,6 +11,7 @@ import { ToolService } from '@app/services/tool-service';
 })
 export class EditorComponent {
     constructor(private toolService: ToolService) {}
+
     /* onMouseUp(event: MouseEvent): void {
         this.toolService.currentTool.onMouseUp(event);
     } */

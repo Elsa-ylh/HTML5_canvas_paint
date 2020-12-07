@@ -2,6 +2,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
@@ -31,6 +32,7 @@ describe('Service: Ellipse', () => {
             providers: [
                 { provide: DrawingService, useValue: drawServiceSpy },
                 { provide: ColorService, useValue: colorServiceSpy },
+                { provide: AutomaticSaveService, useValue: { save: () => '' } },
             ],
         });
         service = TestBed.inject(EllipseService);
