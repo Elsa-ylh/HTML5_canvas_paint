@@ -832,7 +832,7 @@ describe('SidebarComponent', () => {
         component.pickText();
         expect(drawingStub.cursorUsed).toEqual('text');
         expect(switchToolSpy).toHaveBeenCalled();
-        expect(component.isDialogLoadSaveExport).toEqual(false);
+        expect(component.isDialogLoadSaveExport).toEqual(true);
     });
 
     it('should pick feather', () => {

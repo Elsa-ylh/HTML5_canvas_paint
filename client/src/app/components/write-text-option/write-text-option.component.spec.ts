@@ -52,6 +52,7 @@ describe('WriteTextOptionComponent', () => {
                         backspace: () => '',
                         arrowTop: () => '',
                         arrowBottom: () => '',
+                        isOnPreviewCanvas: () => true,
                     },
                 },
             ],

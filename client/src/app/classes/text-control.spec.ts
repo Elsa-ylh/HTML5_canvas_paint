@@ -8,7 +8,7 @@ import { TextControl } from './text-control';
 // tslint:disable:max-file-line-count
 // tslint:disable:prefer-for-of
 
-fdescribe('TextControl', () => {
+describe('TextControl', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let textControl: TextControl;
@@ -66,11 +66,7 @@ fdescribe('TextControl', () => {
         for (let index = 0; index < textTest.length; index++) {
             textControl.addLetter(textTest[index]);
         }
-        const text = textControl.getTextWithCursor();
-        console.log(text, textControl['textLine']);
-        console.log(textControl['textPreview']);
-        console.log(textControl['nbOfLettersInLine']);
-        expect(text).toEqual(textTest + '|');
+        expect(textControl['textLine']).toEqual(['t', 'e', 's', 't']);
     });
 
     it('checkWidthText should return false if text size < width ', () => {
