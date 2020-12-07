@@ -15,8 +15,11 @@ describe('StampService', () => {
     let spySaveCanvas: jasmine.SpyObj<any>;
     let drawImageSpy: jasmine.SpyObj<any>;
 
+    let drawCursorImageSpy: jasmine.SpyObj<any>;
+
     beforeEach(() => {
         drawingServiceMock = jasmine.createSpyObj('DrawingService', ['baseCtx', 'previewCtx', 'cursorCtx']);
+
         baseStubCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         cursorStubCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         TestBed.configureTestingModule({
@@ -24,10 +27,16 @@ describe('StampService', () => {
         });
         stampService = TestBed.inject(StampService);
         drawingServiceMock = TestBed.inject(DrawingService) as jasmine.SpyObj<DrawingService>;
+
         drawingServiceMock.baseCtx = baseStubCtx;
         drawingServiceMock.cursorCtx = cursorStubCtx;
+
+        stampService['currentStamp'] = new Image();
+
         spySaveCanvas = spyOn<any>(stampService, 'saveCanvas').and.callThrough();
         drawImageSpy = spyOn<any>(drawingServiceMock.baseCtx, 'drawImage').and.callThrough();
+
+        drawCursorImageSpy = spyOn<any>(stampService, 'drawCursorImage').and.callThrough();
     });
 
     it('should be created', () => {
@@ -36,12 +45,20 @@ describe('StampService', () => {
 
     it('should call drawImageCursor() onMouseMove', () => {
         const event = { x: 15, y: 6 } as MouseEvent;
-        const spyDrawImage = spyOn(stampService, 'drawCursorImage').and.stub();
+        // const spyDrawImage = spyOn(stampService, 'drawCursorImage').and.stub();
         stampService.onMouseMove(event);
         expect(stampService['canvasWidth']).toEqual(drawingServiceMock.cursorCtx.canvas.offsetWidth / 2);
         expect(stampService['canvasHeight']).toEqual(drawingServiceMock.cursorCtx.canvas.offsetHeight / 2);
-        expect(spyDrawImage).toHaveBeenCalled();
+        // expect(spyDrawImage).toHaveBeenCalled();
+
+        expect(drawCursorImageSpy).toHaveBeenCalled();
     });
+
+    // it('should drawImage', () => {
+    //     stampService.drawCursorImage();
+    //     expect(stampService['newWidth']).toEqual(drawingServiceMock.cursorCtx.canvas.width);
+    //     expect(stampService['newHeight']).toEqual(stampService['newWidth'] / wrh);
+    // });
 
     it('should increase canvas size', () => {
         const previousWidth = drawingServiceMock.cursorCtx.canvas.width;
