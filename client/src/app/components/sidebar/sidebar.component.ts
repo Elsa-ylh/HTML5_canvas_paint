@@ -315,6 +315,7 @@ export class SidebarComponent {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.MagicWand);
         this.isDialogloadSaveEport = true;
+        this.magicWandService.selection.resetSelection();
     }
 
     get MagicWandSelectionChecked(): boolean {
@@ -507,8 +508,11 @@ export class SidebarComponent {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogloadSaveEport) {
             this.selectionRectangleService.selectAll();
-        } else {
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.selectAll();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.pickSelectionRectangle();
+            this.selectionRectangleService.selectAll();
         }
     }
 
@@ -518,6 +522,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onLeftArrow();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onLeftArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onLeftArrow();
         }
     }
     @HostListener('window:keydown.ArrowRight', ['$event']) onRightArrow(event: KeyboardEvent): void {
@@ -526,6 +532,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onRightArrow();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onRightArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onRightArrow();
         }
     }
 
@@ -535,6 +543,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onDownArrow();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onDownArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onDownArrow();
         }
     }
 
@@ -544,6 +554,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onUpArrow();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onUpArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onUpArrow();
         }
     }
     @HostListener('window:keyup.ArrowLeft', ['$event']) onLeftArrowUp(event: KeyboardEvent): void {
@@ -552,6 +564,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onLeftArrowUp();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onLeftArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onLeftArrowUp();
         }
     }
 
@@ -561,6 +575,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onRightArrowUp();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onRightArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onRightArrowUp();
         }
     }
 
@@ -570,6 +586,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onDownArrowUp();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onDownArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onDownArrowUp();
         }
     }
 
@@ -577,8 +595,14 @@ export class SidebarComponent {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogloadSaveEport) {
             this.selectionRectangleService.onUpArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onUpArrowUp();
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onUpArrowUp();
         }
     }
 
@@ -602,8 +626,15 @@ export class SidebarComponent {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
             this.selectionRectangleService.copyImage();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
             this.selectionEllipseService.copyImage();
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            this.magicWandService.copyImage();
+            return;
         }
     }
 
@@ -611,8 +642,15 @@ export class SidebarComponent {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
             this.selectionRectangleService.cutImage();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
             this.selectionEllipseService.cutImage();
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            this.magicWandService.cutImage();
+            return;
         }
     }
 
@@ -620,8 +658,15 @@ export class SidebarComponent {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
             this.selectionRectangleService.pasteImage();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
             this.selectionEllipseService.pasteImage();
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            this.magicWandService.pasteImage();
+            return;
         }
     }
 
@@ -629,8 +674,15 @@ export class SidebarComponent {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
             this.selectionRectangleService.deleteImage();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
             this.selectionEllipseService.deleteImage();
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            this.magicWandService.deleteImage();
+            return;
         }
     }
 

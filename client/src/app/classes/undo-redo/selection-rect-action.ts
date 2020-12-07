@@ -20,7 +20,7 @@ export class SelectionRectAction extends AbsUndoRedo {
     }
 
     apply(): void {
-        this.selectionService.clearSelection(this.selection.copyImageInitialPos, this.selection.width, this.selection.height);
+        this.selectionService.clearSelection();
         this.selectionService.pasteSelection(this.selection);
     }
 }

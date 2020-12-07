@@ -28,11 +28,7 @@ export class ArrowInfo {
     onArrowDown(controlGroup: ControlGroup): void {
         if (!this.drawingService.isPreviewCanvasBlank()) {
             if (!this.selectionService.cleared) {
-                this.selectionService.clearSelection(
-                    this.selectionService.selection.copyImageInitialPos,
-                    this.selectionService.selection.width,
-                    this.selectionService.selection.height,
-                );
+                this.selectionService.clearSelection();
                 this.selectionService.cleared = true;
             }
 

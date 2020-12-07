@@ -43,7 +43,7 @@ export class SelectionRectangleService extends SelectionService {
             if (this.drawingService.isPreviewCanvasBlank()) {
                 this.selection.imagePosition = this.mouseDownCoords;
 
-            // for  pasting selection
+                // for  pasting selection
             } else if (!this.inSelection && !this.drawingService.isPreviewCanvasBlank() && this.controlPointName === ControlPointName.none) {
                 // paste image
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -175,9 +175,14 @@ export class SelectionRectangleService extends SelectionService {
         this.drawPreviewRect(this.drawingService.previewCtx, this.shiftPressed);
     }
 
-    clearSelection(position: Vec2, width: number, height: number): void {
+    clearSelection(): void {
         this.drawingService.baseCtx.fillStyle = 'white';
-        this.drawingService.baseCtx.fillRect(position.x, position.y, width, height);
+        this.drawingService.baseCtx.fillRect(
+            this.selection.copyImageInitialPos.x,
+            this.selection.copyImageInitialPos.y,
+            this.selection.width,
+            this.selection.height,
+        );
     }
 
     // saveFlippedImage(scale: Vec2, translation: Vec2): void {

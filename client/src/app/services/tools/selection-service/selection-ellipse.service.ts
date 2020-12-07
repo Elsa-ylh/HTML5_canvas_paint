@@ -211,13 +211,18 @@ export class SelectionEllipseService extends SelectionService {
         ctx.ellipse(centerX, centerY, Math.abs(this.selection.ellipseRad.x), Math.abs(this.selection.ellipseRad.y), 0, 0, 2 * Math.PI);
     }
 
-    clearSelection(position: Vec2, width: number, height: number): void {
+    clearSelection(): void {
         this.drawingService.baseCtx.fillStyle = 'white';
         if (this.isAllSelect) {
-            this.drawingService.baseCtx.fillRect(position.x, position.y, width, height);
+            this.drawingService.baseCtx.fillRect(
+                this.selection.copyImageInitialPos.x,
+                this.selection.copyImageInitialPos.y,
+                this.selection.width,
+                this.selection.height,
+            );
         } else {
             this.drawingService.baseCtx.beginPath();
-            this.drawEllipse(this.drawingService.baseCtx, position, width / 2, height / 2);
+            this.drawEllipse(this.drawingService.baseCtx, this.selection.copyImageInitialPos, this.selection.width / 2, this.selection.height / 2);
             this.drawingService.baseCtx.fill();
         }
     }

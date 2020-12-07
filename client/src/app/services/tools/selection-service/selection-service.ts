@@ -162,7 +162,7 @@ export class SelectionService extends Tool {
 
                 // bypass bug clear selection
                 if (!this.cleared) {
-                    this.clearSelection(this.selection.copyImageInitialPos, this.selection.width, this.selection.height);
+                    this.clearSelection();
                     this.cleared = true;
                 }
 
@@ -173,7 +173,7 @@ export class SelectionService extends Tool {
 
                 // bypass bug clear selection
                 if (!this.cleared) {
-                    this.clearSelection(this.selection.copyImageInitialPos, this.selection.width, this.selection.height);
+                    this.clearSelection();
                     this.cleared = true;
                 }
 
@@ -349,7 +349,7 @@ export class SelectionService extends Tool {
         return canvas.toDataURL();
     }
 
-    clearSelection(position: Vec2, width: number, height: number): void {}
+    clearSelection(): void {}
 
     onLeftArrow(): void {
         this.leftArrow.onArrowDown(this.controlGroup);
@@ -365,6 +365,7 @@ export class SelectionService extends Tool {
 
     onDownArrow(): void {
         this.downArrow.onArrowDown(this.controlGroup);
+        console.log('down arrow');
     }
 
     onLeftArrowUp(): void {
@@ -421,7 +422,7 @@ export class SelectionService extends Tool {
     cutImage(): void {
         // this.clipboard.cutImage();
         if (!this.cleared) {
-            this.clearSelection(this.selection.copyImageInitialPos, this.selection.width, this.selection.height);
+            this.clearSelection();
             this.cleared = true;
         }
 
@@ -431,7 +432,7 @@ export class SelectionService extends Tool {
 
     deleteImage(): void {
         // this.clipboard.deleteImage();
-        this.clearSelection(this.selection.copyImageInitialPos, this.selection.width, this.selection.height);
+        this.clearSelection();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 

@@ -57,4 +57,13 @@ export class SelectionImage {
         }
         return false;
     }
+
+    resetSelection(): void {
+        this.copyImageInitialPos = this.imagePosition = { x: 0, y: 0 };
+        this.width = 0;
+        this.height = 0;
+        this.imageSize = { x: 0, y: 0 };
+        this.endingPos = { x: 0, y: 0 };
+        this.ellipseRad = { x: 0, y: 0 };
+    }
 }
