@@ -357,7 +357,7 @@ describe('TextControl', () => {
     });
 
     it('should full text (2) call getTextWithCursor', () => {
-        textControl.setWidth(20);
+        textControl.setWidth(18);
         textControl['textPreview'] = ['as', 'b3de', 'ct'];
         textControl['textLine'] = ['b', '3'];
         textControl['textStack'] = ['e', 'd', 'd'];
