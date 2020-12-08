@@ -5,7 +5,7 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ControlGroup } from '@app/classes/control-group';
 import { ControlPointName } from '@app/classes/control-points';
 import { MouseButton } from '@app/classes/mouse-button';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+// import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
@@ -26,7 +26,7 @@ describe('Service: SelectionRectangle', () => {
     let rotationStub: RotationService;
     let undoStub: UndoRedoService;
     let gridStub: GridService;
-    let canvasResizeStub: CanvasResizerService;
+    // let canvasResizeStub: CanvasResizerService;
     let drawSelectionRectSpy: jasmine.Spy<any>;
     let drawImageSpy: jasmine.Spy<any>;
     let drawEllipseSpy: jasmine.Spy<any>;
@@ -45,7 +45,7 @@ describe('Service: SelectionRectangle', () => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'isPreviewCanvasBlank']);
 
         magnetismStub = new MagnetismService(gridStub);
-        gridStub = new GridService(drawServiceSpy, canvasResizeStub);
+        gridStub = new GridService(drawServiceSpy);
         undoStub = new UndoRedoService(drawServiceSpy);
         rotationStub = new RotationService(drawServiceSpy);
 
