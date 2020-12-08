@@ -86,35 +86,61 @@ describe('WriteTextOptionComponent', () => {
         expect(component['itItalic']).toBeFalse;
     });
 
-    it('should', () => {
+    it('should pickFontStyle', () => {
+        spyOn(component['textService'], 'selectTextPosition');
         component.pickFontStyle(0);
+        expect(component['textService']['selectTextPosition']).toHaveBeenCalled();
     });
 
-    it('should keyUpHandler', () => {
+    it('should keyUpHandler isOnPreviewCanvas is true', () => {
+        spyOn(component['textService'], 'keyUpHandler');
         component.keyUpHandler(event);
+        expect(component['textService']['keyUpHandler']).toHaveBeenCalled();
+    });
+    it('should keyUpHandler isOnPreviewCanvas is false', () => {
+        spyOn(component['textService'], 'isOnPreviewCanvas').and.returnValue(false);
+        spyOn(component['textService'], 'keyUpHandler');
+        component.keyUpHandler(event);
+        expect(component['textService']['keyUpHandler']).toHaveBeenCalled();
     });
     it('should onLeftArrow', () => {
+        spyOn(component['textService'], 'arrowLeft');
         component.onLeftArrow(event);
+        expect(component['textService']['arrowLeft']).toHaveBeenCalled();
     });
     it('should onRightArrow', () => {
+        spyOn(component['textService'], 'arrowRight');
         component.onRightArrow(event);
+        expect(component['textService']['arrowRight']).toHaveBeenCalled();
     });
     it('should onEnter', () => {
+        spyOn(component['textService'], 'enter');
         component.onEnter(event);
+        expect(component['textService']['enter']).toHaveBeenCalled();
     });
     it('should onDelete', () => {
+        spyOn(component['textService'], 'delete');
         component.onDelete(event);
+        expect(component['textService']['delete']).toHaveBeenCalled();
     });
     it('should onBackSpace', () => {
+        spyOn(component['textService'], 'backspace');
         component.onBackSpace(event);
+        expect(component['textService']['backspace']).toHaveBeenCalled();
     });
     it('should onTopArrow', () => {
+        spyOn(component['textService'], 'arrowTop');
         component.onTopArrow(event);
+        expect(component['textService']['arrowTop']).toHaveBeenCalled();
     });
     it('should onBottomArrow', () => {
+        spyOn(component['textService'], 'arrowBottom');
         component.onBottomArrow(event);
+        expect(component['textService']['arrowBottom']).toHaveBeenCalled();
     });
     it('should onEscape', () => {
+        spyOn(component['textService'], 'clearEffectTool');
         component.onEscape(event);
+        expect(component['textService']['clearEffectTool']).toHaveBeenCalled();
     });
 });

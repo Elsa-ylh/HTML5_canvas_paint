@@ -53,13 +53,11 @@ export class WriteTextOptionComponent {
     @HostListener('window:keydown.ArrowUp', ['$event']) onTopArrow(event: KeyboardEvent): void {
         event.preventDefault();
         this.textService.arrowTop();
-        console.log('Up');
     }
 
     @HostListener('window:keydown.ArrowDown', ['$event']) onBottomArrow(event: KeyboardEvent): void {
         event.preventDefault();
         this.textService.arrowBottom();
-        console.log('down');
     }
 
     @HostListener('window:keydown.Enter', ['$event']) onEnter(event: KeyboardEvent): void {
