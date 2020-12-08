@@ -1,6 +1,5 @@
 import { ImageFormat } from '@common/communication/image-format';
-import axios from 'axios';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import * as FileType from 'file-type';
 import { FileTypeResult } from 'file-type/core';
 import * as FormData from 'form-data';
@@ -54,6 +53,6 @@ export class EmailService {
             .then((response: AxiosResponse) => {
                 console.log(response.data);
                 return response;
-            })
+            });
     }
 }

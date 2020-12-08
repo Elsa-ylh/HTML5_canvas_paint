@@ -30,9 +30,9 @@ export class EmailController {
                 return;
             }
 
+            let imageFile;
             // Multer request type
             // tslint:disable-next-line:no-any
-            let imageFile;
             imageFile = (req as any).file;
             console.log(imageFile);
 
