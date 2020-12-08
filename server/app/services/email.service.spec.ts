@@ -3,6 +3,8 @@ import { expect } from 'chai';
 import * as FormData from 'form-data';
 import * as Sinon from 'sinon';
 import { EmailService } from './email.service';
+import { ImageFormat } from '@common/communication/image-format';
+import * as FileStream from 'fs';
 
 describe('Email service', () => {
     let emailService: EmailService;
@@ -29,18 +31,51 @@ describe('Email service', () => {
         expect(isEmailValid).to.be.false;
     });
 
-    it('should check if content is right extension', async () => {
-        const isContentValid = await emailService.isContentValid('png', 1);
+    it('should check an image extension which is PNG', () => {
+        const imagePath = './default.png';
+        const imageExtension = emailService.getImageExtension(imagePath);
+        expect(imageExtension).to.be.equal(ImageFormat.PNG);
+    })
+
+    it('should check an image extension which is JPEG', () => {
+        const imagePath = './default.jpeg';
+        const imageExtension = emailService.getImageExtension(imagePath);
+        expect(imageExtension).to.be.equal(ImageFormat.JPG);
+    })
+
+    it('should check an image extension which is NONE', () => {
+        const imagePath = './default_weird_image_format.highrez';
+        const imageExtension = emailService.getImageExtension(imagePath);
+        expect(imageExtension).to.be.equal(ImageFormat.NONE);
+    })
+
+    it('should check if content is right extension of PNG', async () => {
+        const imagePath = './default.png'
+        const isContentValid = await emailService.isContentValid(imagePath, ImageFormat.PNG);
         expect(isContentValid).to.be.true;
     });
 
-    it('should send a normal image and expect error 422, bad form', async () => {
-        sandbox.stub(axios).post.resolves({ data: 'hi' } as AxiosResponse);
+    it('should check if content is right extension of JPG', async () => {
+        const imagePath = './default.jpeg'
+        const isContentValid = await emailService.isContentValid(imagePath, ImageFormat.JPG);
+        expect(isContentValid).to.be.true;
+    });
+
+    it('should check if content is right extension of NONE', async () => {
+        const imagePath = './default_weird_image_format.highrez';
+        const isContentValid = await emailService.isContentValid(imagePath, ImageFormat.NONE);
+        expect(isContentValid).to.be.false;
+    });
+
+    it('should send a normal image with a good email and expect 200, as in everything is fine', async () => {
+        sandbox.stub(axios).post.resolves({ data: 'the post request worked successfully in the test' } as AxiosResponse);
+
         const email = 'abc@email.com';
         const formData = new FormData();
-        formData.append('to', email);
-        formData.append('payload', './default.jpeg');
+        formData.append('email', email);
+        formData.append('image', FileStream.createReadStream('default.png'));
+
         const response = await emailService.sendEmail(formData);
-        expect(response.data).to.be.equal('hi');
+        expect(response.data).to.be.equal('the post request worked successfully in the test');
     });
 });

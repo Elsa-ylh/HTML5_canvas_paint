@@ -19,7 +19,7 @@ export class EmailService {
         return email.match(this.emailRegexValidation) !== null;
     }
 
-    async getImageExtension(imagePath: string): Promise<ImageFormat> {
+    getImageExtension(imagePath: string): ImageFormat {
         const extension = imagePath.split('.').pop();
         if (extension === 'png' || extension === 'PNG') {
             return ImageFormat.PNG;
@@ -55,9 +55,5 @@ export class EmailService {
                 console.log(response.data);
                 return response;
             })
-            .catch((error: Error) => {
-                console.log(error.message);
-                throw error;
-            });
     }
 }
