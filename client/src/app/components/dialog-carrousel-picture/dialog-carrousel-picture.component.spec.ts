@@ -278,7 +278,7 @@ describe('CarrouselPictureComponent', () => {
         expect(confirmSpy).toHaveBeenCalledWith('Supprimer : ' + allDataTest[0].name);
     });
     it('should deletePicture', () => {
-        component.messageDelite(messageSuccess);
+        component.messageDelete(messageSuccess);
         expect(alertSpy).toHaveBeenCalledWith(messageSuccess.body);
     });
 

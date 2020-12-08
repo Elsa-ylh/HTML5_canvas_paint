@@ -83,7 +83,7 @@ describe('TextAction', () => {
 
     it('strokeColor and fillColor must be primary color of textAction', () => {
         let color = '#0000FF';
-        textActionStub.primaryColor = color;
+        textActionStub['primaryColor'] = color;
         textStub.drawText();
         textActionStub.apply();
         expect(drawingStub.previewCtx.strokeStyle).toEqual(color);

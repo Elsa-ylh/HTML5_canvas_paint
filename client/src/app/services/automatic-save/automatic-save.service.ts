@@ -71,10 +71,19 @@ export class AutomaticSaveService {
         this.drawingService.convertBase64ToBaseCanvas(this.canvas); // todo error : fixing undo-redo
         this.canvasResizer.canvasSize.x = widthNb;
         this.canvasResizer.canvasSize.y = heightNb;
-        const actionLoadImg = new LoadAction(this.drawingService.canvas, heightNb, widthNb, this.drawingService, this.canvasResizer);
+        let image = new Image();
+        image.src = this.canvas;
+        const actionLoadImg = new LoadAction(image, heightNb, widthNb, this.drawingService, this.canvasResizer);
         this.undoRedoService.clearUndo();
         this.undoRedoService.clearRedo();
         this.undoRedoService.loadImage(actionLoadImg);
         return true;
     }
+
+    /*private async getImage(base64: string): Promise<CanvasImageSource> {
+        image.onload = () => {
+            this.drawingService.baseCtx.drawImage(image, 0, 0);
+            return;
+        };
+    }*/
 }
