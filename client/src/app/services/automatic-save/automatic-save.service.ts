@@ -24,13 +24,17 @@ export class AutomaticSaveService {
 
     save(): void {
         this.myStorage.clear();
-        const vec2: Vec2 = this.canvasResizer.canvasSize;
+        let vec2: Vec2;
+        try {
+            vec2 = this.canvasResizer.canvasSize;
+        } catch (error) {
+            vec2 = { x: 0, y: 0 };
+        }
         try {
             this.myStorage.setItem(KEY_SAVE_CANVAS, this.drawingService.convertBaseCanvasToBase64());
         } catch (error) {
             this.myStorage.setItem(KEY_SAVE_CANVAS, '');
         }
-
         this.myStorage.setItem(KEY_SAVE_WIDTH, vec2.x.toString());
         this.myStorage.setItem(KEY_SAVE_HEIGHT, vec2.y.toString());
     }

@@ -9,6 +9,7 @@ import { AutomaticSaveService } from '@app/services/automatic-save/automatic-sav
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 describe('Service: UndoRedo', () => {
@@ -20,6 +21,7 @@ describe('Service: UndoRedo', () => {
     let resizeActionStub: ResizeCanvasAction;
     let basecanvasAct: ResizeCanvasAction;
     let resizeStub: CanvasResizerService;
+    let gridStub: GridService;
 
     const changes: Vec2[] = [];
     let color: string;
@@ -37,8 +39,9 @@ describe('Service: UndoRedo', () => {
     beforeEach(() => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
-        resizeStub = new CanvasResizerService(undoRedoStub);
         autoSaveStub = new AutomaticSaveService(resizeStub, drawingStub, undoRedoStub);
+        gridStub = new GridService(drawingStub);
+        resizeStub = new CanvasResizerService(gridStub, undoRedoStub);
         eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
 
         changes.push({ x: 5, y: 6 });

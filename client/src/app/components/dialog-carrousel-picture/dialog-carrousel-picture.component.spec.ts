@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
@@ -27,6 +28,7 @@ describe('CarrouselPictureComponent', () => {
     let fixture: ComponentFixture<CarrouselPictureComponent>;
     let drawingStub: DrawingService;
     let undoRedoStub: UndoRedoService;
+    let gridStub: GridService;
     let canvasResizerStub: CanvasResizerService;
     const informationsService: CanvasInformation[] = [];
     let httpMock: HttpTestingController;
@@ -67,7 +69,8 @@ describe('CarrouselPictureComponent', () => {
     beforeEach(async () => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        gridStub = new GridService(drawingStub);
+        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
         await TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,

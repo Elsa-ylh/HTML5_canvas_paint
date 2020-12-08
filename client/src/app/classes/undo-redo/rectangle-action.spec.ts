@@ -7,6 +7,7 @@ import { AutomaticSaveService } from '@app/services/automatic-save/automatic-sav
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
@@ -17,6 +18,7 @@ describe('RectangleAction', () => {
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
     let rectStub: RectangleService;
+    let gridStub: GridService;
 
     let mousePosition: Vec2;
     let mouseDownCord: Vec2;
@@ -47,7 +49,8 @@ describe('RectangleAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        gridStub = new GridService(drawingStub);
+        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
         autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         rectStub = new RectangleService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
