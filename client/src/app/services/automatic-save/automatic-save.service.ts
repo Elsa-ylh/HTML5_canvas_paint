@@ -79,11 +79,4 @@ export class AutomaticSaveService {
         this.undoRedoService.loadImage(actionLoadImg);
         return true;
     }
-
-    /*private async getImage(base64: string): Promise<CanvasImageSource> {
-        image.onload = () => {
-            this.drawingService.baseCtx.drawImage(image, 0, 0);
-            return;
-        };
-    }*/
 }
