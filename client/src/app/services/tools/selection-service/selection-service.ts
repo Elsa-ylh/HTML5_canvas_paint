@@ -291,10 +291,12 @@ export class SelectionService extends Tool {
 
         if (xSign > 0 && ySign > 0) {
             return { x: this.selection.imagePosition.x, y: this.selection.imagePosition.y };
-        } else if (xSign > 0 && ySign < 0) {
+        }
+        if (xSign > 0 && ySign < 0) {
             this.selection.endingPos = { x: this.selection.endingPos.x, y: this.selection.imagePosition.y };
             return { x: this.selection.imagePosition.x, y: tmpEndPos.y };
-        } else if (xSign < 0 && ySign < 0) {
+        }
+        if (xSign < 0 && ySign < 0) {
             this.selection.endingPos = { x: this.selection.imagePosition.x, y: this.selection.imagePosition.y };
             return { x: tmpEndPos.x, y: tmpEndPos.y };
         } else {
@@ -343,7 +345,6 @@ export class SelectionService extends Tool {
 
     onDownArrow(): void {
         this.downArrow.onArrowDown(this.controlGroup);
-        console.log('down arrow');
     }
 
     onLeftArrowUp(): void {
