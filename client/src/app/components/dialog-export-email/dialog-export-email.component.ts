@@ -2,18 +2,20 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Filter } from '@app/classes/filter';
 import { ImageFormat } from '@app/classes/image-format';
+import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Component({
-    selector: 'app-dialog-export-locally',
-    templateUrl: './dialog-export-locally.component.html',
-    styleUrls: ['./dialog-export-locally.component.scss'],
+    selector: 'app-dialog-export-email',
+    templateUrl: './dialog-export-email.component.html',
+    styleUrls: ['./dialog-export-email.component.scss'],
 })
-export class DialogExportDrawingComponent implements AfterViewInit {
+export class DialogExportEmailComponent implements AfterViewInit {
     private whichExportType: ImageFormat = ImageFormat.PNG;
     private whichFilter: Filter = Filter.NONE;
 
     nameFormControl: FormControl;
+    emailFormControl: FormControl;
 
     private filterString: Map<Filter, string> = new Map([
         [Filter.BLUR, 'blur(4px)'],
@@ -28,8 +30,9 @@ export class DialogExportDrawingComponent implements AfterViewInit {
         [ImageFormat.JPG, '.jpeg'],
     ]);
 
-    constructor(private drawingService: DrawingService) {
+    constructor(private drawingService: DrawingService, private clientServerService: ClientServerCommunicationService) {
         this.nameFormControl = new FormControl('default', Validators.pattern('^[a-zA-Z]{1,63}$'));
+        this.emailFormControl = new FormControl('exemple@email.com', Validators.email);
     }
 
     @ViewChild('previewImage', { static: false }) previewImage: ElementRef<HTMLImageElement>;
@@ -76,8 +79,8 @@ export class DialogExportDrawingComponent implements AfterViewInit {
         this.previewImage.nativeElement.style.filter = 'sepia(50)';
     }
 
-    downloadImage(): void {
-        if (this.nameFormControl.valid) {
+    exportToEmail(): void {
+        if (this.nameFormControl.valid && this.emailFormControl.valid) {
             let textImageFormat: string = this.nameFormControl.value;
             switch (this.whichExportType) {
                 case ImageFormat.PNG:
@@ -107,7 +110,7 @@ export class DialogExportDrawingComponent implements AfterViewInit {
                     textImageFormat += '\n Filtre sepia';
                     break;
             }
-            if (confirm('Voulez-vous sauvegarder ' + textImageFormat)) {
+            if (confirm("Voulez-vous envoyer l'image " + textImageFormat + ' au courriel ' + this.emailFormControl.value + ' ?')) {
                 const finalImageCanvas = document.createElement('canvas');
                 const finalImageCtx = finalImageCanvas.getContext('2d') as CanvasRenderingContext2D;
 
@@ -117,15 +120,27 @@ export class DialogExportDrawingComponent implements AfterViewInit {
                 finalImageCtx.filter = this.filterString.get(this.whichFilter) as string;
                 finalImageCtx.drawImage(this.previewImage.nativeElement, 0, 0);
 
-                // https://stackoverflow.com/a/50300880
-                const link = document.createElement('a');
-                link.download = this.nameFormControl.value + this.imageFormatString.get(this.whichExportType);
+                let base64image;
                 if (this.whichExportType === ImageFormat.JPG) {
-                    link.href = finalImageCanvas.toDataURL('image/jpeg', 1.0);
+                    base64image = finalImageCanvas.toDataURL('image/jpeg');
                 } else {
-                    link.href = finalImageCanvas.toDataURL('image/png', 1.0);
+                    base64image = finalImageCanvas.toDataURL('image/png');
                 }
-                link.click();
+
+                // https://stackoverflow.com/a/47497249
+                // https://github.com/axios/axios/issues/710#issuecomment-409213073
+                fetch(base64image)
+                    .then((res) => res.blob())
+                    .then((blob) => {
+                        const formData = new FormData();
+
+                        formData.append('image', blob, this.nameFormControl.value + this.imageFormatString.get(this.whichExportType));
+                        formData.append('email', this.emailFormControl.value);
+
+                        this.clientServerService.sendEmail(formData).subscribe((res) => {
+                            confirm(res);
+                        });
+                    });
             }
         }
     }

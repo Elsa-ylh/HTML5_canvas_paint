@@ -3,6 +3,7 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { LoadAction } from './load-action';
 
@@ -13,6 +14,7 @@ describe('loadAction', () => {
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
     let resizeStub: CanvasResizerService;
+    let gridStub: GridService;
 
     let height: number;
     let width: number;
@@ -33,7 +35,8 @@ describe('loadAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        resizeStub = new CanvasResizerService(undoRedoStub);
+        gridStub = new GridService(drawingStub);
+        resizeStub = new CanvasResizerService(gridStub, undoRedoStub);
 
         loadActionStub = new LoadAction(pictureImage, height, width, drawingStub, resizeStub);
 

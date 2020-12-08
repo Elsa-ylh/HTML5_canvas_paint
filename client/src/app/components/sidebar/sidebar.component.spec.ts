@@ -115,7 +115,7 @@ describe('SidebarComponent', () => {
             stampServiceStub = new StampService(drawingStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             magnetismStub = new MagnetismService(gridStub);
-            gridStub = new GridService(drawingStub, canvasResizerStub);
+            gridStub = new GridService(drawingStub);
             rotationStub = new RotationService(drawingStub);
 
             toolServiceStub = new ToolService(

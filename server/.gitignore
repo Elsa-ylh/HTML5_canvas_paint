@@ -24,3 +24,6 @@ npm-debug.log
 !tslint.json
 !tsconfig.json
 !package-lock.json
+
+# Les images envoyés par courriels sont ignorés
+uploads/

@@ -21,5 +21,28 @@
             "localRoot": "${workspaceFolder}/server",
             "type": "pwa-node"
         }
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha All",
+            "program": "${workspaceFolder}/server/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}/server",
+            "args": [
+                "--timeout",
+                "999999",
+                "--colors",
+                "${workspaceFolder}/server/test",
+                "--config",
+                "${workspaceFolder}/server/test/.mocharc.json",
+                "--node-env",
+                "test"
+            ],
+            "env": {
+                "TS_NODE_PROJECT": "${workspaceFolder}/server/tsconfig.test.json"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": ["<node_internals>/**/*.js"]
+        }
     ]
 }

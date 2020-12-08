@@ -9,6 +9,7 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { GridService } from './grid.service';
 
 describe('Service: PaintBucket', () => {
     /*tslint:disable:no-any*/
@@ -20,6 +21,7 @@ describe('Service: PaintBucket', () => {
     let drawingService: DrawingService;
     let undoRedoService: UndoRedoService;
     let canvasReziserService: CanvasResizerService;
+    let gridStub: GridService;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -40,7 +42,8 @@ describe('Service: PaintBucket', () => {
         drawingService.baseCtx = baseCtxStub;
 
         undoRedoService = new UndoRedoService(drawingService);
-        canvasReziserService = new CanvasResizerService(undoRedoService);
+        gridStub = new GridService(drawingService);
+        canvasReziserService = new CanvasResizerService(gridStub, undoRedoService);
         colorService = new ColorService(drawingService);
 
         TestBed.configureTestingModule({

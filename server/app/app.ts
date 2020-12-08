@@ -1,17 +1,22 @@
 import { DataController } from '@app/controllers/data.controller';
+import { EmailController } from '@app/controllers/email.controller';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 import { inject, injectable } from 'inversify';
 import * as logger from 'morgan';
+import * as multer from 'multer';
 import { TYPES } from './types';
 @injectable()
 export class Application {
     private readonly internalError: number = 500;
     app: express.Application;
 
-    constructor(@inject(TYPES.DataController) private dataController: DataController) {
+    constructor(
+        @inject(TYPES.DataController) private dataController: DataController,
+        @inject(TYPES.EmailController) private emailController: EmailController,
+    ) {
         this.app = express();
 
         this.config();
@@ -26,10 +31,14 @@ export class Application {
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(cookieParser());
         this.app.use(cors());
+
+        // this is to handle form data aka HTML5 File or images
+        this.app.use(multer({ dest: './uploads/' }).single('image'));
     }
 
     bindRoutes(): void {
         this.app.use('/api/data', this.dataController.router);
+        this.app.use('/api/email', this.emailController.router);
         this.errorHandling();
     }
 

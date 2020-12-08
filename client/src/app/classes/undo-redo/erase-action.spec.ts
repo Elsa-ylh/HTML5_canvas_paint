@@ -6,6 +6,7 @@ import { AutomaticSaveService } from '@app/services/automatic-save/automatic-sav
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // tslint:disable:prefer-const
@@ -24,6 +25,7 @@ describe('EraseAction', () => {
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
+    let gridStub: GridService;
     let canvasResizerStub: CanvasResizerService;
     beforeEach(() => {
         changesEraser.push({ x: 5, y: 6 });
@@ -32,7 +34,8 @@ describe('EraseAction', () => {
         thickness = 5;
 
         drawingStub = new DrawingService();
-        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        gridStub = new GridService(drawingStub);
+        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
         autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
         eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
 

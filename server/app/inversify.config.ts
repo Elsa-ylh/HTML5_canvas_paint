@@ -1,5 +1,7 @@
 import { DataController } from '@app/controllers/data.controller';
+import { EmailController } from '@app/controllers/email.controller';
 import { DatabasePictureService } from '@app/services/database-picture.service';
+import { EmailService } from '@app/services/email.service';
 import { Container } from 'inversify';
 import { Application } from './app';
 import { Server } from './server';
@@ -13,6 +15,9 @@ export const containerBootstrapper: () => Promise<Container> = async () => {
 
     container.bind(TYPES.DataController).to(DataController);
     container.bind(TYPES.DatabasePictureService).to(DatabasePictureService);
+
+    container.bind(TYPES.EmailController).to(EmailController);
+    container.bind(TYPES.EmailService).to(EmailService);
 
     return container;
 };
