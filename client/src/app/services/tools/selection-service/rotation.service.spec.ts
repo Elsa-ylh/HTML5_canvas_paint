@@ -1,6 +1,4 @@
 /* tslint:disable:no-unused-variable */
-/* tslint:disable:no-any-variable */ // We need any to create spies on required services.
-/* tslint:disable:no-magic-numbers-variable */ // Required to tests scroll functionality.
 
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
@@ -14,9 +12,9 @@ describe('Service: Rotation', () => {
     let drawingServiceMock: jasmine.SpyObj<DrawingService>;
     let selectionMock: jasmine.SpyObj<SelectionService>;
     let event: WheelEvent;
-    /* tslint:disable:no-any-variable */
+    // tslint:disable:no-any
     let addOrRetractSpy: jasmine.SpyObj<any>;
-    /* tslint:disable:no-any-variable */
+    // tslint:disable:no-any
     let translateSpy: jasmine.SpyObj<any>;
 
     let image: SelectionImage;
@@ -43,9 +41,9 @@ describe('Service: Rotation', () => {
         drawingServiceMock.baseCtx = baseCtxStub;
         drawingServiceMock.previewCtx = previewCtxStub;
         canvas = canvasTestHelper.canvas;
-        /* tslint:disable:no-magic-numbers-variable */
+        /* tslint:disable:no-magic-numbers */
         canvas.width = 100;
-        /* tslint:disable:no-magic-numbers-variable */
+        /* tslint:disable:no-magic-numbers */
         canvas.height = 100;
         drawingServiceMock.canvas = canvas;
         translateSpy = spyOn<any>(drawingServiceMock.baseCtx, 'translate').and.callThrough();
