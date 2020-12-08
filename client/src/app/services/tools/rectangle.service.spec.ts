@@ -63,7 +63,7 @@ describe('Service: Rectangle', () => {
     it(' mouseDown should set mouseDownCoord to correct position', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
         service.onMouseDown(mouseEvent);
-        expect(service.mouseDownCoord).toEqual(expectedResult);
+        expect(service.mouseDownCoords).toEqual(expectedResult);
     });
 
     it(' mouseDown should set mouseDown property to true on left click', () => {
@@ -99,7 +99,7 @@ describe('Service: Rectangle', () => {
 
     it(' onMouseUp should not call drawFillRectangle if mouse is already up ', () => {
         service.subToolSelect = SubToolselected.tool1;
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
 
         service.onMouseUp(mouseEvent);
@@ -108,7 +108,7 @@ describe('Service: Rectangle', () => {
 
     it(' onMouseUp should call drawFillRectangle if mouse was already down and tool1 selected', () => {
         service.subToolSelect = SubToolselected.tool1;
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
 
         service.onMouseUp(mouseEvent);
@@ -117,7 +117,7 @@ describe('Service: Rectangle', () => {
 
     it(' onMouseUp should call drawFillRectangle if mouse was already down and tool2 selected', () => {
         service.subToolSelect = SubToolselected.tool2;
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
 
         service.onMouseUp(mouseEvent);
@@ -126,7 +126,7 @@ describe('Service: Rectangle', () => {
 
     it(' onMouseUp should call drawFillRectangle if mouse was already down and tool3 selected', () => {
         service.subToolSelect = SubToolselected.tool3;
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
 
         service.onMouseUp(mouseEvent);
@@ -140,7 +140,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onMouseMove should call drawFillRectangle if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool1;
 
@@ -150,7 +150,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onMouseMove should not call drawFillRectangle if mouse was not already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
 
         service.onMouseMove(mouseEvent);
@@ -159,7 +159,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onShiftKeyUp should call drawFillRectangle if mouse was already down and tool1 selected', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool1;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
@@ -169,7 +169,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onShiftKeyUp should not call drawFillRectangle if mouse was not already down and tool1 selected', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
         service.onShiftKeyUp(shiftEvent);
@@ -178,7 +178,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onShiftKeyDown should call drawFillRectangle if mouse was already down and tool1 selected', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool1;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
@@ -188,7 +188,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onShiftKeyDown should not call drawFillRectangle if mouse was not already down and tool1 selected', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
         service.onShiftKeyDown(shiftEvent);
@@ -197,7 +197,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onShiftKeyUp should call drawFillRectangle if mouse was already down and tool2 selected', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool2;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
@@ -207,7 +207,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onShiftKeyUp should not call drawFillRectangle if mouse was not already down and tool2 selected', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
         service.onShiftKeyUp(shiftEvent);
@@ -216,7 +216,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onShiftKeyDown should call drawFillRectangle if mouse was already down and tool2 selected', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool2;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
@@ -226,7 +226,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onShiftKeyDown should not call drawFillRectangle if mouse was not already down and tool2 selected', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
         service.onShiftKeyDown(shiftEvent);
@@ -235,7 +235,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onShiftKeyUp should call drawFillRectangle if mouse was already down and tool3 selected', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool3;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
@@ -245,7 +245,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onShiftKeyUp should not call drawFillRectangle if mouse was not already down and tool3 selected', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
         service.onShiftKeyUp(shiftEvent);
@@ -254,7 +254,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onShiftKeyDown should call drawFillRectangle if mouse was already down and tool1 selected', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool3;
         service.mousePosition = service.getPositionFromMouse(mouseEvent);
@@ -264,7 +264,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onShiftKeyDown should not call drawFillRectangle if mouse was not already down and tool1 selected', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
         service.onShiftKeyDown(shiftEvent);
@@ -273,7 +273,7 @@ describe('Service: Rectangle', () => {
     });
 
     it(' onMouseDown should call onMouseUp if the mouse enter the canvas', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseEnter = true;
         service.onMouseDown(mouseEvent);
         expect(onMouseUpSpy).toHaveBeenCalled();

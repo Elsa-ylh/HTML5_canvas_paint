@@ -18,6 +18,7 @@ export enum ToolUsed {
     Dropper = 1003,
     SelectionRectangle = 10010,
     SelectionEllipse = 10021,
+    MagicWand = 10023,
     Stamp = 58,
     Grid = 9001,
     Spray = 1004,
@@ -26,7 +27,7 @@ export enum ToolUsed {
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
 // tslint:disable:no-empty
 export abstract class Tool {
-    mouseDownCoord: Vec2;
+    mouseDownCoords: Vec2;
     mouseDown: boolean = false;
     mouseMove: boolean = false; // pr le point
     subToolSelect: SubToolselected;

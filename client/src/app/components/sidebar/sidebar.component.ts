@@ -8,6 +8,7 @@ import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
 import { CarrouselPictureComponent } from '@app/components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DialogExportEmailComponent } from '@app/components/dialog-export-email/dialog-export-email.component';
 import { DialogExportDrawingComponent } from '@app/components/dialog-export-locally/dialog-export-locally.component';
 import { DialogUploadComponent } from '@app/components/dialog-upload/dialog-upload.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
@@ -26,6 +27,8 @@ import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { MagicWandService } from '@app/services/tools/selection-service/magic-wand.service';
+import { RotationService } from '@app/services/tools/selection-service/rotation.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { StampService } from '@app/services/tools/stamp.service';
@@ -52,6 +55,7 @@ export class SidebarComponent {
     dialogLoadRef: MatDialogRef<CarrouselPictureComponent>;
     dialogSaveRef: MatDialogRef<DialogUploadComponent>;
     exportDrawingRef: MatDialogRef<DialogExportDrawingComponent>;
+    exportEmailRef: MatDialogRef<DialogExportEmailComponent>;
     private isPencilChecked: boolean = false;
     private isEraserChecked: boolean = false;
     private isBrushChecked: boolean = false;
@@ -67,6 +71,7 @@ export class SidebarComponent {
     private isSprayChecked: boolean = false;
     private isFeatherChecked: boolean = false;
     private isTextChecked: boolean = false;
+    private isMagicWandSelectionChecked: boolean = false;
     private isStampChecked: boolean = false;
     private curCanvasDefaultSize: number = 40;
 
@@ -88,10 +93,12 @@ export class SidebarComponent {
         public undoRedoService: UndoRedoService,
         public selectionRectangleService: SelectionRectangleService,
         public selectionEllipseService: SelectionEllipseService,
+        public magicWandService: MagicWandService,
         public gridService: GridService,
         public magnetismService: MagnetismService,
         public featherService: FeatherService,
         private automaticSaveService: AutomaticSaveService,
+        public rotationService: RotationService,
         public stampService: StampService,
     ) {
         this.toolService.switchTool(ToolUsed.Color); // default tool on the sidebar
@@ -123,9 +130,20 @@ export class SidebarComponent {
         }
     }
 
+    exportEmail(): void {
+        if (this.isDialogloadSaveEport) {
+            this.exportEmailRef = this.dialogCreator.open(DialogExportEmailComponent);
+            this.isDialogloadSaveEport = false;
+            this.exportEmailRef.afterClosed().subscribe(() => {
+                this.isDialogloadSaveEport = true;
+            });
+        }
+    }
+
     createNewDrawing(): void {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
         this.automaticSaveService.save();
+        // this.rotationService.resetAngle();
     }
 
     openCarrousel(): void {
@@ -313,6 +331,15 @@ export class SidebarComponent {
         return this.isTextChecked;
     }
 
+    pickMagicWandSelection(): void {
+        this.drawingService.cursorUsed = cursorName.default;
+        this.toolService.switchTool(ToolUsed.MagicWand);
+        this.isDialogloadSaveEport = true;
+    }
+
+    get MagicWandSelectionChecked(): boolean {
+        return this.isMagicWandSelectionChecked;
+    }
     pickStamp(): void {
         this.resetCursorCanvas();
         this.drawingService.cursorUsed = 'none';
@@ -387,6 +414,11 @@ export class SidebarComponent {
             this.gridService.activateGrid();
             return;
         }
+    }
+
+    buttonSelectAllMagicWand(): void {
+        this.pickSelectionRectangle();
+        this.selectionRectangleService.selectAll();
     }
 
     // keybind control o for new drawing
@@ -518,8 +550,10 @@ export class SidebarComponent {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogloadSaveEport) {
             this.selectionRectangleService.selectAll();
-        } else {
+        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.selectAll();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.buttonSelectAllMagicWand();
         }
     }
 
@@ -529,6 +563,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onLeftArrow();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onLeftArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onLeftArrow();
         }
     }
     @HostListener('window:keydown.ArrowRight', ['$event']) onRightArrow(event: KeyboardEvent): void {
@@ -537,6 +573,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onRightArrow();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onRightArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onRightArrow();
         }
     }
 
@@ -546,6 +584,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onDownArrow();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onDownArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onDownArrow();
         }
     }
 
@@ -555,6 +595,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onUpArrow();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onUpArrow();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onUpArrow();
         }
     }
     @HostListener('window:keyup.ArrowLeft', ['$event']) onLeftArrowUp(event: KeyboardEvent): void {
@@ -563,6 +605,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onLeftArrowUp();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onLeftArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onLeftArrowUp();
         }
     }
 
@@ -572,6 +616,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onRightArrowUp();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onRightArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onRightArrowUp();
         }
     }
 
@@ -581,6 +627,8 @@ export class SidebarComponent {
             this.selectionRectangleService.onDownArrowUp();
         } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onDownArrowUp();
+        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onDownArrowUp();
         }
     }
 
@@ -588,8 +636,14 @@ export class SidebarComponent {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogloadSaveEport) {
             this.selectionRectangleService.onUpArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogloadSaveEport) {
             this.selectionEllipseService.onUpArrowUp();
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogloadSaveEport) {
+            this.magicWandService.onUpArrowUp();
         }
     }
 
@@ -613,8 +667,15 @@ export class SidebarComponent {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
             this.selectionRectangleService.copyImage();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
             this.selectionEllipseService.copyImage();
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            this.magicWandService.copyImage();
+            return;
         }
     }
 
@@ -622,8 +683,15 @@ export class SidebarComponent {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
             this.selectionRectangleService.cutImage();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
             this.selectionEllipseService.cutImage();
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            this.magicWandService.cutImage();
+            return;
         }
     }
 
@@ -631,8 +699,15 @@ export class SidebarComponent {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
             this.selectionRectangleService.pasteImage();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
             this.selectionEllipseService.pasteImage();
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            this.magicWandService.pasteImage();
+            return;
         }
     }
 
@@ -640,8 +715,24 @@ export class SidebarComponent {
         event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
             this.selectionRectangleService.deleteImage();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
             this.selectionEllipseService.deleteImage();
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            this.magicWandService.deleteImage();
+            return;
+        }
+    }
+
+    @HostListener('window:keydown.v', ['$event'])
+    changeMagicWandMode(event: KeyboardEvent): void {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogloadSaveEport) {
+            this.resetCheckedButton();
+            this.isMagicWandSelectionChecked = true;
+            this.pickMagicWandSelection();
         }
     }
 
@@ -701,6 +792,16 @@ export class SidebarComponent {
             this.featherService.addOrRetract(event);
             this.featherService.changeAngleWithScroll();
         }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            this.rotationService.onWheelScroll(this.selectionEllipseService, event);
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            this.rotationService.onWheelScroll(this.selectionRectangleService, event);
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            this.rotationService.onWheelScroll(this.magicWandService, event);
+        }
+        event.stopPropagation();
         if (this.toolService.currentToolName === ToolUsed.Stamp) {
             this.stampService.addOrRetract(event);
             this.stampService.changeAngleWithScroll();
@@ -715,6 +816,13 @@ export class SidebarComponent {
         if (this.toolService.currentToolName === ToolUsed.Stamp) {
             this.stampService.isAltPressed = true;
         }
+        if (
+            this.toolService.currentToolName === ToolUsed.SelectionEllipse ||
+            this.toolService.currentToolName === ToolUsed.SelectionRectangle ||
+            this.toolService.currentToolName === ToolUsed.MagicWand
+        ) {
+            this.rotationService.altPressed = true;
+        }
     }
 
     @HostListener('window:keyup.alt', ['$event'])
@@ -724,6 +832,13 @@ export class SidebarComponent {
         }
         if (this.toolService.currentToolName === ToolUsed.Stamp) {
             this.stampService.isAltPressed = false;
+        }
+        if (
+            this.toolService.currentToolName === ToolUsed.SelectionEllipse ||
+            this.toolService.currentToolName === ToolUsed.SelectionRectangle ||
+            this.toolService.currentToolName === ToolUsed.MagicWand
+        ) {
+            this.rotationService.altPressed = false;
         }
     }
 

@@ -58,7 +58,7 @@ describe('EraserService', () => {
     it(' mouseDown should set mouseDownCoord to correct position', () => {
         const expectedResult: Vec2 = { x: 10, y: 25 };
         service.onMouseDown(mouseEvent);
-        expect(service.mouseDownCoord).toEqual(expectedResult);
+        expect(service.mouseDownCoords).toEqual(expectedResult);
     });
 
     it(' mouseDown should set mouseDown property to true on left click', () => {
@@ -77,7 +77,7 @@ describe('EraserService', () => {
     });
 
     it(' onMouseUp should not call eraseLine if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
 
         service.onMouseUp(mouseEvent);
@@ -85,7 +85,7 @@ describe('EraserService', () => {
     });
 
     it(' onMouseUp should call eraseLine if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
         service.onMouseMove(mouseEvent1);
         service.onMouseUp(mouseEvent);
@@ -93,7 +93,7 @@ describe('EraserService', () => {
     });
 
     it(' onMouseUp should call eraseLine if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
         service.mouseMove = true;
         service.onMouseUp(mouseEvent);
@@ -102,14 +102,14 @@ describe('EraserService', () => {
 
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
         service.mouseDown = false;
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
 
         service.onMouseUp(mouseEvent);
         expect(removeLineSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseMove should call drawLine if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
 
         service.onMouseMove(mouseEvent);
@@ -118,7 +118,7 @@ describe('EraserService', () => {
     });
 
     it(' onMouseMove should not call drawLine if mouse was not already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
 
         service.onMouseMove(mouseEvent);

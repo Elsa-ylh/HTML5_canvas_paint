@@ -201,7 +201,13 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
 
     @HostListener('contextmenu', ['$event'])
     onRightClick(event: MouseEvent): void {
-        if (this.toolService.currentToolName === ToolUsed.PaintBucket || this.toolService.currentToolName === ToolUsed.Dropper) {
+        if (
+            this.toolService.currentToolName === ToolUsed.PaintBucket ||
+            this.toolService.currentToolName === ToolUsed.Dropper ||
+            this.toolService.currentToolName === ToolUsed.SelectionRectangle ||
+            this.toolService.currentToolName === ToolUsed.SelectionEllipse ||
+            this.toolService.currentToolName === ToolUsed.MagicWand
+        ) {
             event.preventDefault();
         }
     }

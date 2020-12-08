@@ -39,8 +39,8 @@ export class FeatherService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
+            this.mouseDownCoords = this.getPositionFromMouse(event);
+            this.pathData.push(this.mouseDownCoords);
             this.primaryColor = this.colorService.primaryColor;
         }
         this.clearEffectTool();

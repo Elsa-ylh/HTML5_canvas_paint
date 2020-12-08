@@ -10,12 +10,14 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { FeatherService } from '@app/services/tools/feather.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { GridService } from './grid.service';
 
 describe('Service: Feather', () => {
     let featherStub: FeatherService;
     let drawingStub: DrawingService;
     let colorStub: ColorService;
-    let undoredoStub: UndoRedoService;
+    let undoRedoStub: UndoRedoService;
+    let gridStub: GridService;
     let automaticSaveStub: AutomaticSaveService;
     let canvasResizeStub: CanvasResizerService;
     let mouseEvent: MouseEvent;
@@ -30,10 +32,11 @@ describe('Service: Feather', () => {
     beforeEach(() => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
-        undoredoStub = new UndoRedoService(drawingStub);
-        canvasResizeStub = new CanvasResizerService(undoredoStub);
+        undoRedoStub = new UndoRedoService(drawingStub);
+        gridStub = new GridService(drawingStub);
+        canvasResizeStub = new CanvasResizerService(gridStub, undoRedoStub);
         automaticSaveStub = new AutomaticSaveService(canvasResizeStub, drawingStub);
-        featherStub = new FeatherService(drawingStub, colorStub, undoredoStub, automaticSaveStub);
+        featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
@@ -58,7 +61,7 @@ describe('Service: Feather', () => {
                 { provide: ColorService, useValue: colorStub },
                 { provide: FeatherService, useValue: featherStub },
                 { provide: CanvasResizerService, useValue: canvasResizeStub },
-                { provide: UndoRedoService, useValue: undoredoStub },
+                { provide: UndoRedoService, useValue: undoRedoStub },
             ],
         });
 
@@ -78,10 +81,10 @@ describe('Service: Feather', () => {
         expect(featherStub).toBeTruthy();
     });
 
-    it(' mouseDown should set mouseDownCoord to correct position', () => {
+    it(' mouseDown should set mouseDownCoords to correct position', () => {
         const expectedResult: Vec2 = { x: 10, y: 25 };
         featherStub.onMouseDown(mouseEvent);
-        expect(featherStub.mouseDownCoord).toEqual(expectedResult);
+        expect(featherStub.mouseDownCoords).toEqual(expectedResult);
     });
 
     it(' mouseDown should set mouseDown property to true on left click and right click', () => {
@@ -90,7 +93,7 @@ describe('Service: Feather', () => {
     });
 
     it(' onMouseUp should call drawFeather if mouse was already down', () => {
-        featherStub.mouseDownCoord = { x: 0, y: 0 };
+        featherStub.mouseDownCoords = { x: 0, y: 0 };
         featherStub.mouseDown = true;
         const drawFeatherSpy = spyOn(featherStub, 'drawFeather').and.callThrough();
         featherStub.onMouseUp(mouseEvent);

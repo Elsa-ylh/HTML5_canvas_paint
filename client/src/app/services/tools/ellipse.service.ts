@@ -51,9 +51,9 @@ export class EllipseService extends Tool {
             this.onMouseUp(event);
         }
         if (this.mouseDown) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.mouseDownCoords = this.getPositionFromMouse(event);
         }
-        this.mousePosition = this.mouseDownCoord;
+        this.mousePosition = this.mouseDownCoords;
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -61,7 +61,7 @@ export class EllipseService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.mousePosition = mousePosition;
             this.canvasSelected = true;
-            this.selectEllipse(mousePosition, this.mouseDownCoord, {
+            this.selectEllipse(mousePosition, this.mouseDownCoords, {
                 primaryColor: this.strokeColor,
                 secondaryColor: this.fillColor,
                 lineWidth: this.lineWidth,
@@ -74,7 +74,7 @@ export class EllipseService extends Tool {
         // undo-redo
         const ellipseAction = new EllipseAction(
             this.mousePosition,
-            this.mouseDownCoord,
+            this.mouseDownCoords,
             this.strokeColor,
             this.fillColor,
             this.lineWidth,
@@ -97,7 +97,7 @@ export class EllipseService extends Tool {
             this.mousePosition = mousePosition;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.canvasSelected = false;
-            this.selectEllipse(mousePosition, this.mouseDownCoord, {
+            this.selectEllipse(mousePosition, this.mouseDownCoords, {
                 primaryColor: this.strokeColor,
                 secondaryColor: this.fillColor,
                 lineWidth: this.lineWidth,
@@ -126,7 +126,7 @@ export class EllipseService extends Tool {
         if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.canvasSelected = false;
-            this.selectEllipse(this.mousePosition, this.mouseDownCoord, {
+            this.selectEllipse(this.mousePosition, this.mouseDownCoords, {
                 primaryColor: this.strokeColor,
                 secondaryColor: this.fillColor,
                 lineWidth: this.lineWidth,
@@ -142,7 +142,7 @@ export class EllipseService extends Tool {
         if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.canvasSelected = false;
-            this.selectEllipse(this.mousePosition, this.mouseDownCoord, {
+            this.selectEllipse(this.mousePosition, this.mouseDownCoords, {
                 primaryColor: this.strokeColor,
                 secondaryColor: this.fillColor,
                 lineWidth: this.lineWidth,
@@ -156,7 +156,7 @@ export class EllipseService extends Tool {
     selectEllipse(mousePosition: Vec2, mouseDownCoord: Vec2, generalInfo: ToolGeneralInfo): void {
         this.height = mousePosition.y - mouseDownCoord.y;
         this.width = mousePosition.x - mouseDownCoord.x;
-        this.mouseDownCoord = mouseDownCoord;
+        this.mouseDownCoords = mouseDownCoord;
         this.strokeColor = generalInfo.primaryColor;
         this.fillColor = generalInfo.secondaryColor;
         this.lineWidth = generalInfo.lineWidth;
@@ -216,8 +216,8 @@ export class EllipseService extends Tool {
     private drawEllipse(ctx: CanvasRenderingContext2D, radiusX: number, radiusY: number): void {
         let centerX = 0;
         let centerY = 0;
-        centerX = this.mouseDownCoord.x + radiusX;
-        centerY = this.mouseDownCoord.y + radiusY;
+        centerX = this.mouseDownCoords.x + radiusX;
+        centerY = this.mouseDownCoords.y + radiusY;
         if (this.circle) {
             ctx.ellipse(
                 centerX,
