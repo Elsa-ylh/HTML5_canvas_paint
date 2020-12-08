@@ -1,12 +1,8 @@
-/* tslint:disable:no-unused-variable */
-/* tslint:disable:max-file-line-count */
-/*
-
-import { inject, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { ControlGroup } from '@app/classes/control-group';
+//import { ControlGroup } from '@app/classes/control-group';
 import { MouseButton } from '@app/classes/mouse-button';
-import { SelectionImage } from '@app/classes/selection';
+//import { SelectionImage } from '@app/classes/selection';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
@@ -15,7 +11,7 @@ import { RotationService } from '@app/services/tools/selection-service/rotation.
 // import { Subscription } from 'rxjs/internal/Subscription';
 // import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
-import { SelectionService } from '@app/services/tools/selection-service/selection-service';
+// import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // tslint:disable:no-any
@@ -47,7 +43,7 @@ describe('Service: SelectionRectangle', () => {
     // let subscriptionMoveDownSubscribeSpy: jasmine.Spy<any>;
 
     // let getPositionFromMouseSpy: jasmine.Spy<any>;
-    // let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let drawingStub: DrawingService;
     let magnetismStub: MagnetismService;
@@ -55,45 +51,30 @@ describe('Service: SelectionRectangle', () => {
     let undoStub: UndoRedoService;
     let gridStub: GridService;
     let canvasResizeStub: CanvasResizerService;
-    let selectionStub: SelectionService;
-    let controlMock: ControlGroup;
+    // let selectionStub: SelectionService;
+    // let controlMock: ControlGroup;
 
-    let mouseEvent: MouseEvent;
+    // let mouseEvent: MouseEvent;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    let canvas: HTMLCanvasElement;
+    // let canvas: HTMLCanvasElement;
 
     beforeEach(() => {
-        drawingStub = new DrawingService();
-        service = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoStub);
+
         magnetismStub = new MagnetismService(gridStub);
         gridStub = new GridService(drawingStub, canvasResizeStub);
         undoStub = new UndoRedoService(drawingStub);
         rotationStub = new RotationService(drawingStub);
-        selectionStub = new SelectionService(drawingStub, magnetismStub, rotationStub);
-        //   drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'isPreviewCanvasBlank']);
 
-        controlMock = new ControlGroup(drawingStub);
-        selectionStub['controlGroup'] = controlMock;
 
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        canvas = canvasTestHelper.canvas as HTMLCanvasElement;
-
-        canvasTestHelper.drawCanvas.width = 1000;
-        canvasTestHelper.drawCanvas.height = 1000;
-        canvas.height = 1000;
-        canvas.width = 1000;
-
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-
-        selectionStub.selection = new SelectionImage(drawingStub);
-        selectionStub.selection.image = new Image();
-        selectionStub.selection.image.src = selectionStub.selection.image.src;
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'isPreviewCanvasBlank']);
 
         TestBed.configureTestingModule({
-            providers: [
-                { provide: DrawingService, useValue: drawingStub },
+            providers: [SelectionRectangleService,
+                { provide: DrawingService, useValue: drawServiceSpy },
                 { provide: UndoRedoService, useValue: undoStub },
                 { provide: MagnetismService, useValue: magnetismStub },
                 { provide: RotationService, useValue: rotationStub },
@@ -105,29 +86,29 @@ describe('Service: SelectionRectangle', () => {
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasTestHelper.canvas as HTMLCanvasElement;
-        drawingStub.baseCtx = baseCtxStub;
-        drawingStub.previewCtx = previewCtxStub;
-        drawingStub.canvas = canvasTestHelper.canvas as HTMLCanvasElement;
-        // isInsideSelectionSpy = spyOn<any>(service, 'isInsideSelection').and.callThrough();
-        mouseEvent = { x: 15, y: 6, button: MouseButton.Left } as MouseEvent;
     });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
-    it('onmouseDown should call clearEffectTool', () => {
-        const clearEffectToolSpy = spyOn(service, 'clearEffectTool').and.callThrough();
+    it('onmouseDown should save the mouse down coords as imagePosition when starting a selection', () => {
+        drawServiceSpy.isPreviewCanvasBlank.and.returnValue(true);
+        // const getPositionFromMouseSpy = spyOn<any>(service, 'getPositionFromMouse').and.callThrough();
+        let mouseEvent = { x: 10, y: 10, button: MouseButton.Left } as MouseEvent;
+        service.selection.imagePosition = { x: 1, y: 1 };
+        service.mouseDownCoords = { x: 1, y: 1 };
         service.onMouseDown(mouseEvent);
-        expect(clearEffectToolSpy).toHaveBeenCalled();
+        // expect(getPositionFromMouseSpy).toHaveBeenCalled();
+        expect(service.mouseDownCoords).toEqual({ x: 10, y: 10 });
     });
 
-    it('onmouseDown should call getPositionFromMouse', () => {
-        service.mouseDown = true;
-        const getPositionFromMouseSpy = spyOn<any>(service, 'getPositionFromMouse').and.callThrough();
-        service.onMouseDown(mouseEvent);
-        expect(getPositionFromMouseSpy).toHaveBeenCalled();
-    });
+    // it('onmouseDown should call getPositionFromMouse', () => {
+    //     service.mouseDown = true;
+    //     const getPositionFromMouseSpy = spyOn<any>(service, 'getPositionFromMouse').and.callThrough();
+    //     service.onMouseDown(mouseEvent);
+    //     expect(getPositionFromMouseSpy).toHaveBeenCalled();
+    // });
 
     // it('onmouseDown should call isInControlPoint if isPreviewCanvasBlank is false', () => {
     //     service.mouseDown = true;
@@ -464,5 +445,3 @@ describe('Service: SelectionRectangle', () => {
     //     // expect(pasteArrowSelectionSpy).not.toHaveBeenCalled();
     // });
 });
-
-*/
