@@ -324,6 +324,7 @@ export class MagicWandService extends SelectionService {
         this.rightMouseDown = event.button === MouseButton.Right;
 
         if (this.mouseDown) {
+
             this.mouseDownCoords = this.getPositionFromMouse(event);
             this.previousMousePos = this.getPositionFromMouse(event);
             // check if mouse is inside selection
