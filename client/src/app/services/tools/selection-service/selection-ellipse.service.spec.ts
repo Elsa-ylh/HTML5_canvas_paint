@@ -7,12 +7,12 @@ import { ControlPointName } from '@app/classes/control-points';
 import { MouseButton } from '@app/classes/mouse-button';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { Subscription } from 'rxjs/internal/Subscription';
 import { GridService } from '@app/services/tools/grid.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { RotationService } from '@app/services/tools/selection-service/rotation.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 // tslint:disable:no-any
 // tslint:disable:no-magic-numbers
@@ -64,9 +64,6 @@ describe('Service: SelectionRectangle', () => {
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasTestHelper.canvas as HTMLCanvasElement;
-
-        // getPositionFromMouseSpy = spyOn<any>(service, 'getPositionFromMouse').and.callThrough();
-        // isInsideSelectionSpy = spyOn<any>(service, 'isInsideSelection').and.callThrough();
     });
 
     it('should be created', inject([SelectionEllipseService], (service: SelectionEllipseService) => {
