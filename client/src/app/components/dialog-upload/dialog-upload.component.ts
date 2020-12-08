@@ -4,7 +4,6 @@ import { ClientServerCommunicationService } from '@app/services/client-server/cl
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
-const MIN_CHARACTER = 6;
 const MAX_CHARACTER = 64;
 @Component({
     selector: 'app-dialog-upload',
@@ -49,17 +48,26 @@ export class DialogUploadComponent implements OnInit {
         this.saveLoad = true;
         const nameResult = !this.checkName(this.textName);
         const labelResult = !this.checkLabel(this.textLabel);
-        this.errorTextLabel = !nameResult;
+        this.errorTextLabel = !labelResult;
         if (nameResult && labelResult) {
             const labelsSting: Label[] = [];
             if (this.textLabel !== '') {
-                const texts = this.textLabel.split(' ');
+                const texts = this.textLabel.split('#');
                 texts.forEach((textLabel) => {
-                    labelsSting.push({ label: textLabel });
+                    if (textLabel !== '') labelsSting.push({ label: textLabel });
                 });
             }
+            let checkInTheList = true;
             this.labelSelect.forEach((element) => {
-                labelsSting.push({ label: element });
+                checkInTheList = true;
+                labelsSting.forEach((elementLabels) => {
+                    if (checkInTheList && element === elementLabels.label) {
+                        checkInTheList = false;
+                    }
+                });
+                if (checkInTheList) {
+                    labelsSting.push({ label: element });
+                }
             });
             const savePicture: CanvasInformation = {
                 _id: '',
@@ -90,16 +98,16 @@ export class DialogUploadComponent implements OnInit {
         return name === '' || name === undefined || this.notGoodCharacter(name) || name.split(' ').length !== 1;
     }
     checkLabel(label: string): boolean {
-        if (this.notGoodCharacter(label)) {
-            return true;
-        }
         if (label.length === 0) {
             return false;
         }
-        const arrayText = label.split(' ');
-
+        if (label.split(' ').length !== 1) return true;
+        const arrayText = label.split('#');
         for (const textLabel of arrayText) {
-            if (textLabel.length < MIN_CHARACTER || textLabel.length > MAX_CHARACTER) {
+            if (this.notGoodCharacter(textLabel)) {
+                return true;
+            }
+            if (textLabel.length > MAX_CHARACTER) {
                 return true;
             }
         }

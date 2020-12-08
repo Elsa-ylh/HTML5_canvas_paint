@@ -14,9 +14,9 @@
     </mat-grid-tile>
     <mat-grid-tile>
         <mat-label>
-            Consigne pour créer une étiquette <br />Chaque nouvelle étiquette doit être séparée par un espace. Un minimum de 6 caractères et un
-            maximum de 20.<br />
-            Les caractères non autorisés sont : / ! " ' % ? & * # |
+            Consigne pour créer une étiquette <br />Chaque nouvelle étiquette doit être séparée #, aucun espace autorisé et un maximum de 20
+            caractère.<br />
+            Les caractères non autorisés sont : / ! " ' % ? & * |
         </mat-label>
         <mat-form-field appearance="legacy">
             <mat-label>Créer des étiquettes</mat-label>
@@ -31,7 +31,7 @@
     <p class="errer" *ngIf="checkName(textName)">Name : Une ou plusieurs non respect des consignes</p>
     <p class="errer" *ngIf="notGoodCharacter(textName)">Name : Les caractères non autorisés sont : / ! " ' % ? & * # |</p>
     <p class="errer" *ngIf="errorTextLabel">Une ou plusieurs erreurs dans les étiquette</p>
-    <p class="errer" *ngIf="notGoodCharacter(textLabel)">Étiquette : les caractères non autorisés sont : / ! " ' % ? & * # |</p>
+    <p class="errer" *ngIf="checkLabel(textLabel)">Étiquette :aucun espace ou les caractères non autorisés sont : / ! " ' % ? & * |</p>
 </div>
 <div>
     <h1>Liste d'étiquettes existantes</h1>
@@ -49,3 +49,4 @@
         </mat-button-toggle>
     </div>
 </div>
+<button mat-raised-button mat-dialog-close>Fermé</button>
