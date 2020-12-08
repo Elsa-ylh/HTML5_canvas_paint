@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { DialogCreateNewDrawingComponent } from './dialog-create-new-drawing.component';
 
@@ -22,6 +23,7 @@ describe('DialogCreateNewDrawingComponent', () => {
     let alertSpy: jasmine.Spy<any>;
     let keyboardEvent: KeyboardEvent;
     let undoRedoStub: UndoRedoService;
+    let gridStub: GridService;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -29,7 +31,8 @@ describe('DialogCreateNewDrawingComponent', () => {
     beforeEach(async () => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        gridStub = new GridService(drawingStub);
+        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
 
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;

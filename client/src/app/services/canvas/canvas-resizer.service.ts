@@ -13,6 +13,7 @@ import { ResizeDirection } from '@app/classes/resize-direction';
 import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { Vec2 } from '@app/classes/vec2';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { GridService } from '@app/services/tools/grid.service';
 
 @Injectable({
     providedIn: 'root',
@@ -37,7 +38,7 @@ export class CanvasResizerService {
     readonly NORMAL_INDEX: number = 1;
     resizerIndex: number = 1;
 
-    constructor(private undoRedoService: UndoRedoService) {}
+    constructor(private gridService: GridService, private undoRedoService: UndoRedoService) {}
 
     private clearCanvas(context: CanvasRenderingContext2D, dimension: Vec2): void {
         context.clearRect(0, 0, dimension.x, dimension.y);
@@ -142,6 +143,9 @@ export class CanvasResizerService {
                 ctx.fillStyle = 'white';
                 ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 ctx.drawImage(originalImage, 0, 0);
+
+                // reapply grid
+                this.gridService.activateGrid();
             };
         }
         this.clearCanvas(resizeCtx, { x: this.resizeWidth, y: this.resizeHeight });
