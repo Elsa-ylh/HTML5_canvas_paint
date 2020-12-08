@@ -35,7 +35,7 @@ describe('Database service', () => {
             date: new Date('10/08/2020'),
             picture: 'test5',
         };
-        databaseService['collection'].insertMany(allDataTest);
+        await databaseService['collection'].insertMany(allDataTest);
         await databaseService.getPictures();
     });
 
@@ -294,11 +294,11 @@ describe('Database service', () => {
         client.close();
         await databaseService
             .delete('')
-            .then((result: boolean) => {
-                expect(result).to.equal(false);
+            .then(() => {
+                expect(true).to.equal(false);
             })
             .catch((err) => {
-                expect(err.message).to.equal('server is closed');
+                expect(err.message).to.equal('Topology is closed, please connect');
             });
     });
     it('test find modifyPicture', async () => {

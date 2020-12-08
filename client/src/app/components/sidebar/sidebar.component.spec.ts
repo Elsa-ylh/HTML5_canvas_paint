@@ -36,6 +36,8 @@ import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { MagicWandService } from '@app/services/tools/selection-service/magic-wand.service';
+import { RotationService } from '@app/services/tools/selection-service/rotation.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
@@ -77,6 +79,8 @@ describe('SidebarComponent', () => {
     let featherStub: FeatherService;
     let magnetismStub: MagnetismService;
     let gridStub: GridService;
+    let rotationStub: RotationService;
+    let magicWandStub: MagicWandService;
     let pasteImageRectSpy: jasmine.SpyObj<any>;
     let pasteImageEllipseSpy: jasmine.SpyObj<any>;
     let deactivateGridSpy: jasmine.SpyObj<any>;
@@ -103,13 +107,15 @@ describe('SidebarComponent', () => {
             lineStub = new LineService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             dropperServiceStub = new DropperService(drawingStub, colorStub, automaticSaveStub);
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, automaticSaveStub);
-            selectionStub = new SelectionService(drawingStub, magnetismStub);
-            textServiceStub = new TextService(drawingStub, colorStub, undoRedoStub);
+            magicWandStub = new MagicWandService(drawingStub, canvasResizerStub, paintBucketStub, magnetismStub, undoRedoStub, rotationStub);
             sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            selectionStub = new SelectionService(drawingStub, magnetismStub, rotationStub);
             textServiceStub = new TextService(drawingStub, colorStub, undoRedoStub);
             stampServiceStub = new StampService(drawingStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
+            magnetismStub = new MagnetismService(gridStub);
             gridStub = new GridService(drawingStub, canvasResizerStub);
+            rotationStub = new RotationService(drawingStub);
 
             toolServiceStub = new ToolService(
                 pencilStub,
@@ -123,15 +129,16 @@ describe('SidebarComponent', () => {
                 paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
+                magicWandStub,
                 sprayStub,
                 featherStub,
                 textServiceStub,
                 stampServiceStub,
             );
 
-            selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub);
-            selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub);
             magnetismStub = new MagnetismService(gridStub);
+            selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
+            selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             canvas = canvasTestHelper.canvas;
             canvas.width = 100;

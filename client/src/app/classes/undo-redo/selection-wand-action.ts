@@ -1,11 +1,17 @@
+import { RGBA } from '@app/classes/rgba';
 import { SelectionImage } from '@app/classes/selection';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
+import { MagicWandService } from '@app/services/tools/selection-service/magic-wand.service';
 
-export class SelectionRectAction extends AbsUndoRedo {
+export class SelectionWandAction extends AbsUndoRedo {
     private selection: SelectionImage;
-    constructor(private selectionService: SelectionRectangleService, private drawingService: DrawingService, selection: SelectionImage) {
+    constructor(
+        private selectionService: MagicWandService,
+        private drawingService: DrawingService,
+        selection: SelectionImage,
+        private originalColor: RGBA,
+    ) {
         super();
         this.selection = new SelectionImage(this.drawingService);
         this.selection.copyImageInitialPos = { x: selection.copyImageInitialPos.x, y: selection.copyImageInitialPos.y };
@@ -23,10 +29,11 @@ export class SelectionRectAction extends AbsUndoRedo {
     apply(): void {
         this.selectionService.selection.width = this.selection.width;
         this.selectionService.selection.height = this.selection.height;
+        this.selectionService.originalColor = this.originalColor;
         this.selectionService.selection.copyImageInitialPos = this.selection.copyImageInitialPos;
+        this.selectionService.selection.imagePosition = this.selection.imagePosition;
         this.selectionService.selection.rotationAngle = this.selection.rotationAngle;
-
-        this.selectionService.clearSelection();
+        this.selectionService.clearSelectionWand(this.selection.copyImageInitialPos, this.originalColor);
         this.selectionService.pasteSelection(this.selection);
     }
 }
