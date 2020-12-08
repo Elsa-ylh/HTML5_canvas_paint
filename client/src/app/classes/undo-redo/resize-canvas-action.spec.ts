@@ -5,6 +5,7 @@ import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action'
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // tslint:disable:no-magic-numbers
@@ -14,6 +15,7 @@ describe('resizeCanvasAction', () => {
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
     let resizeStub: CanvasResizerService;
+    let gridStub: GridService;
 
     let event: MouseEvent;
     let resizeCtx: CanvasRenderingContext2D;
@@ -34,7 +36,8 @@ describe('resizeCanvasAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        resizeStub = new CanvasResizerService(undoRedoStub);
+        gridStub = new GridService(drawingStub);
+        resizeStub = new CanvasResizerService(gridStub, undoRedoStub);
         resizeActionStub = new ResizeCanvasAction(event, resizeCtx, baseCanvas, resizeDirection, resizeStub);
         canvas = canvasTestHelper.canvas;
         // tslint:disable:no-magic-numbers

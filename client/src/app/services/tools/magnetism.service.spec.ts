@@ -7,7 +7,6 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ControlGroup } from '@app/classes/control-group';
 import { ControlPointName } from '@app/classes/control-points';
 import { Vec2 } from '@app/classes/vec2';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from './grid.service';
 import { MagnetismParams, MagnetismService } from './magnetism.service';
@@ -26,8 +25,7 @@ let selectionSize: Vec2;
 describe('Service: Magnetism', () => {
     beforeEach(() => {
         drawingStub = new DrawingService();
-        const canvasResizerStub = {} as CanvasResizerService;
-        gridStub = new GridService(drawingStub, canvasResizerStub);
+        gridStub = new GridService(drawingStub);
 
         TestBed.configureTestingModule({
             providers: [{ provide: GridService, useValue: gridStub }],

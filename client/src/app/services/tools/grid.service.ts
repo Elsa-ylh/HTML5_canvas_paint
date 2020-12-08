@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 export const SQUARE_STEP_SIZE = 5;
@@ -14,7 +13,7 @@ export class GridService {
     opacity: number = 0.1; // 0 means transparent or DISABLED, 1 means super opaque
     squareWidth: number = 100; // the unit is in pixels
 
-    constructor(private drawingService: DrawingService, private canvasResizerService: CanvasResizerService) {}
+    constructor(private drawingService: DrawingService) {}
 
     getGridData(): ImageData {
         return this.drawingService.gridCtx.getImageData(0, 0, this.drawingService.gridCanvas.width, this.drawingService.gridCanvas.height);
@@ -24,8 +23,8 @@ export class GridService {
         if (this.isGridSettingsChecked) {
             const ctx = this.drawingService.gridCtx;
             this.drawingService.clearCanvas(ctx);
-            const w = this.canvasResizerService.canvasSize.x;
-            const h = this.canvasResizerService.canvasSize.y;
+            const w = this.drawingService.canvas.width;
+            const h = this.drawingService.canvas.height;
             const nbOfVerticalLines = Math.ceil(w / this.squareWidth);
             const nbOfHorizontalLines = Math.ceil(h / this.squareWidth);
             ctx.fillStyle = 'rgba(0, 0, 0)'; // black lines
