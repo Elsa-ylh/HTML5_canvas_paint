@@ -47,6 +47,10 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
         return ToolUsed.Dropper;
     }
 
+    get stamp(): ToolUsed.Stamp {
+        return ToolUsed.Stamp;
+    }
+
     // On utilise ce canvas pour dessiner sans affecter le dessin final, aussi utilisé pour sauvegarder
     // une version du dessin avant de l'appliquer au final.
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
@@ -197,7 +201,13 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
 
     @HostListener('contextmenu', ['$event'])
     onRightClick(event: MouseEvent): void {
-        if (this.toolService.currentToolName === ToolUsed.PaintBucket || this.toolService.currentToolName === ToolUsed.Dropper) {
+        if (
+            this.toolService.currentToolName === ToolUsed.PaintBucket ||
+            this.toolService.currentToolName === ToolUsed.Dropper ||
+            this.toolService.currentToolName === ToolUsed.SelectionRectangle ||
+            this.toolService.currentToolName === ToolUsed.SelectionEllipse ||
+            this.toolService.currentToolName === ToolUsed.MagicWand
+        ) {
             event.preventDefault();
         }
     }

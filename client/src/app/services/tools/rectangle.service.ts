@@ -45,9 +45,9 @@ export class RectangleService extends Tool {
             this.onMouseUp(event);
         }
         if (this.mouseDown) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.mouseDownCoords = this.getPositionFromMouse(event);
         }
-        this.mousePosition = this.mouseDownCoord;
+        this.mousePosition = this.mouseDownCoords;
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -55,7 +55,7 @@ export class RectangleService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.mousePosition = mousePosition;
             this.canvasSelected = true;
-            this.selectRectangle(mousePosition, this.mouseDownCoord, {
+            this.selectRectangle(mousePosition, this.mouseDownCoords, {
                 primaryColor: this.strokeColor,
                 secondaryColor: this.fillColor,
                 lineWidth: this.lineWidth,
@@ -67,7 +67,7 @@ export class RectangleService extends Tool {
         // undo- redo
         const rectAction = new RectangleAction(
             this.mousePosition,
-            this.mouseDownCoord,
+            this.mouseDownCoords,
             this.strokeColor,
             this.fillColor,
             this.lineWidth,
@@ -90,7 +90,7 @@ export class RectangleService extends Tool {
             this.mousePosition = mousePosition;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.canvasSelected = false;
-            this.selectRectangle(mousePosition, this.mouseDownCoord, {
+            this.selectRectangle(mousePosition, this.mouseDownCoords, {
                 primaryColor: this.strokeColor,
                 secondaryColor: this.fillColor,
                 lineWidth: this.lineWidth,
@@ -119,7 +119,7 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.canvasSelected = false;
-            this.selectRectangle(this.mousePosition, this.mouseDownCoord, {
+            this.selectRectangle(this.mousePosition, this.mouseDownCoords, {
                 primaryColor: this.strokeColor,
                 secondaryColor: this.fillColor,
                 lineWidth: this.lineWidth,
@@ -135,7 +135,7 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.canvasSelected = false;
-            this.selectRectangle(this.mousePosition, this.mouseDownCoord, {
+            this.selectRectangle(this.mousePosition, this.mouseDownCoords, {
                 primaryColor: this.strokeColor,
                 secondaryColor: this.fillColor,
                 lineWidth: this.lineWidth,

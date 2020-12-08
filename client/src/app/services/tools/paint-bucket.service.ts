@@ -147,7 +147,7 @@ export class PaintBucketService extends Tool {
     /*tslint:enable:cyclomatic-complexity*/
 
     // transform #000000 in {red : 0, green : 0, blue : 0, alpha : 0}
-    private hexToRGBA(hex: string): RGBA {
+    hexToRGBA(hex: string): RGBA {
         // tslint:disable-next-line:no-magic-numbers
         const r: number = parseInt(hex.slice(1, 3), this.radix);
         // tslint:disable-next-line:no-magic-numbers
@@ -160,7 +160,7 @@ export class PaintBucketService extends Tool {
         return { red: r, green: g, blue: b, alpha: a };
     }
 
-    private matchFillColor(currentColor: RGBA, targetColor: RGBA): boolean {
+    matchFillColor(currentColor: RGBA, targetColor: RGBA): boolean {
         let matchFillColor = true;
         const tolerance = this.toleranceToRGBA();
         matchFillColor = matchFillColor && targetColor.red >= currentColor.red - tolerance && targetColor.red <= currentColor.red + tolerance;
@@ -214,7 +214,7 @@ export class PaintBucketService extends Tool {
         this.undoRedoService.clearRedo();
     }
 
-    private toleranceToRGBA(): number {
+    toleranceToRGBA(): number {
         if (this.tolerance === MIN_TOLERANCE) return 0;
         // tslint:disable-next-line:no-magic-numbers
         if (this.tolerance === MAX_TOLERANCE) return 255;

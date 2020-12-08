@@ -22,15 +22,19 @@ import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { MagicWandService } from '@app/services/tools/selection-service/magic-wand.service';
+import { RotationService } from '@app/services/tools/selection-service/rotation.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SprayService } from '@app/services/tools/spray.service';
+import { StampService } from '@app/services/tools/stamp.service';
 import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 class ToolStub extends Tool {}
 // tslint:disable:no-any
 // tslint:disable:no-magic-numbers
+// tslint:disable:prefer-const
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
@@ -54,10 +58,13 @@ describe('DrawingComponent', () => {
     let selectionEllipseStub: SelectionEllipseService;
     let undoRedoStub: UndoRedoService;
     let sprayStub: SprayService;
-    let gridStub: GridService;
-    let magnetismStub: MagnetismService;
-
+    let magicWandStub: MagicWandService;
     let textServiceStub: TextService;
+    let magnetismStub: MagnetismService;
+    let gridStub: GridService;
+    let rotationStub: RotationService;
+    let stampServiceStub: StampService;
+
     beforeEach(
         waitForAsync(() => {
             drawingStub = new DrawingService();
@@ -76,12 +83,17 @@ describe('DrawingComponent', () => {
             magnetismStub = new MagnetismService(gridStub);
             polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, autoSaveStub);
-            selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub);
-            selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub);
+            selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
+            selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
+            selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
+            selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
+            stampServiceStub = new StampService(drawingStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
+            gridStub = new GridService(drawingStub, canvasResizerStub);
+            magnetismStub = new MagnetismService(gridStub);
             toolServiceStub = new ToolService(
                 pencilStub,
                 eraserStub,
@@ -94,9 +106,11 @@ describe('DrawingComponent', () => {
                 paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
+                magicWandStub,
                 sprayStub,
                 featherStub,
                 textServiceStub,
+                stampServiceStub,
             );
 
             toolStub = toolServiceStub.currentTool;

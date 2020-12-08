@@ -21,8 +21,7 @@
         #cursorCanvas
         width="40px"
         height="40px"
-        [ngStyle]="{ cursor: cursorUsed }"
-        [style.display]="toolService.currentToolName == dropper ? 'inline-block' : 'none'"
+        [style.display]="toolService.currentToolName == dropper || stamp ? 'inline-block' : 'none'"
         [ngStyle]="{ cursor: cursorUsed }"
     ></canvas>
     <canvas

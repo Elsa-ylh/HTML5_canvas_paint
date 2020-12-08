@@ -1,6 +1,7 @@
 /*
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { SelectionImage } from '@app/classes/selection';
 import { SelectionEllipseAction } from '@app/classes/undo-redo/selection-ellipse-action';
 import { Vec2 } from '@app/classes/vec2';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
@@ -17,12 +18,13 @@ describe('SelectionEllipseAction', () => {
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
     let selectionEllipseStub: SelectionEllipseService;
-    let copyPosition: Vec2;
-    let imageData: ImageData;
-    let selectionRect: Vec2;
-    let ellipseRad: Vec2;
-    let width: number;
-    let height: number;
+    let magnetismStub: MagnetismService;
+    let gridService: GridService;
+    let rotationStub: RotationService;
+    let canvasResizeStub: CanvasResizerService;
+
+    let selection: SelectionImage;
+
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
@@ -32,14 +34,10 @@ describe('SelectionEllipseAction', () => {
     let magnetismStub: MagnetismService;
 
     beforeEach(() => {
-        // tslint:disable:no-magic-numbers
-        copyPosition = { x: 5, y: 5 };
-        imageData = new ImageData(10, 10);
-        selectionRect = { x: 6, y: 7 };
-        ellipseRad = { x: 5, y: 5 };
-        width = 10;
-        // tslint:disable:no-magic-numbers
-        height = 10;
+        selection = new SelectionImage(drawingStub);
+        selection.image = new Image();
+        selection.image.src = selection.image.src;
+
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);

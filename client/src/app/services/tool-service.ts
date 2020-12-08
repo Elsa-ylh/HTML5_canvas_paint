@@ -10,9 +10,11 @@ import { FeatherService } from './tools/feather.service';
 import { LineService } from './tools/line.service';
 import { PaintBucketService } from './tools/paint-bucket.service';
 import { PolygonService } from './tools/polygon.service';
+import { MagicWandService } from './tools/selection-service/magic-wand.service';
 import { SelectionEllipseService } from './tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from './tools/selection-service/selection-rectangle.service';
 import { SprayService } from './tools/spray.service';
+import { StampService } from './tools/stamp.service';
 import { TextService } from './tools/text.service';
 
 @Injectable({
@@ -35,9 +37,11 @@ export class ToolService {
         private paintBucketService: PaintBucketService,
         private selectionRectangleService: SelectionRectangleService,
         private selectionEllipseService: SelectionEllipseService,
+        private magicWandService: MagicWandService,
         private sprayService: SprayService,
         private featherService: FeatherService,
         private textService: TextService,
+        private stampService: StampService,
     ) {
         this.tableTool[ToolUsed.NONE] = this.pencilService;
         this.tableTool[ToolUsed.Pencil] = this.pencilService;
@@ -54,6 +58,8 @@ export class ToolService {
         this.tableTool[ToolUsed.Spray] = this.sprayService;
         this.tableTool[ToolUsed.Feather] = this.featherService;
         this.tableTool[ToolUsed.Text] = this.textService;
+        this.tableTool[ToolUsed.MagicWand] = this.magicWandService;
+        this.tableTool[ToolUsed.Stamp] = this.stampService;
 
         this.switchTool(ToolUsed.NONE); // default tools if all else fail in the sidebar usually
     }

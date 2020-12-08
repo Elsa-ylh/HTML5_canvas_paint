@@ -58,7 +58,7 @@ describe('Service: Polygon', () => {
     it(' mouseDown should set mouseDownCoord to correct position', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
         service.onMouseDown(mouseEvent);
-        expect(service.mouseDownCoord).toEqual(expectedResult);
+        expect(service.mouseDownCoords).toEqual(expectedResult);
     });
 
     it(' mouseDown should set mouseDown property to true on left click', () => {
@@ -94,7 +94,7 @@ describe('Service: Polygon', () => {
     // to test drawfillpolygone
     it(' onMouseUp should not call drawFillPolygon if mouse is already up ', () => {
         service.subToolSelect = SubToolselected.tool1;
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
 
         service.onMouseUp(mouseEvent);
@@ -102,7 +102,7 @@ describe('Service: Polygon', () => {
     });
 
     it(' onMouseMove should call drawFillPolygon if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool1;
 
@@ -112,7 +112,7 @@ describe('Service: Polygon', () => {
     });
 
     it(' onMouseMove should not call drawFillPolygon if mouse was not already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
 
         service.onMouseMove(mouseEvent);
@@ -122,7 +122,7 @@ describe('Service: Polygon', () => {
 
     it(' onMouseUp should call drawFillPolygon if mouse was already down and tool1 selected', () => {
         service.subToolSelect = SubToolselected.tool1;
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
 
         service.onMouseUp(mouseEvent);
@@ -132,7 +132,7 @@ describe('Service: Polygon', () => {
     // to test drawpolygoneoutline
     it(' onMouseUp should not call drawPolygoneOutline if mouse is already up ', () => {
         service.subToolSelect = SubToolselected.tool2;
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
 
         service.onMouseUp(mouseEvent);
@@ -140,7 +140,7 @@ describe('Service: Polygon', () => {
     });
 
     it(' onMouseMove should call drawPolygoneOutline if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool2;
 
@@ -150,7 +150,7 @@ describe('Service: Polygon', () => {
     });
 
     it(' onMouseMove should not call drawPolygoneOutline if mouse was not already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
 
         service.onMouseMove(mouseEvent);
@@ -160,7 +160,7 @@ describe('Service: Polygon', () => {
 
     it(' onMouseUp should call drawPolygonOutline if mouse was already down and tool2 selected', () => {
         service.subToolSelect = SubToolselected.tool2;
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
 
         service.onMouseUp(mouseEvent);
@@ -170,7 +170,7 @@ describe('Service: Polygon', () => {
     // to test drawfillpolygoneoutline
     it(' onMouseUp should not call drawFillPolygoneOutLine if mouse is already up ', () => {
         service.subToolSelect = SubToolselected.tool3;
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
 
         service.onMouseUp(mouseEvent);
@@ -178,7 +178,7 @@ describe('Service: Polygon', () => {
     });
 
     it(' onMouseMove should call drawFillPolygoneOutLine if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
         service.subToolSelect = SubToolselected.tool3;
 
@@ -188,7 +188,7 @@ describe('Service: Polygon', () => {
     });
 
     it(' onMouseMove should not call drawFillPolygoneOutLine if mouse was not already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
 
         service.onMouseMove(mouseEvent);
@@ -198,7 +198,7 @@ describe('Service: Polygon', () => {
 
     it(' onMouseUp should call drawFillPolygonOutline if mouse was already down and tool3 selected', () => {
         service.subToolSelect = SubToolselected.tool3;
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
 
         service.onMouseUp(mouseEvent);
@@ -206,7 +206,7 @@ describe('Service: Polygon', () => {
     });
 
     it(' onMouseDown should call onMouseUp if the mouse enter the canvas', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseEnter = true;
         service.onMouseDown(mouseEvent);
         expect(onMouseUpSpy).toHaveBeenCalled();
