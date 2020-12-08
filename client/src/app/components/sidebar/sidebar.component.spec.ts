@@ -92,7 +92,7 @@ describe('SidebarComponent', () => {
     beforeEach(
         waitForAsync(async () => {
             drawingStub = new DrawingService();
-            automaticSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+            automaticSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
             colorStub = new ColorService(drawingStub);
             undoRedoStub = new UndoRedoService(drawingStub);
             rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);

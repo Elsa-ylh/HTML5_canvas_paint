@@ -30,7 +30,7 @@ describe('MainPageComponent', () => {
             drawingStub = new DrawingService();
             canvasReziseStub = new CanvasResizerService(undoRedoStub);
             undoRedoStub = new UndoRedoService(drawingStub);
-            automaticSaveStub = new AutomaticSaveService(canvasReziseStub, drawingStub);
+            automaticSaveStub = new AutomaticSaveService(canvasReziseStub, drawingStub, undoRedoStub);
 
             TestBed.configureTestingModule({
                 imports: [

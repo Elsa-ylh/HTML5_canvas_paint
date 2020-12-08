@@ -48,7 +48,7 @@ describe('PolygonAction', () => {
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         canvasResizerStub = new CanvasResizerService(undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
         polygonActionStub = new PolygoneAction(

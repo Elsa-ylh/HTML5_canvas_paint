@@ -48,7 +48,7 @@ describe('RectangleAction', () => {
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         canvasResizerStub = new CanvasResizerService(undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         rectStub = new RectangleService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
         rectangleActionStub = new RectangleAction(

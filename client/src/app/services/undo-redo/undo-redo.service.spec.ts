@@ -38,7 +38,7 @@ describe('Service: UndoRedo', () => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
         resizeStub = new CanvasResizerService(undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(resizeStub, drawingStub);
+        autoSaveStub = new AutomaticSaveService(resizeStub, drawingStub, undoRedoStub);
         eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
 
         changes.push({ x: 5, y: 6 });

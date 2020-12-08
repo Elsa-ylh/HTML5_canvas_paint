@@ -51,7 +51,7 @@ describe('BrushAction', () => {
         brushPointData.push(pt1, pt2);
         drawingStub = new DrawingService();
         canvasResizerStub = new CanvasResizerService(undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         brushStub = new BrushService(drawingStub, colorStub, undoRedoStub, autoSaveStub);

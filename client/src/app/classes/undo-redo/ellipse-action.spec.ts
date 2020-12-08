@@ -44,7 +44,7 @@ describe('EllipseAction', () => {
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         canvasResizerStub = new CanvasResizerService(undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
         ellipseActionStub = new EllipseAction(

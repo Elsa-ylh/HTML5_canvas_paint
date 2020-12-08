@@ -22,10 +22,12 @@ describe('TextAction', () => {
 
     let primaryColor: string;
     let sizeFont: number;
+    let width: number;
+    let height: number;
     let fontStyle: string;
     let textAlign: number;
-    let fontStyleBold: boolean;
-    let fontStyleItalic: boolean;
+    let fontStyleBold: string;
+    let fontStyleItalic: string;
     let text: string[];
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
@@ -35,7 +37,8 @@ describe('TextAction', () => {
         sizeFont = 16;
         fontStyle = 'Times New Roman';
         textAlign = 2;
-
+        width = 3;
+        height = 2;
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
@@ -53,6 +56,8 @@ describe('TextAction', () => {
             text,
             textStub,
             drawingStub,
+            width,
+            height,
         );
 
         canvas = canvasTestHelper.canvas;

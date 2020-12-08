@@ -33,7 +33,7 @@ describe('EraseAction', () => {
 
         drawingStub = new DrawingService();
         canvasResizerStub = new CanvasResizerService(undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
 
         eraseActionStub = new EraseAction(changesEraser, color, thickness, eraserStub, drawingStub);
