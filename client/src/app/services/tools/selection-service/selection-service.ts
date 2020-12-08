@@ -386,7 +386,6 @@ export class SelectionService extends Tool {
     }
 
     copyImage(): void {
-        // this.clipboard.copyImage(this.selection);
         this.clipboard.imageData = this.selection.imageData;
         this.clipboard.image = new Image();
         this.clipboard.image.src = this.selection.getImageURL(this.clipboard.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
