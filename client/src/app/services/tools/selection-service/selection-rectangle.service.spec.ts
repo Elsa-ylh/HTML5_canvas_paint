@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
 
 // tslint:disable:no-any
 // tslint:disable:no-magic-numbers
-// tslint:disable:no-shadowed-variable
+// tslint:disable:no-string-literal
 // tslint:disable:prefer-const
 describe('Service: SelectionRectangle', () => {
     let service: SelectionRectangleService;
@@ -57,9 +57,9 @@ describe('Service: SelectionRectangle', () => {
 
         service = TestBed.inject(SelectionRectangleService);
 
-        service.drawingService.baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
-        service.drawingService.previewCtx = previewCtxStub;
-        service.drawingService.canvas = canvasTestHelper.canvas as HTMLCanvasElement;
+        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].previewCtx = previewCtxStub;
+        service['drawingService'].canvas = canvasTestHelper.canvas as HTMLCanvasElement;
     });
 
     it('should be created', () => {
@@ -80,8 +80,8 @@ describe('Service: SelectionRectangle', () => {
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 10, y: 10 });
         spyOn<any>(service, 'isInsideSelection').and.returnValue(false);
 
-        service.controlGroup = new ControlGroup(drawServiceSpy);
-        spyOn<any>(service.controlGroup, 'isInControlPoint').and.returnValue(ControlPointName.none);
+        service['controlGroup'] = new ControlGroup(drawServiceSpy);
+        spyOn<any>(service['controlGroup'], 'isInControlPoint').and.returnValue(ControlPointName.none);
 
         let mouseEvent = { x: 10, y: 10, button: MouseButton.Left } as MouseEvent;
         service.selection.image = new Image();
@@ -94,23 +94,23 @@ describe('Service: SelectionRectangle', () => {
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         service.mouseDown = true;
         pasteSelectionSpy = spyOn<any>(service, 'pasteSelection');
-        service.upArrow.timerStarted = true;
-        service.downArrow.timerStarted = true;
-        service.leftArrow.timerStarted = true;
-        service.rightArrow.timerStarted = true;
-        service.timerStarted = true;
+        service['upArrow'].timerStarted = true;
+        service['downArrow'].timerStarted = true;
+        service['leftArrow'].timerStarted = true;
+        service['rightArrow'].timerStarted = true;
+        service['timerStarted'] = true;
 
-        service.upArrow.subscription = new Subscription();
-        service.downArrow.subscription = new Subscription();
-        service.leftArrow.subscription = new Subscription();
-        service.rightArrow.subscription = new Subscription();
-        service.subscriptionTimer = new Subscription();
+        service['upArrow'].subscription = new Subscription();
+        service['downArrow'].subscription = new Subscription();
+        service['leftArrow'].subscription = new Subscription();
+        service['rightArrow'].subscription = new Subscription();
+        service['subscriptionTimer'] = new Subscription();
 
-        const upSubscription = spyOn<any>(service.upArrow.subscription, 'unsubscribe');
-        const downSubscription = spyOn<any>(service.downArrow.subscription, 'unsubscribe');
-        const leftSubscription = spyOn<any>(service.leftArrow.subscription, 'unsubscribe');
-        const rightSubscription = spyOn<any>(service.rightArrow.subscription, 'unsubscribe');
-        const timerSubscription = spyOn<any>(service.subscriptionTimer, 'unsubscribe');
+        const upSubscription = spyOn<any>(service['upArrow'].subscription, 'unsubscribe');
+        const downSubscription = spyOn<any>(service['downArrow'].subscription, 'unsubscribe');
+        const leftSubscription = spyOn<any>(service['leftArrow'].subscription, 'unsubscribe');
+        const rightSubscription = spyOn<any>(service['rightArrow'].subscription, 'unsubscribe');
+        const timerSubscription = spyOn<any>(service['subscriptionTimer'], 'unsubscribe');
 
         service.selection.image = new Image();
 
@@ -130,7 +130,7 @@ describe('Service: SelectionRectangle', () => {
         service.selection.width = 10;
         service.selection.height = 10;
 
-        expect(service.updateSelectionPositions()).toEqual({ x: 1, y: 1 });
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
     });
 
     it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection', () => {
@@ -139,7 +139,7 @@ describe('Service: SelectionRectangle', () => {
         service.selection.width = 10;
         service.selection.height = 10;
 
-        expect(service.updateSelectionPositions()).toEqual({ x: 1, y: 1 });
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
     });
 
     it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection', () => {
@@ -148,7 +148,7 @@ describe('Service: SelectionRectangle', () => {
         service.selection.width = 10;
         service.selection.height = 10;
 
-        expect(service.updateSelectionPositions()).toEqual({ x: 1, y: 1 });
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
     });
 
     it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection', () => {
@@ -157,7 +157,7 @@ describe('Service: SelectionRectangle', () => {
         service.selection.width = 10;
         service.selection.height = 10;
 
-        expect(service.updateSelectionPositions()).toEqual({ x: 1, y: 1 });
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
     });
 
     it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection with shift pressed', () => {
@@ -165,9 +165,9 @@ describe('Service: SelectionRectangle', () => {
         service.selection.endingPos = { x: 1, y: 11 };
         service.selection.width = 10;
         service.selection.height = 10;
-        service.shiftPressed = true;
+        service['shiftPressed'] = true;
 
-        expect(service.updateSelectionPositions()).toEqual({ x: 1, y: 1 });
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
     });
 
     it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection with shift pressed', () => {
@@ -175,9 +175,9 @@ describe('Service: SelectionRectangle', () => {
         service.selection.endingPos = { x: 1, y: 1 };
         service.selection.width = 10;
         service.selection.height = 10;
-        service.shiftPressed = true;
+        service['shiftPressed'] = true;
 
-        expect(service.updateSelectionPositions()).toEqual({ x: 1, y: 1 });
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
     });
 
     it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection with shift pressed', () => {
@@ -185,9 +185,9 @@ describe('Service: SelectionRectangle', () => {
         service.selection.endingPos = { x: 11, y: 11 };
         service.selection.width = 10;
         service.selection.height = 10;
-        service.shiftPressed = true;
+        service['shiftPressed'] = true;
 
-        expect(service.updateSelectionPositions()).toEqual({ x: 1, y: 1 });
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
     });
 
     it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection with shift pressed', () => {
@@ -195,16 +195,16 @@ describe('Service: SelectionRectangle', () => {
         service.selection.endingPos = { x: 11, y: 1 };
         service.selection.width = 10;
         service.selection.height = 10;
-        service.shiftPressed = true;
+        service['shiftPressed'] = true;
 
-        expect(service.updateSelectionPositions()).toEqual({ x: 1, y: 1 });
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
     });
 
     it('drawSelection should draw the selection and its surrounding rectangle', () => {
         drawSelectionRectSpy = spyOn<any>(service, 'drawSelectionRect');
-        drawImageSpy = spyOn<any>(service.drawingService.previewCtx, 'drawImage');
+        drawImageSpy = spyOn<any>(service['drawingService'].previewCtx, 'drawImage');
         spyOn<any>(service, 'flipImage');
-        service.scaled = true;
+        service['scaled'] = true;
 
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
@@ -220,7 +220,7 @@ describe('Service: SelectionRectangle', () => {
     });
 
     it('pasteSelection should draw the selection in the base canvas', () => {
-        drawImageSpy = spyOn<any>(service.drawingService.baseCtx, 'drawImage');
+        drawImageSpy = spyOn<any>(service['drawingService'].baseCtx, 'drawImage');
 
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
@@ -244,13 +244,13 @@ describe('Service: SelectionRectangle', () => {
         service.selection.imageData = new ImageData(10, 10);
         service.selection.image = new Image();
 
-        service.drawPreview();
+        service['drawPreview']();
 
         expect(drawPreviewRect).toHaveBeenCalled();
     });
 
     it('clearSelection should draw a white rectangle in the selection initial position', () => {
-        const fillRectSpy = spyOn<any>(service.drawingService.baseCtx, 'fillRect');
+        const fillRectSpy = spyOn<any>(service['drawingService'].baseCtx, 'fillRect');
 
         service.clearSelection();
 
