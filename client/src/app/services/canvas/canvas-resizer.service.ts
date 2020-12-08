@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { cursorName } from '@app/classes/cursor-name';
 import { MouseButton } from '@app/classes/mouse-button';
 import {
@@ -12,8 +13,9 @@ import {
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { Vec2 } from '@app/classes/vec2';
-import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+
 import { GridService } from '@app/services/tools/grid.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',

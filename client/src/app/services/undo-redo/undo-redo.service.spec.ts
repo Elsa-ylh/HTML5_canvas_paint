@@ -1,16 +1,18 @@
 /* tslint:disable:no-unused-variable */
 import { TestBed } from '@angular/core/testing';
+import { Vec2 } from '@app/classes/vec2';
+
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { EraseAction } from '@app/classes/undo-redo/erase-actions';
 import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
-import { Vec2 } from '@app/classes/vec2';
+
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { GridService } from '../tools/grid.service';
 
 describe('Service: UndoRedo', () => {
     let undoRedoStub: UndoRedoService;
