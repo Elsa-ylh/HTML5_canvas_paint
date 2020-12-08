@@ -9,6 +9,7 @@ import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.servic
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // tslint:disable:prefer-const
@@ -33,6 +34,8 @@ describe('BrushAction', () => {
     let autoSaveStub: AutomaticSaveService;
     let canvas: HTMLCanvasElement;
     let canvasResizerStub: CanvasResizerService;
+    let gridStub: GridService;
+
     beforeEach(() => {
         // tslint:disable:no-magic-numbers
         vec2.x = 5;
@@ -50,7 +53,8 @@ describe('BrushAction', () => {
         const pt2 = new PointArc(vec2, 12, 1);
         brushPointData.push(pt1, pt2);
         drawingStub = new DrawingService();
-        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        gridStub = new GridService(drawingStub);
+        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
         autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);

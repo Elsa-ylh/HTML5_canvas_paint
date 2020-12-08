@@ -6,6 +6,7 @@ import { AutomaticSaveService } from '@app/services/automatic-save/automatic-sav
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
@@ -21,6 +22,7 @@ describe('StrokeAction', () => {
     let colorPencil: string;
     let thickness: number;
     let alpha: number;
+    let gridStub: GridService;
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
@@ -37,7 +39,8 @@ describe('StrokeAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        gridStub = new GridService(drawingStub);
+        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
         autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
         pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
         strokeActionStub = new StrokeAction(changes, colorPencil, thickness, alpha, pencilStub, drawingStub);
