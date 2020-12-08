@@ -28,7 +28,9 @@ describe('TextAction', () => {
     let textAlign: number;
     let fontStyleBold: string;
     let fontStyleItalic: string;
-    let text: string[];
+    let text: string[] = [];
+
+    let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
 
@@ -63,10 +65,12 @@ describe('TextAction', () => {
         canvas = canvasTestHelper.canvas;
         canvas.width = 100;
         canvas.height = 100;
+        baseStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
         drawingStub.canvas = canvas;
         drawingStub.previewCtx = previewStub;
+        drawingStub.baseCtx = baseStub;
 
         TestBed.configureTestingModule({
             providers: [
@@ -82,12 +86,10 @@ describe('TextAction', () => {
     });
 
     it('strokeColor and fillColor must be primary color of textAction', () => {
-        let color = '#0000FF';
-        textActionStub['primaryColor'] = color;
+        let color = '#000000';
         textStub.drawText();
         textActionStub.apply();
-        expect(drawingStub.previewCtx.strokeStyle).toEqual(color);
-        expect(drawingStub.previewCtx.fillStyle).toEqual(color);
+        expect(drawingStub.baseCtx.strokeStyle).toEqual(color);
     });
 
     it('should call drawTextUndo', () => {
