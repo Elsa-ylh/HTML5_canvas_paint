@@ -357,13 +357,13 @@ describe('TextControl', () => {
     });
 
     it('should full text (2) call getTextWithCursor', () => {
-        textControl.setWidth(20);
+        textControl.setWidth(22);
         textControl['textPreview'] = ['as', 'b3de', 'ct'];
         textControl['textLine'] = ['b', '3'];
         textControl['textStack'] = ['e', 'd', 'd'];
         textControl['indexLine'] = 1;
         textControl['indexOfLettersInLine'] = 1;
         const fullText = textControl.getTextWithCursor();
-        expect(fullText).toEqual(['as', 'b3|', 'ct']);
+        expect(fullText).toEqual(['as', 'b3|d', 'ct']);
     });
 });
