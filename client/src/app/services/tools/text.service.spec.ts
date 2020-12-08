@@ -87,28 +87,28 @@ describe('Service: Text', () => {
         expect(textService['setCtxFont']).toHaveBeenCalled();
     });
 
-    it(' mouseUp should not call drawPreviewRect', () => {
+    it(' mouseUp should not call drawPreviewRect (1)', () => {
         spyOn<any>(textService, 'drawPreviewRect');
         textService['mouseDown'] = false;
         textService.onMouseUp(mouseEvent0);
         expect(textService['drawPreviewRect']).not.toHaveBeenCalled();
     });
 
-    it(' mouseUp should call drawPreviewRect', () => {
+    it(' mouseUp should call drawPreviewRect (2)', () => {
         spyOn<any>(textService, 'drawPreviewRect');
         textService['mouseDown'] = true;
         textService.onMouseUp(mouseEvent0);
         expect(textService['drawPreviewRect']).toHaveBeenCalled();
     });
 
-    it(' mouseMove should not call drawPreviewRect', () => {
+    it(' mouseMove should not call drawPreviewRect (1)', () => {
         spyOn<any>(textService, 'drawPreviewRect');
         textService['mouseMove'] = false;
         textService.onMouseMove(mouseEvent0);
         expect(textService['drawPreviewRect']).not.toHaveBeenCalled();
     });
 
-    it(' mouseMove should call drawPreviewRect', () => {
+    it(' mouseMove should call drawPreviewRect (2)', () => {
         spyOn<any>(textService, 'drawPreviewRect');
         textService['mouseMove'] = true;
         textService['mouseEnter'] = true;

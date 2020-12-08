@@ -48,7 +48,6 @@ export class TextService extends Tool {
     private width: number = 0;
     private lineWidth: number = 2;
     private writeOnPreviewCtx: boolean = false;
-    // private infoText: ToolInfoText;
 
     private textAlign: number = 2;
     private textControl: TextControl;
@@ -69,17 +68,22 @@ export class TextService extends Tool {
         }
         if (this.writeOnPreviewCtx) {
             this.setCtxFont(this.drawingService.baseCtx);
-            this.drawText();
-            /*  this.drawTextUndo({
-                primaryColor: this.colorService.primaryColor,
-                sizeFont: this.sizeFont,
-                fontStyle: this.fontStyle,
-                textAlign: this.textAlign,
-                fontStyleItalic: this.fontStyleBold,
-                fontStyleBold: this.fontStyleItalic,
-            },
-            this.textControl.getText(),
-            );*/
+            // this.drawText();
+            this.drawTextUndo(
+                {
+                    primaryColor: this.colorService.primaryColor,
+                    sizeFont: this.sizeFont,
+                    fontStyle: this.fontStyle,
+                    textAlign: this.textAlign,
+                    fontStyleItalic: this.getItalic(),
+                    fontStyleBold: this.getBold(),
+                    mousePosition: this.mousePosition,
+                    mouseDownCoords: this.mouseDownCoords,
+                    width: this.width,
+                    height: this.height,
+                },
+                this.textControl.getText(),
+            );
 
             const textAction = new TextAction(
                 this.mousePosition,

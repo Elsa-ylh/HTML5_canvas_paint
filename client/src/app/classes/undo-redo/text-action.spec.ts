@@ -83,16 +83,17 @@ describe('TextAction', () => {
 
     it('strokeColor and fillColor must be primary color of textAction', () => {
         let color = '#0000FF';
-        primaryColor = color;
+        textActionStub.primaryColor = color;
+        textStub.drawText();
         textActionStub.apply();
         expect(drawingStub.previewCtx.strokeStyle).toEqual(color);
         expect(drawingStub.previewCtx.fillStyle).toEqual(color);
     });
 
-    it('should call previewText', () => {
-        const drawTextOnPreview = spyOn(textStub, 'drawText').and.stub();
+    it('should call drawTextUndo', () => {
+        const drawTextUndoOnPreview = spyOn(textStub, 'drawTextUndo').and.stub();
         textActionStub.apply();
-        expect(drawTextOnPreview).toHaveBeenCalled();
+        expect(drawTextUndoOnPreview).toHaveBeenCalled();
     });
 
     it('should call clearEffectTool', () => {
