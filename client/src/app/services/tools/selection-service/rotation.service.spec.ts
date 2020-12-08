@@ -1,4 +1,6 @@
 /* tslint:disable:no-unused-variable */
+/* tslint:disable:no-any-variable */ // We need any to create spies on required services.
+/* tslint:disable:no-magic-numbers-variable */ // Required to tests scroll functionality.
 
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
@@ -12,33 +14,40 @@ describe('Service: Rotation', () => {
     let drawingServiceMock: jasmine.SpyObj<DrawingService>;
     let selectionMock: jasmine.SpyObj<SelectionService>;
     let event: WheelEvent;
+    /* tslint:disable:no-any-variable */
     let addOrRetractSpy: jasmine.SpyObj<any>;
+    /* tslint:disable:no-any-variable */
     let translateSpy: jasmine.SpyObj<any>;
 
+    let image: SelectionImage;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
-    let image: SelectionImage;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawingServiceMock = jasmine.createSpyObj('DrawingService', ['baseCtx', 'previewCtx', 'cursorCtx', 'isPreviewCanvasBlank', 'clearCanvas']);
         selectionMock = jasmine.createSpyObj('selectionService', ['clearSelection', 'drawSelection', 'selection']);
+        image = new SelectionImage(drawingServiceMock);
+
         TestBed.configureTestingModule({
             providers: [
                 { provide: DrawingService, useValue: drawingServiceMock },
                 { provide: SelectionService, useValue: selectionMock },
             ],
         });
+
         rotationStub = TestBed.inject(RotationService);
+
         drawingServiceMock.baseCtx = baseCtxStub;
         drawingServiceMock.previewCtx = previewCtxStub;
         canvas = canvasTestHelper.canvas;
+        /* tslint:disable:no-magic-numbers-variable */
         canvas.width = 100;
+        /* tslint:disable:no-magic-numbers-variable */
         canvas.height = 100;
         drawingServiceMock.canvas = canvas;
-        image = new SelectionImage(drawingServiceMock);
         translateSpy = spyOn<any>(drawingServiceMock.baseCtx, 'translate').and.callThrough();
 
         addOrRetractSpy = spyOn<any>(rotationStub, 'addOrRetract').and.callThrough();
@@ -88,8 +97,8 @@ describe('Service: Rotation', () => {
     });
 
     it('should set isWheelAdd to true', () => {
-        const event = { deltaY: -20 } as WheelEvent;
-        rotationStub.addOrRetract(event);
+        const wheelEvent = { deltaY: -20 } as WheelEvent;
+        rotationStub.addOrRetract(wheelEvent);
         expect(rotationStub.isWheelAdd).toEqual(true);
     });
 
