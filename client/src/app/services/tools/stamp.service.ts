@@ -3,7 +3,7 @@ import { STAMP } from '@app/classes/stamp';
 import { Tool } from '@app/classes/tool';
 import { StampAction } from '@app/classes/undo-redo/stamp-action';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoService } from '../undo-redo/undo-redo.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // tslint:disable:max-file-line-count
 // tslint:disable:max-line-length
