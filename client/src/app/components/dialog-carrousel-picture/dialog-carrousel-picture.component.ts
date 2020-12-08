@@ -181,7 +181,7 @@ export class CarrouselPictureComponent implements OnInit {
     deletePicture(picture: CanvasInformation): void {
         if (confirm('Supprimer : ' + picture.name)) {
             const deleteMassage: Message = { title: 'delete', body: picture._id };
-            this.clientServerComSvc.deleteQuery(deleteMassage).subscribe((info: any) => this.messageDelete(info));
+            this.clientServerComSvc.deleteQuery(deleteMassage).subscribe((info) => this.messageDelete(info));
         }
     }
 

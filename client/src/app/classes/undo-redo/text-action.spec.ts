@@ -9,7 +9,7 @@ import { TextAction } from './text-action';
 
 // tslint:disable:prefer-const
 // tslint:disable:no-magic-numbers
-
+// tslint:disable:no-string-literal
 describe('TextAction', () => {
     let textActionStub: TextAction;
     let drawingStub: DrawingService;
