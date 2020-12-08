@@ -1,6 +1,6 @@
-/*import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
- import { Vec2 } from '@app/classes/vec2';
+import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TextService } from '@app/services/tools/text.service';
@@ -17,16 +17,16 @@ describe('TextAction', () => {
     let undoRedoStub: UndoRedoService;
     let textStub: TextService;
 
-    // let mousePosition: Vec2;
-    // let mouseDownCoords: Vec2;
+    let mousePosition: Vec2;
+    let mouseDownCoords: Vec2;
 
     let primaryColor: string;
     let sizeFont: number;
     let fontStyle: string;
     let textAlign: number;
-    // let fontStyleBold: boolean;
-    // let fontStyleItalic: boolean;
-    // let text: string[];
+    let fontStyleBold: boolean;
+    let fontStyleItalic: boolean;
+    let text: string[];
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
 
@@ -42,17 +42,17 @@ describe('TextAction', () => {
         textStub = new TextService(drawingStub, colorStub, undoRedoStub);
 
         textActionStub = new TextAction(
-            // mousePosition,
-            // mouseDownCoords,
-            // primaryColor,
-            // sizeFont,
-            // fontStyle,
-            // textAlign,
-            // fontStyleItalic,
-            // fontStyleBold,
-            // text,
-            // textStub,
-            // drawingStub,
+            mousePosition,
+            mouseDownCoords,
+            primaryColor,
+            sizeFont,
+            fontStyle,
+            textAlign,
+            fontStyleItalic,
+            fontStyleBold,
+            text,
+            textStub,
+            drawingStub,
         );
 
         canvas = canvasTestHelper.canvas;
@@ -96,4 +96,3 @@ describe('TextAction', () => {
         expect(clearEffectSpy).toHaveBeenCalled();
     });
 });
-*/

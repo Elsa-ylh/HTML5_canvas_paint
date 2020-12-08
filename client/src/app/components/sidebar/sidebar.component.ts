@@ -394,7 +394,6 @@ export class SidebarComponent {
         }
     }
 
-    // keybind control o for new drawing
     @HostListener('window:keydown.control.o', ['$event']) onKeyDown(event: KeyboardEvent): void {
         if (!this.isDialogOpen && !this.drawingService.isCanvasBlank() && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             event.preventDefault();
@@ -743,7 +742,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown.d', ['$event'])
     changeStampMode(event: KeyboardEvent): void {
-        if (this.toolService.currentToolName !== ToolUsed.Color) {
+        if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isStampChecked = true;
             this.pickStamp();

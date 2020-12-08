@@ -176,8 +176,8 @@ describe('DialogUpload', () => {
         expect(processedMessageSpy).not.toHaveBeenCalled();
     });
     it('', () => {
-        component.saveload = true;
+        component.saveLoad = true;
         component.processedMessage({ title: 'succes', body: 'reussi' });
-        expect(component.saveload).toEqual(false);
+        expect(component.saveLoad).toEqual(false);
     });
 });

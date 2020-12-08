@@ -24,7 +24,7 @@
         </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile>
-        <button mat-raised-button (click)="saveServer()" [disabled]="checkName(textName) || saveload">Sauvegarder sur le serveur</button>
+        <button mat-raised-button (click)="saveServer()" [disabled]="checkName(textName) || saveLoad">Sauvegarder sur le serveur</button>
     </mat-grid-tile>
 </mat-grid-list>
 <div>
@@ -36,7 +36,7 @@
 <div>
     <h1>Liste d'étiquettes existantes</h1>
     <p *ngIf="!dataLabel.length">Appuyer sur le button "rafraichir la liste" d'étiquettes</p>
-    <button mat-raised-button (click)="refresh()">rafraichir la liste</button>
+    <button mat-raised-button (click)="refresh()">Rafraichir la liste</button>
     <div>
         <mat-button-toggle
             *ngFor="let element of dataLabel"

@@ -17,7 +17,7 @@ export class DialogUploadComponent implements OnInit {
     textName: string = '';
     private labelSelect: string[] = [];
     errorTextLabel: boolean = false;
-    saveload: boolean = false;
+    saveLoad: boolean = false;
 
     constructor(
         private clientServerComSvc: ClientServerCommunicationService,
@@ -46,7 +46,7 @@ export class DialogUploadComponent implements OnInit {
         this.addAllLabal();
     }
     saveServer(): void {
-        this.saveload = true;
+        this.saveLoad = true;
         const nameResult = !this.checkName(this.textName);
         const labelResult = !this.checkLabel(this.textLabel);
         this.errorTextLabel = !nameResult;
@@ -72,7 +72,7 @@ export class DialogUploadComponent implements OnInit {
             };
             this.clientServerComSvc.savePicture(savePicture).subscribe((info) => this.processedMessage(info));
         } else {
-            this.saveload = false;
+            this.saveLoad = false;
         }
     }
 
@@ -83,7 +83,7 @@ export class DialogUploadComponent implements OnInit {
             alert('Sauvegarde : ' + message.title + '\n' + message.body);
         }
 
-        this.saveload = false;
+        this.saveLoad = false;
     }
     // retour inverser
     checkName(name: string): boolean {
