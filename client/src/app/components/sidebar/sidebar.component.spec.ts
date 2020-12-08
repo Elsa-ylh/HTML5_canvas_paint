@@ -52,7 +52,7 @@ import { SidebarComponent } from './sidebar.component';
 // tslint:disable:no-magic-numbers
 // tslint:disable:max-file-line-count
 // tslint:disable:prefer-const
-describe('SidebarComponent', () => {
+fdescribe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let drawingStub: DrawingService;
@@ -186,7 +186,7 @@ describe('SidebarComponent', () => {
                     { provide: PencilService, useValue: pencilStub },
                     { provide: EraserService, useValue: eraserStub },
                     { provide: LineService, useValue: lineStub },
-                    { provide: SelectionRectangleService, usevalue: selectionRectangleStub },
+                    { provide: SelectionRectangleService, useValue: selectionRectangleStub },
                     { provide: SelectionEllipseService, useValue: selectionEllipseStub },
                     { provide: ToolService, useValue: toolServiceStub },
                     { provide: DropperService, useValue: dropperServiceStub },
@@ -201,6 +201,7 @@ describe('SidebarComponent', () => {
                     { provide: FeatherService, useValue: featherStub },
                     { provide: GridService, useValue: gridStub },
                     { provide: MagnetismService, useValue: magnetismStub },
+                    { provide: RotationService, useValue: rotationStub },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);
@@ -931,6 +932,44 @@ describe('SidebarComponent', () => {
         expect(addOrRetractSpy).toHaveBeenCalled();
     });
 
+    it('should call onWheelScroll when scrolling using the mouse wheel and changeFeatherAngle is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new WheelEvent('window:wheel', {});
+        const onWheelScrollSpy = spyOn(rotationStub, 'onWheelScroll').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeAngleWithWheel(event);
+        expect(onWheelScrollSpy).toHaveBeenCalled();
+    });
+
+    it('should call onWheelScroll when scrolling using the mouse wheel and changeFeatherAngle is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle;
+        const event = new WheelEvent('window:wheel', {});
+        const onWheelScrollSpy = spyOn(rotationStub, 'onWheelScroll').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeAngleWithWheel(event);
+        expect(onWheelScrollSpy).toHaveBeenCalled();
+    });
+
+    it('should call onWheelScroll when scrolling using the mouse wheel and changeFeatherAngle is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.MagicWand;
+        const event = new WheelEvent('window:wheel', {});
+        const onWheelScrollSpy = spyOn(rotationStub, 'onWheelScroll').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeAngleWithWheel(event);
+        expect(onWheelScrollSpy).toHaveBeenCalled();
+    });
+
+    it('should call addOrRetract and changeAngleWithScroll when scrolling using the mouse wheel and changeFeatherAngle is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.Stamp;
+        const event = new WheelEvent('window:wheel', {});
+        const addOrRetractSpy = spyOn(stampServiceStub, 'addOrRetract').and.callThrough();
+        const changeAngleWithScrollSpy = spyOn(stampServiceStub, 'changeAngleWithScroll').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeAngleWithWheel(event);
+        expect(addOrRetractSpy).toHaveBeenCalled();
+        expect(changeAngleWithScrollSpy).toHaveBeenCalled();
+    });
+
     it('should change altPressed value to true when alt is pressed ', () => {
         toolServiceStub.currentToolName = ToolUsed.Feather;
         const event = new KeyboardEvent('window:keydown.alt', {});
@@ -947,7 +986,20 @@ describe('SidebarComponent', () => {
         component.altPressed(event);
         expect(featherStub.altPressed).toEqual(true);
     });
-
+    it('should change featherStub altpressed to true', () => {
+        toolServiceStub.switchTool(ToolUsed.SelectionRectangle);
+        const event = new KeyboardEvent('window:keydown.alt', {});
+        window.dispatchEvent(event);
+        component.altPressed(event);
+        expect(rotationStub.altPressed).toEqual(true);
+    });
+    it('should change featherStub altpressed to true', () => {
+        toolServiceStub.currentToolName = ToolUsed.Stamp;
+        const event = new KeyboardEvent('window:keydown.alt', {});
+        window.dispatchEvent(event);
+        component.altPressed(event);
+        expect(stampServiceStub.isAltPressed).toEqual(true);
+    });
     it('should pickGridSettings', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         component.pickGridSettings();
@@ -1115,4 +1167,56 @@ describe('SidebarComponent', () => {
         component.altReleased(event);
         expect(featherStub.altPressed).toEqual(false);
     });
+    it('should change altPressed value to false when releasing alt ', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new KeyboardEvent('window:keyup.alt', {});
+        window.dispatchEvent(event);
+        component.altReleased(event);
+        expect(rotationStub.altPressed).toEqual(false);
+    });
+    it('should change altPressed value to false when releasing alt ', () => {
+        toolServiceStub.switchTool(ToolUsed.Stamp);
+        const event = new KeyboardEvent('window:keyup.alt', {});
+        window.dispatchEvent(event);
+        component.altReleased(event);
+        expect(stampServiceStub.isAltPressed).toEqual(false);
+    });
+    it('should change dPressed value to false when releasing d ', () => {
+        toolServiceStub.switchTool(ToolUsed.Color);
+        const event = new KeyboardEvent('window:keyup.d', {});
+        expect(component['isStampChecked']).toBeFalse;
+        window.dispatchEvent(event);
+        component.changeStampMode(event);
+        expect(component['isStampChecked']).toBeTrue;
+    });
+    it('should change dPressed value to false when releasing d ', () => {
+        toolServiceStub.switchTool(ToolUsed.NONE);
+        const event = new KeyboardEvent('window:keyup.d', {});
+        expect(component['isStampChecked']).toBeFalse;
+        window.dispatchEvent(event);
+        component.changeStampMode(event);
+        expect(component['isStampChecked']).toBeFalse;
+    });
+    it('should change vPressed value to false when releasing v ', () => {
+        component['isDialogloadSaveEport'] = true;
+        toolServiceStub.switchTool(ToolUsed.NONE);
+        const event = new KeyboardEvent('window:keyup.v', {});
+        expect(component['isStampChecked']).toBeFalse;
+        window.dispatchEvent(event);
+        component.changeMagicWandMode(event);
+        expect(component['isStampChecked']).toBeFalse;
+    });
+    it('should change Pressed value to false when releasing  ', () => {
+        component['isDialogloadSaveEport'] = true;
+        toolServiceStub.switchTool(ToolUsed.Color);
+        const event = new KeyboardEvent('window:keyup.v', {});
+        expect(component['isStampChecked']).toBeFalse;
+        window.dispatchEvent(event);
+        component.changeMagicWandMode(event);
+        expect(component['isStampChecked']).toBeTrue;
+    });
+    it('should change Pressed value to false when releasing  ', () => {});
+    it('should change Pressed value to false when releasing  ', () => {});
+    it('should change Pressed value to false when releasing  ', () => {});
+    it('should change Pressed value to false when releasing  ', () => {});
 });
