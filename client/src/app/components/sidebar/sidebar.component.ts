@@ -8,6 +8,7 @@ import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
 import { CarrouselPictureComponent } from '@app/components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DialogExportEmailComponent } from '@app/components/dialog-export-email/dialog-export-email.component';
 import { DialogExportDrawingComponent } from '@app/components/dialog-export-locally/dialog-export-locally.component';
 import { DialogUploadComponent } from '@app/components/dialog-upload/dialog-upload.component';
 import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
@@ -54,6 +55,7 @@ export class SidebarComponent {
     dialogLoadRef: MatDialogRef<CarrouselPictureComponent>;
     dialogSaveRef: MatDialogRef<DialogUploadComponent>;
     exportDrawingRef: MatDialogRef<DialogExportDrawingComponent>;
+    exportEmailRef: MatDialogRef<DialogExportEmailComponent>;
     private isPencilChecked: boolean = false;
     private isEraserChecked: boolean = false;
     private isBrushChecked: boolean = false;
@@ -125,6 +127,16 @@ export class SidebarComponent {
                 this.isDialogloadSaveEport = true;
             });
             this.automaticSaveService.save();
+        }
+    }
+
+    exportEmail(): void {
+        if (this.isDialogloadSaveEport) {
+            this.exportEmailRef = this.dialogCreator.open(DialogExportEmailComponent);
+            this.isDialogloadSaveEport = false;
+            this.exportEmailRef.afterClosed().subscribe(() => {
+                this.isDialogloadSaveEport = true;
+            });
         }
     }
 
