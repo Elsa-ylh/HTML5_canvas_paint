@@ -364,6 +364,6 @@ describe('TextControl', () => {
         textControl['indexLine'] = 1;
         textControl['indexOfLettersInLine'] = 1;
         const fullText = textControl.getTextWithCursor();
-        expect(fullText).toEqual(['as', 'b3|', 'ct']);
+        expect(fullText).toEqual(['as', 'b3|d', 'ct']);
     });
 });
