@@ -57,15 +57,15 @@ export class DialogUploadComponent implements OnInit {
                     if (textLabel !== '') labelsSting.push({ label: textLabel });
                 });
             }
-
+            let checkInTheList = true;
             this.labelSelect.forEach((element) => {
-                let checkIsInList: boolean = false;
+                checkInTheList = true;
                 labelsSting.forEach((elementLabels) => {
-                    if (!checkIsInList && element === elementLabels.label) {
-                        checkIsInList = true;
+                    if (checkInTheList && element === elementLabels.label) {
+                        checkInTheList = false;
                     }
                 });
-                if (!checkIsInList) {
+                if (checkInTheList) {
                     labelsSting.push({ label: element });
                 }
             });
