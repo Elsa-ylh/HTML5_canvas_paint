@@ -123,9 +123,10 @@ describe('DialogUpload', () => {
         expect(component.checkName('a_a_a_a')).toEqual(false);
     });
     it('test checkLabel', () => {
+        expect(component.checkLabel('#aaaa')).toEqual(false);
         expect(component.checkLabel('')).toEqual(false);
         expect(component.checkLabel(' a ')).toEqual(true);
-        expect(component.checkLabel('a')).toEqual(true);
+        expect(component.checkLabel('a')).toEqual(false);
         expect(component.checkLabel('aaaaaaa&')).toEqual(true);
         expect(component.checkLabel('a_a_a_a')).toEqual(false);
     });
@@ -176,8 +177,8 @@ describe('DialogUpload', () => {
         expect(processedMessageSpy).not.toHaveBeenCalled();
     });
     it('', () => {
-        component.saveload = true;
+        component.saveLoad = true;
         component.processedMessage({ title: 'succes', body: 'reussi' });
-        expect(component.saveload).toEqual(false);
+        expect(component.saveLoad).toEqual(false);
     });
 });
