@@ -16,7 +16,7 @@ describe('Data Controller', () => {
     const isDate: Date = new Date('10/08/2020');
     const testCanvasInformationAdd = {
         _id: '',
-        name: 'stest5',
+        name: 'test5',
         labels: [{ label: 'label1' }],
         width: 0,
         height: 0,
@@ -226,7 +226,7 @@ describe('Data Controller', () => {
     it('post in good research name ', async () => {
         const service = {
             title: 'name',
-            body: 'stest5',
+            body: 'test5',
         };
         return supertest(app)
             .post('/api/data/research')
@@ -277,7 +277,7 @@ describe('Data Controller', () => {
     it('post in good savePicture update', async () => {
         const newCanvasInformationAdd = {
             _id: '1234',
-            name: 'stest5',
+            name: 'test5',
             labels: [{ label: 'label1' }],
             width: 0,
             height: 0,
@@ -298,7 +298,7 @@ describe('Data Controller', () => {
     it('post in good savePicture save', async () => {
         const newCanvasInformationAdd = {
             _id: '',
-            name: 'stest5',
+            name: 'test5',
             labels: [{ label: 'label1' }],
             width: 0,
             height: 0,
@@ -320,7 +320,7 @@ describe('Data Controller', () => {
         dataService.modifyPicture.rejects(new Error('error in the service mongo'));
         const newCanvasInformationAdd = {
             _id: '1234',
-            name: 'stest5',
+            name: 'test5',
             labels: [{ label: 'label1' }],
             width: 0,
             height: 0,
@@ -342,7 +342,7 @@ describe('Data Controller', () => {
         dataService.addPicture.rejects(new Error('error in the service mongo'));
         const newCanvasInformationAdd = {
             _id: '',
-            name: 'sstest5',
+            name: 'test5',
             labels: [{ label: 'label1' }],
             width: 0,
             height: 0,

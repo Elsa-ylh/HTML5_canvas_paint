@@ -68,7 +68,6 @@ export class TextService extends Tool {
         }
         if (this.writeOnPreviewCtx) {
             this.setCtxFont(this.drawingService.baseCtx);
-            // this.drawText();
             this.drawTextUndo(
                 {
                     primaryColor: this.colorService.primaryColor,
@@ -302,7 +301,6 @@ export class TextService extends Tool {
     }
 
     private position(ctx: CanvasRenderingContext2D, text: string[], toolInfoText: ToolInfoText): void {
-        // todo
         let lineBreak = 0;
         switch (toolInfoText.textAlign) {
             case SubToolSelected.tool1:
@@ -350,7 +348,7 @@ export class TextService extends Tool {
         }
     }
 
-    // keyboard action functions
+    // keyboard action methods
     arrowTop(): void {
         this.textControl.arrowTop();
         this.previewText();
