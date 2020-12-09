@@ -7,9 +7,4 @@ import { Component } from '@angular/core';
     templateUrl: './editor.component.html',
     styleUrls: ['./editor.component.scss'],
 })
-export class EditorComponent {
-    // constructor() {}
-    /* onMouseUp(event: MouseEvent): void {
-        this.toolService.currentTool.onMouseUp(event);
-    } */
-}
+export class EditorComponent {}

@@ -71,7 +71,7 @@ describe('DrawingComponent', () => {
             undoRedoStub = new UndoRedoService(drawingStub);
             canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
             colorStub = new ColorService(drawingStub);
-            autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+            autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
             pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
             brushStub = new BrushService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
@@ -89,7 +89,7 @@ describe('DrawingComponent', () => {
 
             selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
-            textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
+            textServiceStub = new TextService(drawingStub, colorStub, undoRedoStub);
             stampServiceStub = new StampService(drawingStub, undoRedoStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             magnetismStub = new MagnetismService(gridStub);

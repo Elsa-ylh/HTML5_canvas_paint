@@ -44,7 +44,7 @@ describe('FeatherAction', () => {
         undoRedoStub = new UndoRedoService(drawingStub);
         gridStub = new GridService(drawingStub);
         canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
         featherActionStub = new FeatherAction(changes, angle, length, primaryColor, drawingStub, featherStub);
 

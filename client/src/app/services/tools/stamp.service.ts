@@ -113,11 +113,11 @@ export class StampService extends Tool {
         this.undoRedoService.addUndo(stampFeather);
         this.undoRedoService.clearRedo();
 
-        if (this.isUndoRedo) {
-            this.stampToDraw.onload = () => {
-                this.drawingService.baseCtx.drawImage(this.stampToDraw, this.mouseCenterX, this.mouseCenterY);
-            };
-        }
+        // if (this.isUndoRedo) {
+        //     this.stampToDraw.onload = () => {
+        //         this.drawingService.baseCtx.drawImage(this.stampToDraw, this.mouseCenterX, this.mouseCenterY);
+        //     };
+        // }
     }
 
     onMouseEnter(event: MouseEvent): void {

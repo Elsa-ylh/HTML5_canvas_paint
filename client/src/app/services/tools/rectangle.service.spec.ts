@@ -43,7 +43,7 @@ describe('Service: Rectangle', () => {
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesn't copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         mouseEvent = {
             offsetX: 25,
