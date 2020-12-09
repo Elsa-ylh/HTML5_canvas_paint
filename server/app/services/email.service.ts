@@ -19,8 +19,9 @@ export class EmailService {
     }
 
     private readFile(nomFile: string): void {
-        const readFileService = new ReadFileService(nomFile);
-        const keyElement = readFileService.getInfos();
+        let readFileService = new ReadFileService();
+        readFileService.openFileRead(nomFile);
+        const keyElement: string[][] = readFileService.getInfos();
         keyElement.forEach((element) => {
             if (element[0] === this.url) {
                 this.url = element[1];

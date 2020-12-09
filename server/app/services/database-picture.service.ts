@@ -19,7 +19,8 @@ export class DatabasePictureService {
         this.connectMongoClient('mongodb_url.txt');
     }
     private async connectMongoClient(nomFile: string): Promise<void> {
-        const readFileService = new ReadFileService(nomFile);
+        let readFileService = new ReadFileService();
+        readFileService.openFileRead(nomFile);
         let databaseUrl = 'DATABASE_URL';
         let databaseName = 'DATABASE_NAME';
         let databaseCollection = 'DATABASE_COLLECTION';

@@ -4,15 +4,11 @@ import * as path from 'path';
 
 @injectable()
 export class ReadFileService {
-    private nomeFile: string;
+    private nomeFile: string = '';
     private isReal: boolean = false;
-    private textInfo: string;
-    constructor(nomFile: string) {
-        this.textInfo = '';
+    private textInfo: string = '';
+    openFileRead(nomFile: string): boolean {
         this.nomeFile = nomFile;
-        this.isReal = this.openFileRead();
-    }
-    private openFileRead(): boolean {
         try {
             const pathLocal = path.join(__dirname, '../secret/' + this.nomeFile);
             this.textInfo = fs.readFileSync(pathLocal, 'utf-8');
@@ -24,7 +20,7 @@ export class ReadFileService {
     }
     getInfos(): string[][] {
         if (!this.isReal) {
-            this.isReal = this.openFileRead();
+            this.isReal = this.openFileRead(this.nomeFile);
         }
         const textTableau: string[][] = [];
         if (this.isReal) {

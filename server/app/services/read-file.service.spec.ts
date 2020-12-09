@@ -5,7 +5,7 @@ describe('Read File service', () => {
     const nomFile = 'test_read.txt';
 
     beforeEach(async () => {
-        readFileService = new ReadFileService(nomFile);
+        readFileService = new ReadFileService();
     });
 
     it('should constructor ReadFileService', () => {
@@ -16,17 +16,17 @@ describe('Read File service', () => {
     });
 
     it('should test constructor not nom file', () => {
-        let newReadFileService = new ReadFileService('');
+        let newReadFileService = new ReadFileService();
         expect(newReadFileService['isReal']).to.be.equal(false);
         expect(newReadFileService['textInfo']).to.be.equal('');
         expect(newReadFileService['nomeFile']).to.be.equal('');
     });
     it(' openFileRead return true', () => {
-        expect(readFileService['openFileRead']()).to.be.equal(true);
+        expect(readFileService.openFileRead(nomFile)).to.be.equal(true);
     });
     it(' openFileRead return false', () => {
         readFileService['nomeFile'] = '';
-        expect(readFileService['openFileRead']()).to.be.equal(false);
+        expect(readFileService.openFileRead(nomFile)).to.be.equal(false);
     });
     it(' getInfos isReal false , nomeFile "" and return []', () => {
         readFileService['nomeFile'] = '';

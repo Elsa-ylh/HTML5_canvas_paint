@@ -7,4 +7,5 @@ export const TYPES = {
     DataController: Symbol('DataController'),
     EmailService: Symbol('EmailService'),
     EmailController: Symbol('EmailController'),
+    ReadFileService: Symbol('ReadFileService'),
 };
