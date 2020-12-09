@@ -1198,7 +1198,7 @@ describe('SidebarComponent', () => {
         expect(component['isStampChecked']).toEqual(true);
     });
     it('should change vPressed value to false when releasing v ', () => {
-        component['isDialogloadSaveEport'] = true;
+        component['isDialogloadSaveExport'] = true;
         toolServiceStub.currentToolName = ToolUsed.NONE;
         const event = new KeyboardEvent('window:keydown.v', {});
         expect(component['isMagicWandSelectionChecked']).toEqual(false);
@@ -1207,7 +1207,7 @@ describe('SidebarComponent', () => {
         expect(component['isMagicWandSelectionChecked']).toEqual(true);
     });
     it('should change vPressed value to false when releasing v ', () => {
-        component['isDialogloadSaveEport'] = true;
+        component['isDialogloadSaveExport'] = true;
         toolServiceStub.currentToolName = ToolUsed.Color;
         const event = new KeyboardEvent('window:keydown.v', {});
         expect(component['isMagicWandSelectionChecked']).toEqual(false);
@@ -1216,7 +1216,7 @@ describe('SidebarComponent', () => {
         expect(component['isMagicWandSelectionChecked']).toEqual(false);
     });
     it('should change Pressed cvalue to false when releasing c ', () => {
-        component['isDialogloadSaveEport'] = true;
+        component['isDialogloadSaveExport'] = true;
         toolServiceStub.currentToolName = ToolUsed.Color;
         const event = new KeyboardEvent('window:keydown.c', {});
         expect(component['isStampChecked']).toEqual(false);
@@ -1226,7 +1226,7 @@ describe('SidebarComponent', () => {
     });
 
     it('should change Pressed cvalue to false when releasing c ', () => {
-        component['isDialogloadSaveEport'] = true;
+        component['isDialogloadSaveExport'] = true;
         toolServiceStub.currentToolName = ToolUsed.NONE;
         const event = new KeyboardEvent('window:keydown.c', {});
         expect(component['isPencilChecked']).toEqual(false);
