@@ -54,7 +54,6 @@ export class LineService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseMove && !this.shiftKeyDown) {
-            this.undoRedoService.whileDrawingUndoRedo(event);
             this.pointShiftMemory = this.pointMouse = this.getPositionFromMouse(event);
             this.drawLineLastPoint(this.drawingService.previewCtx, { data: this.pathData, selectedLineTool: this.subToolSelect }, this.pointMouse);
             return;
@@ -136,7 +135,6 @@ export class LineService extends Tool {
         );
         this.undoRedoService.addUndo(actionLine);
         this.undoRedoService.clearRedo();
-        this.undoRedoService.activateUndo(event);
 
         this.clearPath();
         this.clearEffectTool();
