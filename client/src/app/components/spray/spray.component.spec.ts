@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -35,6 +36,7 @@ describe('SprayComponent', () => {
                 MatCheckboxModule,
                 BrowserAnimationsModule,
                 HttpClientModule,
+                FormsModule,
             ],
             providers: [{ provide: MatDialog, useValue: dialogMock }],
         }).compileComponents();

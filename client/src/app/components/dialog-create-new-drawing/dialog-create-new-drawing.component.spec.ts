@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSliderModule } from '@angular/material/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
@@ -38,7 +39,7 @@ describe('DialogCreateNewDrawingComponent', () => {
         previewCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
 
         await TestBed.configureTestingModule({
-            imports: [MatDialogModule, MatIconModule, MatGridListModule, FormsModule, BrowserAnimationsModule, HttpClientModule],
+            imports: [MatDialogModule, MatSliderModule, MatIconModule, MatGridListModule, FormsModule, BrowserAnimationsModule, HttpClientModule],
             declarations: [DialogCreateNewDrawingComponent],
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: {} },

@@ -10,6 +10,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Vec2 } from '@app/classes/vec2';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
@@ -49,6 +50,7 @@ describe('DialogUpload', () => {
                 MatGridListModule,
                 MatIconModule,
                 MatSelectModule,
+                MatSliderModule,
                 MatFormFieldModule,
                 MatInputModule,
                 FormsModule,
