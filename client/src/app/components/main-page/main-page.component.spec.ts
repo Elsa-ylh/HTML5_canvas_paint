@@ -33,7 +33,7 @@ describe('MainPageComponent', () => {
             gridStub = new GridService(drawingStub);
             canvasReziseStub = new CanvasResizerService(gridStub, undoRedoStub);
             undoRedoStub = new UndoRedoService(drawingStub);
-            automaticSaveStub = new AutomaticSaveService(canvasReziseStub, drawingStub);
+            automaticSaveStub = new AutomaticSaveService(canvasReziseStub, drawingStub, undoRedoStub);
 
             TestBed.configureTestingModule({
                 imports: [
