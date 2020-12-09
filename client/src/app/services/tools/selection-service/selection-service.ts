@@ -343,7 +343,6 @@ export class SelectionService extends Tool {
 
     onDownArrow(): void {
         this.downArrow.onArrowDown(this.controlGroup);
-        console.log('down arrow');
     }
 
     onLeftArrowUp(): void {
