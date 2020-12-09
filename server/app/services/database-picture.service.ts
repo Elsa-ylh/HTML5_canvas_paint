@@ -23,7 +23,7 @@ export class DatabasePictureService {
         let databaseUrl = 'DATABASE_URL';
         let databaseName = 'DATABASE_NAME';
         let databaseCollection = 'DATABASE_COLLECTION';
-        const keyElement = readFileService.getInfo();
+        const keyElement = readFileService.getInfos();
         keyElement.forEach((element) => {
             if (element[0] === databaseUrl) {
                 databaseUrl = element[1];

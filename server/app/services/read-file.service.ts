@@ -19,11 +19,10 @@ export class ReadFileService {
             if (this.textInfo !== '') return true;
         } catch (error) {
             console.log('Error Open Read file :', error);
-            return false;
         }
         return false;
     }
-    getInfo(): string[][] {
+    getInfos(): string[][] {
         if (!this.isReal) {
             this.isReal = this.openFileRead();
         }
@@ -31,7 +30,7 @@ export class ReadFileService {
         if (this.isReal) {
             const textLine = this.textInfo.split('\r\n');
             textLine.forEach((element) => {
-                textTableau.push(element.split(" ='"));
+                if (element.split(" ='").length === 2) textTableau.push(element.split(" ='"));
             });
         }
         return textTableau;
