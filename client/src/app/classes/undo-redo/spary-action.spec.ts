@@ -54,7 +54,7 @@ describe('SprayAction', () => {
         undoRedoStub = new UndoRedoService(drawingStub);
         gridStub = new GridService(drawingStub);
         canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
         sprayActionStub = new SprayAction(density, color, zoneDiameter, dropDiameter, angle, radius, position, drawingStub, sprayStub);
 
