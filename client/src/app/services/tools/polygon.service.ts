@@ -3,7 +3,7 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolselected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { ToolInfoPolygone } from '@app/classes/tool-info-polygone';
-import { PolygoneAction } from '@app/classes/undo-redo/polygon-action';
+import { PolygoneAction as PolygonsAction } from '@app/classes/undo-redo/polygon-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
@@ -77,7 +77,7 @@ export class PolygonService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         // undo- redo
-        const polygoneAction = new PolygoneAction(
+        const polygoneAction = new PolygonsAction(
             this.mousePosition,
             this.mouseDownCoords,
             this.strokeColor,

@@ -53,9 +53,9 @@ describe('BrushAction', () => {
         const pt2 = new PointArc(vec2, 12, 1);
         brushPointData.push(pt1, pt2);
         drawingStub = new DrawingService();
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         gridStub = new GridService(drawingStub);
         canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         brushStub = new BrushService(drawingStub, colorStub, undoRedoStub, autoSaveStub);

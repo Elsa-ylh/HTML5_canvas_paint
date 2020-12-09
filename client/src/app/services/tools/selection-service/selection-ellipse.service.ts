@@ -89,7 +89,7 @@ export class SelectionEllipseService extends SelectionService {
         }
     }
 
-    onKeyEscape(event: KeyboardEvent): void {
+    onKeyEscape(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         // if the user is pressing escape while moving the selection
         if (
