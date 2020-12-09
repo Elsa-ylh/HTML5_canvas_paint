@@ -2,6 +2,7 @@ import { CanvasInformation, Label } from '@common/communication/canvas-informati
 import { injectable } from 'inversify';
 import { Collection, MongoClient, MongoClientOptions, ObjectId } from 'mongodb';
 import 'reflect-metadata';
+import { ReadFileService } from './read-file.service';
 
 const DATABASE_URL = 'mongodb+srv://Admin:LOG2990gr103@saved-canvas-images.2ticq.mongodb.net/project2?retryWrites=true&w=majority';
 const DATABASE_NAME = 'project2';
@@ -19,6 +20,13 @@ export class DatabasePictureService {
     };
 
     constructor() {
+        try {
+            let readFileService = new ReadFileService('mongodburl.txt');
+            readFileService.getInfo();
+        } catch (error) {
+            console.log(error);
+        }
+
         MongoClient.connect(DATABASE_URL, this.options)
             .then((client: MongoClient) => {
                 this.collection = client.db(DATABASE_NAME).collection(DATABASE_COLLECTION);
