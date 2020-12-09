@@ -31,8 +31,8 @@
     <mat-divider></mat-divider>
 
     <table>
-        <mat-grid-list cols="2" rowHeight="2:1">
-            <div>Aperçu</div>
+        <mat-grid-list id="previewTheColor" cols="2" rowHeight="2:1">
+            <div id="previewTheColor">Aperçu</div>
             <div id="previewColor" [ngStyle]="{ 'background-color': colorService.previewColor }"></div>
             <mat-grid-tile id="previewColorHexa">{{ colorService.previewColor }}</mat-grid-tile>
         </mat-grid-list>
@@ -53,11 +53,11 @@
         </th>
         <br />
         <div id="swapbutton">
-            <button mat-raised-button color="white" (click)="colorService.swapColor()"><mat-icon>swap_horiz</mat-icon></button>
+            <button mat-raised-button id="swapButton" color="white" (click)="colorService.swapColor()"><mat-icon>swap_horiz</mat-icon></button>
         </div>
 
         <th>
-            <div>Secondaire</div>
+            <div id="secondaryName">Secondaire</div>
             <mat-grid-list cols="2" rowHeight="2:1" (click)="secondaryClick()">
                 <div
                     id="secondaryColor"
@@ -102,7 +102,8 @@
     </mat-form-field>
 
     <button
-        mat-button
+        mat-raised-button
+        id="validationButton"
         (click)="sendInput({ red: inputR.valueAsNumber, green: inputG.valueAsNumber, blue: inputB.valueAsNumber, alpha: inputAlpha.valueAsNumber })"
     >
         Valider
