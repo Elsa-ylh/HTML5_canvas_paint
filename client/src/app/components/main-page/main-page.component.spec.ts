@@ -1,11 +1,13 @@
 // tslint:disable: no-any
 import { HttpClientModule } from '@angular/common/http';
+import { NgZone } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { MainPageComponent } from '@app/components/main-page/main-page.component';
@@ -34,6 +36,8 @@ describe('MainPageComponent', () => {
             canvasReziseStub = new CanvasResizerService(gridStub, undoRedoStub);
             undoRedoStub = new UndoRedoService(drawingStub);
             automaticSaveStub = new AutomaticSaveService(canvasReziseStub, drawingStub, undoRedoStub);
+            automaticSaveStub.save = () => '';
+            automaticSaveStub.check = () => false;
 
             TestBed.configureTestingModule({
                 imports: [
@@ -49,15 +53,18 @@ describe('MainPageComponent', () => {
                 providers: [
                     { provide: MatDialog, useValue: dialogMock },
                     { provide: MatDialogRef, useValue: {} },
-                    { provide: AutomaticSaveService, useValue: { save: () => '', check: () => false } },
                     { provide: AutomaticSaveService, useValue: automaticSaveStub },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);
+            const router = TestBed.inject(Router);
 
             fixture = TestBed.createComponent(MainPageComponent);
             component = fixture.componentInstance;
             fixture.detectChanges();
+            (fixture.ngZone as NgZone).run(() => {
+                router.initialNavigation();
+            });
         }),
     );
 
@@ -118,7 +125,9 @@ describe('MainPageComponent', () => {
     });
 
     it('should call getUpload ', () => {
-        const getUploadSpy = spyOn(automaticSaveStub, 'getUpload').and.stub();
+        const getUploadSpy = spyOn(automaticSaveStub, 'getUpload').and.callThrough();
+        // tslint:disable-next-line: no-string-literal
+        spyOn<any>(component['router'], 'navigate').and.returnValue(true);
         component.continueDrawing();
         expect(getUploadSpy).toHaveBeenCalled();
     });

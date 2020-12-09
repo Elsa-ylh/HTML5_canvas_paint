@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TextService } from '@app/services/tools/text.service';
 import { WriteTextOptionComponent } from './write-text-option.component';
@@ -26,6 +27,7 @@ describe('WriteTextOptionComponent', () => {
                 MatGridListModule,
                 MatFormFieldModule,
                 MatOptionModule,
+                MatSliderModule,
                 MatSelectModule,
                 FormsModule,
                 MatLineModule,
@@ -70,20 +72,20 @@ describe('WriteTextOptionComponent', () => {
     });
 
     it('should ngOnInit', () => {
-        expect(component['itBold']).toBeFalse;
-        expect(component['itItalic']).toBeFalse;
+        expect(component['itBold']).toEqual(false);
+        expect(component['itItalic']).toEqual(false);
     });
-    it('should', () => {
+    it('should pick bold', () => {
         component.pickBold();
-        expect(component['itBold']).toBeTrue;
+        expect(component['itBold']).toEqual(true);
         component.pickBold();
-        expect(component['itBold']).toBeFalse;
+        expect(component['itBold']).toEqual(false);
     });
-    it('should', () => {
+    it('should pick italic', () => {
         component.pickItalic();
-        expect(component['itItalic']).toBeFalse;
+        expect(component['itItalic']).toEqual(true);
         component.pickItalic();
-        expect(component['itItalic']).toBeFalse;
+        expect(component['itItalic']).toEqual(false);
     });
 
     it('should pickFontStyle', () => {

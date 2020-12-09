@@ -5,7 +5,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoadAction } from '@app/classes/undo-redo/load-action';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-// import { LoadAction } from '@app/classes/undo-redo/load-action';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -49,7 +48,7 @@ export class CarrouselPictureComponent implements OnInit {
     }
 
     private addAllLabels(): void {
-        this.dataLabel = this.clientServerComService.getAllLabel();
+        this.dataLabel = this.clientServerComService.getAllLabels();
     }
 
     reset(): void {
@@ -142,18 +141,18 @@ export class CarrouselPictureComponent implements OnInit {
     }
 
     private createImage(listCard: CanvasInformation[]): void {
-        const nbpicture = listCard.length;
-        if (nbpicture >= 1) {
+        const nbPictures = listCard.length;
+        if (nbPictures >= 1) {
             if (this.previewImage1 !== undefined) {
                 this.previewImage1.nativeElement.src = listCard[0].picture;
             }
         }
-        if (nbpicture >= 2) {
+        if (nbPictures >= 2) {
             if (this.previewImage2 !== undefined) {
                 this.previewImage2.nativeElement.src = listCard[1].picture;
             }
         }
-        if (nbpicture >= 3) {
+        if (nbPictures >= 3) {
             if (this.previewImage3 !== undefined) {
                 this.previewImage3.nativeElement.src = listCard[2].picture;
             }

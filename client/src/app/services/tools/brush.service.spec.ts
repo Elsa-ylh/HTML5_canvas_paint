@@ -240,6 +240,8 @@ describe('BrushService', () => {
     it('onMouseEnter ', () => {
         service['mouseOut'] = true;
         service['mouseDown'] = true;
+        const spy = spyOn(service, 'onMouseEnter').and.callThrough();
         service.onMouseEnter(mouseEvent);
+        expect(spy).toHaveBeenCalled();
     });
 });

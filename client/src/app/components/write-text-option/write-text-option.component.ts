@@ -1,5 +1,4 @@
 import { Component, HostListener } from '@angular/core';
-import { ToolUsed } from '@app/classes/tool';
 import { TextService } from '@app/services/tools/text.service';
 
 @Component({
@@ -10,14 +9,7 @@ import { TextService } from '@app/services/tools/text.service';
 export class WriteTextOptionComponent {
     private itItalic: boolean = false;
     private itBold: boolean = false;
-    // private isTextChecked: boolean = false;
-    // tslint:disable-next-line: typedef
-    toolUsed = ToolUsed;
     constructor(public textService: TextService) {}
-
-    /* get textChecked(): boolean {
-        return this.isTextChecked;
-    }*/
 
     pickBold(): void {
         this.itBold = !this.itBold;
@@ -31,10 +23,6 @@ export class WriteTextOptionComponent {
     pickFontStyle(subTool: number): void {
         this.textService.selectTextPosition(subTool);
     }
-
-    /* resetCheckedButton(): void {
-        this.isTextChecked = false;
-    }*/
 
     @HostListener('window:keydown', ['$event']) keyUpHandler(event: KeyboardEvent): void {
         if (this.textService.isOnPreviewCanvas()) event.preventDefault();

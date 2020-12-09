@@ -1,7 +1,9 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
+import { MatSliderModule } from '@angular/material/slider';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { STAMP } from '@app/classes/stamp';
 import { StampComponent } from '@app/components/stamp/stamp.component';
@@ -21,7 +23,7 @@ describe('StampComponent', () => {
         cursorStubCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         await TestBed.configureTestingModule({
             declarations: [StampComponent],
-            imports: [MatButtonModule, MatListModule, HttpClientModule],
+            imports: [MatButtonModule, MatSliderModule, FormsModule, MatListModule, HttpClientModule],
             providers: [
                 { provide: StampService, useValue: stampStub },
                 { provide: DrawingService, useValue: drawingStub },
