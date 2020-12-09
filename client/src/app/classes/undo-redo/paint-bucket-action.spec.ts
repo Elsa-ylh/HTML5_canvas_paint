@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { PaintBucketAction } from '@app/classes/undo-redo/paint-bucket-action';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
@@ -15,7 +14,6 @@ describe('PaintBucketAction', () => {
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
     let paintBucketStub: PaintBucketService;
-    let canvasStub: CanvasResizerService;
     let autoSaveStub: AutomaticSaveService;
 
     let baseStub: CanvasRenderingContext2D;
@@ -28,7 +26,7 @@ describe('PaintBucketAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasStub, undoRedoStub, autoSaveStub);
+        paintBucketStub = new PaintBucketService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
         paintBucketActionStub = new PaintBucketAction(pixels, drawingStub);
         canvas = canvasTestHelper.canvas;
         // tslint:disable:no-magic-numbers

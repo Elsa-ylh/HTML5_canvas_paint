@@ -5,13 +5,9 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
 import { SelectionImage } from '@app/classes/selection';
 import { SelectionWandAction } from '@app/classes/undo-redo/selection-wand-action';
-// import { PaintBucketAction } from '@app/classes/undo-redo/paint-bucket-action';
 import { Vec2 } from '@app/classes/vec2';
-// import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism.service';
-// import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -42,7 +38,6 @@ export class MagicWandService extends SelectionService {
 
     constructor(
         drawingService: DrawingService,
-        private canvasResizerService: CanvasResizerService,
         private paintBucketService: PaintBucketService,
         protected magnetismService: MagnetismService,
         protected undoRedoService: UndoRedoService,
@@ -55,13 +50,8 @@ export class MagicWandService extends SelectionService {
     private selectedFloodFill(x: number, y: number, replacementColor: RGBA): ImageData {
         const pixelStack: Vec2[] = [];
         pixelStack.push({ x, y });
-        const pixels: ImageData = this.drawingService.baseCtx.getImageData(
-            0,
-            0,
-            this.canvasResizerService.canvasSize.x,
-            this.canvasResizerService.canvasSize.y,
-        );
-        let linearCords: number = (y * this.canvasResizerService.canvasSize.x + x) * this.COLORATTRIBUTES;
+        const pixels: ImageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+        let linearCords: number = (y * this.drawingService.canvas.width + x) * this.COLORATTRIBUTES;
         const originalColor = {
             red: pixels.data[linearCords],
             green: pixels.data[linearCords + 1],
@@ -76,7 +66,7 @@ export class MagicWandService extends SelectionService {
             x = newPixel.x;
             y = newPixel.y;
 
-            linearCords = (y * this.canvasResizerService.canvasSize.x + x) * this.COLORATTRIBUTES;
+            linearCords = (y * this.drawingService.canvas.width + x) * this.COLORATTRIBUTES;
             while (
                 y-- >= 0 &&
                 pixels.data[linearCords] === originalColor.red &&
@@ -86,15 +76,15 @@ export class MagicWandService extends SelectionService {
                 // tslint:disable-next-line:no-magic-numbers
                 pixels.data[linearCords + 3] === originalColor.alpha
             ) {
-                linearCords -= this.canvasResizerService.canvasSize.x * this.COLORATTRIBUTES;
+                linearCords -= this.drawingService.canvas.width * this.COLORATTRIBUTES;
             }
-            linearCords += this.canvasResizerService.canvasSize.x * this.COLORATTRIBUTES;
+            linearCords += this.drawingService.canvas.width * this.COLORATTRIBUTES;
             y++;
 
             let reachedLeft = false;
             let reachedRight = false;
             while (
-                y++ < this.canvasResizerService.canvasSize.y &&
+                y++ < this.drawingService.canvas.height &&
                 pixels.data[linearCords] === originalColor.red &&
                 pixels.data[linearCords + 1] === originalColor.green &&
                 pixels.data[linearCords + 2] === originalColor.blue &&
@@ -127,7 +117,7 @@ export class MagicWandService extends SelectionService {
                     }
                 }
 
-                if (x < this.canvasResizerService.canvasSize.x - 1) {
+                if (x < this.drawingService.canvas.width - 1) {
                     if (
                         pixels.data[linearCords + this.COLORATTRIBUTES] === originalColor.red &&
                         pixels.data[linearCords + this.COLORATTRIBUTES + 1] === originalColor.green &&
@@ -144,7 +134,7 @@ export class MagicWandService extends SelectionService {
                         }
                     }
 
-                    linearCords += this.canvasResizerService.canvasSize.x * this.COLORATTRIBUTES;
+                    linearCords += this.drawingService.canvas.width * this.COLORATTRIBUTES;
                 }
             }
         }
@@ -152,13 +142,8 @@ export class MagicWandService extends SelectionService {
     }
 
     private selectAllSimilar(x: number, y: number, replacementColor: RGBA): ImageData {
-        const pixels: ImageData = this.drawingService.baseCtx.getImageData(
-            0,
-            0,
-            this.canvasResizerService.canvasSize.x,
-            this.canvasResizerService.canvasSize.y,
-        );
-        const linearCords: number = (y * this.canvasResizerService.canvasSize.x + x) * this.COLORATTRIBUTES;
+        const pixels: ImageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+        const linearCords: number = (y * this.drawingService.canvas.width + x) * this.COLORATTRIBUTES;
         const originalColor = {
             red: pixels.data[linearCords],
             green: pixels.data[linearCords + 1],
@@ -197,10 +182,10 @@ export class MagicWandService extends SelectionService {
         const originalLayer: ImageData = this.drawingService.baseCtx.getImageData(
             0,
             0,
-            this.canvasResizerService.canvasSize.x,
-            this.canvasResizerService.canvasSize.y,
+            this.drawingService.canvas.width,
+            this.drawingService.canvas.height,
         );
-        const previewLayer = new ImageData(this.canvasResizerService.canvasSize.x, this.canvasResizerService.canvasSize.y);
+        const previewLayer = new ImageData(this.drawingService.canvas.width, this.drawingService.canvas.height);
         for (let i = 0; i < size; ++i) {
             if (
                 coloredPixels.data[i * this.COLORATTRIBUTES] === this.replacementColor.red &&
