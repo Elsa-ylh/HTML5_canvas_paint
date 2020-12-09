@@ -558,102 +558,168 @@ export class SidebarComponent {
         }
     }
     @HostListener('window:keydown.control.a', ['$event']) selectAllCanvas(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionRectangleService.selectAll();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.selectAll();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.buttonSelectAllMagicWand();
+            return;
         }
     }
 
     @HostListener('window:keydown.ArrowLeft', ['$event']) onLeftArrow(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onLeftArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onLeftArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onLeftArrow();
+            return;
         }
     }
     @HostListener('window:keydown.ArrowRight', ['$event']) onRightArrow(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onRightArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onRightArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onRightArrow();
+            return;
         }
     }
 
     @HostListener('window:keydown.ArrowDown', ['$event']) onDownArrow(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onDownArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onDownArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onDownArrow();
+            return;
         }
     }
 
     @HostListener('window:keydown.ArrowUp', ['$event']) onUpArrow(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onUpArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onUpArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onUpArrow();
+            return;
         }
     }
     @HostListener('window:keyup.ArrowLeft', ['$event']) onLeftArrowUp(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onLeftArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onLeftArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onLeftArrowUp();
+            return;
         }
     }
 
     @HostListener('window:keyup.ArrowRight', ['$event']) onRightArrowUp(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onRightArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onRightArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onRightArrowUp();
+            return;
         }
     }
 
     @HostListener('window:keyup.ArrowDown', ['$event']) onDownArrowUp(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onDownArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onDownArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onDownArrowUp();
+            return;
         }
     }
 
     @HostListener('window:keyup.ArrowUp', ['$event']) onUpArrowUp(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onUpArrowUp();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onUpArrowUp();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onUpArrowUp();
         }
     }
@@ -675,64 +741,76 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.control.c', ['$event']) copySelection(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.copyImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            event.preventDefault();
             this.selectionEllipseService.copyImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            event.preventDefault();
             this.magicWandService.copyImage();
             return;
         }
     }
 
     @HostListener('window:keydown.control.x', ['$event']) cutSelection(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.cutImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            event.preventDefault();
             this.selectionEllipseService.cutImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            event.preventDefault();
             this.magicWandService.cutImage();
             return;
         }
     }
 
     @HostListener('window:keydown.control.v', ['$event']) pasteSelection(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.pasteImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            event.preventDefault();
             this.selectionEllipseService.pasteImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            event.preventDefault();
             this.magicWandService.pasteImage();
             return;
         }
     }
 
     @HostListener('window:keydown.Delete', ['$event']) delSelection(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.deleteImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            event.preventDefault();
             this.selectionEllipseService.deleteImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            event.preventDefault();
             this.magicWandService.deleteImage();
             return;
         }
@@ -782,8 +860,8 @@ export class SidebarComponent {
     }
     @HostListener('window:keydown.a', ['$event'])
     changeSprayMode(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
+            event.preventDefault();
             this.resetCheckedButton();
             this.isSprayChecked = true;
             this.pickSprayer();
