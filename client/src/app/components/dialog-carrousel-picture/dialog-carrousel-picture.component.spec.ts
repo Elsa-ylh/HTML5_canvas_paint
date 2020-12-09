@@ -10,7 +10,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
@@ -18,18 +18,20 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { of } from 'rxjs';
-import { CarrouselPictureComponent } from './dialog-carrousel-picture.component';
+import { CarouselComponent } from './dialog-carrousel-picture.component';
+
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
 // tslint:disable:no-unused-expression
 // tslint:disable:no-magic-numbers
-describe('CarrouselPictureComponent', () => {
-    let component: CarrouselPictureComponent;
-    let fixture: ComponentFixture<CarrouselPictureComponent>;
+
+describe('CarouselComponent', () => {
+    let component: CarouselComponent;
+    let fixture: ComponentFixture<CarouselComponent>;
     let drawingStub: DrawingService;
     let undoRedoStub: UndoRedoService;
     let gridStub: GridService;
-    let canvasResizerStub: CanvasResizerService;
+    let canvasResizeStub: CanvasResizeService;
     const informationService: CanvasInformation[] = [];
     let httpMock: HttpTestingController;
     const isDate: Date = new Date();
@@ -70,7 +72,7 @@ describe('CarrouselPictureComponent', () => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
         gridStub = new GridService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
+        canvasResizeStub = new CanvasResizeService(gridStub, undoRedoStub);
         await TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -82,13 +84,13 @@ describe('CarrouselPictureComponent', () => {
                 MatSelectModule,
                 FormsModule,
             ],
-            declarations: [CarrouselPictureComponent],
+            declarations: [CarouselComponent],
             providers: [
                 HttpClient,
                 { provide: ElementRef, useValue: {} },
                 { provide: MatDialogRef, useValue: { close: () => '' } },
                 { provide: Router, useValue: { navigate: () => '' } },
-                { provide: CanvasResizerService, useValue: canvasResizerStub },
+                { provide: CanvasResizeService, useValue: canvasResizeStub },
                 {
                     provide: ClientServerCommunicationService,
                     useValue: {
@@ -108,13 +110,12 @@ describe('CarrouselPictureComponent', () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(CarrouselPictureComponent);
+        fixture = TestBed.createComponent(CarouselComponent);
         component = fixture.componentInstance;
         spyOn(component['clientServerComService'], 'getData').and.returnValue(of(testCanvasInformationAddArray));
         spyOn(component['clientServerComService'], 'deleteQuery').and.returnValue(of(messageSuccess));
         confirmSpy = spyOn<any>(window, 'confirm').and.callThrough();
         alertSpy = spyOn<any>(window, 'alert').and.callThrough();
-        // spyOn(component['clientServerComService'], 'getElementResearch').and.returnValue(of([testCanvasInformationAdd]));
         httpMock = TestBed.inject(HttpTestingController);
 
         addAllDataSpy = spyOn<any>(component, 'addAllData').and.callThrough();
@@ -143,36 +144,36 @@ describe('CarrouselPictureComponent', () => {
         expect(addAllLabelsSpy).toHaveBeenCalled();
     });
 
-    it('test getPicturesAll', () => {
+    it('test getPictureLength', () => {
         component['dataPicture'] = [testCanvasInformationAdd];
-        expect(component.getPicturesAll()).toEqual(1);
+        expect(component.getPictureLength()).toEqual(1);
     });
-    it('test selectionLabel', () => {
+    it('test isLabelExisting', () => {
         spyOn(component['clientServerComService'], 'selectPictureWithLabel').and.returnValue(of([testCanvasInformationAdd]));
         component.ngOnInit();
-        component.selectionLabel('label1');
+        component.isLabelExisting('label1');
         expect(component['dataPicture'][0].name).toEqual(testCanvasInformationAdd.name);
     });
-    it('test selectionLabel with the parameter not in list of dataLabel', () => {
+    it('test isLabelExisting with the parameter not in list of dataLabel', () => {
         spyOn(component['clientServerComService'], 'selectPictureWithLabel').and.returnValue(of([]));
         component.ngOnInit();
-        component.selectionLabel('label3');
+        component.isLabelExisting('label3');
         expect(component['dataPicture'].length).toEqual(0);
     });
-    it('test the selectionLabel 3 times with the parameter label1', () => {
+    it('test the isLabelExisting 3 times with the parameter label1', () => {
         spyOn(component['clientServerComService'], 'selectPictureWithLabel').and.returnValue(of([testCanvasInformationAdd]));
         component.dataLabel = labels;
-        component.selectionLabel(labels[1].label);
-        component.selectionLabel(labels[1].label);
-        component.selectionLabel(labels[1].label);
+        component.isLabelExisting(labels[1].label);
+        component.isLabelExisting(labels[1].label);
+        component.isLabelExisting(labels[1].label);
         expect(component['dataPicture'][0].name).toEqual(testCanvasInformationAdd.name);
     });
-    it('test the selectionLabel times with the parameter label1', () => {
+    it('test the isLabelExisting times with the parameter label1', () => {
         spyOn(component['clientServerComService'], 'selectPictureWithLabel').and.returnValue(of([testCanvasInformationAdd]));
         component.dataLabel = labels;
-        component.selectionLabel(labels[0].label);
-        component.selectionLabel(labels[1].label);
-        component.selectionLabel(labels[0].label);
+        component.isLabelExisting(labels[0].label);
+        component.isLabelExisting(labels[1].label);
+        component.isLabelExisting(labels[0].label);
         expect(component['dataPicture'][0].name).toEqual(testCanvasInformationAdd.name);
     });
     it('check if the refresh function call addAllLabels', () => {
@@ -270,17 +271,17 @@ describe('CarrouselPictureComponent', () => {
         component.loadPicture(allDataTest[0]);
         expect(confirmSpy).toHaveBeenCalled();
     });
-    it('should deletePicture', () => {
+    it('should deletePictureInDataBase', () => {
         confirmSpy.and.returnValue(true);
-        component.deletePicture(testCanvasInformationAdd);
+        component.deletePictureInDataBase(testCanvasInformationAdd);
         expect(confirmSpy).toHaveBeenCalledWith('Supprimer : ' + testCanvasInformationAdd.name);
     });
-    it('should deletePicture', () => {
+    it('should deletePictureInDataBase', () => {
         confirmSpy.and.returnValue(false);
-        component.deletePicture(allDataTest[0]);
+        component.deletePictureInDataBase(allDataTest[0]);
         expect(confirmSpy).toHaveBeenCalledWith('Supprimer : ' + allDataTest[0].name);
     });
-    it('should deletePicture', () => {
+    it('should deletePictureInDataBase', () => {
         component.messageDelete(messageSuccess);
         expect(alertSpy).toHaveBeenCalledWith(messageSuccess.body);
     });

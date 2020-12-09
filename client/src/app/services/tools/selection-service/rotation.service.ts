@@ -3,10 +3,12 @@ import { SelectionImage } from '@app/classes/selection';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionService } from './selection-service';
+
+// tslint:disable:no-magic-numbers
+
 const FIFTEEN = 15;
 const ONE = 1;
-// tslint:disable:no-magic-numbers
-export const TO_RAD = Math.PI / 180;
+export const TO_RADIAN = Math.PI / 180;
 
 @Injectable({
     providedIn: 'root',
@@ -25,12 +27,11 @@ export class RotationService extends Tool {
             selectionService.clearSelection();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             selectionService.drawSelection(selectionService.selection.imagePosition);
-            // selectionService.selection.resetAngle();
         }
     }
 
     rotateSelection(selection: SelectionImage, ctx: CanvasRenderingContext2D): void {
-        const angleInRadian = selection.rotationAngle * TO_RAD;
+        const angleInRadian = selection.rotationAngle * TO_RADIAN;
         ctx.translate(selection.imagePosition.x + selection.width / 2, selection.imagePosition.y + selection.height / 2);
         ctx.rotate(angleInRadian);
         ctx.translate(-selection.imagePosition.x - selection.width / 2, -selection.imagePosition.y - selection.height / 2);
@@ -54,7 +55,7 @@ export class RotationService extends Tool {
 
     addOrRetract(event: WheelEvent): void {
         // scroll up => wheel adds to the angle (same as when scrolling up a page.)
-        // if the value of deltaY is <0 that means we are scrooling up
+        // if the value of deltaY is < 0 that means we are scrolling up
         if (event.deltaY < 0) {
             this.isWheelAdd = true;
         } else {

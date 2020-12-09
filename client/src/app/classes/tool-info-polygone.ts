@@ -1,10 +1,10 @@
 import { SubToolSelected } from '@app/classes/sub-tool-selected';
 
-export class ToolInfoPolygone {
+export class ToolInfoPolygon {
     primaryColor: string;
     secondaryColor: string;
     lineWidth: number;
-    nbsides: number;
+    nbSides: number;
     isRenderingBase: boolean;
     selectSubTool: SubToolSelected;
 }

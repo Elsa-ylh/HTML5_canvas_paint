@@ -10,6 +10,7 @@ import { RotationService } from '@app/services/tools/selection-service/rotation.
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
+// tslint:disable:no-magic-numbers
 describe('SelectionEllipseAction', () => {
     let selectionEllipseActionStub: SelectionEllipseAction;
     let drawingStub: DrawingService;
@@ -34,7 +35,7 @@ describe('SelectionEllipseAction', () => {
         selection.imagePosition = { x: selection.imagePosition.x, y: selection.imagePosition.y };
         selection.endingPos = { x: selection.endingPos.x, y: selection.endingPos.y };
         selection.imageSize = { x: selection.imageSize.x, y: selection.imageSize.y };
-        selection.ellipseRad = { x: selection.ellipseRad.x, y: selection.ellipseRad.y };
+        selection.ellipseRadian = { x: selection.ellipseRadian.x, y: selection.ellipseRadian.y };
         selection.width = selection.width;
         selection.height = selection.height;
         selection.imageData = selection.imageData;
@@ -52,9 +53,7 @@ describe('SelectionEllipseAction', () => {
 
         selectionEllipseActionStub = new SelectionEllipseAction(selectionEllipseStub, drawingStub, selection);
         canvas = canvasTestHelper.canvas;
-        // tslint:disable:no-magic-numbers
         canvas.width = 100;
-        // tslint:disable:no-magic-numbers
         canvas.height = 100;
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;

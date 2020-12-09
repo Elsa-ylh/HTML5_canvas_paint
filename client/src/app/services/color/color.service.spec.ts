@@ -5,11 +5,12 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { EventOfTest } from '@app/classes/event-of-test';
 import { RGBA } from '@app/classes/rgba';
 import { Vec2 } from '@app/classes/vec2';
-// import { RGBA } from '@app/classes/rgba';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 // tslint:disable:no-magic-numbers
+// tslint:disable:no-string-literal
+
 describe('ColorService', () => {
     let service: ColorService;
     let mouseEventDrawDot: EventOfTest;
@@ -26,11 +27,8 @@ describe('ColorService', () => {
         });
 
         service = TestBed.inject(ColorService);
-
-        // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
-
         mouseEventDrawDot = new EventOfTest();
     });
 
@@ -38,7 +36,7 @@ describe('ColorService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('drawMovingDot should call drawMovingDot should change line cap,stroke style and fillstyle', () => {
+    it('drawMovingDot should call drawMovingDot should change line cap,stroke style and fillStyle', () => {
         service.drawMovingStopper(baseCtxStub, { x: 50, y: 50 }, mouseEventDrawDot.mouseEvent1);
         expect(baseCtxStub.lineCap).toEqual('round');
         expect(baseCtxStub.strokeStyle).toEqual('#000000');

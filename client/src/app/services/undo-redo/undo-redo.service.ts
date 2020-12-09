@@ -7,10 +7,10 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class UndoRedoService {
-    isUndoDisabled: boolean = true; // to disactivate the option to redo-redo. diabled=true (cant undo-red0 when app loads)
+    isUndoDisabled: boolean = true; // to deactivate the option to redo-redo. disabled=true (cant undo-red0 when app loads)
     isRedoDisabled: boolean = true;
-    defaultCanvasAction: ResizeCanvasAction; // will be instanciated when canvas is ngAfterViewInit
-    isloadImg: boolean = false;
+    defaultCanvasAction: ResizeCanvasAction; // will be instantiated when canvas is ngAfterViewInit
+    isLoadImg: boolean = false;
     private firstLoadedImage: LoadAction;
     private listUndo: AbsUndoRedo[] = [];
     private listRedo: AbsUndoRedo[] = [];
@@ -31,7 +31,7 @@ export class UndoRedoService {
     // allows to reset the listUndo after we redo something.
     clearUndo(): void {
         this.listUndo = [];
-        this.isloadImg = false;
+        this.isLoadImg = false;
         this.updateStatus();
     }
     // allows to reset the listRedo
@@ -46,20 +46,20 @@ export class UndoRedoService {
         this.updateStatus();
     }
 
-    // to load an image from the caroussel
+    // to load an image from the carousel
     loadImage(action: LoadAction): void {
         this.firstLoadedImage = action;
-        this.isloadImg = true;
+        this.isLoadImg = true;
     }
 
-    // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
+    // function that cancels the latest modification.(ctrl z) we push the latest element removed from the undo stack.
     async undo(): Promise<void> {
         const action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
         if (action) {
             this.listRedo.push(action);
             const listOfResize: AbsUndoRedo[] = [];
 
-            if (this.isloadImg) {
+            if (this.isLoadImg) {
                 await this.firstLoadedImage.apply();
             } else {
                 this.drawingService.clearCanvas(this.drawingService.baseCtx);
@@ -73,7 +73,7 @@ export class UndoRedoService {
                 }
             }
 
-            if (listOfResize.length === 0 && !this.isloadImg) {
+            if (listOfResize.length === 0 && !this.isLoadImg) {
                 this.defaultCanvasAction.apply();
             }
             if (listOfResize.length > 0) {

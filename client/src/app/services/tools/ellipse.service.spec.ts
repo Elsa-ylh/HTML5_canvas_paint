@@ -18,7 +18,6 @@ describe('Service: Ellipse', () => {
     let drawEllipseOutlineSpy: jasmine.Spy<any>;
     let drawFillEllipseOutlineSpy: jasmine.Spy<any>;
     let onMouseUpSpy: jasmine.Spy<any>;
-    // let drawPreviewRectSpy: jasmine.Spy<any>;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -40,10 +39,9 @@ describe('Service: Ellipse', () => {
         drawEllipseOutlineSpy = spyOn<any>(service, 'drawEllipseOutline').and.callThrough();
         drawFillEllipseOutlineSpy = spyOn<any>(service, 'drawFillEllipseOutline').and.callThrough();
         onMouseUpSpy = spyOn<any>(service, 'onMouseUp').and.callThrough();
-        // drawPreviewRectSpy = spyOn<any>(service, 'drawPreviewRect').and.callThrough();
 
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesn't copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
@@ -60,14 +58,6 @@ describe('Service: Ellipse', () => {
     it('should be created', inject([EllipseService], (serviceRec: EllipseService) => {
         expect(serviceRec).toBeTruthy();
     }));
-
-    /*
-  it('should be called', () => {
-      const mouseEventTest = { x: 15, y: 6, button: MouseButton.Right } as MouseEvent;
-      service.onMouseDown(mouseEventTest);
-      expect(colorServiceSpy.getColor).toHaveBeenCalled();
-  });
-  */
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
@@ -283,7 +273,7 @@ describe('Service: Ellipse', () => {
 
     it(' onMouseDown should call onMouseUp if the mouse enter the canvas', () => {
         service.mouseDownCoords = { x: 0, y: 0 };
-        service.mouseEnter = true;
+        service['mouseEnter'] = true;
         service.onMouseDown(mouseEvent);
         expect(onMouseUpSpy).toHaveBeenCalled();
     });
@@ -291,24 +281,24 @@ describe('Service: Ellipse', () => {
     it(' should change mouseOut value to true when the mouse is living the canvas while left click is pressed', () => {
         service.mouseDown = true;
         service.onMouseOut(mouseEvent);
-        expect(service.mouseOut).toEqual(true);
+        expect(service['mouseOut']).toEqual(true);
     });
 
     it(' should not change mouseOut value to true when the mouse is living the canvas while left click is not pressed', () => {
         service.mouseDown = false;
         service.onMouseOut(mouseEvent);
-        expect(service.mouseOut).toEqual(false);
+        expect(service['mouseOut']).toEqual(false);
     });
 
     it(' should change mouseEnter value to true when the mouse is entering the canvas after leaving it while drawing', () => {
-        service.mouseOut = true;
+        service['mouseOut'] = true;
         service.onMouseEnter(mouseEvent);
-        expect(service.mouseEnter).toEqual(true);
+        expect(service['mouseEnter']).toEqual(true);
     });
 
     it(' should not change mouseEnter value to true when the mouse is entering the canvas after leaving it while not drawing', () => {
-        service.mouseOut = false;
+        service['mouseOut'] = false;
         service.onMouseEnter(mouseEvent);
-        expect(service.mouseEnter).toEqual(false);
+        expect(service['mouseEnter']).toEqual(false);
     });
 });

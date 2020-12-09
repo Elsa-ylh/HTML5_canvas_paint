@@ -1,9 +1,9 @@
-/* tslint:disable:no-unused-variable */
-/* tslint:disable:no-any */
+// tslint:disable:no-unused-variable
+// tslint:disable:no-any
 
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { GridService } from './grid.service';
@@ -12,7 +12,7 @@ let service: GridService;
 
 let drawingStub: DrawingService;
 let undoRedoStub: UndoRedoService;
-let canvasResizerStub: CanvasResizerService;
+let canvasResizeStub: CanvasResizeService;
 
 let baseCtxStub: CanvasRenderingContext2D;
 let previewCtxStub: CanvasRenderingContext2D;
@@ -21,12 +21,12 @@ describe('Service: Grid', () => {
     beforeEach(() => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(service, undoRedoStub);
+        canvasResizeStub = new CanvasResizeService(service, undoRedoStub);
 
         TestBed.configureTestingModule({
             providers: [
                 { provide: DrawingService, useValue: drawingStub },
-                { provide: CanvasResizerService, useValue: canvasResizerStub },
+                { provide: CanvasResizeService, useValue: canvasResizeStub },
             ],
         });
         service = TestBed.inject(GridService);

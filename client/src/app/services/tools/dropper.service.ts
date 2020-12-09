@@ -6,7 +6,9 @@ import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+
 export const FORTY = 40;
+
 @Injectable({
     providedIn: 'root',
 })
