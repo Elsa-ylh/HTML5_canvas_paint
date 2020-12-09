@@ -52,7 +52,7 @@ import { SidebarComponent } from './sidebar.component';
 // tslint:disable:no-magic-numbers
 // tslint:disable:max-file-line-count
 // tslint:disable:prefer-const
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let drawingStub: DrawingService;
@@ -1175,48 +1175,63 @@ fdescribe('SidebarComponent', () => {
         expect(rotationStub.altPressed).toEqual(false);
     });
     it('should change altPressed value to false when releasing alt ', () => {
-        toolServiceStub.switchTool(ToolUsed.Stamp);
+        toolServiceStub.currentToolName = ToolUsed.Stamp;
         const event = new KeyboardEvent('window:keyup.alt', {});
         window.dispatchEvent(event);
         component.altReleased(event);
         expect(stampServiceStub.isAltPressed).toEqual(false);
     });
     it('should change dPressed value to false when releasing d ', () => {
-        toolServiceStub.switchTool(ToolUsed.Color);
-        const event = new KeyboardEvent('window:keyup.d', {});
-        expect(component['isStampChecked']).toBeFalse;
+        toolServiceStub.currentToolName = ToolUsed.Color;
+        const event = new KeyboardEvent('window:keydown.d', {});
+        expect(component['isStampChecked']).toEqual(false);
         window.dispatchEvent(event);
         component.changeStampMode(event);
-        expect(component['isStampChecked']).toBeTrue;
+        expect(component['isStampChecked']).toEqual(false);
     });
     it('should change dPressed value to false when releasing d ', () => {
-        toolServiceStub.switchTool(ToolUsed.NONE);
-        const event = new KeyboardEvent('window:keyup.d', {});
-        expect(component['isStampChecked']).toBeFalse;
+        toolServiceStub.currentToolName = ToolUsed.NONE;
+        const event = new KeyboardEvent('window:keydown.d', {});
+        expect(component['isStampChecked']).toEqual(false);
         window.dispatchEvent(event);
         component.changeStampMode(event);
-        expect(component['isStampChecked']).toBeFalse;
+        expect(component['isStampChecked']).toEqual(true);
     });
     it('should change vPressed value to false when releasing v ', () => {
         component['isDialogloadSaveEport'] = true;
-        toolServiceStub.switchTool(ToolUsed.NONE);
-        const event = new KeyboardEvent('window:keyup.v', {});
-        expect(component['isStampChecked']).toBeFalse;
+        toolServiceStub.currentToolName = ToolUsed.NONE;
+        const event = new KeyboardEvent('window:keydown.v', {});
+        expect(component['isMagicWandSelectionChecked']).toEqual(false);
         window.dispatchEvent(event);
         component.changeMagicWandMode(event);
-        expect(component['isStampChecked']).toBeFalse;
+        expect(component['isMagicWandSelectionChecked']).toEqual(true);
     });
-    it('should change Pressed value to false when releasing  ', () => {
+    it('should change vPressed value to false when releasing v ', () => {
         component['isDialogloadSaveEport'] = true;
-        toolServiceStub.switchTool(ToolUsed.Color);
-        const event = new KeyboardEvent('window:keyup.v', {});
-        expect(component['isStampChecked']).toBeFalse;
+        toolServiceStub.currentToolName = ToolUsed.Color;
+        const event = new KeyboardEvent('window:keydown.v', {});
+        expect(component['isMagicWandSelectionChecked']).toEqual(false);
         window.dispatchEvent(event);
         component.changeMagicWandMode(event);
-        expect(component['isStampChecked']).toBeTrue;
+        expect(component['isMagicWandSelectionChecked']).toEqual(false);
     });
-    it('should change Pressed value to false when releasing  ', () => {});
-    it('should change Pressed value to false when releasing  ', () => {});
-    it('should change Pressed value to false when releasing  ', () => {});
-    it('should change Pressed value to false when releasing  ', () => {});
+    it('should change Pressed cvalue to false when releasing c ', () => {
+        component['isDialogloadSaveEport'] = true;
+        toolServiceStub.currentToolName = ToolUsed.Color;
+        const event = new KeyboardEvent('window:keydown.c', {});
+        expect(component['isStampChecked']).toEqual(false);
+        window.dispatchEvent(event);
+        component.changePencilMode(event);
+        expect(component['isStampChecked']).toEqual(false);
+    });
+
+    it('should change Pressed cvalue to false when releasing c ', () => {
+        component['isDialogloadSaveEport'] = true;
+        toolServiceStub.currentToolName = ToolUsed.NONE;
+        const event = new KeyboardEvent('window:keydown.c', {});
+        expect(component['isPencilChecked']).toEqual(false);
+        window.dispatchEvent(event);
+        component.changePencilMode(event);
+        expect(component['isPencilChecked']).toEqual(true);
+    });
 });
