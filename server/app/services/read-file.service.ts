@@ -24,7 +24,7 @@ export class ReadFileService {
         }
         const textTableau: string[][] = [];
         if (this.isReal) {
-            const textLine = this.textInfo.split('\r\n');
+            const textLine = this.textInfo.split('\n');
             textLine.forEach((element) => {
                 if (element.split(" ='").length === 2) textTableau.push(element.split(" ='"));
             });

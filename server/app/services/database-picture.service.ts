@@ -19,7 +19,7 @@ export class DatabasePictureService {
         this.connectMongoClient('mongodb_url.txt');
     }
     private async connectMongoClient(nomFile: string): Promise<void> {
-        let readFileService = new ReadFileService();
+        const readFileService = new ReadFileService();
         readFileService.openFileRead(nomFile);
         let databaseUrl = 'DATABASE_URL';
         let databaseName = 'DATABASE_NAME';
@@ -42,7 +42,7 @@ export class DatabasePictureService {
             })
             .catch(() => {
                 console.error('CONNECTION ERROR. EXITING PROCESS');
-                process.exit(1);
+                throw 'CONNECTION ERROR. EXITING PROCESS';
             });
     }
 
@@ -94,7 +94,7 @@ export class DatabasePictureService {
             });
             return listLabels;
         } catch (error) {
-            return error;
+            throw error;
         }
     }
     private isLabelNotInTheList(listLabels: Label[], label: Label): boolean {

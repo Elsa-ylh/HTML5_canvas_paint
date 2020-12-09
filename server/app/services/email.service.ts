@@ -19,7 +19,7 @@ export class EmailService {
     }
 
     private readFile(nomFile: string): void {
-        let readFileService = new ReadFileService();
+        const readFileService = new ReadFileService();
         readFileService.openFileRead(nomFile);
         const keyElement: string[][] = readFileService.getInfos();
         keyElement.forEach((element) => {

@@ -9,7 +9,8 @@ describe('Read File service', () => {
     });
 
     it('should constructor ReadFileService', () => {
-        const text = "test =' test1\r\ntest2 =' test2\r\ntrreawwadrweq";
+        const text = "test =' test1\ntest2 =' test2\ntrreawwadrweq";
+        readFileService.openFileRead(nomFile);
         expect(readFileService['textInfo']).to.be.equal(text);
         expect(readFileService['isReal']).to.be.equal(true);
         expect(readFileService['nomeFile']).to.be.equal(nomFile);
@@ -25,21 +26,22 @@ describe('Read File service', () => {
         expect(readFileService.openFileRead(nomFile)).to.be.equal(true);
     });
     it(' openFileRead return false', () => {
-        readFileService['nomeFile'] = '';
-        expect(readFileService.openFileRead(nomFile)).to.be.equal(false);
+        expect(readFileService.openFileRead('')).to.be.equal(false);
     });
     it(' getInfos isReal false , nomeFile "" and return []', () => {
         readFileService['nomeFile'] = '';
         readFileService['isReal'] = false;
-        expect(readFileService['getInfos']().length).to.be.equal(0);
+        expect(readFileService.getInfos().length).to.be.equal(0);
     });
     it(' getInfos isReal false and reussi openFileRead return 2 line info', () => {
+        readFileService['nomeFile'] = nomFile;
         readFileService['isReal'] = false;
-        expect(readFileService['getInfos']().length).to.be.equal(2);
+        expect(readFileService.getInfos().length).to.be.equal(2);
     });
     it(' getInfos return 2 line info', () => {
+        readFileService.openFileRead(nomFile);
         readFileService['isReal'] = true;
-        const texts = readFileService['getInfos']();
+        const texts = readFileService.getInfos();
         expect(texts.length).to.be.equal(2);
         expect(texts[0][0]).to.be.equal('test');
         expect(texts[0][1]).to.be.equal(' test1');
