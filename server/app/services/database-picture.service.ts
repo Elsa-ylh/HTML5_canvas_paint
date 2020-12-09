@@ -60,7 +60,7 @@ export class DatabasePictureService {
                 throw error;
             });
     }
-    async getAllLabelss(): Promise<Label[]> {
+    async getAllLabels(): Promise<Label[]> {
         try {
             const listLabels: Label[] = [];
             const collectionPictures: CanvasInformation[] = await this.collection

@@ -133,7 +133,7 @@ describe('Data Controller', () => {
             });
     });
     it('should get test error /all_labels', async () => {
-        dataService.getAllLabelss.rejects(new Error('error in the service mongo'));
+        dataService.getAllLabels.rejects(new Error('error in the service mongo'));
         return supertest(app)
             .get('/api/data/all_labels')
             .send()
@@ -147,7 +147,7 @@ describe('Data Controller', () => {
     });
     it('should get test /all_label', async () => {
         const Labels: Label[] = [{ label: 'label1' }, { label: 'label2' }];
-        dataService.getAllLabelss.resolves(Labels);
+        dataService.getAllLabels.resolves(Labels);
         return supertest(app)
             .get('/api/data/all_labels')
             .expect(HTTP_STATUS_OK)
@@ -226,7 +226,7 @@ describe('Data Controller', () => {
     it('post in good research name ', async () => {
         const service = {
             title: 'name',
-            body: 'stest5',
+            body: 'test5',
         };
         return supertest(app)
             .post('/api/data/research')
@@ -277,7 +277,7 @@ describe('Data Controller', () => {
     it('post in good savePicture update', async () => {
         const newCanvasInformationAdd = {
             _id: '1234',
-            name: 'stest5',
+            name: 'test5',
             labels: [{ label: 'label1' }],
             width: 0,
             height: 0,
@@ -298,7 +298,7 @@ describe('Data Controller', () => {
     it('post in good savePicture save', async () => {
         const newCanvasInformationAdd = {
             _id: '',
-            name: 'stest5',
+            name: 'test5',
             labels: [{ label: 'label1' }],
             width: 0,
             height: 0,
@@ -320,7 +320,7 @@ describe('Data Controller', () => {
         dataService.modifyPicture.rejects(new Error('error in the service mongo'));
         const newCanvasInformationAdd = {
             _id: '1234',
-            name: 'stest5',
+            name: 'test5',
             labels: [{ label: 'label1' }],
             width: 0,
             height: 0,
@@ -342,7 +342,7 @@ describe('Data Controller', () => {
         dataService.addPicture.rejects(new Error('error in the service mongo'));
         const newCanvasInformationAdd = {
             _id: '',
-            name: 'sstest5',
+            name: 'test5',
             labels: [{ label: 'label1' }],
             width: 0,
             height: 0,

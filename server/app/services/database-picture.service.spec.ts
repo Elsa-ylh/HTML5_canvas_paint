@@ -107,7 +107,7 @@ describe('Database service', () => {
             picture: 'test5',
         } as CanvasInformation);
         await databaseService
-            .getAllLabelss()
+            .getAllLabels()
             .then((result: any) => {
                 expect(result[0].label).to.equal('label1');
                 expect(result[1].label).to.equal('label2');
@@ -119,7 +119,7 @@ describe('Database service', () => {
     });
     it('test get all labels return two labels', async () => {
         await databaseService
-            .getAllLabelss()
+            .getAllLabels()
             .then((result: any) => {
                 expect(result[0].label).to.equal('label1');
                 expect(result[1].label).to.equal('label2');
@@ -183,10 +183,10 @@ describe('Database service', () => {
                 return error;
             });
     });
-    it('test error find getAllLabelss', async () => {
+    it('test error find getAllLabels', async () => {
         client.close();
         await databaseService
-            .getAllLabelss()
+            .getAllLabels()
             .then((result: any) => {
                 expect(result.name).to.equal('Error');
             })
