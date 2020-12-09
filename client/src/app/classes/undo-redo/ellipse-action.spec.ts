@@ -8,6 +8,7 @@ import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.servic
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // tslint:disable:no-magic-numbers
@@ -31,6 +32,7 @@ describe('EllipseAction', () => {
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
     let canvasResizerStub: CanvasResizerService;
+    let gridStub: GridService;
     beforeEach(() => {
         mousePosition = { x: 5, y: 6 };
         mouseDownCord = { x: 25, y: 15 };
@@ -43,8 +45,9 @@ describe('EllipseAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        gridStub = new GridService(drawingStub);
+        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
         ellipseActionStub = new EllipseAction(

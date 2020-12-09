@@ -36,6 +36,8 @@ import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle.service';
+import { MagicWandService } from '@app/services/tools/selection-service/magic-wand.service';
+import { RotationService } from '@app/services/tools/selection-service/rotation.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
@@ -43,7 +45,8 @@ import { SprayService } from '@app/services/tools/spray.service';
 import { StampService } from '@app/services/tools/stamp.service';
 import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
+import { Subject } from 'rxjs/internal/Subject';
 import { SidebarComponent } from './sidebar.component';
 
 // tslint:disable:no-any
@@ -77,6 +80,8 @@ describe('SidebarComponent', () => {
     let featherStub: FeatherService;
     let magnetismStub: MagnetismService;
     let gridStub: GridService;
+    let rotationStub: RotationService;
+    let magicWandStub: MagicWandService;
     let pasteImageRectSpy: jasmine.SpyObj<any>;
     let pasteImageEllipseSpy: jasmine.SpyObj<any>;
     let deactivateGridSpy: jasmine.SpyObj<any>;
@@ -92,7 +97,7 @@ describe('SidebarComponent', () => {
     beforeEach(
         waitForAsync(async () => {
             drawingStub = new DrawingService();
-            automaticSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+            automaticSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
             colorStub = new ColorService(drawingStub);
             undoRedoStub = new UndoRedoService(drawingStub);
             rectangleStub = new RectangleService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
@@ -103,12 +108,15 @@ describe('SidebarComponent', () => {
             lineStub = new LineService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             dropperServiceStub = new DropperService(drawingStub, colorStub, automaticSaveStub);
             paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, automaticSaveStub);
-            selectionStub = new SelectionService(drawingStub, magnetismStub);
+            magicWandStub = new MagicWandService(drawingStub, canvasResizerStub, paintBucketStub, magnetismStub, undoRedoStub, rotationStub);
             sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
-            textServiceStub = new TextService(drawingStub, colorStub, rectangleStub);
+            selectionStub = new SelectionService(drawingStub, magnetismStub, rotationStub);
+            textServiceStub = new TextService(drawingStub, colorStub, undoRedoStub);
             stampServiceStub = new StampService(drawingStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
-            gridStub = new GridService(drawingStub, canvasResizerStub);
+            magnetismStub = new MagnetismService(gridStub);
+            gridStub = new GridService(drawingStub);
+            rotationStub = new RotationService(drawingStub);
 
             toolServiceStub = new ToolService(
                 pencilStub,
@@ -122,15 +130,16 @@ describe('SidebarComponent', () => {
                 paintBucketStub,
                 selectionRectangleStub,
                 selectionEllipseStub,
+                magicWandStub,
                 sprayStub,
                 featherStub,
                 textServiceStub,
                 stampServiceStub,
             );
 
-            selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub);
-            selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub);
             magnetismStub = new MagnetismService(gridStub);
+            selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
+            selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
             canvas = canvasTestHelper.canvas;
             canvas.width = 100;
@@ -178,7 +187,7 @@ describe('SidebarComponent', () => {
                     { provide: PencilService, useValue: pencilStub },
                     { provide: EraserService, useValue: eraserStub },
                     { provide: LineService, useValue: lineStub },
-                    { provide: SelectionRectangleService, usevalue: selectionRectangleStub },
+                    { provide: SelectionRectangleService, useValue: selectionRectangleStub },
                     { provide: SelectionEllipseService, useValue: selectionEllipseStub },
                     { provide: ToolService, useValue: toolServiceStub },
                     { provide: DropperService, useValue: dropperServiceStub },
@@ -193,6 +202,7 @@ describe('SidebarComponent', () => {
                     { provide: FeatherService, useValue: featherStub },
                     { provide: GridService, useValue: gridStub },
                     { provide: MagnetismService, useValue: magnetismStub },
+                    { provide: RotationService, useValue: rotationStub },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);
@@ -255,7 +265,7 @@ describe('SidebarComponent', () => {
     });
 
     it('should export Drawing ', () => {
-        component.isDialogloadSaveEport = true;
+        component.isDialogLoadSaveExport = true;
         const closedSubject = new Subject<any>();
 
         const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
@@ -263,11 +273,11 @@ describe('SidebarComponent', () => {
         dialogMock.open.and.returnValue(dialogRefMock);
 
         component.exportDrawing();
-        expect(component.isDialogloadSaveEport).toEqual(false);
+        expect(component.isDialogLoadSaveExport).toEqual(false);
 
         closedSubject.next();
 
-        expect(component.isDialogloadSaveEport).toEqual(true);
+        expect(component.isDialogLoadSaveExport).toEqual(true);
     });
 
     it(' should create new drawing dialog', () => {
@@ -284,17 +294,17 @@ describe('SidebarComponent', () => {
         const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
         dialogRefMock.afterClosed.and.returnValue(closedSubject.asObservable());
         dialogMock.open.and.returnValue(dialogRefMock);
-        component.isDialogloadSaveEport = true;
+        component.isDialogLoadSaveExport = true;
         component.openCarrousel();
-        expect(component.isDialogloadSaveEport).toEqual(false);
+        expect(component.isDialogLoadSaveExport).toEqual(false);
 
         closedSubject.next();
 
-        expect(component.isDialogloadSaveEport).toEqual(true);
+        expect(component.isDialogLoadSaveExport).toEqual(true);
     });
 
     it('should open save server ', () => {
-        component.isDialogloadSaveEport = true;
+        component.isDialogLoadSaveExport = true;
         const closedSubject = new Subject<any>();
 
         const dialogRefMock = jasmine.createSpyObj('dialogRef', ['afterClosed']) as jasmine.SpyObj<MatDialogRef<any>>;
@@ -302,21 +312,21 @@ describe('SidebarComponent', () => {
         dialogMock.open.and.returnValue(dialogRefMock);
 
         component.openSaveServer();
-        expect(component.isDialogloadSaveEport).toEqual(false);
+        expect(component.isDialogLoadSaveExport).toEqual(false);
 
         closedSubject.next();
 
-        expect(component.isDialogloadSaveEport).toEqual(true);
+        expect(component.isDialogLoadSaveExport).toEqual(true);
     });
 
     it('should open writeTextDialogUserComponent', () => {
-        const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+        const matDialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
         component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
-            return matdialogRef;
+            return matDialogRef;
         });
         component.openUserGuide();
-        expect(component.checkDocumentationRef).toEqual(matdialogRef);
+        expect(component.checkDocumentationRef).toEqual(matDialogRef);
     });
     it(' should pick pencil', () => {
         const switchToolSpy = spyOn<any>(toolServiceStub, 'switchTool').and.stub();
@@ -595,7 +605,7 @@ describe('SidebarComponent', () => {
         const event = new KeyboardEvent('window:keydown.s', {});
         const spyReset = spyOn(component, 'resetCheckedButton').and.callThrough();
         const spyPickSelectionEllipse = spyOn(component, 'pickSelectionEllipse').and.stub();
-        component.isDialogloadSaveEport = true;
+        component.isDialogLoadSaveExport = true;
         window.dispatchEvent(event);
         component.changeSelectionEllipseMode(event);
         expect(spyReset).toHaveBeenCalled();
@@ -882,7 +892,7 @@ describe('SidebarComponent', () => {
         component.pickText();
         expect(drawingStub.cursorUsed).toEqual('text');
         expect(switchToolSpy).toHaveBeenCalled();
-        expect(component.isDialogloadSaveEport).toEqual(false);
+        expect(component.isDialogLoadSaveExport).toEqual(true);
     });
 
     it('should pick feather', () => {
@@ -923,6 +933,44 @@ describe('SidebarComponent', () => {
         expect(addOrRetractSpy).toHaveBeenCalled();
     });
 
+    it('should call onWheelScroll when scrolling using the mouse wheel and changeFeatherAngle is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new WheelEvent('window:wheel', {});
+        const onWheelScrollSpy = spyOn(rotationStub, 'onWheelScroll').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeAngleWithWheel(event);
+        expect(onWheelScrollSpy).toHaveBeenCalled();
+    });
+
+    it('should call onWheelScroll when scrolling using the mouse wheel and changeFeatherAngle is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionRectangle;
+        const event = new WheelEvent('window:wheel', {});
+        const onWheelScrollSpy = spyOn(rotationStub, 'onWheelScroll').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeAngleWithWheel(event);
+        expect(onWheelScrollSpy).toHaveBeenCalled();
+    });
+
+    it('should call onWheelScroll when scrolling using the mouse wheel and changeFeatherAngle is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.MagicWand;
+        const event = new WheelEvent('window:wheel', {});
+        const onWheelScrollSpy = spyOn(rotationStub, 'onWheelScroll').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeAngleWithWheel(event);
+        expect(onWheelScrollSpy).toHaveBeenCalled();
+    });
+
+    it('should call addOrRetract and changeAngleWithScroll when scrolling using the mouse wheel and changeFeatherAngle is called', () => {
+        toolServiceStub.currentToolName = ToolUsed.Stamp;
+        const event = new WheelEvent('window:wheel', {});
+        const addOrRetractSpy = spyOn(stampServiceStub, 'addOrRetract').and.callThrough();
+        const changeAngleWithScrollSpy = spyOn(stampServiceStub, 'changeAngleWithScroll').and.callThrough();
+        window.dispatchEvent(event);
+        component.changeAngleWithWheel(event);
+        expect(addOrRetractSpy).toHaveBeenCalled();
+        expect(changeAngleWithScrollSpy).toHaveBeenCalled();
+    });
+
     it('should change altPressed value to true when alt is pressed ', () => {
         toolServiceStub.currentToolName = ToolUsed.Feather;
         const event = new KeyboardEvent('window:keydown.alt', {});
@@ -939,7 +987,20 @@ describe('SidebarComponent', () => {
         component.altPressed(event);
         expect(featherStub.altPressed).toEqual(true);
     });
-
+    it('should change featherStub altpressed to true', () => {
+        toolServiceStub.switchTool(ToolUsed.SelectionRectangle);
+        const event = new KeyboardEvent('window:keydown.alt', {});
+        window.dispatchEvent(event);
+        component.altPressed(event);
+        expect(rotationStub.altPressed).toEqual(true);
+    });
+    it('should change featherStub altpressed to true', () => {
+        toolServiceStub.currentToolName = ToolUsed.Stamp;
+        const event = new KeyboardEvent('window:keydown.alt', {});
+        window.dispatchEvent(event);
+        component.altPressed(event);
+        expect(stampServiceStub.isAltPressed).toEqual(true);
+    });
     it('should pickGridSettings', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         component.pickGridSettings();
@@ -1106,5 +1167,72 @@ describe('SidebarComponent', () => {
         window.dispatchEvent(event);
         component.altReleased(event);
         expect(featherStub.altPressed).toEqual(false);
+    });
+    it('should change altPressed value to false when releasing alt ', () => {
+        toolServiceStub.currentToolName = ToolUsed.SelectionEllipse;
+        const event = new KeyboardEvent('window:keyup.alt', {});
+        window.dispatchEvent(event);
+        component.altReleased(event);
+        expect(rotationStub.altPressed).toEqual(false);
+    });
+    it('should change altPressed value to false when releasing alt ', () => {
+        toolServiceStub.currentToolName = ToolUsed.Stamp;
+        const event = new KeyboardEvent('window:keyup.alt', {});
+        window.dispatchEvent(event);
+        component.altReleased(event);
+        expect(stampServiceStub.isAltPressed).toEqual(false);
+    });
+    it('should change dPressed value to false when releasing d ', () => {
+        toolServiceStub.currentToolName = ToolUsed.Color;
+        const event = new KeyboardEvent('window:keydown.d', {});
+        expect(component['isStampChecked']).toEqual(false);
+        window.dispatchEvent(event);
+        component.changeStampMode(event);
+        expect(component['isStampChecked']).toEqual(false);
+    });
+    it('should change dPressed value to false when releasing d ', () => {
+        toolServiceStub.currentToolName = ToolUsed.NONE;
+        const event = new KeyboardEvent('window:keydown.d', {});
+        expect(component['isStampChecked']).toEqual(false);
+        window.dispatchEvent(event);
+        component.changeStampMode(event);
+        expect(component['isStampChecked']).toEqual(true);
+    });
+    it('should change vPressed value to false when releasing v ', () => {
+        component['isDialogLoadSaveExport'] = true;
+        toolServiceStub.currentToolName = ToolUsed.NONE;
+        const event = new KeyboardEvent('window:keydown.v', {});
+        expect(component['isMagicWandSelectionChecked']).toEqual(false);
+        window.dispatchEvent(event);
+        component.changeMagicWandMode(event);
+        expect(component['isMagicWandSelectionChecked']).toEqual(true);
+    });
+    it('should change vPressed value to false when releasing v ', () => {
+        component['isDialogLoadSaveExport'] = true;
+        toolServiceStub.currentToolName = ToolUsed.Color;
+        const event = new KeyboardEvent('window:keydown.v', {});
+        expect(component['isMagicWandSelectionChecked']).toEqual(false);
+        window.dispatchEvent(event);
+        component.changeMagicWandMode(event);
+        expect(component['isMagicWandSelectionChecked']).toEqual(false);
+    });
+    it('should change Pressed cvalue to false when releasing c ', () => {
+        component['isDialogLoadSaveExport'] = true;
+        toolServiceStub.currentToolName = ToolUsed.Color;
+        const event = new KeyboardEvent('window:keydown.c', {});
+        expect(component['isStampChecked']).toEqual(false);
+        window.dispatchEvent(event);
+        component.changePencilMode(event);
+        expect(component['isStampChecked']).toEqual(false);
+    });
+
+    it('should change Pressed cvalue to false when releasing c ', () => {
+        component['isDialogLoadSaveExport'] = true;
+        toolServiceStub.currentToolName = ToolUsed.NONE;
+        const event = new KeyboardEvent('window:keydown.c', {});
+        expect(component['isPencilChecked']).toEqual(false);
+        window.dispatchEvent(event);
+        component.changePencilMode(event);
+        expect(component['isPencilChecked']).toEqual(true);
     });
 });

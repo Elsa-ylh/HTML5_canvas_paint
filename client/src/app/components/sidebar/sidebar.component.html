@@ -121,6 +121,9 @@
                         <mat-button-toggle (click)="exportDrawing()" matTooltip="Exportation locale" matTooltipPosition="right">
                             <mat-icon>save</mat-icon>
                         </mat-button-toggle>
+                        <mat-button-toggle (click)="exportEmail()" matTooltip="Exportation par courriel" matTooltipPosition="right">
+                            <mat-icon>email</mat-icon>
+                        </mat-button-toggle>
                         <mat-button-toggle appearance="radio" (click)="createNewDrawing()" matTooltip="Nouveau dessin" matTooltipPosition="right">
                             <mat-icon>add</mat-icon>
                         </mat-button-toggle>
@@ -155,20 +158,16 @@
             </mat-grid-list>
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.Brush">
-                <mat-grid-tile colspan="6" rowspan="2">
-                    <button mat-raised-button (click)="pickBrush(1)">Pinceau 1</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6" rowspan="2">
-                    <button mat-raised-button (click)="pickBrush(2)">Pinceau 2</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6" rowspan="2">
-                    <button mat-raised-button (click)="pickBrush(3)">Pinceau 3</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6" rowspan="2">
-                    <button mat-raised-button (click)="pickBrush(4)">Pinceau 4</button>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="6" rowspan="2">
-                    <button mat-raised-button (click)="pickBrush(5)">Pinceau 5</button>
+                <mat-grid-tile colspan="6"></mat-grid-tile>
+                <mat-grid-tile colspan="6"> Choisissez l'un des pinceaux</mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="7">
+                    <mat-button-toggle-group vertical="true">
+                    <mat-button-toggle class="sub-button" (click)="pickBrush(1)">Pinceau 1</mat-button-toggle>
+                    <mat-button-toggle class="sub-button" (click)="pickBrush(2)">Pinceau 2</mat-button-toggle>
+                    <mat-button-toggle class="sub-button" (click)="pickBrush(3)">Pinceau 3</mat-button-toggle>
+                    <mat-button-toggle class="sub-button" (click)="pickBrush(4)">Pinceau 4</mat-button-toggle>
+                    <mat-button-toggle class="sub-button" (click)="pickBrush(5)">Pinceau 5</mat-button-toggle>
+                    </mat-button-toggle-group>
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6">
                     <mat-slider max="50" min="1" [(ngModel)]="brushService.lineWidth"> </mat-slider><samp>{{ brushService.lineWidth }}px</samp>
@@ -263,8 +262,8 @@
                 </mat-grid-tile>
                 <mat-grid-tile colspan="6"
                     ><samp>épaisseur du contour: {{ polygonService.lineWidth }}px</samp></mat-grid-tile
-                >
-            </mat-grid-list>
+                ></mat-grid-list
+            >
 
             <mat-grid-list cols="6" *ngSwitchCase="toolUsed.SelectionRectangle">
                 <mat-grid-tile colspan="6"></mat-grid-tile>
@@ -283,10 +282,45 @@
                         >
                             Ellipse
                         </mat-button-toggle>
+                        <mat-button-toggle
+                            class="sub-button"
+                            mat-button
+                            color="primary"
+                            [checked]="MagicWandSelectionChecked"
+                            (click)="pickMagicWandSelection()"
+                            >Baguette magique</mat-button-toggle
+                        >
                     </mat-button-toggle-group>
                 </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2"> Ce bouton permet de sélectionner tous le dessin</mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <button mat-raised-button (click)="selectionRectangleService.selectAll()">Selectionner tout le dessin</button>
+                    <button mat-raised-button (click)="selectionRectangleService.selectAll()">Sélectionner tout le dessin</button>
+                </mat-grid-tile>
+
+                <mat-grid-tile> </mat-grid-tile>
+                <mat-grid-tile colspan="6"> Valeur de l'angle de rotation </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <samp>{{ selectionRectangleService.selection.rotationAngle }} degrés</samp>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2">
+                    Il est possible de changer l'angle de rotation du rectangle avec : la roulette (15 degrés) ou avec alt et la roulette (1 degré)
+                </mat-grid-tile>
+                <mat-grid-tile> </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">
+                    <mat-button-toggle-group vertical="true">
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionRectangleService.copyImage()">
+                            copier
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionRectangleService.pasteImage()">
+                            coller
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionRectangleService.cutImage()">
+                            couper
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionRectangleService.deleteImage()">
+                            supprimer
+                        </button>
+                    </mat-button-toggle-group>
                 </mat-grid-tile>
             </mat-grid-list>
 
@@ -306,10 +340,103 @@
                         <mat-button-toggle class="sub-button" mat-button color="primary" [checked]="true" (click)="pickSelectionEllipse()"
                             >Ellipse</mat-button-toggle
                         >
+                        <mat-button-toggle
+                            class="sub-button"
+                            mat-button
+                            color="primary"
+                            [checked]="MagicWandSelectionChecked"
+                            (click)="pickMagicWandSelection()"
+                            >Baguette magique</mat-button-toggle
+                        >
                     </mat-button-toggle-group>
                 </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2"> Ce bouton permet de sélectionner tous le dessin</mat-grid-tile>
                 <mat-grid-tile colspan="6">
-                    <button mat-raised-button (click)="selectionEllipseService.selectAll()">Selectionner tout le dessin</button>
+                    <button mat-raised-button (click)="selectionEllipseService.selectAll()">Sélectionner tout le dessin</button>
+                </mat-grid-tile>
+
+                <mat-grid-tile> </mat-grid-tile>
+                <mat-grid-tile colspan="6"> Valeur de l'angle de rotation </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <samp>{{ selectionEllipseService.selection.rotationAngle }} degrés</samp>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2">
+                    Il est possible de changer l'angle de rotation de l'ellipse avec : la roulette (15 degrés) ou avec alt et la roulette (1 degré)
+                </mat-grid-tile>
+                <mat-grid-tile> </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">
+                    <mat-button-toggle-group vertical="true">
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionEllipseService.copyImage()">
+                            copier
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionEllipseService.pasteImage()">
+                            coller
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionEllipseService.cutImage()">
+                            couper
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="selectionEllipseService.deleteImage()">
+                            supprimer
+                        </button>
+                    </mat-button-toggle-group>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            <mat-grid-list cols="6" *ngSwitchCase="toolUsed.MagicWand">
+                <mat-grid-tile colspan="6"></mat-grid-tile>
+                <mat-grid-tile colspan="6"> Choisissez une forme de sélection</mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">
+                    <mat-button-toggle-group vertical="true">
+                        <mat-button-toggle
+                            class="sub-button"
+                            mat-button
+                            color="primary"
+                            [checked]="selectionRectangleChecked"
+                            (click)="pickSelectionRectangle()"
+                            >Rectangle</mat-button-toggle
+                        >
+                        <mat-button-toggle
+                            class="sub-button"
+                            mat-button
+                            color="primary"
+                            [checked]="selectionEllipseChecked"
+                            (click)="pickSelectionEllipse()"
+                            >Ellipse</mat-button-toggle
+                        >
+                        <mat-button-toggle class="sub-button" mat-button color="primary" [checked]="true" (click)="pickMagicWandSelection()"
+                            >Baguette magique</mat-button-toggle
+                        >
+                    </mat-button-toggle-group>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2"> Ce bouton permet de sélectionner tous le dessin</mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <button mat-raised-button (click)="buttonSelectAllMagicWand()">Sélectionner tout le dessin</button>
+                </mat-grid-tile>
+
+                <mat-grid-tile> </mat-grid-tile>
+                <mat-grid-tile colspan="6"> Valeur de l'angle de rotation </mat-grid-tile>
+                <mat-grid-tile colspan="6">
+                    <samp>{{ magicWandService.selection.rotationAngle }} degrés</samp>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="2">
+                    Il est possible de changer l'angle de rotation du rectangle avec : la roulette (15 degrés) ou avec alt et la roulette (1 degré)
+                </mat-grid-tile>
+                <mat-grid-tile> </mat-grid-tile>
+                <mat-grid-tile colspan="6" rowspan="4">
+                    <mat-button-toggle-group vertical="true">
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="magicWandService.copyImage()">
+                            copier
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="magicWandService.pasteImage()">
+                            coller
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="magicWandService.cutImage()">
+                            couper
+                        </button>
+                        <button mat-raised-button class="sub-button" mat-button color="secondary" (click)="magicWandService.deleteImage()">
+                            supprimer
+                        </button>
+                    </mat-button-toggle-group>
                 </mat-grid-tile>
             </mat-grid-list>
 

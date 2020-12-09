@@ -9,6 +9,7 @@ import { AutomaticSaveService } from '@app/services/automatic-save/automatic-sav
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from '@app/services/tools/eraser-service';
+import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 describe('Service: UndoRedo', () => {
@@ -18,8 +19,9 @@ describe('Service: UndoRedo', () => {
     let eraserActionStub: EraseAction;
 
     let resizeActionStub: ResizeCanvasAction;
-    let basecanvasAct: ResizeCanvasAction;
+    let baseCanvasAct: ResizeCanvasAction;
     let resizeStub: CanvasResizerService;
+    let gridStub: GridService;
 
     const changes: Vec2[] = [];
     let color: string;
@@ -37,8 +39,9 @@ describe('Service: UndoRedo', () => {
     beforeEach(() => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
-        resizeStub = new CanvasResizerService(undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(resizeStub, drawingStub);
+        autoSaveStub = new AutomaticSaveService(resizeStub, drawingStub, undoRedoStub);
+        gridStub = new GridService(drawingStub);
+        resizeStub = new CanvasResizerService(gridStub, undoRedoStub);
         eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
 
         changes.push({ x: 5, y: 6 });
@@ -56,7 +59,7 @@ describe('Service: UndoRedo', () => {
         resizeActionStub = new ResizeCanvasAction(event, resizeCtx, baseCanvas, resizeDirection, resizeStub);
         eraserActionStub = new EraseAction(changes, color, thickness, eraserStub, drawingStub);
 
-        basecanvasAct = new ResizeCanvasAction(event, baseStub, canvas, resizeDirection, resizeStub);
+        baseCanvasAct = new ResizeCanvasAction(event, baseStub, canvas, resizeDirection, resizeStub);
 
         canvas = canvasTestHelper.canvas;
         canvas.width = 100;
@@ -85,7 +88,7 @@ describe('Service: UndoRedo', () => {
                 { provide: EraseAction, useValue: eraserActionStub },
                 { provide: ResizeCanvasAction, useValue: resizeActionStub },
                 { provide: CanvasResizerService, useValue: resizeStub },
-                { provide: CanvasResizerService, useValue: basecanvasAct },
+                { provide: CanvasResizerService, useValue: baseCanvasAct },
             ],
         });
 
@@ -94,7 +97,7 @@ describe('Service: UndoRedo', () => {
 
         eraserActionStub = TestBed.inject(EraseAction);
         resizeActionStub = TestBed.inject(ResizeCanvasAction);
-        basecanvasAct = TestBed.inject(ResizeCanvasAction);
+        baseCanvasAct = TestBed.inject(ResizeCanvasAction);
     });
 
     it('should be created', () => {

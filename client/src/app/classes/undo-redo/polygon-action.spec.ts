@@ -7,6 +7,7 @@ import { AutomaticSaveService } from '@app/services/automatic-save/automatic-sav
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
@@ -17,6 +18,7 @@ describe('PolygonAction', () => {
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
     let polygonStub: PolygonService;
+    let gridStub: GridService;
 
     let mousePosition: Vec2;
     let mouseDownCord: Vec2;
@@ -47,8 +49,9 @@ describe('PolygonAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        gridStub = new GridService(drawingStub);
+        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
         polygonActionStub = new PolygoneAction(

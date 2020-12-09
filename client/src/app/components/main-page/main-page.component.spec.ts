@@ -12,6 +12,7 @@ import { MainPageComponent } from '@app/components/main-page/main-page.component
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
 
@@ -23,14 +24,16 @@ describe('MainPageComponent', () => {
     let canvasReziseStub: CanvasResizerService;
     let drawingStub: DrawingService;
     let undoRedoStub: UndoRedoService;
+    let gridStub: GridService;
 
     beforeEach(
         waitForAsync(() => {
             dialogMock = jasmine.createSpyObj('dialogCreator', ['open']);
             drawingStub = new DrawingService();
-            canvasReziseStub = new CanvasResizerService(undoRedoStub);
+            gridStub = new GridService(drawingStub);
+            canvasReziseStub = new CanvasResizerService(gridStub, undoRedoStub);
             undoRedoStub = new UndoRedoService(drawingStub);
-            automaticSaveStub = new AutomaticSaveService(canvasReziseStub, drawingStub);
+            automaticSaveStub = new AutomaticSaveService(canvasReziseStub, drawingStub, undoRedoStub);
 
             TestBed.configureTestingModule({
                 imports: [

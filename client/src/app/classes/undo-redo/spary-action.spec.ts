@@ -6,6 +6,7 @@ import { AutomaticSaveService } from '@app/services/automatic-save/automatic-sav
 import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { SprayService } from '@app/services/tools/spray.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
@@ -18,6 +19,7 @@ describe('SprayAction', () => {
     let sprayStub: SprayService;
     let canvasResizerStub: CanvasResizerService;
     let autoSaveStub: AutomaticSaveService;
+    let gridStub: GridService;
 
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
@@ -50,8 +52,9 @@ describe('SprayAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        gridStub = new GridService(drawingStub);
+        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
         sprayActionStub = new SprayAction(density, color, zoneDiameter, dropDiameter, angle, radius, position, drawingStub, sprayStub);
 

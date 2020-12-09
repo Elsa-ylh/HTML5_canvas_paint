@@ -21,7 +21,7 @@ describe('Service: Grid', () => {
     beforeEach(() => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        canvasResizerStub = new CanvasResizerService(service, undoRedoStub);
 
         TestBed.configureTestingModule({
             providers: [

@@ -7,6 +7,7 @@ import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.servic
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { FeatherService } from '@app/services/tools/feather.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // tslint:disable:no-magic-numbers
@@ -18,6 +19,7 @@ describe('FeatherAction', () => {
     let featherStub: FeatherService;
     let canvasResizerStub: CanvasResizerService;
     let autoSaveStub: AutomaticSaveService;
+    let gridStub: GridService;
 
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
@@ -40,8 +42,9 @@ describe('FeatherAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
+        gridStub = new GridService(drawingStub);
+        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
         featherActionStub = new FeatherAction(changes, angle, length, primaryColor, drawingStub, featherStub);
 

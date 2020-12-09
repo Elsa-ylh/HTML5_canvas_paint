@@ -1,41 +1,37 @@
-/* tslint:disable:no-unused-variable */
-
-/*
-
-import { inject, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { ControlGroup } from '@app/classes/control-group';
+import { ControlPointName } from '@app/classes/control-points';
+import { MouseButton } from '@app/classes/mouse-button';
+// import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-// import { Subscription } from 'rxjs/internal/Subscription';
-// import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SelectionRectangleService } from './selection-rectangle.service';
+import { GridService } from '@app/services/tools/grid.service';
+import { MagnetismService } from '@app/services/tools/magnetism.service';
+import { RotationService } from '@app/services/tools/selection-service/rotation.service';
+import { SelectionRectangleService } from '@app/services/tools/selection-service/selection-rectangle.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { Subscription } from 'rxjs';
 
 // tslint:disable:no-any
 // tslint:disable:no-magic-numbers
 // tslint:disable:no-string-literal
-// tslint:disable:max-file-line-count
-// tslint:disable:no-shadowed-variable
+// tslint:disable:prefer-const
 describe('Service: SelectionRectangle', () => {
     let service: SelectionRectangleService;
-    // let mouseEvent: MouseEvent;
-
-    // let drawSelectionSpy: jasmine.Spy<any>;
-    // let pasteSelectionSpy: jasmine.Spy<any>;
-    // let getImageDataSpy: jasmine.Spy<any>;
-    // let drawSelectionRectSpy: jasmine.Spy<any>;
-    // let putImageDataSpy: jasmine.Spy<any>;
-    // let drawPreviewRectSpy: jasmine.Spy<any>;
-    // let fillRectSpy: jasmine.Spy<any>;
-    // let isInsideSelectionSpy: jasmine.Spy<any>;
-    // let getPositionFromMouseSpy: jasmine.Spy<any>;
-    // let clearSelectionSpy: jasmine.Spy<any>;
-
-    // let pasteArrowSelectionSpy: jasmine.Spy<any>;
-    // let subscriptionMoveLeftSubscribeSpy: jasmine.Spy<any>;
-    // let subscriptionMoveRightSubscribeSpy: jasmine.Spy<any>;
-    // let subscriptionMoveUpSubscribeSpy: jasmine.Spy<any>;
-    // let subscriptionMoveDownSubscribeSpy: jasmine.Spy<any>;
 
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+
+    let drawSelectionRectSpy: jasmine.Spy<any>;
+    let drawImageSpy: jasmine.Spy<any>;
+    let drawPreviewRect: jasmine.Spy<any>;
+    let pasteSelectionSpy: jasmine.Spy<any>;
+
+    let magnetismStub: MagnetismService;
+    let rotationStub: RotationService;
+    let undoStub: UndoRedoService;
+    let gridStub: GridService;
+    // let canvasResizeStub: CanvasResizerService;
+
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
 
@@ -43,8 +39,20 @@ describe('Service: SelectionRectangle', () => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'isPreviewCanvasBlank']);
+
+        magnetismStub = new MagnetismService(gridStub);
+        gridStub = new GridService(drawServiceSpy);
+        undoStub = new UndoRedoService(drawServiceSpy);
+        rotationStub = new RotationService(drawServiceSpy);
+
         TestBed.configureTestingModule({
-            providers: [SelectionRectangleService, { provide: DrawingService, useValue: drawServiceSpy }],
+            providers: [
+                SelectionRectangleService,
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: MagnetismService, useValue: magnetismStub },
+                { provide: RotationService, useValue: rotationStub },
+                { provide: UndoRedoService, useValue: undoStub },
+            ],
         });
 
         service = TestBed.inject(SelectionRectangleService);
@@ -52,297 +60,200 @@ describe('Service: SelectionRectangle', () => {
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasTestHelper.canvas as HTMLCanvasElement;
-
-        // getPositionFromMouseSpy = spyOn<any>(service, 'getPositionFromMouse').and.callThrough();
-        // isInsideSelectionSpy = spyOn<any>(service, 'isInsideSelection').and.callThrough();
     });
 
-    it('should be created', inject([SelectionRectangleService], (service: SelectionRectangleService) => {
+    it('should be created', () => {
         expect(service).toBeTruthy();
-    }));
+    });
 
-    //     it(' mouseDown should save mouse coord', () => {
-    //         mouseEvent = {
-    //             button: 0,
-    //         } as MouseEvent;
+    it('onMouseDown should save the mouse down coords as imagePosition when starting a selection', () => {
+        drawServiceSpy.isPreviewCanvasBlank.and.returnValue(true);
+        spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 10, y: 10 });
+        let mouseEvent = { x: 10, y: 10, button: MouseButton.Left } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        expect(service.selection.imagePosition).toEqual({ x: 10, y: 10 });
+    });
 
-    //         service.mouseDown = true;
-    //         service.onMouseDown(mouseEvent);
-    //         expect(getPositionFromMouseSpy).toHaveBeenCalled();
-    //     });
+    it('onMouseDown should paste a selection if the user click outside of the selection', () => {
+        drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
+        pasteSelectionSpy = spyOn<any>(service, 'pasteSelection');
+        spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 10, y: 10 });
+        spyOn<any>(service, 'isInsideSelection').and.returnValue(false);
 
-    //     it(' mouseDown  not save mouse coord if the left mouse button is not pressed', () => {
-    //         mouseEvent = {} as MouseEvent;
-    //         service.mouseDown = false;
-    //         service.onMouseDown(mouseEvent);
-    //         expect(getPositionFromMouseSpy).not.toHaveBeenCalled();
-    //     });
+        service['controlGroup'] = new ControlGroup(drawServiceSpy);
+        spyOn<any>(service['controlGroup'], 'isInControlPoint').and.returnValue(ControlPointName.none);
 
-    //     it(' mouseDown should check if mouse coord are in selection if a selection is drawn', () => {
-    //         mouseEvent = {
-    //             button: 0,
-    //         } as MouseEvent;
+        let mouseEvent = { x: 10, y: 10, button: MouseButton.Left } as MouseEvent;
+        service.selection.image = new Image();
+        service.selection.endingPos = { x: 20, y: 20 };
+        service.onMouseDown(mouseEvent);
+        expect(pasteSelectionSpy).toHaveBeenCalled();
+    });
 
-    //         service.mouseDown = true;
-    //         service.mouseDownCoord = { x: 1, y: 1 };
-    //         service.onMouseDown(mouseEvent);
-    //         expect(isInsideSelectionSpy).toHaveBeenCalled();
-    //     });
+    it('onKeyEscape should paste a selection if the selection is drawn', () => {
+        drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
+        service.mouseDown = true;
+        pasteSelectionSpy = spyOn<any>(service, 'pasteSelection');
+        service['upArrow'].timerStarted = true;
+        service['downArrow'].timerStarted = true;
+        service['leftArrow'].timerStarted = true;
+        service['rightArrow'].timerStarted = true;
+        service['timerStarted'] = true;
 
-    //     // it(' onMouseUp should copy a selection and draw it in the preview canvas', () => {
-    //     //     drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
-    //     //     const imageDataMock = new ImageData(10, 10) as ImageData;
-    //     //     getImageDataSpy = spyOn<any>(service['drawingService'].baseCtx, 'getImageData').and.returnValue(imageDataMock);
+        service['upArrow'].subscription = new Subscription();
+        service['downArrow'].subscription = new Subscription();
+        service['leftArrow'].subscription = new Subscription();
+        service['rightArrow'].subscription = new Subscription();
+        service['subscriptionTimer'] = new Subscription();
 
-    //     //     mouseEvent = {
-    //     //         button: 0,
-    //     //         offsetX: 25,
-    //     //         offsetY: 25,
-    //     //     } as MouseEvent;
+        const upSubscription = spyOn<any>(service['upArrow'].subscription, 'unsubscribe');
+        const downSubscription = spyOn<any>(service['downArrow'].subscription, 'unsubscribe');
+        const leftSubscription = spyOn<any>(service['leftArrow'].subscription, 'unsubscribe');
+        const rightSubscription = spyOn<any>(service['rightArrow'].subscription, 'unsubscribe');
+        const timerSubscription = spyOn<any>(service['subscriptionTimer'], 'unsubscribe');
 
-    //     //     service.mouseDownCoord = { x: 1, y: 1 };
-    //     //     service.shiftPressed = false;
-    //     //     service.mouseDown = true;
+        service.selection.image = new Image();
 
-    //     //     service.onMouseUp(mouseEvent);
-    //     //     expect(getImageDataSpy).toHaveBeenCalled();
-    //     //     expect(drawSelectionSpy).toHaveBeenCalled();
-    //     // });
+        service.onKeyEscape();
 
-    //     // it(' onMouseUp should copy a selection and draw it in the preview canvas if shift is pressed', () => {
-    //     //     drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
-    //     //     const imageDataMock = new ImageData(10, 10) as ImageData;
-    //     //     getImageDataSpy = spyOn<any>(service['drawingService'].baseCtx, 'getImageData').and.returnValue(imageDataMock);
+        expect(pasteSelectionSpy).toHaveBeenCalled();
+        expect(upSubscription).toHaveBeenCalled();
+        expect(downSubscription).toHaveBeenCalled();
+        expect(leftSubscription).toHaveBeenCalled();
+        expect(rightSubscription).toHaveBeenCalled();
+        expect(timerSubscription).toHaveBeenCalled();
+    });
 
-    //     //     mouseEvent = {
-    //     //         button: 0,
-    //     //         offsetX: 25,
-    //     //         offsetY: 25,
-    //     //     } as MouseEvent;
+    it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection', () => {
+        service.selection.imagePosition = { x: 11, y: 1 };
+        service.selection.endingPos = { x: 1, y: 11 };
+        service.selection.width = 10;
+        service.selection.height = 10;
 
-    //     //     service.mouseDownCoord = { x: 1, y: 1 };
-    //     //     service.shiftPressed = true;
-    //     //     service.mouseDown = true;
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
+    });
 
-    //     //     service.onMouseUp(mouseEvent);
-    //     //     expect(getImageDataSpy).toHaveBeenCalled();
-    //     //     expect(drawSelectionSpy).toHaveBeenCalled();
-    //     // });
+    it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection', () => {
+        service.selection.imagePosition = { x: 11, y: 11 };
+        service.selection.endingPos = { x: 1, y: 1 };
+        service.selection.width = 10;
+        service.selection.height = 10;
 
-    //     // it(' onMouseUp should not copy a selection and draw it in the preview canvas if the left mouse button was not pressed', () => {
-    //     //     drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
-    //     //     const imageDataMock = new ImageData(10, 10) as ImageData;
-    //     //     getImageDataSpy = spyOn<any>(service['drawingService'].baseCtx, 'getImageData').and.returnValue(imageDataMock);
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
+    });
 
-    //     //     mouseEvent = {
-    //     //         button: 0,
-    //     //         offsetX: 25,
-    //     //         offsetY: 25,
-    //     //     } as MouseEvent;
+    it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection', () => {
+        service.selection.imagePosition = { x: 1, y: 1 };
+        service.selection.endingPos = { x: 11, y: 11 };
+        service.selection.width = 10;
+        service.selection.height = 10;
 
-    //     //     service.mouseDownCoord = { x: 1, y: 1 };
-    //     //     service.shiftPressed = false;
-    //     //     service.mouseDown = false;
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
+    });
 
-    //     //     service.onMouseUp(mouseEvent);
-    //     //     expect(getImageDataSpy).not.toHaveBeenCalled();
-    //     //     expect(drawSelectionSpy).not.toHaveBeenCalled();
-    //     // });
+    it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection', () => {
+        service.selection.imagePosition = { x: 1, y: 11 };
+        service.selection.endingPos = { x: 11, y: 1 };
+        service.selection.width = 10;
+        service.selection.height = 10;
 
-    //     // it(' onMouseUp should paste a selection if a selection has been drawn', () => {
-    //     //     drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
-    //     //     pasteSelectionSpy = spyOn<any>(service, 'pasteSelection').and.callThrough();
-    //     //     service.imageData = new ImageData(10, 10);
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
+    });
 
-    //     //     mouseEvent = {
-    //     //         button: 0,
-    //     //         offsetX: 25,
-    //     //         offsetY: 25,
-    //     //     } as MouseEvent;
+    it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection with shift pressed', () => {
+        service.selection.imagePosition = { x: 11, y: 1 };
+        service.selection.endingPos = { x: 1, y: 11 };
+        service.selection.width = 10;
+        service.selection.height = 10;
+        service['shiftPressed'] = true;
 
-    //     //     service.mouseDownCoord = { x: 1, y: 1 };
-    //     //     service.copyImageInitialPos = { x: 1, y: 1 };
-    //     //     service.mouseMouvement = { x: 10, y: 10 };
-    //     //     service.inSelection = true;
-    //     //     service.mouseDown = true;
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
+    });
 
-    //     //     service.onMouseUp(mouseEvent);
-    //     //     expect(pasteSelectionSpy).toHaveBeenCalled();
-    //     // });
+    it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection with shift pressed', () => {
+        service.selection.imagePosition = { x: 11, y: 11 };
+        service.selection.endingPos = { x: 1, y: 1 };
+        service.selection.width = 10;
+        service.selection.height = 10;
+        service['shiftPressed'] = true;
 
-    //     it(' drawSelection should draw a selection rectangle and put the image inside it', () => {
-    //         drawSelectionRectSpy = spyOn<any>(service, 'drawSelectionRect').and.callThrough();
-    //         putImageDataSpy = spyOn<any>(service['drawingService'].previewCtx, 'putImageData').and.callThrough();
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
+    });
 
-    //         service.imageData = new ImageData(10, 10);
-    //         service['drawSelection']({ x: 1, y: 1 });
-    //         expect(drawSelectionRectSpy).toHaveBeenCalled();
-    //         expect(putImageDataSpy).toHaveBeenCalled();
-    //     });
+    it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection with shift pressed', () => {
+        service.selection.imagePosition = { x: 1, y: 1 };
+        service.selection.endingPos = { x: 11, y: 11 };
+        service.selection.width = 10;
+        service.selection.height = 10;
+        service['shiftPressed'] = true;
 
-    //     it(' pasteSelection should put a selection on the canvas', () => {
-    //         putImageDataSpy = spyOn<any>(service['drawingService'].baseCtx, 'putImageData').and.callThrough();
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
+    });
 
-    //         service.imageData = new ImageData(10, 10);
-    //         service['pasteSelection']({ x: 1, y: 1 }, service.imageData);
-    //         expect(putImageDataSpy).toHaveBeenCalled();
-    //     });
+    it(' updateSelectionPosition should update the selection position to keep imagePosition in the top left and endingPos in the bottom right of the selection with shift pressed', () => {
+        service.selection.imagePosition = { x: 1, y: 11 };
+        service.selection.endingPos = { x: 11, y: 1 };
+        service.selection.width = 10;
+        service.selection.height = 10;
+        service['shiftPressed'] = true;
 
-    //     it(' drawPreview should draw a preview rectangle', () => {
-    //         drawPreviewRectSpy = spyOn<any>(service, 'drawPreviewRect').and.callThrough();
+        expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
+    });
 
-    //         service.shiftPressed = true;
-    //         service['drawPreview']();
-    //         expect(drawPreviewRectSpy).toHaveBeenCalled();
-    //     });
+    it('drawSelection should draw the selection and its surrounding rectangle', () => {
+        drawSelectionRectSpy = spyOn<any>(service, 'drawSelectionRect');
+        drawImageSpy = spyOn<any>(service['drawingService'].previewCtx, 'drawImage');
+        spyOn<any>(service, 'flipImage');
+        service['scaled'] = true;
 
-    //     it(' clearSelection should put a white rectangle over a selection initial position', () => {
-    //         fillRectSpy = spyOn<any>(service['drawingService'].baseCtx, 'fillRect').and.callThrough();
-    //         service['clearSelection']({ x: 1, y: 1 }, 10, 10);
-    //         expect(fillRectSpy).toHaveBeenCalled();
-    //     });
+        service.selection.imagePosition = { x: 1, y: 1 };
+        service.selection.endingPos = { x: 11, y: 11 };
+        service.selection.width = 10;
+        service.selection.height = 10;
+        service.selection.imageData = new ImageData(10, 10);
+        service.selection.image = new Image();
 
-    //     // it(' pasteArrowSelection should paste a selection moved with the arrow keys', () => {
-    //     //     pasteSelectionSpy = spyOn<any>(service, 'pasteSelection').and.callThrough();
-    //     //     clearSelectionSpy = spyOn<any>(service, 'clearSelection').and.callThrough();
+        service.drawSelection({ x: 1, y: 1 });
 
-    //     //     service.timerStarted = false;
-    //     //     service.mouseMouvement = { x: 5, y: 5 };
-    //     //     service.width = 10;
-    //     //     service.height = 10;
-    //     //     service.imageData = new ImageData(10, 10);
+        expect(drawSelectionRectSpy).toHaveBeenCalled();
+        expect(drawImageSpy).toHaveBeenCalled();
+    });
 
-    //     //     service.pasteArrowSelection();
-    //     //     expect(clearSelectionSpy).toHaveBeenCalled();
-    //     //     expect(pasteSelectionSpy).toHaveBeenCalled();
-    //     // });
+    it('pasteSelection should draw the selection in the base canvas', () => {
+        drawImageSpy = spyOn<any>(service['drawingService'].baseCtx, 'drawImage');
 
-    //     // it(' pasteArrowSelection should not paste a selection if it wasnt move with the arrow keys', () => {
-    //     //     pasteSelectionSpy = spyOn<any>(service, 'pasteSelection').and.callThrough();
-    //     //     clearSelectionSpy = spyOn<any>(service, 'clearSelection').and.callThrough();
+        service.selection.imagePosition = { x: 1, y: 1 };
+        service.selection.endingPos = { x: 11, y: 11 };
+        service.selection.width = 10;
+        service.selection.height = 10;
+        service.selection.imageData = new ImageData(10, 10);
+        service.selection.image = new Image();
 
-    //     //     service.timerStarted = true;
-    //     //     service.mouseMouvement = { x: 5, y: 5 };
-    //     //     service.width = 10;
-    //     //     service.height = 10;
-    //     //     service.imageData = new ImageData(10, 10);
+        service.pasteSelection(service.selection);
 
-    //     //     service.pasteArrowSelection();
-    //     //     expect(clearSelectionSpy).not.toHaveBeenCalled();
-    //     //     expect(pasteSelectionSpy).not.toHaveBeenCalled();
-    //     // });
+        expect(drawImageSpy).toHaveBeenCalled();
+    });
 
-    //     it(' onLeftArrowUp should reset the left timer and paste the selection', () => {
-    //         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
-    //         service.leftArrow.timerStarted = true;
-    //         service.imageData = new ImageData(10, 10);
+    it('drawPreview should call drawPreviewRect', () => {
+        drawPreviewRect = spyOn<any>(service, 'drawPreviewRect');
 
-    //         service.leftArrow.subscription = new Subscription();
-    //         subscriptionMoveLeftSubscribeSpy = spyOn<any>(service.leftArrow.subscription, 'unsubscribe').and.callThrough();
-    //         // pasteArrowSelectionSpy = spyOn<any>(service, 'pasteArrowSelection').and.callThrough();
+        service.selection.imagePosition = { x: 1, y: 1 };
+        service.selection.endingPos = { x: 11, y: 11 };
+        service.selection.width = 10;
+        service.selection.height = 10;
+        service.selection.imageData = new ImageData(10, 10);
+        service.selection.image = new Image();
 
-    //         service.onLeftArrowUp();
-    //         expect(subscriptionMoveLeftSubscribeSpy).toHaveBeenCalled();
-    //         // expect(pasteArrowSelectionSpy).toHaveBeenCalled();
-    //     });
+        service['drawPreview']();
 
-    //     it(' onLeftArrowUp should not reset the left timer and paste the selection if the preview canvas is blank', () => {
-    //         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(true);
-    //         service.leftArrow.timerStarted = true;
-    //         service.imageData = new ImageData(10, 10);
+        expect(drawPreviewRect).toHaveBeenCalled();
+    });
 
-    //         service.leftArrow.subscription = new Subscription();
-    //         subscriptionMoveLeftSubscribeSpy = spyOn<any>(service.leftArrow.subscription, 'unsubscribe').and.callThrough();
-    //         // pasteArrowSelectionSpy = spyOn<any>(service, 'pasteArrowSelection').and.callThrough();
+    it('clearSelection should draw a white rectangle in the selection initial position', () => {
+        const fillRectSpy = spyOn<any>(service['drawingService'].baseCtx, 'fillRect');
 
-    //         service.onLeftArrowUp();
-    //         expect(subscriptionMoveLeftSubscribeSpy).not.toHaveBeenCalled();
-    //         // expect(pasteArrowSelectionSpy).not.toHaveBeenCalled();
-    //     });
+        service.clearSelection();
 
-    //     it(' onRightArrowUp should reset the left timer and paste the selection', () => {
-    //         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
-    //         service.rightArrow.timerStarted = true;
-    //         service.imageData = new ImageData(10, 10);
-
-    //         service.rightArrow.subscription = new Subscription();
-    //         subscriptionMoveRightSubscribeSpy = spyOn<any>(service.rightArrow.subscription, 'unsubscribe').and.callThrough();
-    //         // pasteArrowSelectionSpy = spyOn<any>(service, 'pasteArrowSelection').and.callThrough();
-
-    //         service.onRightArrowUp();
-    //         expect(subscriptionMoveRightSubscribeSpy).toHaveBeenCalled();
-    //         // expect(pasteArrowSelectionSpy).toHaveBeenCalled();
-    //     });
-
-    //     it(' onRightArrowUp should not reset the left timer and paste the selection if the preview canvas is blank', () => {
-    //         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(true);
-    //         service.rightArrow.timerStarted = true;
-    //         service.imageData = new ImageData(10, 10);
-
-    //         service.rightArrow.subscription = new Subscription();
-    //         subscriptionMoveRightSubscribeSpy = spyOn<any>(service.rightArrow.subscription, 'unsubscribe').and.callThrough();
-    //         // pasteArrowSelectionSpy = spyOn<any>(service, 'pasteArrowSelection').and.callThrough();
-
-    //         service.onRightArrowUp();
-    //         expect(subscriptionMoveRightSubscribeSpy).not.toHaveBeenCalled();
-    //         // expect(pasteArrowSelectionSpy).not.toHaveBeenCalled();
-    //     });
-
-    //     it(' onUpArrowUp should reset the left timer and paste the selection', () => {
-    //         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
-    //         service.upArrow.timerStarted = true;
-    //         service.imageData = new ImageData(10, 10);
-
-    //         service.upArrow.subscription = new Subscription();
-    //         subscriptionMoveUpSubscribeSpy = spyOn<any>(service.upArrow.subscription, 'unsubscribe').and.callThrough();
-    //         // pasteArrowSelectionSpy = spyOn<any>(service, 'pasteArrowSelection').and.callThrough();
-
-    //         service.onUpArrowUp();
-    //         expect(subscriptionMoveUpSubscribeSpy).toHaveBeenCalled();
-    //         // expect(pasteArrowSelectionSpy).toHaveBeenCalled();
-    //     });
-
-    //     it(' onUpArrowUp should not reset the left timer and paste the selection if the preview canvas is blank', () => {
-    //         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(true);
-    //         service.upArrow.timerStarted = true;
-    //         service.imageData = new ImageData(10, 10);
-
-    //         service.upArrow.subscription = new Subscription();
-    //         subscriptionMoveUpSubscribeSpy = spyOn<any>(service.upArrow.subscription, 'unsubscribe').and.callThrough();
-    //         // pasteArrowSelectionSpy = spyOn<any>(service, 'pasteArrowSelection').and.callThrough();
-
-    //         service.onUpArrowUp();
-    //         expect(subscriptionMoveUpSubscribeSpy).not.toHaveBeenCalled();
-    //         // expect(pasteArrowSelectionSpy).not.toHaveBeenCalled();
-    //     });
-
-    //     it(' onDownArrowUp should reset the left timer and paste the selection', () => {
-    //         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
-    //         service.downArrow.timerStarted = true;
-    //         service.imageData = new ImageData(10, 10);
-
-    //         service.downArrow.subscription = new Subscription();
-    //         subscriptionMoveDownSubscribeSpy = spyOn<any>(service.downArrow.subscription, 'unsubscribe').and.callThrough();
-    //         // pasteArrowSelectionSpy = spyOn<any>(service, 'pasteArrowSelection').and.callThrough();
-
-    //         service.onDownArrowUp();
-    //         expect(subscriptionMoveDownSubscribeSpy).toHaveBeenCalled();
-    //         // expect(pasteArrowSelectionSpy).toHaveBeenCalled();
-    //     });
-
-    //     it(' onDownArrowUp should reset the left timer and paste the selection', () => {
-    //         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(true);
-    //         service.downArrow.timerStarted = true;
-    //         service.imageData = new ImageData(10, 10);
-
-    //         service.downArrow.subscription = new Subscription();
-    //         subscriptionMoveDownSubscribeSpy = spyOn<any>(service.downArrow.subscription, 'unsubscribe').and.callThrough();
-    //         // pasteArrowSelectionSpy = spyOn<any>(service, 'pasteArrowSelection').and.callThrough();
-
-    //         service.onDownArrowUp();
-    //         expect(subscriptionMoveDownSubscribeSpy).not.toHaveBeenCalled();
-    //         // expect(pasteArrowSelectionSpy).not.toHaveBeenCalled();
-    //     });
+        expect(fillRectSpy).toHaveBeenCalled();
+    });
 });
-
-*/
