@@ -111,15 +111,15 @@ export class StampService extends Tool {
         // undo-redo
         const stampFeather = new StampAction(this.stampToDraw, this.mouseCenterX, this.mouseCenterY, this.drawingService, this);
         this.undoRedoService.addUndo(stampFeather);
-        this.undoRedoService.clearRedo();
+        // this.undoRedoService.clearRedo();
 
         console.log(stampFeather);
 
-        // if (this.isUndoRedo) {
-        //     this.stampToDraw.onload = () => {
-        //         this.drawingService.baseCtx.drawImage(this.stampToDraw, this.mouseCenterX, this.mouseCenterY);
-        //     };
-        // }
+        if (this.isUndoRedo) {
+            this.stampToDraw.onload = () => {
+                this.drawingService.baseCtx.drawImage(this.stampToDraw, this.mouseCenterX, this.mouseCenterY);
+            };
+        }
     }
 
     onMouseEnter(event: MouseEvent): void {
