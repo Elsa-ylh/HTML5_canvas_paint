@@ -45,7 +45,8 @@ import { SprayService } from '@app/services/tools/spray.service';
 import { StampService } from '@app/services/tools/stamp.service';
 import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
+import { Subject } from 'rxjs/internal/Subject';
 import { SidebarComponent } from './sidebar.component';
 
 // tslint:disable:no-any
