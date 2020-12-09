@@ -12,11 +12,12 @@ import { SelectionService } from '@app/services/tools/selection-service/selectio
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { RotationService } from './rotation.service';
 
-enum Bound {
+export enum Bound {
     UPPER,
     LOWER,
     LEFT,
     RIGHT,
+    NONE,
 }
 
 @Injectable({
@@ -238,7 +239,6 @@ export class MagicWandService extends SelectionService {
                         }
                     }
                 }
-                break;
             case Bound.LOWER:
                 // go thru all of the lines FROM THE BOTTOM and...
                 for (let i = previewLayer.height - 1; i >= 0; --i) {
@@ -249,7 +249,6 @@ export class MagicWandService extends SelectionService {
                         }
                     }
                 }
-                break;
             case Bound.LEFT:
                 // go thru all of the columns FROM THE LEFT and ...
                 for (let i = 0; i < previewLayer.width; ++i) {
@@ -260,7 +259,6 @@ export class MagicWandService extends SelectionService {
                         }
                     }
                 }
-                break;
             case Bound.RIGHT:
                 // go thru all of the columns FROM THE RIGHT and ...
                 for (let i = previewLayer.width - 1; i >= 0; --i) {
@@ -271,7 +269,6 @@ export class MagicWandService extends SelectionService {
                         }
                     }
                 }
-                break;
         }
         return { x: NaN, y: NaN };
     }
