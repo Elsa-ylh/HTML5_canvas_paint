@@ -7,6 +7,7 @@ export class TextControl {
     private indexOfLettersInLine: number = 0;
     private nbOfLettersInLine: number = 0;
     private ctx: CanvasRenderingContext2D;
+
     constructor(ctx: CanvasRenderingContext2D, width?: number) {
         if (width !== undefined) this.setWidth(width);
         this.ctx = ctx;

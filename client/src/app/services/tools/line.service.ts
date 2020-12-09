@@ -18,12 +18,12 @@ export interface LineParameters {
     providedIn: 'root',
 })
 export class LineService extends Tool {
-    secondarySizePixel: number = 2; //
-    lineWidth: number = 2; //
-    private pathData: Vec2[] = []; //
+    secondarySizePixel: number = 2;
+    lineWidth: number = 2;
+    private pathData: Vec2[] = [];
     isBallOn: boolean = false;
-    private pointMouse: Vec2 = { x: 0, y: 0 }; //
-    private pointShiftMemory: Vec2 = { x: 0, y: 0 }; //
+    private pointMouse: Vec2 = { x: 0, y: 0 };
+    private pointShiftMemory: Vec2 = { x: 0, y: 0 };
     private colorLine: string = this.colorService.primaryColor;
     private shiftKeyDown: boolean = false;
     private mouseOut: boolean = false;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LoadAction } from '@app/classes/undo-redo/load-action';
 import { Vec2 } from '@app/classes/vec2';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
@@ -18,7 +18,7 @@ export class AutomaticSaveService {
     private width: string | null | undefined = '';
     private height: string | null | undefined = '';
 
-    constructor(private canvasResizer: CanvasResizerService, private drawingService: DrawingService, private undoRedoService: UndoRedoService) {
+    constructor(private canvasResize: CanvasResizeService, private drawingService: DrawingService, private undoRedoService: UndoRedoService) {
         this.myStorage = window.localStorage;
     }
 
@@ -26,7 +26,7 @@ export class AutomaticSaveService {
         this.myStorage.clear();
         let vec2: Vec2;
         try {
-            vec2 = this.canvasResizer.canvasSize;
+            vec2 = this.canvasResize.canvasSize;
         } catch (error) {
             vec2 = { x: 0, y: 0 };
         }
@@ -73,11 +73,11 @@ export class AutomaticSaveService {
             return false;
         }
         this.drawingService.convertBase64ToBaseCanvas(this.canvas); // todo error : fixing undo-redo
-        this.canvasResizer.canvasSize.x = widthNb;
-        this.canvasResizer.canvasSize.y = heightNb;
+        this.canvasResize.canvasSize.x = widthNb;
+        this.canvasResize.canvasSize.y = heightNb;
         const image = new Image();
         image.src = this.canvas;
-        const actionLoadImg = new LoadAction(image, heightNb, widthNb, this.drawingService, this.canvasResizer);
+        const actionLoadImg = new LoadAction(image, heightNb, widthNb, this.drawingService, this.canvasResize);
         this.undoRedoService.clearUndo();
         this.undoRedoService.clearRedo();
         this.undoRedoService.loadImage(actionLoadImg);

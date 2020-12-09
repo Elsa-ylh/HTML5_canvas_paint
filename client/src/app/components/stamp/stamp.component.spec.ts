@@ -12,7 +12,7 @@ import { StampService } from '@app/services/tools/stamp.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 describe('StampComponent', () => {
-    let component: StampComponent;
+    let stampComponent: StampComponent;
     let fixture: ComponentFixture<StampComponent>;
     let stampStub: StampService;
     let drawingStub: DrawingService;
@@ -33,7 +33,7 @@ describe('StampComponent', () => {
             ],
         }).compileComponents();
         fixture = TestBed.createComponent(StampComponent);
-        component = fixture.componentInstance;
+        stampComponent = fixture.componentInstance;
         drawingStub.cursorCtx = cursorStubCtx;
         fixture.detectChanges();
     });
@@ -45,11 +45,11 @@ describe('StampComponent', () => {
     });
 
     it('should create', () => {
-        expect(component).toBeTruthy();
+        expect(stampComponent).toBeTruthy();
     });
 
     it('should set cursor', () => {
-        component.pickStamp(STAMP.stamp1);
+        stampComponent.pickStamp(STAMP.stamp1);
         expect(stampStub.currentStampName).toEqual(STAMP.stamp1);
     });
 });

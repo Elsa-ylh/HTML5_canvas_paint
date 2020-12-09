@@ -7,11 +7,14 @@ import { LoadAction } from '@app/classes/undo-redo/load-action';
 import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from '@app/services/tools/eraser-service';
 import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+
+// tslint:disable:no-magic-numbers
+// tslint:disable:no-string-literal
 
 describe('Service: UndoRedo', () => {
     let undoRedoStub: UndoRedoService;
@@ -22,7 +25,7 @@ describe('Service: UndoRedo', () => {
 
     let resizeActionStub: ResizeCanvasAction;
     let baseCanvasAct: ResizeCanvasAction;
-    let resizeStub: CanvasResizerService;
+    let resizeStub: CanvasResizeService;
     let gridStub: GridService;
 
     const changes: Vec2[] = [];
@@ -34,7 +37,7 @@ describe('Service: UndoRedo', () => {
     let resizeDirection: ResizeDirection;
     let autoSaveStub: AutomaticSaveService;
     let picture: CanvasImageSource;
-    let canvasResizerStub: CanvasResizerService;
+    let canvasResizeStub: CanvasResizeService;
 
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
@@ -45,16 +48,16 @@ describe('Service: UndoRedo', () => {
         undoRedoStub = new UndoRedoService(drawingStub);
         autoSaveStub = new AutomaticSaveService(resizeStub, drawingStub, undoRedoStub);
         gridStub = new GridService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
-        resizeStub = new CanvasResizerService(gridStub, undoRedoStub);
+        canvasResizeStub = new CanvasResizeService(gridStub, undoRedoStub);
+        resizeStub = new CanvasResizeService(gridStub, undoRedoStub);
         eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
 
         picture = new Image();
-        loadActionStub = new LoadAction(picture, 1, 1, drawingStub, canvasResizerStub);
+        loadActionStub = new LoadAction(picture, 1, 1, drawingStub, canvasResizeStub);
         changes.push({ x: 5, y: 6 });
         changes.push({ x: 25, y: 15 });
         color = '#000000';
-        /* tslint:disable:no-magic-numbers */
+
         thickness = 5;
 
         event = {
@@ -73,9 +76,7 @@ describe('Service: UndoRedo', () => {
         canvas.height = 100;
 
         baseCanvas = canvasTestHelper.canvas;
-        // tslint:disable:no-magic-numbers
         baseCanvas.width = 50;
-        // tslint:disable:no-magic-numbers
         baseCanvas.height = 50;
 
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -94,13 +95,13 @@ describe('Service: UndoRedo', () => {
                 { provide: EraserService, useValue: eraserStub },
                 { provide: EraseAction, useValue: eraserActionStub },
                 { provide: ResizeCanvasAction, useValue: resizeActionStub },
-                { provide: CanvasResizerService, useValue: resizeStub },
-                { provide: CanvasResizerService, useValue: baseCanvasAct },
+                { provide: CanvasResizeService, useValue: resizeStub },
+                { provide: CanvasResizeService, useValue: baseCanvasAct },
             ],
         });
 
         undoRedoStub = TestBed.inject(UndoRedoService);
-        resizeStub = TestBed.inject(CanvasResizerService);
+        resizeStub = TestBed.inject(CanvasResizeService);
 
         eraserActionStub = TestBed.inject(EraseAction);
         resizeActionStub = TestBed.inject(ResizeCanvasAction);
@@ -113,7 +114,7 @@ describe('Service: UndoRedo', () => {
 
     it('should push the action  in the listUndo', () => {
         undoRedoStub.addUndo(resizeActionStub);
-        // tslint:disable:no-string-literal
+
         expect(resizeActionStub).toEqual(undoRedoStub['listUndo'][0]);
     });
 
@@ -133,7 +134,6 @@ describe('Service: UndoRedo', () => {
         // tslint:disable:no-string-literal
         undoRedoStub['redoList'][0] = action;
         undoRedoStub.redo();
-        // tslint:disable:no-string-literal
         expect(undoRedoStub['listUndo'][0]).toEqual(action);
     });
 

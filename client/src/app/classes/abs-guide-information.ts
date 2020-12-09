@@ -1,6 +1,6 @@
 export abstract class AbsGuideInformation {
-    title: string;
-    paragraphInformation: string;
+    private title: string;
+    private paragraphInformation: string;
     elementName: string;
 
     constructor(title: string, paragraphInformation: string, elementName: string) {

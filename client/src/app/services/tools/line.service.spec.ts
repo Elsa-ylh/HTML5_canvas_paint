@@ -8,6 +8,8 @@ import { LineService } from '@app/services/tools/line.service';
 
 // tslint:disable:no-any
 // tslint:disable:max-line-length
+// tslint:disable:no-magic-numbers
+// tslint:disable:no-string-literal
 describe('Service: Line', () => {
     let service: LineService;
     let baseCtxStub: CanvasRenderingContext2D;
@@ -48,7 +50,6 @@ describe('Service: Line', () => {
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         shiftDrawAngleLineSpy = spyOn<any>(service, 'shiftDrawAngleLine').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
-        // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service.subToolSelect = SubToolSelected.tool1;
@@ -64,48 +65,48 @@ describe('Service: Line', () => {
 
     it('one point function mergeFirstPoint if true', () => {
         pathData.push({ x: 25, y: 10 });
-        const boolFonction = mergeFirstPointSpy(pathData);
-        expect(boolFonction).toEqual(true);
+        const boolFunction = mergeFirstPointSpy(pathData);
+        expect(boolFunction).toEqual(true);
     });
     it('two point function mergeFirstPoint if true', () => {
         pathData.push({ x: 25, y: 10 });
         pathData.push({ x: 45, y: 30 });
-        const boolFonction = mergeFirstPointSpy(pathData);
-        expect(boolFonction).toEqual(true);
+        const boolFunction = mergeFirstPointSpy(pathData);
+        expect(boolFunction).toEqual(true);
     });
     it('two point function mergeFirstPoint if false', () => {
         pathData.push({ x: 25, y: 10 });
         pathData.push({ x: 46, y: 31 });
-        const boolFonction = mergeFirstPointSpy(pathData);
-        expect(boolFonction).toEqual(false);
+        const boolFunction = mergeFirstPointSpy(pathData);
+        expect(boolFunction).toEqual(false);
     });
     it('trois point function mergeFirstPoint if true', () => {
         pathData.push({ x: 25, y: 10 });
         pathData.push({ x: 250, y: 100 });
         pathData.push({ x: 45, y: 30 });
-        const boolFonction = mergeFirstPointSpy(pathData);
-        expect(boolFonction).toEqual(true);
+        const boolFunction = mergeFirstPointSpy(pathData);
+        expect(boolFunction).toEqual(true);
     });
     it('trois point function mergeFirstPoint if false', () => {
         pathData.push({ x: 25, y: 10 });
         pathData.push({ x: 250, y: 100 });
         pathData.push({ x: 46, y: 31 });
-        const boolFonction = mergeFirstPointSpy(pathData);
-        expect(boolFonction).toEqual(false);
+        const boolFunction = mergeFirstPointSpy(pathData);
+        expect(boolFunction).toEqual(false);
     });
     it('trois point function mergeFirstPoint if x false ', () => {
         pathData.push({ x: 25, y: 10 });
         pathData.push({ x: 250, y: 100 });
         pathData.push({ x: 46, y: 30 });
-        const boolFonction = mergeFirstPointSpy(pathData);
-        expect(boolFonction).toEqual(false);
+        const boolFunction = mergeFirstPointSpy(pathData);
+        expect(boolFunction).toEqual(false);
     });
     it('trois point function mergeFirstPoint if y false ', () => {
         pathData.push({ x: 25, y: 10 });
         pathData.push({ x: 250, y: 100 });
         pathData.push({ x: 45, y: 31 });
-        const boolFonction = mergeFirstPointSpy(pathData);
-        expect(boolFonction).toEqual(false);
+        const boolFunction = mergeFirstPointSpy(pathData);
+        expect(boolFunction).toEqual(false);
     });
     it(' onMouseMove should call drawLine if mouse was already down', () => {
         service.subToolSelect = SubToolSelected.tool1;
@@ -148,77 +149,54 @@ describe('Service: Line', () => {
         expect(vec2).toEqual({ x: 0, y: 0 });
     });
     it('ShiftDrawAngleLine of 0 ', () => {
-        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 40 });
         pathData.push({ x: 0, y: 0 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 0, y: 0 });
         expect(vec2).toEqual({ x: 0, y: 0 });
     });
     it('ShiftDrawAngleLine of angle 135 ', () => {
-        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 0, y: 0 });
 
         expect(vec2).toEqual({ x: 0, y: 0 });
     });
     it('ShiftDrawAngleLine of angle 45 ', () => {
-        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 100, y: 0 });
         expect(vec2).toEqual({ x: 100, y: 0 });
     });
     it('ShiftDrawAngleLine of angle 180 ', () => {
-        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 0, y: 50 });
         expect(vec2).toEqual({ x: 0, y: 50 });
     });
     it('ShiftDrawAngleLine of angle 0 ', () => {
-        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 100, y: 50 });
         expect(vec2).toEqual({ x: 100, y: 50 });
     });
     it('ShiftDrawAngleLine of angle 270 ', () => {
-        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 50, y: 100 });
         expect(vec2).toEqual({ x: 50, y: 100 });
     });
     it('ShiftDrawAngleLine of angle 225 ', () => {
-        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 100, y: 0 });
         expect(vec2).toEqual({ x: 100, y: 0 });
     });
     it('ShiftDrawAngleLine of angle 315 ', () => {
-        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 100, y: 100 });
         expect(vec2).toEqual({ x: 100, y: 100 });
     });
     it('ShiftDrawAngleLine of angle 90 ', () => {
-        // tslint:disable-next-line:no-magic-numbers
         pathData.push({ x: 50, y: 50 });
         const vec2 = shiftDrawAngleLineSpy(pathData, { x: 50, y: 0 });
         expect(vec2).toEqual({ x: 50, y: 0 });
     });
-    // it('backspceEvant fonction if not brush in second point', () => {
-    //     service.subToolSelect = SubToolSelected.tool2;
-    //     service.onMouseDown(events.mouseEvent1);
-    //     service.onMouseDown(events.mouseEvent2);
-    //     service.onKeyBackSpace(events.backspceEvant);
-    //     service.onDoubleClick(events.mouseEvent);
 
-    //     const imageData: ImageData = baseCtxStub.getImageData(Math.floor(events.mouseEvent2.offsetX), Math.floor(events.mouseEvent2.offsetY), 1, 1);
-    //     expect(imageData.data[0]).not.toEqual(0); // R white check
-    //     expect(imageData.data[1]).not.toEqual(0); // G white check
-    //     expect(imageData.data[2]).not.toEqual(0); // B white check
-    //     // tslint:disable-next-line:no-magic-numbers
-    //     expect(imageData.data[3]).not.toEqual(0); // A
-    // });
-
-    it('onMouseDown fonction', () => {
+    it('onMouseDown function', () => {
         service.onMouseDown(events.mouseEvent1);
         expect(drawLineSpy).toHaveBeenCalled();
         service.onMouseDown(events.mouseEvent2);
@@ -229,48 +207,48 @@ describe('Service: Line', () => {
         expect(clearPathSpy).toHaveBeenCalled();
     });
 
-    it('onMouseUp should not call drawLineLastPointSpy fonction ', () => {
+    it('onMouseUp should not call drawLineLastPointSpy function ', () => {
         service.onMouseUp(events.mouseEvent2);
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
     it('onKeyEscape should not call clearPath', () => {
-        service.onKeyEscape(events.backspceEvant);
+        service.onKeyEscape(events.backSpaceEvent);
         expect(clearPathSpy).not.toHaveBeenCalled();
     });
     it('onKeyEscape should call clearPath', () => {
         service.onMouseDown(events.mouseEvent);
-        service.onKeyEscape(events.backspceEvant);
+        service.onKeyEscape(events.backSpaceEvent);
         expect(clearPathSpy).toHaveBeenCalled();
     });
     it('onMouseDown, onMouseMove, onShiftKeyDown, onMouseMove of brush line in canvas', () => {
         service['pointShiftMemory'] = { x: 0, y: 0 };
         service.onMouseDown(events.mouseEvent1);
         service.onMouseMove(events.mouseEvent2);
-        service.onShiftKeyDown(events.backspceEvant);
+        service.onShiftKeyDown(events.backSpaceEvent);
         service.onMouseMove(events.mouseEvent3);
         expect(service['pointShiftMemory']).not.toEqual({ x: 0, y: 0 });
     });
-    it('onMouseDown, onMouseMove, onShiftKeyDown and onMouseMove onShiftKeyUp and not brush ligne in de canvas in position of OnShiftKeyDown', () => {
+    it('onMouseDown, onMouseMove, onShiftKeyDown and onMouseMove onShiftKeyUp and not brush line in de canvas in position of OnShiftKeyDown', () => {
         service.onMouseDown(events.mouseEvent1);
         service.onMouseMove(events.mouseEvent2);
-        service.onShiftKeyDown(events.backspceEvant);
+        service.onShiftKeyDown(events.backSpaceEvent);
         service.onMouseMove(events.mouseEvent3);
-        service.onShiftKeyUp(events.backspceEvant);
+        service.onShiftKeyUp(events.backSpaceEvent);
         service.onDoubleClick(events.mouseEvent3);
         expect(shiftDrawAngleLineSpy).toHaveBeenCalled();
     });
-    it('onMouseDown, onMouseMove, onShiftKeyDown, onMouseDown and onShiftKeyUp and brush ligne in de canvas in position ', () => {
+    it('onMouseDown, onMouseMove, onShiftKeyDown, onMouseDown and onShiftKeyUp and brush line in de canvas in position ', () => {
         service.onMouseDown(events.mouseEvent1);
         service.onMouseMove(events.mouseEvent2);
-        service.onShiftKeyDown(events.backspceEvant);
+        service.onShiftKeyDown(events.backSpaceEvent);
         service.onMouseDown(events.mouseEvent1);
-        service.onShiftKeyUp(events.backspceEvant);
+        service.onShiftKeyUp(events.backSpaceEvent);
         service.onDoubleClick(events.mouseEvent1);
         expect(shiftDrawAngleLineSpy).toHaveBeenCalled();
     });
     it('onShiftKeyDown and onShiftKeyUp not call drawLineLastPoint and drawLineSpy', () => {
-        service.onShiftKeyDown(events.backspceEvant);
-        service.onShiftKeyUp(events.backspceEvant);
+        service.onShiftKeyDown(events.backSpaceEvent);
+        service.onShiftKeyUp(events.backSpaceEvent);
         expect(drawLineLastPointSpy).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
     });

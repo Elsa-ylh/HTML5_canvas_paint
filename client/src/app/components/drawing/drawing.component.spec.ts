@@ -6,7 +6,7 @@ import { RESIZE_MIDDLE_LOWER_PROPORTION } from '@app/classes/resize-canvas';
 import { Tool } from '@app/classes/tool';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
@@ -41,7 +41,7 @@ describe('DrawingComponent', () => {
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
     let toolServiceStub: ToolService;
-    let canvasResizerStub: CanvasResizerService;
+    let canvasResizeStub: CanvasResizeService;
     let autoSaveStub: AutomaticSaveService;
     let featherStub: FeatherService;
     let pencilStub: PencilService;
@@ -69,9 +69,9 @@ describe('DrawingComponent', () => {
         waitForAsync(() => {
             drawingStub = new DrawingService();
             undoRedoStub = new UndoRedoService(drawingStub);
-            canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
+            canvasResizeStub = new CanvasResizeService(gridStub, undoRedoStub);
             colorStub = new ColorService(drawingStub);
-            autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
+            autoSaveStub = new AutomaticSaveService(canvasResizeStub, drawingStub, undoRedoStub);
             pencilStub = new PencilService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             eraserStub = new EraserService(drawingStub, undoRedoStub, autoSaveStub);
             brushStub = new BrushService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
@@ -82,7 +82,7 @@ describe('DrawingComponent', () => {
             gridStub = new GridService(drawingStub);
             magnetismStub = new MagnetismService(gridStub);
             polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
-            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizerStub, undoRedoStub, autoSaveStub);
+            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizeStub, undoRedoStub, autoSaveStub);
             selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
@@ -120,7 +120,7 @@ describe('DrawingComponent', () => {
                 providers: [
                     { provide: DrawingService, useValue: drawingStub },
                     { provide: ToolService, useValue: toolServiceStub },
-                    { provide: CanvasResizerService, useValue: canvasResizerStub },
+                    { provide: CanvasResizeService, useValue: canvasResizeStub },
                     { provide: ColorService, useValue: colorStub },
                 ],
             }).compileComponents();
@@ -142,8 +142,8 @@ describe('DrawingComponent', () => {
     });
 
     it('should have a default WIDTH and HEIGHT', () => {
-        expect(canvasResizerStub.canvasSize.x).toEqual(component.width);
-        expect(canvasResizerStub.canvasSize.y).toEqual(component.height);
+        expect(canvasResizeStub.canvasSize.x).toEqual(component.width);
+        expect(canvasResizeStub.canvasSize.y).toEqual(component.height);
     });
 
     it('should get toolStub', () => {
@@ -192,78 +192,78 @@ describe('DrawingComponent', () => {
     });
 
     it(' should onResizeDown trigger verticalAndHorizontal of resize service', () => {
-        const event = { offsetX: canvasResizerStub.canvasSize.x, offsetY: canvasResizerStub.canvasSize.y } as MouseEvent;
-        const canvasResizeSpy = spyOn(canvasResizerStub, 'onResizeDown').and.callThrough();
+        const event = { offsetX: canvasResizeStub.canvasSize.x, offsetY: canvasResizeStub.canvasSize.y } as MouseEvent;
+        const canvasResizeSpy = spyOn(canvasResizeStub, 'onResizeDown').and.callThrough();
         component.onResizeDown(event);
         expect(canvasResizeSpy).toHaveBeenCalled();
-        expect(canvasResizerStub.resizeCursor).toBe(cursorName.resizeVerticalAndHorizontal);
+        expect(canvasResizeStub.resizeCursor).toBe(cursorName.resizeVerticalAndHorizontal);
     });
 
     it(' should onResizeDown trigger vertical resize service', () => {
         const event = {
-            offsetX: canvasResizerStub.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION + 1,
-            offsetY: canvasResizerStub.canvasSize.y + 1,
+            offsetX: canvasResizeStub.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION + 1,
+            offsetY: canvasResizeStub.canvasSize.y + 1,
         } as MouseEvent;
-        const canvasResizeSpy = spyOn(canvasResizerStub, 'onResizeDown').and.callThrough();
+        const canvasResizeSpy = spyOn(canvasResizeStub, 'onResizeDown').and.callThrough();
         component.onResizeDown(event);
         expect(canvasResizeSpy).toHaveBeenCalled();
-        expect(canvasResizerStub.resizeCursor).toBe(cursorName.resizeVertical);
+        expect(canvasResizeStub.resizeCursor).toBe(cursorName.resizeVertical);
     });
 
     it(' should onResizeDown trigger horizontal resize service', () => {
         const event = {
-            offsetX: canvasResizerStub.canvasSize.x + 1,
-            offsetY: canvasResizerStub.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION + 1,
+            offsetX: canvasResizeStub.canvasSize.x + 1,
+            offsetY: canvasResizeStub.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION + 1,
         } as MouseEvent;
-        const canvasResizeSpy = spyOn(canvasResizerStub, 'onResizeDown').and.callThrough();
+        const canvasResizeSpy = spyOn(canvasResizeStub, 'onResizeDown').and.callThrough();
         component.onResizeDown(event);
         expect(canvasResizeSpy).toHaveBeenCalled();
-        expect(canvasResizerStub.resizeCursor).toBe(cursorName.resizeHorizontal);
+        expect(canvasResizeStub.resizeCursor).toBe(cursorName.resizeHorizontal);
     });
 
     it(' should onResizeMove trigger verticalAndHorizontal preview resize service', () => {
-        canvasResizerStub.isResizeDown = true;
-        const event = { offsetX: canvasResizerStub.canvasSize.x, offsetY: canvasResizerStub.canvasSize.y } as MouseEvent;
-        const canvasResizeSpy = spyOn(canvasResizerStub, 'onResize').and.callThrough();
+        canvasResizeStub.isResizeDown = true;
+        const event = { offsetX: canvasResizeStub.canvasSize.x, offsetY: canvasResizeStub.canvasSize.y } as MouseEvent;
+        const canvasResizeSpy = spyOn(canvasResizeStub, 'onResize').and.callThrough();
         component.onResizeMove(event);
         expect(canvasResizeSpy).toHaveBeenCalled();
-        expect(canvasResizerStub.resizeCursor).toBe(cursorName.resizeVerticalAndHorizontal);
+        expect(canvasResizeStub.resizeCursor).toBe(cursorName.resizeVerticalAndHorizontal);
     });
 
     it(' should onResizeMove trigger vertical preview resize service', () => {
-        canvasResizerStub.isResizeDown = true;
+        canvasResizeStub.isResizeDown = true;
         const event = {
-            offsetX: canvasResizerStub.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION + 1,
-            offsetY: canvasResizerStub.canvasSize.y + 1,
+            offsetX: canvasResizeStub.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION + 1,
+            offsetY: canvasResizeStub.canvasSize.y + 1,
         } as MouseEvent;
-        const canvasResizeSpy = spyOn(canvasResizerStub, 'onResize').and.callThrough();
+        const canvasResizeSpy = spyOn(canvasResizeStub, 'onResize').and.callThrough();
         component.onResizeMove(event);
         expect(canvasResizeSpy).toHaveBeenCalled();
-        expect(canvasResizerStub.resizeCursor).toBe(cursorName.resizeVertical);
+        expect(canvasResizeStub.resizeCursor).toBe(cursorName.resizeVertical);
     });
 
     it(' should onResizeMove trigger horizontal preview resize service', () => {
-        canvasResizerStub.isResizeDown = true;
+        canvasResizeStub.isResizeDown = true;
         const event = {
-            offsetX: canvasResizerStub.canvasSize.x + 1,
-            offsetY: canvasResizerStub.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION + 1,
+            offsetX: canvasResizeStub.canvasSize.x + 1,
+            offsetY: canvasResizeStub.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION + 1,
         } as MouseEvent;
-        const canvasResizeSpy = spyOn(canvasResizerStub, 'onResize').and.callThrough();
+        const canvasResizeSpy = spyOn(canvasResizeStub, 'onResize').and.callThrough();
         component.onResizeMove(event);
         expect(canvasResizeSpy).toHaveBeenCalled();
-        expect(canvasResizerStub.resizeCursor).toBe(cursorName.resizeHorizontal);
+        expect(canvasResizeStub.resizeCursor).toBe(cursorName.resizeHorizontal);
     });
 
     it(' should onResizeUp trigger resizer service', () => {
         const event = {} as MouseEvent;
-        const onResizeUpSpy = spyOn(canvasResizerStub, 'onResizeUp').and.callThrough();
+        const onResizeUpSpy = spyOn(canvasResizeStub, 'onResizeUp').and.callThrough();
         component.onResizeUp(event);
         expect(onResizeUpSpy).toHaveBeenCalled();
     });
 
     it(' should onResizeOut trigger resizer service', () => {
         const event = {} as MouseEvent;
-        const onResizeOutSpy = spyOn(canvasResizerStub, 'onResizeOut').and.callThrough();
+        const onResizeOutSpy = spyOn(canvasResizeStub, 'onResizeOut').and.callThrough();
         component.onResizeOut(event);
         expect(onResizeOutSpy).toHaveBeenCalled();
     });

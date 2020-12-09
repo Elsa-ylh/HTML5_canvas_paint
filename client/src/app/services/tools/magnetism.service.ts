@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { PIXELMOVEMENT } from '@app/classes/arrow-info';
+import { PIXEL_MOVEMENT } from '@app/classes/arrow-info';
 import { ControlGroup } from '@app/classes/control-group';
-import { ControlPoint, ControlPointName, CPSIZE } from '@app/classes/control-points';
+import { ControlPoint, ControlPointName, CONTROLPOINT_SIZESIZE } from '@app/classes/control-points';
 import { Vec2 } from '@app/classes/vec2';
 import { GridService } from './grid.service';
 
@@ -20,7 +20,7 @@ export class MagnetismService {
 
     // the following 2 variables are for locking mouseMovement
     private isMouseMagnetValueSet: boolean = false;
-    private ajustedPosition: Vec2 = { x: -1, y: -1 };
+    private adjustedPosition: Vec2 = { x: -1, y: -1 };
 
     private prevControlPointName: ControlPointName = ControlPointName.none;
     private isFirstTimeArrow: boolean = true;
@@ -28,49 +28,49 @@ export class MagnetismService {
     constructor(private gridService: GridService) {}
 
     // we need to bring it back for image position compatible
-    private convertCalculatingPosition(ajustedPosition: Vec2, controlPointname: ControlPointName, selectionSize: Vec2): Vec2 {
-        switch (controlPointname) {
+    private convertCalculatingPosition(adjustedPosition: Vec2, controlPointName: ControlPointName, selectionSize: Vec2): Vec2 {
+        switch (controlPointName) {
             case ControlPointName.center:
                 return {
-                    x: ajustedPosition.x - selectionSize.x / 2,
-                    y: ajustedPosition.y - selectionSize.y / 2,
+                    x: adjustedPosition.x - selectionSize.x / 2,
+                    y: adjustedPosition.y - selectionSize.y / 2,
                 };
             case ControlPointName.topLeft:
-                return ajustedPosition;
+                return adjustedPosition;
             case ControlPointName.top:
                 return {
-                    x: ajustedPosition.x - selectionSize.x / 2,
-                    y: ajustedPosition.y,
+                    x: adjustedPosition.x - selectionSize.x / 2,
+                    y: adjustedPosition.y,
                 };
             case ControlPointName.topRight:
                 return {
-                    x: ajustedPosition.x - selectionSize.x,
-                    y: ajustedPosition.y,
+                    x: adjustedPosition.x - selectionSize.x,
+                    y: adjustedPosition.y,
                 };
             case ControlPointName.left:
                 return {
-                    x: ajustedPosition.x,
-                    y: ajustedPosition.y - selectionSize.y / 2,
+                    x: adjustedPosition.x,
+                    y: adjustedPosition.y - selectionSize.y / 2,
                 };
             case ControlPointName.right:
                 return {
-                    x: ajustedPosition.x - selectionSize.x,
-                    y: ajustedPosition.y - selectionSize.y / 2,
+                    x: adjustedPosition.x - selectionSize.x,
+                    y: adjustedPosition.y - selectionSize.y / 2,
                 };
             case ControlPointName.bottomLeft:
                 return {
-                    x: ajustedPosition.x - selectionSize.x,
-                    y: ajustedPosition.y - selectionSize.y,
+                    x: adjustedPosition.x - selectionSize.x,
+                    y: adjustedPosition.y - selectionSize.y,
                 };
             case ControlPointName.bottom:
                 return {
-                    x: ajustedPosition.x - selectionSize.x / 2,
-                    y: ajustedPosition.y - selectionSize.y,
+                    x: adjustedPosition.x - selectionSize.x / 2,
+                    y: adjustedPosition.y - selectionSize.y,
                 };
             case ControlPointName.bottomRight:
                 return {
-                    x: ajustedPosition.x,
-                    y: ajustedPosition.y - selectionSize.y,
+                    x: adjustedPosition.x,
+                    y: adjustedPosition.y - selectionSize.y,
                 };
             case ControlPointName.none:
         }
@@ -80,19 +80,19 @@ export class MagnetismService {
     // the following methods calculate where to adjust the xy position
     private calculateRemainder(squareWidth: number, calculatingPosition: Vec2): void {
         const remainderX = calculatingPosition.x % squareWidth;
-        if (remainderX <= squareWidth / 2) this.ajustedPosition.x = calculatingPosition.x - remainderX;
-        else this.ajustedPosition.x = calculatingPosition.x - remainderX + squareWidth;
+        if (remainderX <= squareWidth / 2) this.adjustedPosition.x = calculatingPosition.x - remainderX;
+        else this.adjustedPosition.x = calculatingPosition.x - remainderX + squareWidth;
 
         const remainderY = calculatingPosition.y % squareWidth;
-        if (remainderY <= squareWidth / 2) this.ajustedPosition.y = calculatingPosition.y - remainderY;
-        else this.ajustedPosition.y = calculatingPosition.y - remainderY + squareWidth;
+        if (remainderY <= squareWidth / 2) this.adjustedPosition.y = calculatingPosition.y - remainderY;
+        else this.adjustedPosition.y = calculatingPosition.y - remainderY + squareWidth;
     }
 
     private applyFinalPosition(params: MagnetismParams): void {
-        params.endingPosition.x = this.ajustedPosition.x + params.selectionSize.x;
-        params.endingPosition.y = this.ajustedPosition.y + params.selectionSize.y;
+        params.endingPosition.x = this.adjustedPosition.x + params.selectionSize.x;
+        params.endingPosition.y = this.adjustedPosition.y + params.selectionSize.y;
 
-        params.imagePosition.x = this.ajustedPosition.x;
+        params.imagePosition.x = this.adjustedPosition.x;
         params.imagePosition.y = params.endingPosition.y - params.selectionSize.y;
     }
 
@@ -108,8 +108,8 @@ export class MagnetismService {
 
                 this.calculateRemainder(squareWidth, calculatingPosition);
 
-                this.ajustedPosition = this.convertCalculatingPosition(
-                    this.ajustedPosition,
+                this.adjustedPosition = this.convertCalculatingPosition(
+                    this.adjustedPosition,
                     params.controlGroup.controlPointName,
                     params.selectionSize,
                 );
@@ -146,8 +146,8 @@ export class MagnetismService {
 
                 this.calculateRemainder(squareWidth, calculatingPosition);
 
-                this.ajustedPosition = this.convertCalculatingPosition(
-                    this.ajustedPosition,
+                this.adjustedPosition = this.convertCalculatingPosition(
+                    this.adjustedPosition,
                     params.controlGroup.controlPointName,
                     params.selectionSize,
                 );
@@ -156,19 +156,19 @@ export class MagnetismService {
             } else {
                 const calculatingPosition = controlPoint.position;
 
-                this.ajustedPosition.x = calculatingPosition.x + (arrowDirection.x / PIXELMOVEMENT) * squareWidth + CPSIZE / 2;
-                this.ajustedPosition.y = calculatingPosition.y + (arrowDirection.y / PIXELMOVEMENT) * squareWidth + CPSIZE / 2;
+                this.adjustedPosition.x = calculatingPosition.x + (arrowDirection.x / PIXEL_MOVEMENT) * squareWidth + CONTROLPOINT_SIZESIZE / 2;
+                this.adjustedPosition.y = calculatingPosition.y + (arrowDirection.y / PIXEL_MOVEMENT) * squareWidth + CONTROLPOINT_SIZESIZE / 2;
 
-                this.ajustedPosition = this.convertCalculatingPosition(
-                    this.ajustedPosition,
+                this.adjustedPosition = this.convertCalculatingPosition(
+                    this.adjustedPosition,
                     params.controlGroup.controlPointName,
                     params.selectionSize,
                 );
 
-                params.endingPosition.x = this.ajustedPosition.x + params.selectionSize.x;
-                params.endingPosition.y = this.ajustedPosition.y + params.selectionSize.y;
+                params.endingPosition.x = this.adjustedPosition.x + params.selectionSize.x;
+                params.endingPosition.y = this.adjustedPosition.y + params.selectionSize.y;
 
-                params.imagePosition.x = this.ajustedPosition.x;
+                params.imagePosition.x = this.adjustedPosition.x;
                 params.imagePosition.y = params.endingPosition.y - params.selectionSize.y;
             }
 
@@ -186,6 +186,6 @@ export class MagnetismService {
         this.prevControlPointName = ControlPointName.none;
         this.isMouseMagnetValueSet = false;
         this.isFirstTimeArrow = true;
-        this.ajustedPosition = { x: -1, y: -1 };
+        this.adjustedPosition = { x: -1, y: -1 };
     }
 }

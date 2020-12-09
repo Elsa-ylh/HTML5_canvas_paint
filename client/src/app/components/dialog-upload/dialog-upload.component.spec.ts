@@ -13,16 +13,18 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Vec2 } from '@app/classes/vec2';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { of } from 'rxjs';
 import { DialogUploadComponent } from './dialog-upload.component';
+
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
 // tslint:disable:no-unused-expression
 // tslint:disable:no-empty
+
 describe('DialogUpload', () => {
     let component: DialogUploadComponent;
     let fixture: ComponentFixture<DialogUploadComponent>;
@@ -70,7 +72,7 @@ describe('DialogUpload', () => {
                     },
                 },
                 {
-                    provide: CanvasResizerService,
+                    provide: CanvasResizeService,
                     useValue: { canvasSize: () => vec },
                 },
                 {
@@ -131,26 +133,26 @@ describe('DialogUpload', () => {
         expect(component.checkLabel('aaaaaaa&')).toEqual(true);
         expect(component.checkLabel('a_a_a_a')).toEqual(false);
     });
-    it('test selectionLabel', () => {
+    it('test isLabelExisting', () => {
         component.ngOnInit();
-        component.selectionLabel(labels[0].label);
+        component.isLabelExisting(labels[0].label);
         expect(component['labelSelect'][0]).toEqual(labels[0].label);
     });
-    it('test selectionLabel with the parameter not in liste dataLabel', () => {
+    it('test isLabelExisting with the parameter not in liste dataLabel', () => {
         component.ngOnInit();
-        component.selectionLabel('label3');
+        component.isLabelExisting('label3');
         expect(component['labelSelect'].length).toEqual(1);
     });
-    it('test the selectionLabel 3 times with the parameter label1', () => {
-        component.selectionLabel(labels[1].label);
-        component.selectionLabel(labels[1].label);
-        component.selectionLabel(labels[1].label);
+    it('test the isLabelExisting 3 times with the parameter label1', () => {
+        component.isLabelExisting(labels[1].label);
+        component.isLabelExisting(labels[1].label);
+        component.isLabelExisting(labels[1].label);
         expect(component['labelSelect'][0]).toEqual(labels[1].label);
     });
-    it('test the selectionLabel times with the parameter label1', () => {
-        component.selectionLabel(labels[0].label);
-        component.selectionLabel(labels[1].label);
-        component.selectionLabel(labels[0].label);
+    it('test the isLabelExisting times with the parameter label1', () => {
+        component.isLabelExisting(labels[0].label);
+        component.isLabelExisting(labels[1].label);
+        component.isLabelExisting(labels[0].label);
         expect(component['labelSelect'][0]).toEqual(labels[1].label);
     });
     it('test not name and not label function saveServer', () => {
@@ -172,7 +174,7 @@ describe('DialogUpload', () => {
 
     it('test name and label function saveServer', () => {
         component.textName = 'aaaaaa';
-        component.selectionLabel(labels[0].label);
+        component.isLabelExisting(labels[0].label);
         component.textLabel = 'aaaaaaaaa';
         component.saveServer();
         expect(processedMessageSpy).not.toHaveBeenCalled();

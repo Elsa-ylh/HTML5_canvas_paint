@@ -48,17 +48,17 @@ export class PencilService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
-            const diametreCir = this.pencilSize / 2;
-            const angleCir = 0;
+            const circleDiameter = this.pencilSize / 2;
+            const angleCircle = 0;
             if (this.mouseMove) {
-                this.pathData.push(mousePosition); // to call drawline
+                this.pathData.push(mousePosition); // to call drawLine
                 this.intiColor = this.colorService.primaryColor;
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
             } else {
                 // draw circle
                 this.clearPath();
-                this.drawingService.baseCtx.arc(mousePosition.x, mousePosition.y, diametreCir, angleCir, Math.PI * 2);
+                this.drawingService.baseCtx.arc(mousePosition.x, mousePosition.y, circleDiameter, angleCircle, Math.PI * 2);
                 this.pathData.push(mousePosition);
                 this.intiColor = this.colorService.primaryColor;
                 this.drawLine(this.drawingService.baseCtx, this.pathData);

@@ -3,7 +3,7 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SprayAction } from '@app/classes/undo-redo/spray-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
@@ -17,7 +17,7 @@ describe('SprayAction', () => {
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
     let sprayStub: SprayService;
-    let canvasResizerStub: CanvasResizerService;
+    let canvasResizeStub: CanvasResizeService;
     let autoSaveStub: AutomaticSaveService;
     let gridStub: GridService;
 
@@ -35,33 +35,25 @@ describe('SprayAction', () => {
 
     beforeEach(() => {
         color = '#000000';
-        // tslint:disable:no-magic-numbers
         density = 2;
         zoneDiameter = 5;
-        // tslint:disable:no-magic-numbers
         dropDiameter = 6;
-        // tslint:disable:no-magic-numbers
         position = { x: 10, y: 5 };
-        // tslint:disable:no-magic-numbers
         angle.push(3);
-        // tslint:disable:no-magic-numbers
         length = 20;
-        // tslint:disable:no-magic-numbers
         radius.push(4);
 
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         gridStub = new GridService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
+        canvasResizeStub = new CanvasResizeService(gridStub, undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizeStub, drawingStub, undoRedoStub);
         sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
         sprayActionStub = new SprayAction(density, color, zoneDiameter, dropDiameter, angle, radius, position, drawingStub, sprayStub);
 
         canvas = canvasTestHelper.canvas;
-        // tslint:disable:no-magic-numbers
         canvas.width = 100;
-        // tslint:disable:no-magic-numbers
         canvas.height = 100;
 
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;

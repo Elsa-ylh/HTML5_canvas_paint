@@ -6,7 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { cursorName } from '@app/classes/cursor-name';
 import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
-import { CarrouselPictureComponent } from '@app/components/dialog-carrousel-picture/dialog-carrousel-picture.component';
+import { CarouselComponent } from '@app/components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DialogExportEmailComponent } from '@app/components/dialog-export-email/dialog-export-email.component';
 import { DialogExportDrawingComponent } from '@app/components/dialog-export-locally/dialog-export-locally.component';
@@ -41,7 +41,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    // This file is longer than 350 lines because of all the hostlistener, but we have no over choice than to put them in this componant
+    // This file is longer than 350 lines because of all the hostlistener, but we have no over choice than to put them in this component
     // tslint:disable:max-file-line-count
     // We need this alias for the enum so ngSwitchCase look way better than just numbers.
     // I can't stand reading numbers anymore.
@@ -53,7 +53,7 @@ export class SidebarComponent {
     lineWidth: number;
     newDrawingRef: MatDialogRef<DialogCreateNewDrawingComponent>;
     checkDocumentationRef: MatDialogRef<WriteTextDialogUserGuideComponent>;
-    dialogLoadRef: MatDialogRef<CarrouselPictureComponent>;
+    dialogLoadRef: MatDialogRef<CarouselComponent>;
     dialogSaveRef: MatDialogRef<DialogUploadComponent>;
     exportDrawingRef: MatDialogRef<DialogExportDrawingComponent>;
     exportEmailRef: MatDialogRef<DialogExportEmailComponent>;
@@ -149,7 +149,7 @@ export class SidebarComponent {
     openCarrousel(): void {
         if (this.isDialogLoadSaveExport) {
             this.isDialogLoadSaveExport = false;
-            this.dialogLoadRef = this.dialogCreator.open(CarrouselPictureComponent, {
+            this.dialogLoadRef = this.dialogCreator.open(CarouselComponent, {
                 width: '90%',
                 height: '90%',
             });
@@ -423,7 +423,7 @@ export class SidebarComponent {
         this.selectionRectangleService.selectAll();
     }
 
-    // keybind control o for new drawing
+    // keybinding control o for new drawing
     @HostListener('window:keydown.control.o', ['$event']) onKeyDown(event: KeyboardEvent): void {
         if (!this.isDialogOpen && !this.drawingService.isCanvasBlank() && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             event.preventDefault();
