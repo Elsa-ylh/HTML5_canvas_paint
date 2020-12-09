@@ -16,7 +16,7 @@ describe('Data Controller', () => {
     const isDate: Date = new Date('10/08/2020');
     const testCanvasInformationAdd = {
         _id: '',
-        name: 'stest5',
+        name: 'test5',
         labels: [{ label: 'label1' }],
         width: 0,
         height: 0,
@@ -133,7 +133,7 @@ describe('Data Controller', () => {
             });
     });
     it('should get test error /all_labels', async () => {
-        dataService.getAllLabels.rejects(new Error('error in the service mongo'));
+        dataService.getAllLabelss.rejects(new Error('error in the service mongo'));
         return supertest(app)
             .get('/api/data/all_labels')
             .send()
@@ -147,7 +147,7 @@ describe('Data Controller', () => {
     });
     it('should get test /all_label', async () => {
         const Labels: Label[] = [{ label: 'label1' }, { label: 'label2' }];
-        dataService.getAllLabels.resolves(Labels);
+        dataService.getAllLabelss.resolves(Labels);
         return supertest(app)
             .get('/api/data/all_labels')
             .expect(HTTP_STATUS_OK)

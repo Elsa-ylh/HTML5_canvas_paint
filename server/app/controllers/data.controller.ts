@@ -36,10 +36,10 @@ export class DataController {
         });
         this.router.get('/all_labels', (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
-                .getAllLabels()
+                .getAllLabelss()
                 .then((labelsInformation: Label[]) => {
                     const informationMessage: CanvasInformation = {
-                        _id: 'list_of_all_labals',
+                        _id: 'list_of_all_labels',
                         name: 'labels',
                         labels: labelsInformation,
                         width: 0,

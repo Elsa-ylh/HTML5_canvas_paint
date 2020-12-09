@@ -39,8 +39,7 @@ describe('DialogUpload', () => {
         picture: 'test5',
     };
     const vec = { x: 50, y: 45 } as Vec2;
-    const testCanvasInformationAdds = [testCanvasInformationAdd];
-    const labels: Label[] = [{ label: 'lable1' }, { label: 'label2' }];
+    const labels: Label[] = [{ label: 'label1' }, { label: 'label2' }];
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [
@@ -63,10 +62,10 @@ describe('DialogUpload', () => {
                 {
                     provide: ClientServerCommunicationService,
                     useValue: {
-                        getAllLabel: () => labels,
-                        resetDatas: () => '',
-                        getInformation: () => testCanvasInformationAdds,
-                        getElementResearch: () => testCanvasInformationAdds,
+                        getAllLabels: () => labels,
+                        resetData: () => '',
+                        getInformation: () => testCanvasInformationAdd,
+                        getElementResearch: () => testCanvasInformationAdd,
                         savePicture: () => Message,
                     },
                 },
@@ -165,10 +164,10 @@ describe('DialogUpload', () => {
     });
     it('refresh is testing', async () => {
         expect(component.dataLabel[0].label).toEqual(labels[0].label);
-        const labeltest: Label = { label: 'modif' };
-        spyOn(component['clientServerComService'], 'getAllLabel').and.returnValue([labeltest]);
+        const labelTest: Label = { label: 'modif' };
+        spyOn(component['clientServerComService'], 'getAllLabels').and.returnValue([labelTest]);
         component.refresh();
-        expect(component.dataLabel[0].label).toEqual(labeltest.label);
+        expect(component.dataLabel[0].label).toEqual(labelTest.label);
     });
 
     it('test name and label function saveServer', () => {
@@ -180,7 +179,7 @@ describe('DialogUpload', () => {
     });
     it('', () => {
         component.saveLoad = true;
-        component.processedMessage({ title: 'succes', body: 'reussi' });
+        component.processedMessage({ title: 'succès', body: 'réussi' });
         expect(component.saveLoad).toEqual(false);
     });
 });
