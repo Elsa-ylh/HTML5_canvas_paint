@@ -38,7 +38,7 @@ export class StampService extends Tool {
 
     angle: number = 0; // angle of the image
 
-    isWheelUp: boolean = true; // add or substract
+    isWheelUp: boolean = true; // add or subtract
     isAltPressed: boolean = false;
     isUndoRedo: boolean = false;
 
@@ -112,8 +112,6 @@ export class StampService extends Tool {
         const stampFeather = new StampAction(this.stampToDraw, this.mouseCenterX, this.mouseCenterY, this.drawingService, this);
         this.undoRedoService.addUndo(stampFeather);
         // this.undoRedoService.clearRedo();
-
-        console.log(stampFeather);
 
         if (this.isUndoRedo) {
             this.stampToDraw.onload = () => {
