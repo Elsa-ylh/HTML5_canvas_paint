@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { LineAction } from '@app/classes/undo-redo/line-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
@@ -23,7 +23,7 @@ describe('LineAction', () => {
     let colorLine: string;
     let thickness: number;
     let secondaryTickness: number;
-    let subToolselected: SubToolselected;
+    let subToolselected: SubToolSelected;
 
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
@@ -36,7 +36,7 @@ describe('LineAction', () => {
         colorLine = '#000000';
         thickness = 2;
         secondaryTickness = 3;
-        subToolselected = SubToolselected.tool1;
+        subToolselected = SubToolSelected.tool1;
 
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);

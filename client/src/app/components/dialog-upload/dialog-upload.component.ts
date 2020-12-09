@@ -19,15 +19,15 @@ export class DialogUploadComponent implements OnInit {
     saveLoad: boolean = false;
 
     constructor(
-        private clientServerComSvc: ClientServerCommunicationService,
-        private cvsResizerService: CanvasResizerService,
+        private clientServerComService: ClientServerCommunicationService,
+        private canvasResizerService: CanvasResizerService,
         private drawingService: DrawingService,
     ) {}
     ngOnInit(): void {
-        this.addAllLabal();
+        this.addAllLabels();
     }
-    private addAllLabal(): void {
-        this.dataLabel = this.clientServerComSvc.getAllLabel();
+    private addAllLabels(): void {
+        this.dataLabel = this.clientServerComService.getAllLabel();
     }
     selectionLabel(label: string): void {
         let itList = true;
@@ -42,7 +42,7 @@ export class DialogUploadComponent implements OnInit {
         }
     }
     refresh(): void {
-        this.addAllLabal();
+        this.addAllLabels();
     }
     saveServer(): void {
         this.saveLoad = true;
@@ -50,35 +50,35 @@ export class DialogUploadComponent implements OnInit {
         const labelResult = !this.checkLabel(this.textLabel);
         this.errorTextLabel = !labelResult;
         if (nameResult && labelResult) {
-            const labelsSting: Label[] = [];
+            const labelName: Label[] = [];
             if (this.textLabel !== '') {
                 const texts = this.textLabel.split('#');
                 texts.forEach((textLabel) => {
-                    if (textLabel !== '') labelsSting.push({ label: textLabel });
+                    if (textLabel !== '') labelName.push({ label: textLabel });
                 });
             }
             let checkInTheList = true;
             this.labelSelect.forEach((element) => {
                 checkInTheList = true;
-                labelsSting.forEach((elementLabels) => {
+                labelName.forEach((elementLabels) => {
                     if (checkInTheList && element === elementLabels.label) {
                         checkInTheList = false;
                     }
                 });
                 if (checkInTheList) {
-                    labelsSting.push({ label: element });
+                    labelName.push({ label: element });
                 }
             });
             const savePicture: CanvasInformation = {
                 _id: '',
                 date: new Date(),
-                height: this.cvsResizerService.canvasSize.y,
-                width: this.cvsResizerService.canvasSize.x,
-                labels: labelsSting,
+                height: this.canvasResizerService.canvasSize.y,
+                width: this.canvasResizerService.canvasSize.x,
+                labels: labelName,
                 name: this.textName,
                 picture: this.drawingService.convertBaseCanvasToBase64(),
             };
-            this.clientServerComSvc.savePicture(savePicture).subscribe((info) => this.processedMessage(info));
+            this.clientServerComService.savePicture(savePicture).subscribe((info) => this.processedMessage(info));
         } else {
             this.saveLoad = false;
         }
@@ -93,10 +93,11 @@ export class DialogUploadComponent implements OnInit {
 
         this.saveLoad = false;
     }
-    // retour inverser
+
     checkName(name: string): boolean {
         return name === '' || name === undefined || this.notGoodCharacter(name) || name.split(' ').length !== 1;
     }
+
     checkLabel(label: string): boolean {
         if (label.length === 0) {
             return false;

@@ -13,7 +13,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { cursorName } from '@app/classes/cursor-name';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
 import { ColorComponent } from '@app/components/color/color.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
@@ -238,11 +238,11 @@ describe('SidebarComponent', () => {
         expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Eraser);
     });
     it('pickRectangle()', () => {
-        component.pickRectangle(SubToolselected.tool1);
+        component.pickRectangle(SubToolSelected.tool1);
         expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Rectangle);
     });
     it('pickEllipse()', () => {
-        component.pickEllipse(SubToolselected.tool1);
+        component.pickEllipse(SubToolSelected.tool1);
         expect(toolServiceStub.currentToolName).toEqual(ToolUsed.Ellipse);
     });
 
@@ -366,28 +366,28 @@ describe('SidebarComponent', () => {
         component.pickLine();
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
-        expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool1);
+        expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolSelected.tool1);
     });
     it('should pick rectangle', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
-        component.pickRectangle(SubToolselected.tool2);
+        component.pickRectangle(SubToolSelected.tool2);
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
-        expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool2);
+        expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolSelected.tool2);
     });
     it('should pick ellipse', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         component.pickEllipse(1);
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
-        expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool1);
+        expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolSelected.tool1);
     });
     it('should pick polygon', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
         component.pickPolygon(1);
         expect(drawingStub.cursorUsed).toEqual(cursorName.default);
         expect(switchToolSpy).toHaveBeenCalled();
-        expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool1);
+        expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolSelected.tool1);
     });
     it('should pick color', () => {
         const switchToolSpy = spyOn(toolServiceStub, 'switchTool').and.stub();
@@ -461,12 +461,12 @@ describe('SidebarComponent', () => {
     it('should set subtoolselected as tool 2', () => {
         const event = { checked: true } as MatCheckboxChange;
         component.checkboxChangeToggle(event);
-        expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool2);
+        expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolSelected.tool2);
     });
     it('should set subtoolselected as tool 1', () => {
         const event = { checked: false } as MatCheckboxChange;
         component.checkboxChangeToggle(event);
-        expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolselected.tool1);
+        expect(toolServiceStub.currentTool.subToolSelect).toEqual(SubToolSelected.tool1);
     });
 
     it('should call preventDefault clearCanvas and set isDialogOpen to true', () => {

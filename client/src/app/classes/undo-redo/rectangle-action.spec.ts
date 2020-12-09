@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { RectangleAction } from '@app/classes/undo-redo/rectangle-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
@@ -26,7 +26,7 @@ describe('RectangleAction', () => {
     let secondaryColor: string;
     let lineWidth: number;
     let shiftPressed: boolean;
-    let selectSubTool: SubToolselected;
+    let selectSubTool: SubToolSelected;
     let canvasSelected: boolean;
 
     let baseStub: CanvasRenderingContext2D;
@@ -44,7 +44,7 @@ describe('RectangleAction', () => {
         lineWidth = 2;
         canvasSelected = false;
         shiftPressed = true;
-        selectSubTool = SubToolselected.tool1;
+        selectSubTool = SubToolSelected.tool1;
 
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);

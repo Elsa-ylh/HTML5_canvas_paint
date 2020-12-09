@@ -1,7 +1,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { EventOfTest } from '@app/classes/event-of-test';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from '@app/services/tools/line.service';
@@ -51,7 +51,7 @@ describe('Service: Line', () => {
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
-        service.subToolSelect = SubToolselected.tool1;
+        service.subToolSelect = SubToolSelected.tool1;
         pathData = [];
         events = new EventOfTest();
 
@@ -108,7 +108,7 @@ describe('Service: Line', () => {
         expect(boolFonction).toEqual(false);
     });
     it(' onMouseMove should call drawLine if mouse was already down', () => {
-        service.subToolSelect = SubToolselected.tool1;
+        service.subToolSelect = SubToolSelected.tool1;
         service.onMouseDown(events.mouseEvent1);
         service.onMouseMove(events.mouseEvent);
 
@@ -116,7 +116,7 @@ describe('Service: Line', () => {
         expect(drawLineLastPointSpy).toHaveBeenCalled();
     });
     it(' onMouseMove should call drawLine if mouse was already down', () => {
-        service.subToolSelect = SubToolselected.tool2;
+        service.subToolSelect = SubToolSelected.tool2;
         service.onMouseDown(events.mouseEvent1);
 
         service.onMouseMove(events.mouseEvent);
@@ -124,14 +124,14 @@ describe('Service: Line', () => {
         expect(drawLineLastPointSpy).toHaveBeenCalled();
     });
     it(' onMouseMove should not call draPoint if mouse was not already down', () => {
-        service.subToolSelect = SubToolselected.tool1;
+        service.subToolSelect = SubToolSelected.tool1;
         service.onMouseDown(events.mouseEvent1);
 
         service.onMouseMove(events.mouseEvent);
         expect(drawPointSpy).not.toHaveBeenCalled();
     });
     it(' onMouseMove should call drawPoint if mouse was already down', () => {
-        service.subToolSelect = SubToolselected.tool2;
+        service.subToolSelect = SubToolSelected.tool2;
         service.onMouseDown(events.mouseEvent1);
 
         service.onMouseMove(events.mouseEvent);
@@ -204,7 +204,7 @@ describe('Service: Line', () => {
         expect(vec2).toEqual({ x: 50, y: 0 });
     });
     // it('backspceEvant fonction if not brush in second point', () => {
-    //     service.subToolSelect = SubToolselected.tool2;
+    //     service.subToolSelect = SubToolSelected.tool2;
     //     service.onMouseDown(events.mouseEvent1);
     //     service.onMouseDown(events.mouseEvent2);
     //     service.onKeyBackSpace(events.backspceEvant);

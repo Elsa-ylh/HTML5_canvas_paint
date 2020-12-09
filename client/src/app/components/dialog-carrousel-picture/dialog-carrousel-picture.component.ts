@@ -20,7 +20,7 @@ const NB_FILES_OPEN_AT_A_TIME = 3;
 })
 export class CarrouselPictureComponent implements OnInit {
     constructor(
-        private clientServerComSvc: ClientServerCommunicationService,
+        private clientServerComService: ClientServerCommunicationService,
         private cvsResizerService: CanvasResizerService,
         private drawingService: DrawingService,
         private router: Router,
@@ -45,11 +45,11 @@ export class CarrouselPictureComponent implements OnInit {
         this.addAllLabels();
     }
     private addAllData(): void {
-        this.clientServerComSvc.getData().subscribe((info) => (this.dataPicture = info));
+        this.clientServerComService.getData().subscribe((info) => (this.dataPicture = info));
     }
 
     private addAllLabels(): void {
-        this.dataLabel = this.clientServerComSvc.getAllLabel();
+        this.dataLabel = this.clientServerComService.getAllLabel();
     }
 
     reset(): void {
@@ -84,7 +84,7 @@ export class CarrouselPictureComponent implements OnInit {
         }
         this.position = 0;
         const message: Message = { title: 'labels', body: textLabel };
-        this.clientServerComSvc.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
+        this.clientServerComService.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
     getPicturesAll(): number {
         return this.dataPicture.length;
@@ -93,11 +93,11 @@ export class CarrouselPictureComponent implements OnInit {
         switch (this.selectedType) {
             case 'name':
                 const message: Message = { title: 'name', body: this.name };
-                this.clientServerComSvc.getElementResearch(message).subscribe((info) => (this.dataPicture = info));
+                this.clientServerComService.getElementResearch(message).subscribe((info) => (this.dataPicture = info));
                 break;
             case 'date':
                 const messageDate: Message = { title: 'date', body: (this.myDate.value as Date).toString() };
-                this.clientServerComSvc.getElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
+                this.clientServerComService.getElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
                 break;
         }
         this.position = 0;
@@ -181,7 +181,7 @@ export class CarrouselPictureComponent implements OnInit {
     deletePicture(picture: CanvasInformation): void {
         if (confirm('Supprimer : ' + picture.name)) {
             const deleteMassage: Message = { title: 'delete', body: picture._id };
-            this.clientServerComSvc.deleteQuery(deleteMassage).subscribe((info) => this.messageDelete(info));
+            this.clientServerComService.deleteQuery(deleteMassage).subscribe((info) => this.messageDelete(info));
         }
     }
 

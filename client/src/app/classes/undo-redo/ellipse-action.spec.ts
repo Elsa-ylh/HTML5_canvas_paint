@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { EllipseAction } from '@app/classes/undo-redo/ellipse-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
@@ -25,7 +25,7 @@ describe('EllipseAction', () => {
     let secondaryColor: string;
     let lineWidth: number;
     let shiftPressed: boolean;
-    let selectSubTool: SubToolselected;
+    let selectSubTool: SubToolSelected;
     let autoSaveStub: AutomaticSaveService;
     let canvasSelected: boolean;
     let baseStub: CanvasRenderingContext2D;
@@ -39,7 +39,7 @@ describe('EllipseAction', () => {
         primaryColor = '#000000';
         secondaryColor = 'rgba(0,0,0,0)';
         lineWidth = 3;
-        selectSubTool = SubToolselected.tool1;
+        selectSubTool = SubToolSelected.tool1;
         shiftPressed = false;
         canvasSelected = false;
         drawingStub = new DrawingService();

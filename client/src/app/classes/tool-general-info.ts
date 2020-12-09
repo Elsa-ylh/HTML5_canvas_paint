@@ -1,10 +1,10 @@
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 
 export interface ToolGeneralInfo {
     primaryColor: string;
     secondaryColor: string;
     lineWidth: number;
     shiftPressed: boolean;
-    selectSubTool: SubToolselected;
+    selectSubTool: SubToolSelected;
     canvasSelected: boolean;
 }

@@ -83,7 +83,7 @@ describe('DialogUpload', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(DialogUploadComponent);
         component = fixture.componentInstance;
-        spyOn(component['clientServerComSvc'], 'savePicture').and.returnValue(of());
+        spyOn(component['clientServerComService'], 'savePicture').and.returnValue(of());
         httpMock = TestBed.inject(HttpTestingController);
         fixture.detectChanges();
         processedMessageSpy = spyOn<any>(component, 'processedMessage').and.callThrough();
@@ -164,7 +164,7 @@ describe('DialogUpload', () => {
     it('refresh is testing', async () => {
         expect(component.dataLabel[0].label).toEqual(labels[0].label);
         const labeltest: Label = { label: 'modif' };
-        spyOn(component['clientServerComSvc'], 'getAllLabel').and.returnValue([labeltest]);
+        spyOn(component['clientServerComService'], 'getAllLabel').and.returnValue([labeltest]);
         component.refresh();
         expect(component.dataLabel[0].label).toEqual(labeltest.label);
     });
