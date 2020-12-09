@@ -27,7 +27,7 @@ export class DialogUploadComponent implements OnInit {
         this.addAllLabels();
     }
     private addAllLabels(): void {
-        this.dataLabel = this.clientServerComService.getAllLabel();
+        this.dataLabel = this.clientServerComService.getAllLabels();
     }
     selectionLabel(label: string): void {
         let itList = true;

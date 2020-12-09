@@ -8,6 +8,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatSliderModule } from '@angular/material/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
@@ -35,6 +36,7 @@ describe('PaintBucketColorComponent', () => {
                     MatGridListModule,
                     MatDividerModule,
                     MatListModule,
+                    MatSliderModule,
                     MatButtonModule,
                     MatDialogModule,
                     MatInputModule,

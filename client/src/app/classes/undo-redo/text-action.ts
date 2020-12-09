@@ -25,7 +25,6 @@ export class TextAction extends AbsUndoRedo {
     apply(): void {
         this.drawingService.baseCtx.strokeStyle = this.primaryColor;
         this.drawingService.baseCtx.fillStyle = this.primaryColor;
-        console.log(this.text);
         this.textService.drawTextUndo(
             {
                 primaryColor: this.primaryColor,

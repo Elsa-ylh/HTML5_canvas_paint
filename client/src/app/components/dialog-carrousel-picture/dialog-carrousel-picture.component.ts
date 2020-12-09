@@ -49,7 +49,7 @@ export class CarrouselPictureComponent implements OnInit {
     }
 
     private addAllLabels(): void {
-        this.dataLabel = this.clientServerComService.getAllLabel();
+        this.dataLabel = this.clientServerComService.getAllLabels();
     }
 
     reset(): void {

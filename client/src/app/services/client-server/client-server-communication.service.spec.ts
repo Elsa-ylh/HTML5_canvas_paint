@@ -62,7 +62,7 @@ describe('ClientServerCommunicationService', () => {
 
         const req = httpMock.expectOne(baseUrl);
         expect(req.request.method).toBe('GET');
-        req.error(new ErrorEvent('Random error occured'));
+        req.error(new ErrorEvent('Random error occurred'));
     });
 
     it('should return expected CanvasInformation (HttpClient called once)', () => {
@@ -77,7 +77,7 @@ describe('ClientServerCommunicationService', () => {
             picture: 'test5',
         };
         // check the content of the mocked call
-        service.allLabel().subscribe((response: CanvasInformation) => {
+        service.allLabels().subscribe((response: CanvasInformation) => {
             expect(response._id).toEqual(expectedCanvasInformation._id, 'id check');
             expect(response.name).toEqual(expectedCanvasInformation.name, 'name check');
         }, fail);
@@ -100,24 +100,24 @@ describe('ClientServerCommunicationService', () => {
         // actually send the request
         req.flush(expectedCanvasInformation);
     });
-    it('getAllLabel return 0 label', () => {
-        const labels: Label[] = service.getAllLabel();
+    it('getAllLabels return 0 label', () => {
+        const labels: Label[] = service.getAllLabels();
         expect(labels.length).toEqual(0);
         const req = httpMock.expectOne(baseUrl + '/all_labels');
         expect(req.request.method).toBe('GET');
         // actually send the request
     });
-    it('getAllLabel return 0 label is not good id', () => {
+    it('getAllLabels return 0 label is not good id', () => {
         service['information'] = expectedCanvasInformation[0];
-        const labels: Label[] = service.getAllLabel();
+        const labels: Label[] = service.getAllLabels();
         expect(labels.length).toEqual(0);
         const req = httpMock.expectOne(baseUrl + '/all_labels');
         expect(req.request.method).toBe('GET');
         // actually send the request
     });
-    it('getAllLabel return 2 label is good id', () => {
+    it('getAllLabels return 2 label is good id', () => {
         service['information'] = {
-            _id: 'list_of_all_labals',
+            _id: 'list_of_all_labels',
             name: '',
             labels: [{ label: '' }, { label: '' }],
             width: 0,
@@ -125,7 +125,7 @@ describe('ClientServerCommunicationService', () => {
             date: new Date(),
             picture: '',
         };
-        const labels: Label[] = service.getAllLabel();
+        const labels: Label[] = service.getAllLabels();
         expect(labels.length).toEqual(2);
         const req = httpMock.expectOne(baseUrl + '/all_labels');
         expect(req.request.method).toBe('GET');
@@ -133,7 +133,7 @@ describe('ClientServerCommunicationService', () => {
     });
     it('should save a picture in the MongoDB', () => {
         const canvasInformation = {
-            _id: 'list_of_all_labals',
+            _id: 'list_of_all_labels',
             name: '',
             labels: [{ label: '' }, { label: '' }],
             width: 0,
