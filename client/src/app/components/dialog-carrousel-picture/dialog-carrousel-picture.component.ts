@@ -147,18 +147,18 @@ export class CarouselComponent implements OnInit {
     }
 
     private createImage(listCard: CanvasInformation[]): void {
-        const nbPicture = listCard.length;
-        if (nbPicture >= 1) {
+        const nbPictures = listCard.length;
+        if (nbPictures >= 1) {
             if (this.previewImage1 !== undefined) {
                 this.previewImage1.nativeElement.src = listCard[0].picture;
             }
         }
-        if (nbPicture >= 2) {
+        if (nbPictures >= 2) {
             if (this.previewImage2 !== undefined) {
                 this.previewImage2.nativeElement.src = listCard[1].picture;
             }
         }
-        if (nbPicture >= 3) {
+        if (nbPictures >= 3) {
             if (this.previewImage3 !== undefined) {
                 this.previewImage3.nativeElement.src = listCard[2].picture;
             }
