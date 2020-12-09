@@ -40,9 +40,9 @@ export class DatabasePictureService {
             .then((client: MongoClient) => {
                 this.collection = client.db(databaseName).collection(databaseCollection);
             })
-            .catch(() => {
+            .catch((err) => {
                 console.error('CONNECTION ERROR. EXITING PROCESS');
-                throw 'CONNECTION ERROR. EXITING PROCESS';
+                process.exit(1);
             });
     }
 

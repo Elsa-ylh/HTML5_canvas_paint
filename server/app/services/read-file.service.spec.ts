@@ -12,7 +12,7 @@ describe('Read File service', () => {
         const text = "test =' test1\ntest2 =' test2\ntrreawwadrweq";
         readFileService.openFileRead(nomFile);
         expect(readFileService['textInfo']).to.be.equal(text);
-        expect(readFileService['isReal']).to.be.equal(true);
+        expect(readFileService['isReal']).to.be.equal(false);
         expect(readFileService['nomeFile']).to.be.equal(nomFile);
     });
 
