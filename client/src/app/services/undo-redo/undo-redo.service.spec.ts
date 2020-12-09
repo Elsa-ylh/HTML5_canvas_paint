@@ -19,7 +19,7 @@ describe('Service: UndoRedo', () => {
     let eraserActionStub: EraseAction;
 
     let resizeActionStub: ResizeCanvasAction;
-    let basecanvasAct: ResizeCanvasAction;
+    let baseCanvasAct: ResizeCanvasAction;
     let resizeStub: CanvasResizerService;
     let gridStub: GridService;
 
@@ -59,7 +59,7 @@ describe('Service: UndoRedo', () => {
         resizeActionStub = new ResizeCanvasAction(event, resizeCtx, baseCanvas, resizeDirection, resizeStub);
         eraserActionStub = new EraseAction(changes, color, thickness, eraserStub, drawingStub);
 
-        basecanvasAct = new ResizeCanvasAction(event, baseStub, canvas, resizeDirection, resizeStub);
+        baseCanvasAct = new ResizeCanvasAction(event, baseStub, canvas, resizeDirection, resizeStub);
 
         canvas = canvasTestHelper.canvas;
         canvas.width = 100;
@@ -88,7 +88,7 @@ describe('Service: UndoRedo', () => {
                 { provide: EraseAction, useValue: eraserActionStub },
                 { provide: ResizeCanvasAction, useValue: resizeActionStub },
                 { provide: CanvasResizerService, useValue: resizeStub },
-                { provide: CanvasResizerService, useValue: basecanvasAct },
+                { provide: CanvasResizerService, useValue: baseCanvasAct },
             ],
         });
 
@@ -97,7 +97,7 @@ describe('Service: UndoRedo', () => {
 
         eraserActionStub = TestBed.inject(EraseAction);
         resizeActionStub = TestBed.inject(ResizeCanvasAction);
-        basecanvasAct = TestBed.inject(ResizeCanvasAction);
+        baseCanvasAct = TestBed.inject(ResizeCanvasAction);
     });
 
     it('should be created', () => {
