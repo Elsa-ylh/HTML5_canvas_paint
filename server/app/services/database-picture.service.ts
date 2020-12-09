@@ -4,32 +4,40 @@ import { Collection, MongoClient, MongoClientOptions, ObjectId } from 'mongodb';
 import 'reflect-metadata';
 import { ReadFileService } from './read-file.service';
 
-const DATABASE_URL = 'mongodb+srv://Admin:LOG2990gr103@saved-canvas-images.2ticq.mongodb.net/project2?retryWrites=true&w=majority';
-const DATABASE_NAME = 'project2';
-const DATABASE_COLLECTION = 'saved_canvas_pictures';
 const HOURS_MIDNIGHT = 23;
 const MINUTE_MIDNIGHT = 59;
 const SECOND_MIDNIGHT = 59;
 @injectable()
 export class DatabasePictureService {
     private collection: Collection<CanvasInformation>;
-
     private options: MongoClientOptions = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     };
 
     constructor() {
-        try {
-            let readFileService = new ReadFileService('mongodburl.txt');
-            readFileService.getInfo();
-        } catch (error) {
-            console.log(error);
+        this.connectMongoClient('mongodb_url.txt');
+    }
+    private async connectMongoClient(nomFile: string): Promise<void> {
+        let readFileService = new ReadFileService(nomFile);
+        let databaseUrl = 'DATABASE_URL';
+        let databaseName = 'DATABASE_NAME';
+        let databaseCollection = 'DATABASE_COLLECTION';
+        const keyElement = readFileService.getInfo();
+        for (let index = 0; index < keyElement.length; index++) {
+            if (keyElement[index][0] === databaseUrl) {
+                databaseUrl = keyElement[index][1];
+            }
+            if (keyElement[index][0] === databaseName) {
+                databaseName = keyElement[index][1];
+            }
+            if (keyElement[index][0] === databaseCollection) {
+                databaseCollection = keyElement[index][1];
+            }
         }
-
-        MongoClient.connect(DATABASE_URL, this.options)
+        MongoClient.connect(databaseUrl, this.options)
             .then((client: MongoClient) => {
-                this.collection = client.db(DATABASE_NAME).collection(DATABASE_COLLECTION);
+                this.collection = client.db(databaseName).collection(databaseCollection);
             })
             .catch(() => {
                 console.error('CONNECTION ERROR. EXITING PROCESS');
