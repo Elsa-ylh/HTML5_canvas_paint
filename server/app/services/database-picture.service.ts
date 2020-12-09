@@ -19,22 +19,22 @@ export class DatabasePictureService {
         this.connectMongoClient('mongodb_url.txt');
     }
     private async connectMongoClient(nomFile: string): Promise<void> {
-        let readFileService = new ReadFileService(nomFile);
+        const readFileService = new ReadFileService(nomFile);
         let databaseUrl = 'DATABASE_URL';
         let databaseName = 'DATABASE_NAME';
         let databaseCollection = 'DATABASE_COLLECTION';
         const keyElement = readFileService.getInfo();
-        for (let index = 0; index < keyElement.length; index++) {
-            if (keyElement[index][0] === databaseUrl) {
-                databaseUrl = keyElement[index][1];
+        keyElement.forEach((element) => {
+            if (element[0] === databaseUrl) {
+                databaseUrl = element[1];
             }
-            if (keyElement[index][0] === databaseName) {
-                databaseName = keyElement[index][1];
+            if (element[0] === databaseName) {
+                databaseName = element[1];
             }
-            if (keyElement[index][0] === databaseCollection) {
-                databaseCollection = keyElement[index][1];
+            if (element[0] === databaseCollection) {
+                databaseCollection = element[1];
             }
-        }
+        });
         MongoClient.connect(databaseUrl, this.options)
             .then((client: MongoClient) => {
                 this.collection = client.db(databaseName).collection(databaseCollection);

@@ -14,27 +14,25 @@ export class ReadFileService {
     }
     private openFileRead(): boolean {
         try {
-            let pathLocal = path.join(__dirname, '../secret/' + this.nomeFile);
+            const pathLocal = path.join(__dirname, '../secret/' + this.nomeFile);
             this.textInfo = fs.readFileSync(pathLocal, 'utf-8');
             if (this.textInfo !== '') return true;
         } catch (error) {
             console.log('Error Open Read file :', error);
             return false;
         }
-
         return false;
     }
     getInfo(): string[][] {
         if (!this.isReal) {
             this.isReal = this.openFileRead();
         }
-        let textTableau: string[][] = [];
+        const textTableau: string[][] = [];
         if (this.isReal) {
-            const textLinge = this.textInfo.split('\r\n');
-            for (let x = 0; x < textLinge.length; x++) {
-                let element: string[] = textLinge[x].split(" ='");
-                textTableau.push(element);
-            }
+            const textLine = this.textInfo.split('\r\n');
+            textLine.forEach((element) => {
+                textTableau.push(element.split(" ='"));
+            });
         }
         return textTableau;
     }

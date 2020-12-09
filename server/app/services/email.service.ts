@@ -11,26 +11,28 @@ import { ReadFileService } from './read-file.service';
 export class EmailService {
     private url: string = 'URL';
     private X_TEAM_KEY: string = 'X_TEAM_KEY';
+    // https://regexr.com/3e48o
+    private readonly EMAIL_REGEX_VALIDATION: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+
     constructor() {
         this.readFile('email_info.txt');
     }
-    private readFile(nomFile: string) {
-        let readFileService = new ReadFileService(nomFile);
+
+    private readFile(nomFile: string): void {
+        const readFileService = new ReadFileService(nomFile);
         const keyElement = readFileService.getInfo();
-        for (let index = 0; index < keyElement.length; index++) {
-            if (keyElement[index][0] === this.url) {
-                this.url = keyElement[index][1];
+        keyElement.forEach((element) => {
+            if (element[0] === this.url) {
+                this.url = element[1];
             }
-            if (keyElement[index][0] === this.X_TEAM_KEY) {
-                this.X_TEAM_KEY = keyElement[index][1];
+            if (element[0] === this.X_TEAM_KEY) {
+                this.X_TEAM_KEY = element[1];
             }
-        }
+        });
     }
-    // https://regexr.com/3e48o
-    private readonly emailRegexValidation: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
 
     isEmailValid(email: string): boolean {
-        return email.match(this.emailRegexValidation) !== null;
+        return email.match(this.EMAIL_REGEX_VALIDATION) !== null;
     }
 
     getImageExtension(imagePath: string): ImageFormat {
