@@ -39,6 +39,9 @@ describe('Read File service', () => {
     });
     it(' getInfos return 2 line info', () => {
         readFileService['isReal'] = true;
-        expect(readFileService['getInfos']().length).to.be.equal(2);
+        const texts = readFileService['getInfos']();
+        expect(texts.length).to.be.equal(2);
+        expect(texts[0][0]).to.be.equal('test');
+        expect(texts[0][1]).to.be.equal(' test1');
     });
 });
