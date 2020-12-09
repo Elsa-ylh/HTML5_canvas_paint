@@ -8,7 +8,6 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
-import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { MagicWandService } from '@app/services/tools/selection-service/magic-wand.service';
 import { RotationService } from '@app/services/tools/selection-service/rotation.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
@@ -29,7 +28,6 @@ fdescribe('Service: MagicWand', () => {
     let undoRedoStub: UndoRedoService;
     let gridStub: GridService;
     let selectionStub: SelectionService;
-    let paintBucketStub: PaintBucketService;
     let controlMock: ControlGroup;
 
     let canvas: HTMLCanvasElement;
@@ -38,7 +36,7 @@ fdescribe('Service: MagicWand', () => {
 
     beforeEach(() => {
         drawingStub = new DrawingService();
-        magicWandService = new MagicWandService(drawingStub, paintBucketStub, magnetismStub, undoRedoStub, rotationStub);
+        magicWandService = new MagicWandService(drawingStub, magnetismStub, undoRedoStub, rotationStub);
         magnetismStub = new MagnetismService(gridStub);
         gridStub = new GridService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
@@ -54,9 +52,8 @@ fdescribe('Service: MagicWand', () => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: DrawingService, useValue: drawingStub },
-                { provide: UndoRedoService, useValue: undoRedoStub },
                 { provide: MagnetismService, useValue: magnetismStub },
-                { provide: PaintBucketService, useValue: paintBucketStub },
+                { provide: UndoRedoService, useValue: undoRedoStub },
                 { provide: RotationService, useValue: rotationStub },
             ],
         });
@@ -80,7 +77,7 @@ fdescribe('Service: MagicWand', () => {
         expect(magicWandService).toBeTruthy();
     });
 
-    fit('should call selectedFloodFill', () => {
+    it('should call selectedFloodFill', () => {
         const mouseDownPos: Vec2 = { x: 10, y: 15 } as Vec2;
         const spy = spyOn<any>(magicWandService, 'selectedFloodFill').and.callThrough();
         magicWandService['selectedFloodFill'](mouseDownPos.x, mouseDownPos.y, { red: 0, green: 0, blue: 0, alpha: 1 });

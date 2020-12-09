@@ -8,7 +8,6 @@ import { SelectionWandAction } from '@app/classes/undo-redo/selection-wand-actio
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism.service';
-import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { RotationService } from './rotation.service';
@@ -38,7 +37,6 @@ export class MagicWandService extends SelectionService {
 
     constructor(
         drawingService: DrawingService,
-        private paintBucketService: PaintBucketService,
         protected magnetismService: MagnetismService,
         protected undoRedoService: UndoRedoService,
         protected rotationService: RotationService,
@@ -141,7 +139,17 @@ export class MagicWandService extends SelectionService {
         return pixels;
     }
 
+    private matchFillColor(currentColor: RGBA, targetColor: RGBA): boolean {
+        let matchFillColor = true;
+        matchFillColor = matchFillColor && targetColor.red == currentColor.red;
+        matchFillColor = matchFillColor && targetColor.green == currentColor.green;
+        matchFillColor = matchFillColor && targetColor.blue == currentColor.blue;
+
+        return matchFillColor;
+    }
+
     private selectAllSimilar(x: number, y: number, replacementColor: RGBA): ImageData {
+        debugger;
         const pixels: ImageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         const linearCords: number = (y * this.drawingService.canvas.width + x) * this.COLORATTRIBUTES;
         const originalColor = {
@@ -162,7 +170,7 @@ export class MagicWandService extends SelectionService {
             // +3 means at alpha position
             // tslint:disable-next-line:no-magic-numbers
             atIteratorColor.alpha = pixels.data[iterator + 3];
-            if (this.paintBucketService.matchFillColor(originalColor, atIteratorColor)) {
+            if (this.matchFillColor(originalColor, atIteratorColor)) {
                 // put selection code
                 pixels.data[iterator] = replacementColor.red;
                 pixels.data[iterator + 1] = replacementColor.green;
