@@ -121,33 +121,39 @@ describe('Service: UndoRedo', () => {
     it('should call redo', () => {
         const redoSpy = spyOn(undoRedoStub, 'redo').and.stub();
         undoRedoStub.addUndo(eraserActionStub);
-        undoRedoStub['listRedo'].length = 1;
+        // tslint:disable:no-string-literal
+        undoRedoStub['redoList'].length = 1;
         undoRedoStub.redo();
         expect(redoSpy).toHaveBeenCalled();
     });
 
-    it('elements in listUndo should be the same as elements in listredo after calling redo', () => {
+    it('elements in listUndo should be the same as elements in redoList after calling redo', () => {
         const action = eraserActionStub;
-        undoRedoStub['listRedo'].length = 1;
-        undoRedoStub['listRedo'][0] = action;
+        // tslint:disable:no-string-literal
+        undoRedoStub['redoList'].length = 1;
+        // tslint:disable:no-string-literal
+        undoRedoStub['redoList'][0] = action;
         undoRedoStub.redo();
         expect(undoRedoStub['listUndo'][0]).toEqual(action);
     });
 
-    it('elements in listUndo should be the same as the most recent one in listRedo after calling undo for a resize canvas action', () => {
+    it('elements in listUndo should be the same as the most recent one in redoList after calling undo for a resize canvas action', () => {
         const action1 = resizeActionStub;
-        const spyApply = spyOn(resizeActionStub, 'apply').and.stub();
+        const spyApply = spyOn(resizeActionStub, 'apply').and.callThrough();
         undoRedoStub.addUndo(action1);
         undoRedoStub.defaultCanvasAction = action1;
         undoRedoStub.undo();
-        expect(undoRedoStub['listRedo'][0]).toEqual(action1);
+        // tslint:disable:no-string-literal
+        expect(undoRedoStub['redoList'][0]).toEqual(action1);
         expect(spyApply).toHaveBeenCalled();
     });
 
     it('if 2 different actions are pushed should call the right one', () => {
         const action1 = resizeActionStub;
         const action2 = eraserActionStub;
-        const spyEraserAction = spyOn(eraserActionStub, 'apply').and.stub();
+        const action3 = resizeActionStub;
+        const spyEraserAction = spyOn(eraserActionStub, 'apply').and.callThrough();
+        undoRedoStub.addUndo(action3);
         undoRedoStub.addUndo(action1);
         undoRedoStub.addUndo(action2);
         undoRedoStub.defaultCanvasAction = action1;
@@ -156,28 +162,28 @@ describe('Service: UndoRedo', () => {
         expect(spyEraserAction).toHaveBeenCalled();
     });
 
-    it('should set isLoadImg to true ', () => {
+    it('should set isImageLoaded to true ', () => {
         undoRedoStub.loadImage(loadActionStub);
-        expect(undoRedoStub.isLoadImg).toEqual(true);
+        expect(undoRedoStub.isImageLoaded).toEqual(true);
     });
 
-    it('should set isLoadImg to false when caling clearRedo ', () => {
+    it('should set isImageLoaded to false when calling clearRedo ', () => {
         undoRedoStub.addUndo(eraserActionStub);
         undoRedoStub.clearRedo();
-        expect(undoRedoStub.isLoadImg).toEqual(false);
+        expect(undoRedoStub.isImageLoaded).toEqual(false);
     });
 
-    it('should call updateStatus when calling ClearRedo ', () => {
+    it('should call updateStatus when calling clearRedo ', () => {
         const updateStatusSpy = spyOn(undoRedoStub, 'updateStatus').and.stub();
         undoRedoStub.addUndo(eraserActionStub);
         undoRedoStub.clearRedo();
         expect(updateStatusSpy).toHaveBeenCalled();
     });
 
-    it('should set isLoadImg to false when calling clearUndo ', () => {
+    it('should set isImageLoaded to false when calling clearUndo ', () => {
         undoRedoStub.addUndo(eraserActionStub);
         undoRedoStub.clearUndo();
-        expect(undoRedoStub.isLoadImg).toEqual(false);
+        expect(undoRedoStub.isImageLoaded).toEqual(false);
     });
 
     it('should call updateStatus when calling clearUndo ', () => {
@@ -199,7 +205,9 @@ describe('Service: UndoRedo', () => {
     });
 
     it('should call apply with type eraser ', () => {
-        const eraserApplySpy = spyOn(eraserActionStub, 'apply').and.stub();
+        const eraserApplySpy = spyOn(eraserActionStub, 'apply').and.callThrough();
+        undoRedoStub.defaultCanvasAction = resizeActionStub;
+        undoRedoStub.addUndo(resizeActionStub);
         undoRedoStub.addUndo(eraserActionStub);
         undoRedoStub.addUndo(eraserActionStub);
         undoRedoStub.undo();

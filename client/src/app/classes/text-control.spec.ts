@@ -131,7 +131,6 @@ describe('TextControl', () => {
     });
     it('should call endLineReturn (3)', () => {
         const text: string[] = [];
-        console.log(text);
         spyOn<any>(textControl, 'endLineReturn').and.callThrough();
         const texts = textControl['endLineReturn'](text, 'adce', 3);
         expect(text).toEqual(text);
