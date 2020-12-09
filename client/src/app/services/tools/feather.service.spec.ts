@@ -33,9 +33,10 @@ describe('Service: Feather', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
+        automaticSaveStub = new AutomaticSaveService(canvasResizeStub, drawingStub, undoRedoStub);
+        featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
         gridStub = new GridService(drawingStub);
         canvasResizeStub = new CanvasResizerService(gridStub, undoRedoStub);
-        automaticSaveStub = new AutomaticSaveService(canvasResizeStub, drawingStub);
         featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -113,7 +114,7 @@ describe('Service: Feather', () => {
         expect(clearPreviewCtxSpy).toHaveBeenCalled();
     });
 
-    it('onMouseMove should call drawFeather when mouving mouse', () => {
+    it('onMouseMove should call drawFeather when moving mouse', () => {
         featherStub.mouseDown = true;
         const drawFeatherCtxSpy = spyOn(featherStub, 'drawFeather').and.stub();
         featherStub.onMouseMove(mouseEvent);
@@ -132,7 +133,7 @@ describe('Service: Feather', () => {
         expect(drawingStub.cursorCtx.canvas.style.display).toEqual('inline-block');
     });
 
-    it('should change the angle of attribut featherAngle and retact 15 degree of that value', () => {
+    it('should change the angle of attribute featherAngle and retract 15 degree of that value', () => {
         featherStub.featherAngle = 15;
         featherStub.altPressed = false;
         featherStub.isWheelAdd = false;
@@ -140,7 +141,7 @@ describe('Service: Feather', () => {
         expect(featherStub.featherAngle).toEqual(0);
     });
 
-    it('should change the angle of attribut featherAngle and retract 1 of  that value', () => {
+    it('should change the angle of attribute featherAngle and retract 1 of  that value', () => {
         featherStub.featherAngle = 2;
         featherStub.altPressed = true;
         featherStub.isWheelAdd = false;
@@ -148,7 +149,7 @@ describe('Service: Feather', () => {
         expect(featherStub.featherAngle).toEqual(1);
     });
 
-    it('should change the angle of attribut featherAngle and add 15 degree of that value', () => {
+    it('should change the angle of attribute featherAngle and add 15 degree of that value', () => {
         featherStub.featherAngle = 0;
         featherStub.altPressed = false;
         featherStub.isWheelAdd = true;
@@ -156,7 +157,7 @@ describe('Service: Feather', () => {
         expect(featherStub.featherAngle).toEqual(15);
     });
 
-    it('should change the angle of attribut featherAngle and add 1 of  that value', () => {
+    it('should change the angle of attribute featherAngle and add 1 of  that value', () => {
         featherStub.featherAngle = 0;
         featherStub.altPressed = true;
         featherStub.isWheelAdd = true;

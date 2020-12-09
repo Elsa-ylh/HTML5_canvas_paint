@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { PointArc } from '@app/classes/point-arc';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { BrushAction } from '@app/classes/undo-redo/brush-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
@@ -26,8 +26,8 @@ describe('BrushAction', () => {
     let primaryColor: string;
     let secondaryColor: string;
     let thicknessBrush: number;
-    let selectedBrushTool1: SubToolselected;
-    let selectedBrushTool2: SubToolselected;
+    let selectedBrushTool1: SubToolSelected;
+    let selectedBrushTool2: SubToolSelected;
     let vec2: Vec2 = { x: 0, y: 0 };
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
@@ -47,15 +47,15 @@ describe('BrushAction', () => {
         secondaryColor = 'rgba(0,0,0,0)';
         // tslint:disable:no-magic-numbers
         thicknessBrush = 3;
-        selectedBrushTool1 = SubToolselected.tool4;
-        selectedBrushTool2 = SubToolselected.tool1;
+        selectedBrushTool1 = SubToolSelected.tool4;
+        selectedBrushTool2 = SubToolSelected.tool1;
         const pt1 = new PointArc(vec2, 5, 1);
         const pt2 = new PointArc(vec2, 12, 1);
         brushPointData.push(pt1, pt2);
         drawingStub = new DrawingService();
+        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
         gridStub = new GridService(drawingStub);
         canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub);
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         brushStub = new BrushService(drawingStub, colorStub, undoRedoStub, autoSaveStub);

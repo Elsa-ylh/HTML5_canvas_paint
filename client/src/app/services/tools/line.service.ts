@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { LineAction } from '@app/classes/undo-redo/line-action';
 import { Vec2 } from '@app/classes/vec2';
@@ -11,7 +11,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 export interface LineParameters {
     data: Vec2[];
-    selectedLineTool: SubToolselected;
+    selectedLineTool: SubToolSelected;
 }
 
 @Injectable({
@@ -165,7 +165,7 @@ export class LineService extends Tool {
         }
         ctx.stroke();
 
-        if (path.selectedLineTool === SubToolselected.tool2) this.drawPoint(ctx, path.data, this.secondarySizePixel);
+        if (path.selectedLineTool === SubToolSelected.tool2) this.drawPoint(ctx, path.data, this.secondarySizePixel);
     }
 
     drawLineLastPoint(ctx: CanvasRenderingContext2D, path: LineParameters, lastPoint: Vec2): void {
@@ -178,7 +178,7 @@ export class LineService extends Tool {
         }
         ctx.lineTo(lastPoint.x, lastPoint.y);
         ctx.stroke();
-        if (path.selectedLineTool === SubToolselected.tool2) this.drawPoint(ctx, path.data, this.secondarySizePixel);
+        if (path.selectedLineTool === SubToolSelected.tool2) this.drawPoint(ctx, path.data, this.secondarySizePixel);
     }
 
     drawPoint(ctx: CanvasRenderingContext2D, path: Vec2[], secondPixelSize: number): void {

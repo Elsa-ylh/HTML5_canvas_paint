@@ -1,4 +1,4 @@
-export enum SubToolselected {
+export enum SubToolSelected {
     tool1 = 1,
     tool2 = 2,
     tool3 = 3,

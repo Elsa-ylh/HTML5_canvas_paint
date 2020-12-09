@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { ToolGeneralInfo } from '@app/classes/tool-general-info';
 import { RectangleAction } from '@app/classes/undo-redo/rectangle-action';
@@ -15,13 +15,13 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 })
 export class RectangleService extends Tool {
     lineWidth: number = 1;
-    fillColor: string; // secodnary
+    fillColor: string; // secondary
     strokeColor: string; // primary
     square: boolean = false; // shift
     height: number;
     width: number;
     mousePosition: Vec2;
-    canvasSelected: boolean; // quel canvas
+    canvasSelected: boolean; // which canvas
     distanceX: number;
     distanceY: number;
     mouseEnter: boolean = false;
@@ -195,48 +195,48 @@ export class RectangleService extends Tool {
             ctx.strokeRect(mouseDownPos.x, mouseDownPos.y, this.distanceX, this.distanceY);
         }
     }
-    selectRectangle(mousePosition: Vec2, mouseDownCoord: Vec2, generalInfo: ToolGeneralInfo): void {
-        this.distanceX = mousePosition.x - mouseDownCoord.x;
-        this.distanceY = mousePosition.y - mouseDownCoord.y;
+    selectRectangle(mousePosition: Vec2, mouseDownCoords: Vec2, generalInfo: ToolGeneralInfo): void {
+        this.distanceX = mousePosition.x - mouseDownCoords.x;
+        this.distanceY = mousePosition.y - mouseDownCoords.y;
         this.strokeColor = generalInfo.primaryColor;
         this.fillColor = generalInfo.secondaryColor;
         this.lineWidth = generalInfo.lineWidth;
-        // width an height calcul while keeping position sign
+        // width an height calculus while keeping position sign
         this.height = Math.sign(this.distanceY) * Math.abs(Math.min(this.distanceX, this.distanceY));
         this.width = Math.sign(this.distanceX) * Math.abs(Math.min(this.distanceX, this.distanceY));
 
         if (generalInfo.canvasSelected) {
             switch (generalInfo.selectSubTool) {
-                case SubToolselected.tool1: {
+                case SubToolSelected.tool1: {
                     this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                    this.drawFillRectangle(this.drawingService.baseCtx, mouseDownCoord);
+                    this.drawFillRectangle(this.drawingService.baseCtx, mouseDownCoords);
                     break;
                 }
 
-                case SubToolselected.tool2: {
+                case SubToolSelected.tool2: {
                     this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                    this.drawRectangleOutline(this.drawingService.baseCtx, mouseDownCoord);
+                    this.drawRectangleOutline(this.drawingService.baseCtx, mouseDownCoords);
                     break;
                 }
 
-                case SubToolselected.tool3: {
+                case SubToolSelected.tool3: {
                     this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                    this.drawFillRectangleOutline(this.drawingService.baseCtx, mouseDownCoord);
+                    this.drawFillRectangleOutline(this.drawingService.baseCtx, mouseDownCoords);
                     break;
                 }
             }
         } else {
             switch (generalInfo.selectSubTool) {
-                case SubToolselected.tool1:
-                    this.drawFillRectangle(this.drawingService.previewCtx, mouseDownCoord);
+                case SubToolSelected.tool1:
+                    this.drawFillRectangle(this.drawingService.previewCtx, mouseDownCoords);
                     break;
 
-                case SubToolselected.tool2:
-                    this.drawRectangleOutline(this.drawingService.previewCtx, mouseDownCoord);
+                case SubToolSelected.tool2:
+                    this.drawRectangleOutline(this.drawingService.previewCtx, mouseDownCoords);
                     break;
 
-                case SubToolselected.tool3:
-                    this.drawFillRectangleOutline(this.drawingService.previewCtx, mouseDownCoord);
+                case SubToolSelected.tool3:
+                    this.drawFillRectangleOutline(this.drawingService.previewCtx, mouseDownCoords);
                     break;
             }
         }

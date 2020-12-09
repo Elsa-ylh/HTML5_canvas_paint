@@ -1,5 +1,5 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SubToolselected } from './sub-tool-selected';
+import { SubToolSelected } from './sub-tool-selected';
 import { Vec2 } from './vec2';
 
 export enum ToolUsed {
@@ -30,7 +30,7 @@ export abstract class Tool {
     mouseDownCoords: Vec2;
     mouseDown: boolean = false;
     mouseMove: boolean = false; // pr le point
-    subToolSelect: SubToolselected;
+    subToolSelect: SubToolSelected;
 
     constructor(protected drawingService: DrawingService) {}
 

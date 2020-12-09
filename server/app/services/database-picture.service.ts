@@ -71,8 +71,8 @@ export class DatabasePictureService {
                     return pictures;
                 });
             collectionPictures.forEach((element) => {
-                element.labels.forEach((lable) => {
-                    if (this.testLabelItsNotinList(listLabels, lable)) listLabels.push(lable);
+                element.labels.forEach((label) => {
+                    if (this.isLabelNotInTheList(listLabels, label)) listLabels.push(label);
                 });
             });
             return listLabels;
@@ -80,7 +80,7 @@ export class DatabasePictureService {
             return error;
         }
     }
-    private testLabelItsNotinList(listLabels: Label[], label: Label): boolean {
+    private isLabelNotInTheList(listLabels: Label[], label: Label): boolean {
         let isNotInTheList = true;
         for (let index = 0; index < listLabels.length; index++) {
             if (listLabels[index].label === label.label) {

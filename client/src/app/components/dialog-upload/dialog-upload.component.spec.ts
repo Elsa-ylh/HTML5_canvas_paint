@@ -83,7 +83,7 @@ describe('DialogUpload', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(DialogUploadComponent);
         component = fixture.componentInstance;
-        spyOn(component['clientServerComSvc'], 'savePicture').and.returnValue(of());
+        spyOn(component['clientServerComService'], 'savePicture').and.returnValue(of());
         httpMock = TestBed.inject(HttpTestingController);
         fixture.detectChanges();
         processedMessageSpy = spyOn<any>(component, 'processedMessage').and.callThrough();
@@ -123,9 +123,10 @@ describe('DialogUpload', () => {
         expect(component.checkName('a_a_a_a')).toEqual(false);
     });
     it('test checkLabel', () => {
+        expect(component.checkLabel('#aaaa')).toEqual(false);
         expect(component.checkLabel('')).toEqual(false);
         expect(component.checkLabel(' a ')).toEqual(true);
-        expect(component.checkLabel('a')).toEqual(true);
+        expect(component.checkLabel('a')).toEqual(false);
         expect(component.checkLabel('aaaaaaa&')).toEqual(true);
         expect(component.checkLabel('a_a_a_a')).toEqual(false);
     });
@@ -163,7 +164,7 @@ describe('DialogUpload', () => {
     it('refresh is testing', async () => {
         expect(component.dataLabel[0].label).toEqual(labels[0].label);
         const labeltest: Label = { label: 'modif' };
-        spyOn(component['clientServerComSvc'], 'getAllLabel').and.returnValue([labeltest]);
+        spyOn(component['clientServerComService'], 'getAllLabel').and.returnValue([labeltest]);
         component.refresh();
         expect(component.dataLabel[0].label).toEqual(labeltest.label);
     });
@@ -176,8 +177,8 @@ describe('DialogUpload', () => {
         expect(processedMessageSpy).not.toHaveBeenCalled();
     });
     it('', () => {
-        component.saveload = true;
+        component.saveLoad = true;
         component.processedMessage({ title: 'succes', body: 'reussi' });
-        expect(component.saveload).toEqual(false);
+        expect(component.saveLoad).toEqual(false);
     });
 });
