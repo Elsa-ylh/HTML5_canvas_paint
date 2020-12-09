@@ -77,7 +77,7 @@ fdescribe('Service: MagicWand', () => {
         paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizeStub, undoRedoStub, saveStub);
 
         controlMock = new ControlGroup(drawingStub);
-        selectionStub["controlGroup"] = controlMock;
+        selectionStub.controlGroup = controlMock;
 
         // spy for private methods
         selectAllSimilarSpy = spyOn<any>(magicWandService, 'selectAllSimilar').and.callThrough();
@@ -139,7 +139,7 @@ fdescribe('Service: MagicWand', () => {
         const previewCanvas = document.createElement('canvas');
         drawingStub.previewCtx = previewCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawingStub.previewCtx.fillRect(0, 0, 10, 10);
-        magicWandService["controlGroup"] = controlGroup;
+        magicWandService.controlGroup = controlGroup;
         magicWandService.onMouseDown(mouseEventTest);
         expect(isInControlPointSpy).toHaveBeenCalled();
     });
@@ -148,13 +148,13 @@ fdescribe('Service: MagicWand', () => {
         canvasResizeStub.canvasSize = { x: 100, y: 100 } as Vec2;
         const mouseDownPos: Vec2 = { x: 10, y: 15 } as Vec2;
         const spy = spyOn<any>(magicWandService, 'selectedFloodFill');
-        magicWandService['selectedFloodFill'](mouseDownPos.x, mouseDownPos.y, { red: 0, green: 0, blue: 0, alpha: 1 });
+        magicWandService.selectedFloodFill(mouseDownPos.x, mouseDownPos.y, { red: 0, green: 0, blue: 0, alpha: 1 });
         expect(spy).toHaveBeenCalled();
     });
 
     it('should call selectAllSimilar', () => {
         canvasResizeStub.canvasSize = { x: 100, y: 100 } as Vec2;
-        magicWandService['selectAllSimilar'](mouseEventTest.x, mouseEventTest.y, { red: 0, green: 0, blue: 0, alpha: 1 });
+        magicWandService.selectAllSimilar(mouseEventTest.x, mouseEventTest.y, { red: 0, green: 0, blue: 0, alpha: 1 });
         expect(selectAllSimilarSpy).toHaveBeenCalled();
     });
 
@@ -198,7 +198,7 @@ fdescribe('Service: MagicWand', () => {
         const mouseDownPos = { x: 0, y: 0 } as Vec2;
         canvasResizeStub.canvasSize = { x: 150, y: 125 } as Vec2;
         const spy = spyOn<any>(magicWandService, 'selectedFloodFill');
-        magicWandService['selectedFloodFill'](mouseDownPos.x, mouseDownPos.y, { red: 10, green: 10, blue: 10, alpha: 1 } as RGBA);
+        magicWandService.selectedFloodFill(mouseDownPos.x, mouseDownPos.y, { red: 10, green: 10, blue: 10, alpha: 1 } as RGBA);
         expect(spy).toHaveBeenCalled();
     });
 
@@ -209,7 +209,7 @@ fdescribe('Service: MagicWand', () => {
         baseCtxStub.fillRect(100, 100, 0, 0);
         const mouseDownPos = { x: 100, y: 100 } as Vec2;
         const spy = spyOn<any>(magicWandService, 'selectedFloodFill');
-        magicWandService['selectedFloodFill'](mouseDownPos.x, mouseDownPos.y, { red: 10, green: 10, blue: 10, alpha: 1 } as RGBA);
+        magicWandService.selectedFloodFill(mouseDownPos.x, mouseDownPos.y, { red: 10, green: 10, blue: 10, alpha: 1 } as RGBA);
         expect(spy).toHaveBeenCalled();
     });
 
@@ -220,7 +220,7 @@ fdescribe('Service: MagicWand', () => {
         baseCtxStub.fillRect(100, 100, 0, 0);
         const mouseDownPos = { x: 10, y: 10 } as Vec2;
         const spy = spyOn<any>(magicWandService, 'selectedFloodFill');
-        magicWandService['selectedFloodFill'](mouseDownPos.x, mouseDownPos.y, { red: 10, green: 10, blue: 10, alpha: 1 } as RGBA);
+        magicWandService.selectedFloodFill(mouseDownPos.x, mouseDownPos.y, { red: 10, green: 10, blue: 10, alpha: 1 } as RGBA);
         expect(spy).toHaveBeenCalled();
     });
 });

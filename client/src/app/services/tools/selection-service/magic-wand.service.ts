@@ -39,7 +39,6 @@ export class MagicWandService extends SelectionService {
     private readonly COLORATTRIBUTES: number = 4;
     private rightMouseDown: boolean;
     originalColor: RGBA;
-    tolerance: number = 0; // from 0 to 100 inclusively, look at paint bucket component
 
     constructor(
         drawingService: DrawingService,
