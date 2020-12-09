@@ -20,7 +20,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { DialogExportEmailComponent } from './dialog-export-email.component';
 
-describe('DialogExportEmailComponent', () => {
+fdescribe('DialogExportEmailComponent', () => {
     let component: DialogExportEmailComponent;
     let fixture: ComponentFixture<DialogExportEmailComponent>;
 
@@ -73,7 +73,6 @@ describe('DialogExportEmailComponent', () => {
                 ],
                 declarations: [DialogExportEmailComponent],
                 providers: [
-                    HttpClient,
                     {
                         provide: ClientServerCommunicationService,
                         useValue: {
@@ -90,14 +89,14 @@ describe('DialogExportEmailComponent', () => {
                     },
                 ],
             }).compileComponents();
+
+            TestBed.inject(HttpClient);
+
+            fixture = TestBed.createComponent(DialogExportEmailComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
         }),
     );
-
-    beforeEach(() => {
-        fixture = TestBed.createComponent(DialogExportEmailComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
 
     it('should create', () => {
         expect(component).toBeTruthy();
