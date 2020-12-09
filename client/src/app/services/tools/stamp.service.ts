@@ -113,6 +113,8 @@ export class StampService extends Tool {
         this.undoRedoService.addUndo(stampFeather);
         this.undoRedoService.clearRedo();
 
+        console.log(stampFeather);
+
         // if (this.isUndoRedo) {
         //     this.stampToDraw.onload = () => {
         //         this.drawingService.baseCtx.drawImage(this.stampToDraw, this.mouseCenterX, this.mouseCenterY);
