@@ -14,6 +14,7 @@ import { SelectionService } from './selection-service';
 // tslint:disable:no-string-literal
 // tslint:disable:max-file-line-count
 // tslint:disable:no-shadowed-variable
+
 describe('Service: SelectionService', () => {
     let service: SelectionService;
 
@@ -49,7 +50,7 @@ describe('Service: SelectionService', () => {
 
         service = TestBed.inject(SelectionService);
 
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesn't copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasTestHelper.canvas as HTMLCanvasElement;
     });
@@ -349,24 +350,24 @@ describe('Service: SelectionService', () => {
         expect(service['updateSelectionPositions']()).toEqual({ x: 1, y: 1 });
     });
 
-    it(' isInsideSelection should check if the mouse coords parameter are in the selection bounds ', () => {
+    it(' isInsideSelectionCoords should check if the mouse coords parameter are in the selection bounds ', () => {
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
         service.selection.width = 10;
         service.selection.height = 10;
 
-        expect(service['isInsideSelection']({ x: 5, y: 5 })).toEqual(true);
+        expect(service['isInsideSelectionCoords']({ x: 5, y: 5 })).toEqual(true);
     });
 
-    it(' isInsideSelection should check if the mouse coords parameter are in the selection bounds ', () => {
+    it(' isInsideSelectionCoords should check if the mouse coords parameter are in the selection bounds ', () => {
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
         service.selection.width = 10;
         service.selection.height = 10;
 
-        expect(service['isInsideSelection']({ x: 15, y: 15 })).toEqual(false);
+        expect(service['isInsideSelectionCoords']({ x: 15, y: 15 })).toEqual(false);
     });
 
     it(' onLeftArrow should call the on arrowDown function of the left arrow ', () => {
@@ -458,7 +459,7 @@ describe('Service: SelectionService', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.copyImageInitialPos = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service.selection.imageSize = { x: 10, y: 10 };
@@ -495,7 +496,7 @@ describe('Service: SelectionService', () => {
         service['clipboard'].imagePosition = { x: 1, y: 1 };
         service['clipboard'].start = { x: 1, y: 1 };
         service['clipboard'].end = { x: 11, y: 11 };
-        service['clipboard'].ellipseRad = { x: 5, y: 5 };
+        service['clipboard'].ellipseRadian = { x: 5, y: 5 };
         service['clipboard'].width = 10;
         service['clipboard'].height = 10;
         service['clipboard'].imageSize = { x: 10, y: 10 };
@@ -510,7 +511,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (top)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = false;
@@ -518,7 +519,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 5, y: 4 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 5, y: 4 });
         expect(service.selection.imagePosition).toEqual({ x: 1, y: 3 });
         expect(service.selection.endingPos).toEqual({ x: 11, y: 11 });
         expect(service.selection.width).toEqual(10);
@@ -528,7 +529,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (bottom)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = false;
@@ -536,7 +537,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 5, y: 6 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 5, y: 6 });
         expect(service.selection.imagePosition).toEqual({ x: 1, y: 1 });
         expect(service.selection.endingPos).toEqual({ x: 11, y: 13 });
         expect(service.selection.width).toEqual(10);
@@ -546,7 +547,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (left)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = false;
@@ -554,7 +555,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 4, y: 5 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 4, y: 5 });
         expect(service.selection.imagePosition).toEqual({ x: 3, y: 1 });
         expect(service.selection.endingPos).toEqual({ x: 11, y: 11 });
         expect(service.selection.width).toEqual(8);
@@ -564,7 +565,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (right)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = false;
@@ -572,7 +573,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 6, y: 5 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 6, y: 5 });
         expect(service.selection.imagePosition).toEqual({ x: 1, y: 1 });
         expect(service.selection.endingPos).toEqual({ x: 13, y: 11 });
         expect(service.selection.width).toEqual(12);
@@ -582,7 +583,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (top left)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = false;
@@ -590,7 +591,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 4, y: 4 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 4, y: 4 });
         expect(service.selection.imagePosition).toEqual({ x: 3, y: 3 });
         expect(service.selection.endingPos).toEqual({ x: 11, y: 11 });
         expect(service.selection.width).toEqual(8);
@@ -600,7 +601,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (top right)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = false;
@@ -608,7 +609,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 6, y: 4 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 6, y: 4 });
         expect(service.selection.imagePosition).toEqual({ x: 1, y: 3 });
         expect(service.selection.endingPos).toEqual({ x: 13, y: 11 });
         expect(service.selection.width).toEqual(12);
@@ -618,7 +619,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (bottom right)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = false;
@@ -626,7 +627,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 4, y: 6 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 4, y: 6 });
         expect(service.selection.imagePosition).toEqual({ x: 3, y: 1 });
         expect(service.selection.endingPos).toEqual({ x: 11, y: 13 });
         expect(service.selection.width).toEqual(8);
@@ -636,7 +637,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (bottom left)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = false;
@@ -644,7 +645,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 6, y: 6 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 6, y: 6 });
         expect(service.selection.imagePosition).toEqual({ x: 1, y: 1 });
         expect(service.selection.endingPos).toEqual({ x: 13, y: 13 });
         expect(service.selection.width).toEqual(12);
@@ -654,7 +655,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (top + shift)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = true;
@@ -662,7 +663,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 5, y: 3 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 5, y: 3 });
         expect(service.selection.imagePosition).toEqual({ x: 1, y: 3 });
         expect(service.selection.endingPos).toEqual({ x: 11, y: 9 });
         expect(service.selection.width).toEqual(10);
@@ -672,7 +673,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (bottom + shift)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = true;
@@ -680,7 +681,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 5, y: 7 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 5, y: 7 });
         expect(service.selection.imagePosition).toEqual({ x: 1, y: -1 });
         expect(service.selection.endingPos).toEqual({ x: 11, y: 13 });
         expect(service.selection.width).toEqual(10);
@@ -690,7 +691,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (left + shift)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = true;
@@ -698,7 +699,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 3, y: 5 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 3, y: 5 });
         expect(service.selection.imagePosition).toEqual({ x: 3, y: 1 });
         expect(service.selection.endingPos).toEqual({ x: 9, y: 11 });
         expect(service.selection.width).toEqual(6);
@@ -708,7 +709,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (right + shift)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = true;
@@ -716,7 +717,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 7, y: 5 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 7, y: 5 });
         expect(service.selection.imagePosition).toEqual({ x: -1, y: 1 });
         expect(service.selection.endingPos).toEqual({ x: 13, y: 11 });
         expect(service.selection.width).toEqual(14);
@@ -726,7 +727,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (top left + shift)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = true;
@@ -734,7 +735,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 3, y: 3 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 3, y: 3 });
         expect(service.selection.imagePosition).toEqual({ x: 3, y: 3 });
         expect(service.selection.endingPos).toEqual({ x: 9, y: 9 });
         expect(service.selection.width).toEqual(6);
@@ -744,7 +745,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (top right + shift)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = true;
@@ -752,7 +753,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 7, y: 3 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 7, y: 3 });
         expect(service.selection.imagePosition).toEqual({ x: -1, y: 3 });
         expect(service.selection.endingPos).toEqual({ x: 13, y: 9 });
         expect(service.selection.width).toEqual(14);
@@ -762,7 +763,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (bottom right + shift)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = true;
@@ -770,7 +771,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 7, y: 7 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 7, y: 7 });
         expect(service.selection.imagePosition).toEqual({ x: -1, y: -1 });
         expect(service.selection.endingPos).toEqual({ x: 13, y: 13 });
         expect(service.selection.width).toEqual(14);
@@ -780,7 +781,7 @@ describe('Service: SelectionService', () => {
     it(' scaleSelection should update a selection according to the control point selected and if shift is pressed (bottom left + shift)', () => {
         service.selection.imagePosition = { x: 1, y: 1 };
         service.selection.endingPos = { x: 11, y: 11 };
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
         service.selection.width = 10;
         service.selection.height = 10;
         service['shiftPressed'] = true;
@@ -788,7 +789,7 @@ describe('Service: SelectionService', () => {
 
         service['scaleSelection']({ x: 2, y: 2 });
 
-        expect(service.selection.ellipseRad).toEqual({ x: 3, y: 7 });
+        expect(service.selection.ellipseRadian).toEqual({ x: 3, y: 7 });
         expect(service.selection.imagePosition).toEqual({ x: 3, y: -1 });
         expect(service.selection.endingPos).toEqual({ x: 9, y: 13 });
         expect(service.selection.width).toEqual(6);

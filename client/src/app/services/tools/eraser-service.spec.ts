@@ -36,7 +36,7 @@ describe('EraserService', () => {
         service = TestBed.inject(EraserService);
         removeLineSpy = spyOn<any>(service, 'removeLine').and.callThrough();
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
@@ -55,7 +55,7 @@ describe('EraserService', () => {
         expect(serviceEr).toBeTruthy();
     }));
 
-    it(' mouseDown should set mouseDownCoord to correct position', () => {
+    it(' mouseDown should set mouseDownCoords to correct position', () => {
         const expectedResult: Vec2 = { x: 10, y: 25 };
         service.onMouseDown(mouseEvent);
         expect(service.mouseDownCoords).toEqual(expectedResult);

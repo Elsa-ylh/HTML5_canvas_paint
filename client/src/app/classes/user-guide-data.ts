@@ -1,7 +1,7 @@
 import { UserGuide } from './interface-guide';
 
 export const dataUserGuide: UserGuide[] = [
-    // Divers
+    // 'Divers' section
 
     {
         title: 'Créer ou continuer dessin',
@@ -36,7 +36,7 @@ export const dataUserGuide: UserGuide[] = [
         screenshotPath: 'assets/user_guide/exportation.png',
     },
 
-    // Dessiner
+    // 'Dessiner' section
 
     {
         title: 'Outils',
@@ -173,6 +173,8 @@ export const dataUserGuide: UserGuide[] = [
         gifPath: '',
         screenshotPath: '',
     },
+
+    // keyboard shortcuts
     {
         title: 'Aide - Raccourcis clavier',
         isTool: 'Raccourcis clavier',

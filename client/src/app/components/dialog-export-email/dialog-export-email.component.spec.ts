@@ -121,7 +121,7 @@ describe('DialogExportEmailComponent', () => {
 
     it('should check as in onClickButton to a grayscale filter', () => {
         component.checkSecond();
-        expect(component['whichFilter']).toEqual(Filter.GRAYSCALE);
+        expect(component['whichFilter']).toEqual(Filter.GRAY_SCALE);
     });
 
     it('should check as in onClickButton to a invert filter', () => {
@@ -187,7 +187,7 @@ describe('DialogExportEmailComponent', () => {
 
     it('should export to an email with a JPG grayscale filter', () => {
         component['whichExportType'] = ImageFormat.JPG;
-        component['whichFilter'] = Filter.GRAYSCALE;
+        component['whichFilter'] = Filter.GRAY_SCALE;
         component.nameFormControl.setValue('god');
         component.emailFormControl.setValue('heaven@satan.com');
         const spy = spyOn(component, 'exportToEmail').and.callThrough();

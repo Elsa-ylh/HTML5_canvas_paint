@@ -8,7 +8,7 @@ export class SelectionImage {
         this.height = 0;
         this.imageSize = { x: 0, y: 0 };
         this.endingPos = { x: 0, y: 0 };
-        this.ellipseRad = { x: 0, y: 0 };
+        this.ellipseRadian = { x: 0, y: 0 };
         this.drawingService = drawingService;
         this.rotationAngle = 0;
     }
@@ -21,7 +21,7 @@ export class SelectionImage {
     imageSize: Vec2;
     height: number;
     width: number;
-    ellipseRad: Vec2;
+    ellipseRadian: Vec2;
     rotationAngle: number;
 
     getImage(size: Vec2): void {

@@ -15,6 +15,7 @@ export interface LastColor {
 export const COLORS_HISTORY_SIZE = 10;
 const SLIDER_STOPPER_RECT_WIDTH = 2;
 const SLIDER_STOPPER_RECT_HEIGHT = 20;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -49,7 +50,7 @@ export class ColorService {
     // https://malcoded.com/posts/angular-color-picker/
     // I copied the gradient made at that position
     private rainbowGradient(gradient: CanvasGradient): void {
-        // fractions make more sense to do seperation between colors
+        // fractions make more sense to do separation between colors
         gradient.addColorStop(0, 'rgba(255, 0, 0, 1)');
         // tslint:disable-next-line: no-magic-numbers
         gradient.addColorStop(1 / 6, 'rgba(255, 255, 0, 1)');
@@ -66,16 +67,16 @@ export class ColorService {
 
     // This one is completely my creation
     private lightToDark(gradient: CanvasGradient, hexColor: string): void {
-        // fractions make more sense to do seperation between colors
+        // fractions make more sense to do separation between colors
         gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
         // tslint:disable-next-line: no-magic-numbers
         gradient.addColorStop(1 / 2, hexColor);
         // tslint:disable-next-line: no-magic-numbers
         gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
     }
-    // This gradient is used for the opacity. Made by tria
+    // This gradient is used for the opacity.
     private colorToColor(gradient: CanvasGradient, hexColor: string): void {
-        // fractions make more sense to do seperation between colors
+        // fractions make more sense to do separation between colors
         gradient.addColorStop(1, 'rgba(255, 255, 255, 1)');
         // tslint:disable-next-line: no-magic-numbers
         gradient.addColorStop(1 / 2, hexColor);
@@ -87,6 +88,7 @@ export class ColorService {
     // is some form of paraphrasing and recoding to make it adapted to our use cases.
     // https://malcoded.com/posts/angular-color-picker/
     // Drawing a rainbow-gradient
+
     drawPalette(ctx: CanvasRenderingContext2D, dimension: Vec2, style: GradientStyle): void {
         ctx.clearRect(0, 0, dimension.x, dimension.y);
         let gradient;

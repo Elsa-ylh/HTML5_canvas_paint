@@ -7,7 +7,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { RotationService } from '@app/services/tools/selection-service/rotation.service';
-import { LINEWIDTH, SelectionService } from '@app/services/tools/selection-service/selection-service';
+import { LINE_WIDTH, SelectionService } from '@app/services/tools/selection-service/selection-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Injectable({
@@ -25,7 +25,7 @@ export class SelectionRectangleService extends SelectionService {
 
     onMouseDown(event: MouseEvent): void {
         this.clearEffectTool();
-        this.drawingService.previewCtx.lineWidth = LINEWIDTH;
+        this.drawingService.previewCtx.lineWidth = LINE_WIDTH;
         this.drawingService.previewCtx.strokeStyle = 'black';
         this.drawingService.previewCtx.fillStyle = 'black';
 
@@ -37,7 +37,7 @@ export class SelectionRectangleService extends SelectionService {
 
             // check if mouse is inside selection
             if (this.selection.imagePosition && this.selection.endingPos) {
-                this.inSelection = this.isInsideSelection(this.mouseDownCoords);
+                this.inSelection = this.isInsideSelectionCoords(this.mouseDownCoords);
             }
 
             // check if mouse is inside a control point
@@ -45,11 +45,11 @@ export class SelectionRectangleService extends SelectionService {
                 this.controlPointName = this.controlGroup.isInControlPoint(this.mouseDownCoords);
             }
 
-            // for drawing preview
+            // to draw preview
             if (this.drawingService.isPreviewCanvasBlank()) {
                 this.selection.imagePosition = this.mouseDownCoords;
 
-                // for  pasting selection
+                // to  paste selection
             } else if (!this.inSelection && !this.drawingService.isPreviewCanvasBlank() && this.controlPointName === ControlPointName.none) {
                 // paste image
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);

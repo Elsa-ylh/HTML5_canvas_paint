@@ -10,7 +10,7 @@ import { ResizeDirection } from '@app/classes/resize-direction';
 import { ToolUsed } from '@app/classes/tool';
 import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolService } from '@app/services/tool-service';
@@ -25,18 +25,18 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
     constructor(
         private drawingService: DrawingService,
         public toolService: ToolService,
-        public cvsResizerService: CanvasResizerService,
+        public canvasResizeService: CanvasResizeService,
         public colorService: ColorService,
         public undoRedoService: UndoRedoService,
         private automaticSaveService: AutomaticSaveService,
     ) {}
 
     get width(): number {
-        return this.cvsResizerService.canvasSize.x;
+        return this.canvasResizeService.canvasSize.x;
     }
 
     get height(): number {
-        return this.cvsResizerService.canvasSize.y;
+        return this.canvasResizeService.canvasSize.y;
     }
 
     get cursorUsed(): string {
@@ -81,13 +81,13 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
         this.cursorCtx = this.cursorCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.cursorCtx = this.cursorCtx;
         this.setCanvasBackgroundColor();
-        const event = { offsetX: this.cvsResizerService.DEFAULT_WIDTH, offsetY: this.cvsResizerService.DEFAULT_HEIGHT } as MouseEvent;
+        const event = { offsetX: this.canvasResizeService.DEFAULT_WIDTH, offsetY: this.canvasResizeService.DEFAULT_HEIGHT } as MouseEvent;
         this.undoRedoService.defaultCanvasAction = new ResizeCanvasAction(
             event,
             this.resizeCtx,
             this.baseCanvas.nativeElement,
             ResizeDirection.verticalAndHorizontal,
-            this.cvsResizerService,
+            this.canvasResizeService,
         );
     }
 
@@ -119,79 +119,79 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
 
     onResizeDown(event: MouseEvent): void {
         const isVertical =
-            this.cvsResizerService.canvasSize.y < event.offsetY &&
-            event.offsetY < this.cvsResizerService.canvasSize.y + RESIZE_HOOK_THICKNESS &&
-            this.cvsResizerService.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetX &&
-            event.offsetX < this.cvsResizerService.canvasSize.x * RESIZE_MIDDLE_UPPER_PROPORTION;
+            this.canvasResizeService.canvasSize.y < event.offsetY &&
+            event.offsetY < this.canvasResizeService.canvasSize.y + RESIZE_HOOK_THICKNESS &&
+            this.canvasResizeService.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetX &&
+            event.offsetX < this.canvasResizeService.canvasSize.x * RESIZE_MIDDLE_UPPER_PROPORTION;
         const isHorizontal =
-            this.cvsResizerService.canvasSize.x < event.offsetX &&
-            event.offsetX < this.cvsResizerService.canvasSize.x + RESIZE_HOOK_THICKNESS &&
-            this.cvsResizerService.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetY &&
-            event.offsetY < this.cvsResizerService.canvasSize.y * RESIZE_MIDDLE_UPPER_PROPORTION;
+            this.canvasResizeService.canvasSize.x < event.offsetX &&
+            event.offsetX < this.canvasResizeService.canvasSize.x + RESIZE_HOOK_THICKNESS &&
+            this.canvasResizeService.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetY &&
+            event.offsetY < this.canvasResizeService.canvasSize.y * RESIZE_MIDDLE_UPPER_PROPORTION;
         const isVerticalAndHorizontal =
-            this.cvsResizerService.canvasSize.y * RESIZE_CORNER_PROPORTION < event.offsetY &&
-            event.offsetY < this.cvsResizerService.canvasSize.y + RESIZE_HOOK_THICKNESS &&
-            this.cvsResizerService.canvasSize.x * RESIZE_CORNER_PROPORTION < event.offsetX &&
-            event.offsetX < this.cvsResizerService.canvasSize.x + RESIZE_HOOK_THICKNESS;
+            this.canvasResizeService.canvasSize.y * RESIZE_CORNER_PROPORTION < event.offsetY &&
+            event.offsetY < this.canvasResizeService.canvasSize.y + RESIZE_HOOK_THICKNESS &&
+            this.canvasResizeService.canvasSize.x * RESIZE_CORNER_PROPORTION < event.offsetX &&
+            event.offsetX < this.canvasResizeService.canvasSize.x + RESIZE_HOOK_THICKNESS;
 
         if (isVerticalAndHorizontal) {
-            this.cvsResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
-            this.cvsResizerService.onResizeDown(event, ResizeDirection.verticalAndHorizontal);
+            this.canvasResizeService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
+            this.canvasResizeService.onResizeDown(event, ResizeDirection.verticalAndHorizontal);
             return;
         }
         if (isVertical) {
-            this.cvsResizerService.resizeCursor = cursorName.resizeVertical;
-            this.cvsResizerService.onResizeDown(event, ResizeDirection.vertical);
+            this.canvasResizeService.resizeCursor = cursorName.resizeVertical;
+            this.canvasResizeService.onResizeDown(event, ResizeDirection.vertical);
             return;
         }
         if (isHorizontal) {
-            this.cvsResizerService.resizeCursor = cursorName.resizeHorizontal;
-            this.cvsResizerService.onResizeDown(event, ResizeDirection.horizontal);
+            this.canvasResizeService.resizeCursor = cursorName.resizeHorizontal;
+            this.canvasResizeService.onResizeDown(event, ResizeDirection.horizontal);
             return;
         }
     }
 
     onResizeMove(event: MouseEvent): void {
-        if (this.cvsResizerService.isResizeDown) {
-            this.cvsResizerService.onResize(event, this.resizeCtx);
+        if (this.canvasResizeService.isResizeDown) {
+            this.canvasResizeService.onResize(event, this.resizeCtx);
         }
 
         const isVertical =
-            this.cvsResizerService.canvasSize.y < event.offsetY &&
-            event.offsetY < this.cvsResizerService.canvasSize.y + RESIZE_HOOK_THICKNESS &&
-            this.cvsResizerService.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetX &&
-            event.offsetX < this.cvsResizerService.canvasSize.x * RESIZE_MIDDLE_UPPER_PROPORTION;
+            this.canvasResizeService.canvasSize.y < event.offsetY &&
+            event.offsetY < this.canvasResizeService.canvasSize.y + RESIZE_HOOK_THICKNESS &&
+            this.canvasResizeService.canvasSize.x * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetX &&
+            event.offsetX < this.canvasResizeService.canvasSize.x * RESIZE_MIDDLE_UPPER_PROPORTION;
         const isHorizontal =
-            this.cvsResizerService.canvasSize.x < event.offsetX &&
-            event.offsetX < this.cvsResizerService.canvasSize.x + RESIZE_HOOK_THICKNESS &&
-            this.cvsResizerService.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetY &&
-            event.offsetY < this.cvsResizerService.canvasSize.y * RESIZE_MIDDLE_UPPER_PROPORTION;
+            this.canvasResizeService.canvasSize.x < event.offsetX &&
+            event.offsetX < this.canvasResizeService.canvasSize.x + RESIZE_HOOK_THICKNESS &&
+            this.canvasResizeService.canvasSize.y * RESIZE_MIDDLE_LOWER_PROPORTION < event.offsetY &&
+            event.offsetY < this.canvasResizeService.canvasSize.y * RESIZE_MIDDLE_UPPER_PROPORTION;
         const isVerticalAndHorizontal =
-            this.cvsResizerService.canvasSize.y * RESIZE_CORNER_PROPORTION < event.offsetY &&
-            event.offsetY < this.cvsResizerService.canvasSize.y + RESIZE_HOOK_THICKNESS &&
-            this.cvsResizerService.canvasSize.x * RESIZE_CORNER_PROPORTION < event.offsetX &&
-            event.offsetX < this.cvsResizerService.canvasSize.x + RESIZE_HOOK_THICKNESS;
+            this.canvasResizeService.canvasSize.y * RESIZE_CORNER_PROPORTION < event.offsetY &&
+            event.offsetY < this.canvasResizeService.canvasSize.y + RESIZE_HOOK_THICKNESS &&
+            this.canvasResizeService.canvasSize.x * RESIZE_CORNER_PROPORTION < event.offsetX &&
+            event.offsetX < this.canvasResizeService.canvasSize.x + RESIZE_HOOK_THICKNESS;
 
         if (isVerticalAndHorizontal) {
-            this.cvsResizerService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
+            this.canvasResizeService.resizeCursor = cursorName.resizeVerticalAndHorizontal;
             return;
         }
         if (isVertical) {
-            this.cvsResizerService.resizeCursor = cursorName.resizeVertical;
+            this.canvasResizeService.resizeCursor = cursorName.resizeVertical;
             return;
         }
         if (isHorizontal) {
-            this.cvsResizerService.resizeCursor = cursorName.resizeHorizontal;
+            this.canvasResizeService.resizeCursor = cursorName.resizeHorizontal;
             return;
         }
     }
 
     onResizeUp(event: MouseEvent): void {
-        this.cvsResizerService.onResizeUp(event, this.resizeCtx, this.baseCanvas.nativeElement);
+        this.canvasResizeService.onResizeUp(event, this.resizeCtx, this.baseCanvas.nativeElement);
     }
 
     onResizeOut(event: MouseEvent): void {
-        this.cvsResizerService.onResizeOut(event, this.resizeCtx, this.baseCanvas.nativeElement);
+        this.canvasResizeService.onResizeOut(event, this.resizeCtx, this.baseCanvas.nativeElement);
     }
 
     onMouseOverMainCanvas(event: MouseEvent): void {

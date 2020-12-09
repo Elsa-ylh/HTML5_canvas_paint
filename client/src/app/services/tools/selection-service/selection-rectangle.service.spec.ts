@@ -3,7 +3,6 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ControlGroup } from '@app/classes/control-group';
 import { ControlPointName } from '@app/classes/control-points';
 import { MouseButton } from '@app/classes/mouse-button';
-// import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
@@ -16,6 +15,7 @@ import { Subscription } from 'rxjs';
 // tslint:disable:no-magic-numbers
 // tslint:disable:no-string-literal
 // tslint:disable:prefer-const
+
 describe('Service: SelectionRectangle', () => {
     let service: SelectionRectangleService;
 
@@ -30,7 +30,6 @@ describe('Service: SelectionRectangle', () => {
     let rotationStub: RotationService;
     let undoStub: UndoRedoService;
     let gridStub: GridService;
-    // let canvasResizeStub: CanvasResizerService;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -78,7 +77,7 @@ describe('Service: SelectionRectangle', () => {
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         pasteSelectionSpy = spyOn<any>(service, 'pasteSelection');
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 10, y: 10 });
-        spyOn<any>(service, 'isInsideSelection').and.returnValue(false);
+        spyOn<any>(service, 'isInsideSelectionCoords').and.returnValue(false);
 
         service['controlGroup'] = new ControlGroup(drawServiceSpy);
         spyOn<any>(service['controlGroup'], 'isInControlPoint').and.returnValue(ControlPointName.none);

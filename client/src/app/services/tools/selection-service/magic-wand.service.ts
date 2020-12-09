@@ -5,13 +5,10 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
 import { SelectionImage } from '@app/classes/selection';
 import { SelectionWandAction } from '@app/classes/undo-redo/selection-wand-action';
-// import { PaintBucketAction } from '@app/classes/undo-redo/paint-bucket-action';
 import { Vec2 } from '@app/classes/vec2';
-// import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism.service';
-// import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -43,7 +40,7 @@ export class MagicWandService extends SelectionService {
 
     constructor(
         drawingService: DrawingService,
-        private canvasResizerService: CanvasResizerService,
+        private canvasResizeService: CanvasResizeService,
         private paintBucketService: PaintBucketService,
         protected magnetismService: MagnetismService,
         protected undoRedoService: UndoRedoService,
@@ -59,10 +56,10 @@ export class MagicWandService extends SelectionService {
         const pixels: ImageData = this.drawingService.baseCtx.getImageData(
             0,
             0,
-            this.canvasResizerService.canvasSize.x,
-            this.canvasResizerService.canvasSize.y,
+            this.canvasResizeService.canvasSize.x,
+            this.canvasResizeService.canvasSize.y,
         );
-        let linearCords: number = (y * this.canvasResizerService.canvasSize.x + x) * this.COLORATTRIBUTES;
+        let linearCords: number = (y * this.canvasResizeService.canvasSize.x + x) * this.COLORATTRIBUTES;
         const originalColor = {
             red: pixels.data[linearCords],
             green: pixels.data[linearCords + 1],
@@ -77,7 +74,7 @@ export class MagicWandService extends SelectionService {
             x = newPixel.x;
             y = newPixel.y;
 
-            linearCords = (y * this.canvasResizerService.canvasSize.x + x) * this.COLORATTRIBUTES;
+            linearCords = (y * this.canvasResizeService.canvasSize.x + x) * this.COLORATTRIBUTES;
             while (
                 y-- >= 0 &&
                 pixels.data[linearCords] === originalColor.red &&
@@ -87,15 +84,15 @@ export class MagicWandService extends SelectionService {
                 // tslint:disable-next-line:no-magic-numbers
                 pixels.data[linearCords + 3] === originalColor.alpha
             ) {
-                linearCords -= this.canvasResizerService.canvasSize.x * this.COLORATTRIBUTES;
+                linearCords -= this.canvasResizeService.canvasSize.x * this.COLORATTRIBUTES;
             }
-            linearCords += this.canvasResizerService.canvasSize.x * this.COLORATTRIBUTES;
+            linearCords += this.canvasResizeService.canvasSize.x * this.COLORATTRIBUTES;
             y++;
 
             let reachedLeft = false;
             let reachedRight = false;
             while (
-                y++ < this.canvasResizerService.canvasSize.y &&
+                y++ < this.canvasResizeService.canvasSize.y &&
                 pixels.data[linearCords] === originalColor.red &&
                 pixels.data[linearCords + 1] === originalColor.green &&
                 pixels.data[linearCords + 2] === originalColor.blue &&
@@ -128,7 +125,7 @@ export class MagicWandService extends SelectionService {
                     }
                 }
 
-                if (x < this.canvasResizerService.canvasSize.x - 1) {
+                if (x < this.canvasResizeService.canvasSize.x - 1) {
                     if (
                         pixels.data[linearCords + this.COLORATTRIBUTES] === originalColor.red &&
                         pixels.data[linearCords + this.COLORATTRIBUTES + 1] === originalColor.green &&
@@ -145,7 +142,7 @@ export class MagicWandService extends SelectionService {
                         }
                     }
 
-                    linearCords += this.canvasResizerService.canvasSize.x * this.COLORATTRIBUTES;
+                    linearCords += this.canvasResizeService.canvasSize.x * this.COLORATTRIBUTES;
                 }
             }
         }
@@ -156,10 +153,10 @@ export class MagicWandService extends SelectionService {
         const pixels: ImageData = this.drawingService.baseCtx.getImageData(
             0,
             0,
-            this.canvasResizerService.canvasSize.x,
-            this.canvasResizerService.canvasSize.y,
+            this.canvasResizeService.canvasSize.x,
+            this.canvasResizeService.canvasSize.y,
         );
-        const linearCords: number = (y * this.canvasResizerService.canvasSize.x + x) * this.COLORATTRIBUTES;
+        const linearCords: number = (y * this.canvasResizeService.canvasSize.x + x) * this.COLORATTRIBUTES;
         const originalColor = {
             red: pixels.data[linearCords],
             green: pixels.data[linearCords + 1],
@@ -198,10 +195,10 @@ export class MagicWandService extends SelectionService {
         const originalLayer: ImageData = this.drawingService.baseCtx.getImageData(
             0,
             0,
-            this.canvasResizerService.canvasSize.x,
-            this.canvasResizerService.canvasSize.y,
+            this.canvasResizeService.canvasSize.x,
+            this.canvasResizeService.canvasSize.y,
         );
-        const previewLayer = new ImageData(this.canvasResizerService.canvasSize.x, this.canvasResizerService.canvasSize.y);
+        const previewLayer = new ImageData(this.canvasResizeService.canvasSize.x, this.canvasResizeService.canvasSize.y);
         for (let i = 0; i < size; ++i) {
             if (
                 coloredPixels.data[i * this.COLORATTRIBUTES] === this.replacementColor.red &&
@@ -328,7 +325,7 @@ export class MagicWandService extends SelectionService {
             this.previousMousePos = this.getPositionFromMouse(event);
             // check if mouse is inside selection
             if (this.selection.imagePosition && this.selection.endingPos && !this.drawingService.isPreviewCanvasBlank()) {
-                this.inSelection = this.isInsideSelection(this.mouseDownCoords);
+                this.inSelection = this.isInsideSelectionCoords(this.mouseDownCoords);
             }
 
             // check if mouse is inside a control point

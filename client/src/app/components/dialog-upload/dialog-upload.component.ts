@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
+
 const MAX_CHARACTER = 64;
+
 @Component({
     selector: 'app-dialog-upload',
     templateUrl: './dialog-upload.component.html',
@@ -20,16 +22,18 @@ export class DialogUploadComponent implements OnInit {
 
     constructor(
         private clientServerComService: ClientServerCommunicationService,
-        private canvasResizerService: CanvasResizerService,
+        private canvasResizeService: CanvasResizeService,
         private drawingService: DrawingService,
     ) {}
+
     ngOnInit(): void {
         this.addAllLabels();
     }
+
     private addAllLabels(): void {
         this.dataLabel = this.clientServerComService.getAllLabels();
     }
-    selectionLabel(label: string): void {
+    isLabelExisting(label: string): void {
         let itList = true;
         for (let index = 0; index < this.labelSelect.length; index++) {
             if (this.labelSelect[index] === label) {
@@ -72,8 +76,8 @@ export class DialogUploadComponent implements OnInit {
             const savePicture: CanvasInformation = {
                 _id: '',
                 date: new Date(),
-                height: this.canvasResizerService.canvasSize.y,
-                width: this.canvasResizerService.canvasSize.x,
+                height: this.canvasResizeService.canvasSize.y,
+                width: this.canvasResizeService.canvasSize.x,
                 labels: labelName,
                 name: this.textName,
                 picture: this.drawingService.convertBaseCanvasToBase64(),

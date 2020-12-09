@@ -36,7 +36,7 @@ export class StampService extends Tool {
 
     angle: number = 0; // angle of the image
 
-    isWheelUp: boolean = true; // add or substract
+    isWheelUp: boolean = true; // add or subtract
     isAltPressed: boolean = false;
 
     constructor(drawingService: DrawingService) {

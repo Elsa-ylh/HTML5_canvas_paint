@@ -69,7 +69,6 @@ export class ToolService {
         // change color
         if (this.currentToolName === ToolUsed.Text && toolUsed !== ToolUsed.Text) {
             this.textService.drawText();
-            // this.textService.clearPreviewCtx();
         }
         // same for grid, we just want to show the ui modifier
         if (toolUsed !== ToolUsed.Color && toolUsed !== ToolUsed.Grid) {

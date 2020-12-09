@@ -3,7 +3,7 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { FeatherAction } from '@app/classes/undo-redo/feather-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { FeatherService } from '@app/services/tools/feather.service';
@@ -17,7 +17,7 @@ describe('FeatherAction', () => {
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
     let featherStub: FeatherService;
-    let canvasResizerStub: CanvasResizerService;
+    let canvasResizeStub: CanvasResizeService;
     let autoSaveStub: AutomaticSaveService;
     let gridStub: GridService;
 
@@ -43,8 +43,8 @@ describe('FeatherAction', () => {
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         gridStub = new GridService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
+        canvasResizeStub = new CanvasResizeService(gridStub, undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizeStub, drawingStub, undoRedoStub);
         featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
         featherActionStub = new FeatherAction(changes, angle, length, primaryColor, drawingStub, featherStub);
 
@@ -78,7 +78,6 @@ describe('FeatherAction', () => {
         drawingStub.baseCtx.strokeStyle = drawingStub.previewCtx.strokeStyle = '#000000';
         featherActionStub.apply();
         expect(drawingStub.baseCtx.strokeStyle).toEqual(primaryColor);
-        // expect(drawingStub.baseCtx.lineJoin).toEqual('round');
     });
 
     it('should call drawFeather', () => {

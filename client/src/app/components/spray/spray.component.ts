@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SprayService } from '@app/services/tools/spray.service';
 
-/* tslint:disable:no-empty */
+// tslint:disable:no-empty
 
 @Component({
     selector: 'app-spray',

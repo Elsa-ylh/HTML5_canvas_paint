@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
@@ -13,7 +13,7 @@ describe('loadAction', () => {
     let drawingStub: DrawingService;
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
-    let resizeStub: CanvasResizerService;
+    let resizeStub: CanvasResizeService;
     let gridStub: GridService;
 
     let height: number;
@@ -36,19 +36,15 @@ describe('loadAction', () => {
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         gridStub = new GridService(drawingStub);
-        resizeStub = new CanvasResizerService(gridStub, undoRedoStub);
+        resizeStub = new CanvasResizeService(gridStub, undoRedoStub);
 
         loadActionStub = new LoadAction(pictureImage, height, width, drawingStub, resizeStub);
 
         canvas = canvasTestHelper.canvas;
-        // tslint:disable:no-magic-numbers
         canvas.width = 100;
-        // tslint:disable:no-magic-numbers
         canvas.height = 100;
-
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-
         drawingStub.canvas = canvas;
         drawingStub.baseCtx = baseStub;
         drawingStub.previewCtx = previewStub;
@@ -58,12 +54,12 @@ describe('loadAction', () => {
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ColorService, useValue: colorStub },
                 { provide: UndoRedoService, useValue: undoRedoStub },
-                { provide: CanvasResizerService, useValue: resizeStub },
+                { provide: CanvasResizeService, useValue: resizeStub },
                 { provide: LoadAction, useValue: loadActionStub },
             ],
         });
         loadActionStub = TestBed.inject(LoadAction);
-        resizeStub = TestBed.inject(CanvasResizerService);
+        resizeStub = TestBed.inject(CanvasResizeService);
         drawingStub = TestBed.inject(DrawingService);
     });
 

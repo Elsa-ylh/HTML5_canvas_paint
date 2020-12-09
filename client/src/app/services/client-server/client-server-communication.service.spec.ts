@@ -3,7 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { ClientServerCommunicationService } from './client-server-communication.service';
+
 // tslint:disable: no-string-literal
+
 describe('ClientServerCommunicationService', () => {
     let service: ClientServerCommunicationService;
     let httpMock: HttpTestingController;

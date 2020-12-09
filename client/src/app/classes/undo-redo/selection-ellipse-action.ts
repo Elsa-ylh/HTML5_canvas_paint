@@ -12,7 +12,7 @@ export class SelectionEllipseAction extends AbsUndoRedo {
         this.selection.imagePosition = { x: selection.imagePosition.x, y: selection.imagePosition.y };
         this.selection.endingPos = { x: selection.endingPos.x, y: selection.endingPos.y };
         this.selection.imageSize = { x: selection.imageSize.x, y: selection.imageSize.y };
-        this.selection.ellipseRad = { x: selection.ellipseRad.x, y: selection.ellipseRad.y };
+        this.selection.ellipseRadian = { x: selection.ellipseRadian.x, y: selection.ellipseRadian.y };
         this.selection.width = selection.width;
         this.selection.height = selection.height;
         this.selection.imageData = selection.imageData;
@@ -27,7 +27,7 @@ export class SelectionEllipseAction extends AbsUndoRedo {
         this.selectionService.selection.copyImageInitialPos = this.selection.copyImageInitialPos;
         this.selectionService.selection.imagePosition = this.selection.imagePosition;
         this.selectionService.selection.rotationAngle = this.selection.rotationAngle;
-        this.selectionService.selection.ellipseRad = { x: this.selection.ellipseRad.x, y: this.selection.ellipseRad.y };
+        this.selectionService.selection.ellipseRadian = { x: this.selection.ellipseRadian.x, y: this.selection.ellipseRadian.y };
         this.selectionService.clearSelection();
         this.selectionService.pasteSelection(this.selection);
     }

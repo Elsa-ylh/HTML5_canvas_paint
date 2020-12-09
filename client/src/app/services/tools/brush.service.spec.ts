@@ -8,13 +8,16 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from './brush.service';
 
 // tslint:disable:no-any
+// tslint:disable:no-string-literal
+// tslint:disable:no-magic-numbers
+
 describe('BrushService', () => {
     let service: BrushService;
     let mouseEvent: MouseEvent;
     let mouseEvent1: MouseEvent;
     let mouseEventRight: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-    let subToolselected: SubToolSelected;
+    let subToolSelected: SubToolSelected;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
@@ -23,7 +26,7 @@ describe('BrushService', () => {
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        subToolselected = SubToolSelected.tool2;
+        subToolSelected = SubToolSelected.tool2;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
         TestBed.configureTestingModule({
@@ -37,7 +40,6 @@ describe('BrushService', () => {
         drawBrushToolSpy = spyOn<any>(service, 'drawBrushTool4').and.callThrough();
         drawLineBrushSpy = spyOn<any>(service, 'drawLineBrush5').and.callThrough();
         service.subToolSelect = SubToolSelected.tool1;
-        // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
 
@@ -82,9 +84,9 @@ describe('BrushService', () => {
     });
     it('switch  brush tool 2', () => {
         service.subToolSelect = SubToolSelected.tool1;
-        service.subToolSelect = subToolselected;
+        service.subToolSelect = subToolSelected;
         service.onMouseDown(mouseEvent);
-        expect(service.subToolSelect).toEqual(subToolselected);
+        expect(service.subToolSelect).toEqual(subToolSelected);
     });
     it('switch  brush tool 3', () => {
         service.subToolSelect = SubToolSelected.tool3;
