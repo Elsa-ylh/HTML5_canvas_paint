@@ -144,7 +144,6 @@ export class SidebarComponent {
     createNewDrawing(): void {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
         this.automaticSaveService.save();
-        // this.rotationService.resetAngle();
     }
 
     openCarrousel(): void {
@@ -271,7 +270,6 @@ export class SidebarComponent {
     }
 
     pickPaintBucket(): void {
-        // debugger;
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.PaintBucket);
         this.isDialogLoadSaveExport = true;
@@ -414,11 +412,10 @@ export class SidebarComponent {
             this.gridService.isGridSettingsChecked = false;
             this.gridService.deactivateGrid();
             return;
-        } else {
-            this.gridService.isGridSettingsChecked = true;
-            this.gridService.activateGrid();
-            return;
         }
+        this.gridService.isGridSettingsChecked = true;
+        this.gridService.activateGrid();
+        return;
     }
 
     buttonSelectAllMagicWand(): void {
