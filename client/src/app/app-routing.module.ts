@@ -5,8 +5,8 @@ import { MainPageComponent } from './components/main-page/main-page.component';
 
 const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
-    { path: 'home', component: MainPageComponent },
-    { path: 'editor', component: EditorComponent },
+    { path: '/home', component: MainPageComponent },
+    { path: '/editor', component: EditorComponent },
     { path: '**', redirectTo: '/home' },
 ];
 

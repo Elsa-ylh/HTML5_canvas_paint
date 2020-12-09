@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSliderModule } from '@angular/material/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SprayComponent } from '@app/components/spray/spray.component';
 
@@ -25,6 +26,7 @@ describe('SprayComponent', () => {
             imports: [
                 MatIconModule,
                 MatGridListModule,
+                MatSliderModule,
                 MatSlideToggleModule,
                 MatButtonToggleModule,
                 MatButtonModule,

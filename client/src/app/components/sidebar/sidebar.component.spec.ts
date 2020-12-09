@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSliderModule } from '@angular/material/slider';
 import { DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
@@ -168,6 +169,7 @@ describe('SidebarComponent', () => {
                 imports: [
                     MatIconModule,
                     MatGridListModule,
+                    MatSliderModule,
                     MatSlideToggleModule,
                     MatButtonToggleModule,
                     MatButtonModule,

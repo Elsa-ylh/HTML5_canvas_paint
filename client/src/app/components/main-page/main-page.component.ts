@@ -28,7 +28,7 @@ export class MainPageComponent {
         });
     }
 
-    isThereExistingDrawing(): boolean {
+    get isThereExistingDrawing(): boolean {
         return this.isDialogOpenSaveExport;
     }
 
