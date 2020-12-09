@@ -8,7 +8,6 @@ import { ColorComponent } from '@app/components/color/color.component';
 import { ColorService, LastColor } from '@app/services/color/color.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 
-const SIZE_OPACITY = 207;
 const MAX_VALUE_RGB = 255;
 
 @Component({
@@ -20,7 +19,6 @@ export class PaintBucketColorComponent extends ColorComponent implements AfterVi
     readonly WIDTH: number = 207;
     readonly SQUARE_HEIGHT: number = 200;
     horizontalHeight: number = 20;
-    private colorComponent: ColorComponent;
 
     @ViewChild('previewSquare') previewSquare: ElementRef<HTMLCanvasElement>; // used to do a hover position
     @ViewChild('squarePalette') squareCanvas: ElementRef<HTMLCanvasElement>;
@@ -87,12 +85,6 @@ export class PaintBucketColorComponent extends ColorComponent implements AfterVi
         this.drawSquarePalette();
         this.drawHorizontalPalette();
         this.drawOpacitySlider();
-    }
-
-    findPositionSlider(event: MouseEvent): number {
-        const position = { x: event.offsetX, y: event.offsetY };
-        this.colorComponent.positionSlider = 1 - position.x / SIZE_OPACITY;
-        return this.colorComponent.positionSlider;
     }
 
     sendInput(rgb: RGBA): void {

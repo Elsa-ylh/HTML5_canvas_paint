@@ -16,6 +16,11 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { cursorName } from '@app/classes/cursor-name';
 import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
+import { ColorComponent } from '@app/components/color/color.component';
+import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DropperColorComponent } from '@app/components/dropper-color/dropper-color.component';
+import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { WriteTextDialogUserGuideComponent } from '@app/components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
@@ -42,13 +47,8 @@ import { SprayService } from '@app/services/tools/spray.service';
 import { StampService } from '@app/services/tools/stamp.service';
 import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { ColorComponent } from '@app/sidebarComponents/color/color.sidebarComponent';
-import { DialogCreateNewDrawingComponent } from '@app/sidebarComponents/dialog-create-new-drawing/dialog-create-new-drawing.sidebarComponent';
-import { DropperColorComponent } from '@app/sidebarComponents/dropper-color/dropper-color.sidebarComponent';
-import { WriteTextDialogUserGuideComponent } from '@app/sidebarComponents/write-text-dialog-user-guide/write-text-dialog-user-guide.sidebarComponent';
 import { Observable } from 'rxjs/internal/Observable';
 import { Subject } from 'rxjs/internal/Subject';
-import { SidebarComponent } from './sidebar.sidebarComponent';
 
 // tslint:disable:no-any
 // tslint:disable:no-magic-numbers
