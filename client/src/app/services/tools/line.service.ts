@@ -18,12 +18,12 @@ export interface LineParameters {
     providedIn: 'root',
 })
 export class LineService extends Tool {
-    secondarySizePixel: number = 2; //
-    lineWidth: number = 2; //
-    private pathData: Vec2[] = []; //
+    secondarySizePixel: number = 2;
+    lineWidth: number = 2;
+    private pathData: Vec2[] = [];
     isBallOn: boolean = false;
-    private pointMouse: Vec2 = { x: 0, y: 0 }; //
-    private pointShiftMemory: Vec2 = { x: 0, y: 0 }; //
+    private pointMouse: Vec2 = { x: 0, y: 0 };
+    private pointShiftMemory: Vec2 = { x: 0, y: 0 };
     private colorLine: string = this.colorService.primaryColor;
     private shiftKeyDown: boolean = false;
     private mouseOut: boolean = false;
@@ -90,27 +90,27 @@ export class LineService extends Tool {
     }
 
     private shiftDrawAngleLine(path: Vec2[], lastPoint: Vec2): Vec2 {
-        const leastone = -1;
+        const atLeastOne = -1;
         const denominator8 = 8;
         const denominator4 = 4;
         const numerator7 = 7;
         const numerator5 = 5;
         const numerator3 = 3;
-        const firstPoint = path[path.length + leastone];
+        const firstPoint = path[path.length + atLeastOne];
         const dx = lastPoint.x - firstPoint.x;
         const dy = lastPoint.y - firstPoint.y;
-        const angleabs = Math.abs(Math.atan2(dy, dx));
-        if (angleabs < Math.PI / denominator8 || angleabs > (Math.PI * numerator7) / denominator8) {
+        const absoluteAngle = Math.abs(Math.atan2(dy, dx));
+        if (absoluteAngle < Math.PI / denominator8 || absoluteAngle > (Math.PI * numerator7) / denominator8) {
             return { x: lastPoint.x, y: firstPoint.y };
         }
-        if (angleabs >= Math.PI / denominator8 && angleabs <= (Math.PI * numerator3) / denominator8) {
-            const axey: number = dy > 0 ? leastone : 1;
-            const newY: number = Math.round(Math.tan((Math.PI * numerator3) / denominator4) * dx * axey);
+        if (absoluteAngle >= Math.PI / denominator8 && absoluteAngle <= (Math.PI * numerator3) / denominator8) {
+            const yAxis: number = dy > 0 ? atLeastOne : 1;
+            const newY: number = Math.round(Math.tan((Math.PI * numerator3) / denominator4) * dx * yAxis);
             return { x: lastPoint.x, y: firstPoint.y + newY };
         }
-        if (angleabs <= (Math.PI * numerator7) / denominator8 && angleabs >= (Math.PI * numerator5) / denominator8) {
-            const axey: number = dy > 0 ? leastone : 1;
-            const newY: number = Math.round(Math.tan(Math.PI / denominator4) * dx * axey);
+        if (absoluteAngle <= (Math.PI * numerator7) / denominator8 && absoluteAngle >= (Math.PI * numerator5) / denominator8) {
+            const yAxis: number = dy > 0 ? atLeastOne : 1;
+            const newY: number = Math.round(Math.tan(Math.PI / denominator4) * dx * yAxis);
             return { x: lastPoint.x, y: firstPoint.y + newY };
         }
         return { x: firstPoint.x, y: lastPoint.y };

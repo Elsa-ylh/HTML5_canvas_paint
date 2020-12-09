@@ -14,20 +14,20 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     providedIn: 'root',
 })
 export class EllipseService extends Tool {
-    lineWidth: number = 1; //
-    fillColor: string; //
-    strokeColor: string; //
+    lineWidth: number = 1;
+    fillColor: string;
+    strokeColor: string;
     strokeRectColor: string = '#000000';
-    lineRectwidth: number = 1;
+    lineRectWidth: number = 1;
     circle: boolean = false;
-    mousePosition: Vec2; //
+    mousePosition: Vec2;
     dottedLineWidth: number = 2;
     dottedSpace: number = 10;
     width: number;
     height: number;
     mouseEnter: boolean = false;
     mouseOut: boolean = false;
-    canvasSelected: boolean; // quel canvas
+    canvasSelected: boolean;
 
     constructor(
         drawingService: DrawingService,
@@ -258,7 +258,7 @@ export class EllipseService extends Tool {
         ctx.beginPath(); // Define new path for outlined rectangle
 
         ctx.strokeStyle = this.strokeRectColor;
-        ctx.lineWidth = this.lineRectwidth;
+        ctx.lineWidth = this.lineRectWidth;
         ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
         this.drawPreviewRect(ctx, mouseDownPos, mouseUpPos);
     }
@@ -278,7 +278,7 @@ export class EllipseService extends Tool {
         ctx.beginPath(); // Define new path for outlined rectangle
 
         ctx.strokeStyle = this.strokeRectColor;
-        ctx.lineWidth = this.lineRectwidth;
+        ctx.lineWidth = this.lineRectWidth;
         ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
         this.drawPreviewRect(ctx, mouseDownPos, mouseUpPos);
     }

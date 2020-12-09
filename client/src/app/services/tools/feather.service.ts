@@ -11,7 +11,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 export const FIFTEEN = 15;
 export const ONE = 1;
-export const ONEHUNDREDEIGHTY = 180;
+export const ONE_HUNDRED_EIGHTY = 180;
 
 @Injectable({
     providedIn: 'root',
@@ -100,8 +100,8 @@ export class FeatherService extends Tool {
         ctx.lineWidth = this.thickness;
         this.featherLength = toolInfo.length;
         this.featherAngle = toolInfo.angle;
-        const angleX = Math.cos((this.featherAngle * Math.PI) / ONEHUNDREDEIGHTY);
-        const angleY = Math.sin((this.featherAngle * Math.PI) / ONEHUNDREDEIGHTY);
+        const angleX = Math.cos((this.featherAngle * Math.PI) / ONE_HUNDRED_EIGHTY);
+        const angleY = Math.sin((this.featherAngle * Math.PI) / ONE_HUNDRED_EIGHTY);
 
         ctx.beginPath();
 
@@ -125,7 +125,7 @@ export class FeatherService extends Tool {
         this.drawingService.cursorCtx.beginPath();
 
         this.drawingService.cursorCtx.translate(maxSize / 2, maxSize / 2);
-        this.drawingService.cursorCtx.rotate((this.featherAngle * Math.PI) / ONEHUNDREDEIGHTY);
+        this.drawingService.cursorCtx.rotate((this.featherAngle * Math.PI) / ONE_HUNDRED_EIGHTY);
         this.drawingService.cursorCtx.translate(-maxSize / 2, -maxSize / 2);
 
         this.drawingService.cursorCtx.fillStyle = '#000000';
@@ -159,7 +159,7 @@ export class FeatherService extends Tool {
 
     addOrRetract(event: WheelEvent): void {
         // scroll up => wheel adds to the angle (same as when scrolling up a page.)
-        // if the value of deltaY is <0 that means we are scrooling up
+        // if the value of deltaY is <0 that means we are scrolling up
         if (event.deltaY < 0) {
             this.isWheelAdd = true;
         } else {
