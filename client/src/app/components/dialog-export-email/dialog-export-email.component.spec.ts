@@ -17,7 +17,8 @@ import { Filter } from '@app/classes/filter';
 import { ImageFormat } from '@app/classes/image-format';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { CanvasInformation, Label } from '@common/communication/canvas-information';
+import { Label } from '@common/communication/canvas-information';
+import { Observable } from 'rxjs';
 import { DialogExportEmailComponent } from './dialog-export-email.component';
 
 describe('DialogExportEmailComponent', () => {
@@ -39,20 +40,6 @@ describe('DialogExportEmailComponent', () => {
             const previewCanvas = document.createElement('canvas');
             drawingStub.previewCtx = previewCanvas.getContext('2d') as CanvasRenderingContext2D;
 
-            // const dropperCanvas = document.createElement('canvas');
-            // drawingStub.dropperCtx = dropperCanvas.getContext('2d') as CanvasRenderingContext2D;
-
-            const isDate: Date = new Date();
-            const testCanvasInformationAdd: CanvasInformation = {
-                _id: '',
-                name: 'test5',
-                width: 0,
-                height: 0,
-                labels: [{ label: 'label1' }],
-                date: isDate,
-                picture: 'test5',
-            };
-            const testCanvasInformationAdds = [testCanvasInformationAdd];
             const labels: Label[] = [{ label: 'label1' }, { label: 'label2' }];
 
             drawingStub.convertBaseCanvasToBase64 = () => {
@@ -73,14 +60,10 @@ describe('DialogExportEmailComponent', () => {
                 ],
                 declarations: [DialogExportEmailComponent],
                 providers: [
-                    HttpClient,
                     {
                         provide: ClientServerCommunicationService,
                         useValue: {
-                            getAllLabel: () => labels,
-                            resetData: () => '',
-                            getInformation: () => testCanvasInformationAdds,
-                            getElementResearch: () => testCanvasInformationAdds,
+                            getAllLabels: () => labels,
                             savePicture: () => Message,
                         },
                     },
@@ -90,14 +73,27 @@ describe('DialogExportEmailComponent', () => {
                     },
                 ],
             }).compileComponents();
+
+            TestBed.inject(HttpClient);
+            const clientServerCommStub = TestBed.inject(ClientServerCommunicationService);
+            clientServerCommStub.sendEmail = () => {
+                return new Observable();
+            };
+
+            fixture = TestBed.createComponent(DialogExportEmailComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
+
+            const testImageCanvas = document.createElement('canvas');
+            const testImageCtx = testImageCanvas.getContext('2d') as CanvasRenderingContext2D;
+            testImageCanvas.width = 100;
+            testImageCanvas.height = 100;
+            testImageCtx.fillStyle = 'black';
+            testImageCtx.fillRect(0, 0, 100, 100);
+            component.previewImage.nativeElement = new Image();
+            component.previewImage.nativeElement.src = testImageCanvas.toDataURL();
         }),
     );
-
-    beforeEach(() => {
-        fixture = TestBed.createComponent(DialogExportEmailComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
 
     it('should create', () => {
         expect(component).toBeTruthy();
@@ -225,7 +221,7 @@ describe('DialogExportEmailComponent', () => {
         expect(spyConfirm).toHaveBeenCalledWith("Voulez-vous envoyer l'image god.jpeg\n Filtre sepia au courriel heaven@satan.com ?");
     });
 
-    it('should export to an email with a JPG sepia filter to the server', () => {
+    it('should export to an email with a JPG sepia filter to the server', async () => {
         component['whichExportType'] = ImageFormat.JPG;
         component['whichFilter'] = Filter.SEPIA;
         component.nameFormControl.setValue('god');
@@ -239,7 +235,7 @@ describe('DialogExportEmailComponent', () => {
         expect(spyConfirm).toHaveBeenCalledWith("Voulez-vous envoyer l'image god.jpeg\n Filtre sepia au courriel heaven@satan.com ?");
     });
 
-    it('should export to an email with a PNG sepia filter to the server', () => {
+    it('should export to an email with a PNG sepia filter to the server', async () => {
         component['whichExportType'] = ImageFormat.PNG;
         component['whichFilter'] = Filter.SEPIA;
         component.nameFormControl.setValue('god');

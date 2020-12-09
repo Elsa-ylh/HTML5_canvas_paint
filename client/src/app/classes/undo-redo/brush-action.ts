@@ -1,5 +1,5 @@
 import { PointArc } from '@app/classes/point-arc';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -12,7 +12,7 @@ export class BrushAction extends AbsUndoRedo {
         private primaryColor: string,
         private secondaryColor: string,
         private thicknessBrush: number,
-        private selectedBrushTool: SubToolselected,
+        private selectedBrushTool: SubToolSelected,
         private brushService: BrushService,
         private drawingService: DrawingService,
     ) {
@@ -28,7 +28,7 @@ export class BrushAction extends AbsUndoRedo {
             secondaryColor: this.secondaryColor,
         });
         this.brushService.drawLine(this.drawingService.baseCtx, this.changesBrush, this.selectedBrushTool);
-        if (this.selectedBrushTool === SubToolselected.tool4) {
+        if (this.selectedBrushTool === SubToolSelected.tool4) {
             this.brushService.drawBrushTool4(this.drawingService.baseCtx, this.brushPointData);
         }
         this.brushService.clearEffectTool();

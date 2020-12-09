@@ -1,4 +1,4 @@
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -13,7 +13,7 @@ export class LineAction extends AbsUndoRedo {
         private secondaryTickness: number,
         private lineService: LineService,
         private drawingService: DrawingService,
-        private subToolselected: SubToolselected,
+        private subToolselected: SubToolSelected,
     ) {
         super();
     }

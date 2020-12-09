@@ -4,7 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { cursorName } from '@app/classes/cursor-name';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
 import { CarrouselPictureComponent } from '@app/components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
@@ -144,7 +144,6 @@ export class SidebarComponent {
     createNewDrawing(): void {
         this.dialogCreator.open(DialogCreateNewDrawingComponent);
         this.automaticSaveService.save();
-        // this.rotationService.resetAngle();
     }
 
     openCarrousel(): void {
@@ -219,7 +218,7 @@ export class SidebarComponent {
     pickLine(): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Line);
-        this.toolService.currentTool.subToolSelect = SubToolselected.tool1;
+        this.toolService.currentTool.subToolSelect = SubToolSelected.tool1;
         this.isDialogLoadSaveExport = true;
     }
 
@@ -227,7 +226,7 @@ export class SidebarComponent {
         return this.isLineChecked;
     }
 
-    pickRectangle(subTool: SubToolselected): void {
+    pickRectangle(subTool: SubToolSelected): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Rectangle);
         this.toolService.currentTool.subToolSelect = subTool;
@@ -271,7 +270,6 @@ export class SidebarComponent {
     }
 
     pickPaintBucket(): void {
-        // debugger;
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.PaintBucket);
         this.isDialogLoadSaveExport = true;
@@ -396,7 +394,7 @@ export class SidebarComponent {
     }
 
     checkboxChangeToggle(args: MatCheckboxChange): void {
-        this.toolService.currentTool.subToolSelect = args.checked ? SubToolselected.tool2 : SubToolselected.tool1;
+        this.toolService.currentTool.subToolSelect = args.checked ? SubToolSelected.tool2 : SubToolSelected.tool1;
     }
 
     btnCallRedo(): void {
@@ -414,11 +412,10 @@ export class SidebarComponent {
             this.gridService.isGridSettingsChecked = false;
             this.gridService.deactivateGrid();
             return;
-        } else {
-            this.gridService.isGridSettingsChecked = true;
-            this.gridService.activateGrid();
-            return;
         }
+        this.gridService.isGridSettingsChecked = true;
+        this.gridService.activateGrid();
+        return;
     }
 
     buttonSelectAllMagicWand(): void {
@@ -446,7 +443,7 @@ export class SidebarComponent {
         if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isEllipseChecked = true;
-            this.pickEllipse(SubToolselected.tool1);
+            this.pickEllipse(SubToolSelected.tool1);
         }
     }
 
@@ -455,7 +452,7 @@ export class SidebarComponent {
         if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isPolygonChecked = true;
-            this.pickPolygon(SubToolselected.tool3);
+            this.pickPolygon(SubToolSelected.tool3);
         }
     }
 
@@ -482,7 +479,7 @@ export class SidebarComponent {
         if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isBrushChecked = true;
-            this.pickBrush(SubToolselected.tool1);
+            this.pickBrush(SubToolSelected.tool1);
         }
     }
 
@@ -558,102 +555,168 @@ export class SidebarComponent {
         }
     }
     @HostListener('window:keydown.control.a', ['$event']) selectAllCanvas(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionRectangleService.selectAll();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.selectAll();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.buttonSelectAllMagicWand();
+            return;
         }
     }
 
     @HostListener('window:keydown.ArrowLeft', ['$event']) onLeftArrow(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onLeftArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onLeftArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onLeftArrow();
+            return;
         }
     }
     @HostListener('window:keydown.ArrowRight', ['$event']) onRightArrow(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onRightArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onRightArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onRightArrow();
+            return;
         }
     }
 
     @HostListener('window:keydown.ArrowDown', ['$event']) onDownArrow(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onDownArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onDownArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onDownArrow();
+            return;
         }
     }
 
     @HostListener('window:keydown.ArrowUp', ['$event']) onUpArrow(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onUpArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onUpArrow();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onUpArrow();
+            return;
         }
     }
     @HostListener('window:keyup.ArrowLeft', ['$event']) onLeftArrowUp(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onLeftArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onLeftArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onLeftArrowUp();
+            return;
         }
     }
 
     @HostListener('window:keyup.ArrowRight', ['$event']) onRightArrowUp(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onRightArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onRightArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onRightArrowUp();
+            return;
         }
     }
 
     @HostListener('window:keyup.ArrowDown', ['$event']) onDownArrowUp(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle && this.isDialogLoadSaveExport) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onDownArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onDownArrowUp();
-        } else if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            return;
+        }
+        if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onDownArrowUp();
+            return;
         }
     }
 
     @HostListener('window:keyup.ArrowUp', ['$event']) onUpArrowUp(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.onUpArrowUp();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionEllipse && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.selectionEllipseService.onUpArrowUp();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.MagicWand && this.isDialogLoadSaveExport) {
+            event.preventDefault();
             this.magicWandService.onUpArrowUp();
         }
     }
@@ -675,64 +738,76 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown.control.c', ['$event']) copySelection(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.copyImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            event.preventDefault();
             this.selectionEllipseService.copyImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            event.preventDefault();
             this.magicWandService.copyImage();
             return;
         }
     }
 
     @HostListener('window:keydown.control.x', ['$event']) cutSelection(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.cutImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            event.preventDefault();
             this.selectionEllipseService.cutImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            event.preventDefault();
             this.magicWandService.cutImage();
             return;
         }
     }
 
     @HostListener('window:keydown.control.v', ['$event']) pasteSelection(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.pasteImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            event.preventDefault();
             this.selectionEllipseService.pasteImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            event.preventDefault();
             this.magicWandService.pasteImage();
             return;
         }
     }
 
     @HostListener('window:keydown.Delete', ['$event']) delSelection(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName === ToolUsed.SelectionRectangle) {
+            // preventDefault has to be inside because it is only preventing default when that tool is selected
+            event.preventDefault();
             this.selectionRectangleService.deleteImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.SelectionEllipse) {
+            event.preventDefault();
             this.selectionEllipseService.deleteImage();
             return;
         }
         if (this.toolService.currentToolName === ToolUsed.MagicWand) {
+            event.preventDefault();
             this.magicWandService.deleteImage();
             return;
         }
@@ -782,8 +857,8 @@ export class SidebarComponent {
     }
     @HostListener('window:keydown.a', ['$event'])
     changeSprayMode(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
+            event.preventDefault();
             this.resetCheckedButton();
             this.isSprayChecked = true;
             this.pickSprayer();
@@ -801,7 +876,7 @@ export class SidebarComponent {
 
     @HostListener('window:wheel', ['$event'])
     changeAngleWithWheel(event: WheelEvent): void {
-        event.preventDefault();
+        event.stopPropagation();
         if (this.toolService.currentToolName === ToolUsed.Feather && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.featherService.addOrRetract(event);
             this.featherService.changeAngleWithScroll();
@@ -815,11 +890,11 @@ export class SidebarComponent {
         if (this.toolService.currentToolName === ToolUsed.MagicWand) {
             this.rotationService.onWheelScroll(this.magicWandService, event);
         }
-        event.stopPropagation();
         if (this.toolService.currentToolName === ToolUsed.Stamp) {
             this.stampService.addOrRetract(event);
             this.stampService.changeAngleWithScroll();
         }
+        event.stopPropagation();
     }
 
     @HostListener('window:keydown.alt', ['$event'])
