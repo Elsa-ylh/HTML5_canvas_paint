@@ -1,10 +1,7 @@
-/*
-
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SelectionImage } from '@app/classes/selection';
 import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
@@ -23,7 +20,6 @@ describe('SelectionRectAction', () => {
     let selectionRectStub: SelectionRectangleService;
     let magnetismStub: MagnetismService;
     let gridStub: GridService;
-    let canvasResizeStub: CanvasResizerService;
     let rotationStub: RotationService;
 
     let selection: SelectionImage;
@@ -39,9 +35,8 @@ describe('SelectionRectAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        canvasResizeStub = new CanvasResizerService(undoRedoStub);
         magnetismStub = new MagnetismService(gridStub);
-        gridStub = new GridService(drawingStub, canvasResizeStub);
+        gridStub = new GridService(drawingStub);
         rotationStub = new RotationService(drawingStub);
         selectionRectStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
         selectionRectActionStub = new SelectionRectAction(selectionRectStub, drawingStub, selection);
@@ -74,5 +69,3 @@ describe('SelectionRectAction', () => {
         expect(clearSelectionSpy).toHaveBeenCalled();
     });
 });
-
-*/
