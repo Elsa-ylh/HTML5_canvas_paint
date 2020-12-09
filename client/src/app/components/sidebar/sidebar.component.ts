@@ -801,7 +801,7 @@ export class SidebarComponent {
 
     @HostListener('window:wheel', ['$event'])
     changeAngleWithWheel(event: WheelEvent): void {
-        event.preventDefault();
+        event.stopPropagation();
         if (this.toolService.currentToolName === ToolUsed.Feather && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.featherService.addOrRetract(event);
             this.featherService.changeAngleWithScroll();
@@ -815,11 +815,11 @@ export class SidebarComponent {
         if (this.toolService.currentToolName === ToolUsed.MagicWand) {
             this.rotationService.onWheelScroll(this.magicWandService, event);
         }
-        event.stopPropagation();
         if (this.toolService.currentToolName === ToolUsed.Stamp) {
             this.stampService.addOrRetract(event);
             this.stampService.changeAngleWithScroll();
         }
+        event.stopPropagation();
     }
 
     @HostListener('window:keydown.alt', ['$event'])
