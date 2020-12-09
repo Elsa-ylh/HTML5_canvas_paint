@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { PolygoneAction } from '@app/classes/undo-redo/polygon-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
@@ -27,7 +27,7 @@ describe('PolygonAction', () => {
     let lineWidth: number;
     let nbsides: number;
     let isRenderingBase: boolean;
-    let selectSubTool: SubToolselected;
+    let selectSubTool: SubToolSelected;
     let autoSaveStub: AutomaticSaveService;
     let canvasResizerStub: CanvasResizerService;
     let baseStub: CanvasRenderingContext2D;
@@ -43,7 +43,7 @@ describe('PolygonAction', () => {
         lineWidth = 2;
         // tslint:disable:no-magic-numbers
         nbsides = 3;
-        selectSubTool = SubToolselected.tool1;
+        selectSubTool = SubToolSelected.tool1;
         isRenderingBase = true;
 
         drawingStub = new DrawingService();

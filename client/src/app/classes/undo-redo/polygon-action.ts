@@ -1,4 +1,4 @@
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -13,7 +13,7 @@ export class PolygoneAction extends AbsUndoRedo {
         private lineWidth: number,
         private nbsides: number,
         private isRenderingBase: boolean,
-        private selectSubTool: SubToolselected,
+        private selectSubTool: SubToolSelected,
         private polygoneService: PolygonService,
         private drawingService: DrawingService,
     ) {

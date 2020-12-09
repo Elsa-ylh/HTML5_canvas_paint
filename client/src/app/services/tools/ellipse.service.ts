@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
 import { ToolGeneralInfo } from '@app/classes/tool-general-info';
 import { EllipseAction } from '@app/classes/undo-redo/ellipse-action';
@@ -163,19 +163,19 @@ export class EllipseService extends Tool {
 
         if (generalInfo.canvasSelected) {
             switch (generalInfo.selectSubTool) {
-                case SubToolselected.tool1: {
+                case SubToolSelected.tool1: {
                     this.drawingService.clearCanvas(this.drawingService.previewCtx);
                     this.drawFillEllipse(this.drawingService.baseCtx, mouseDownCoord);
                     break;
                 }
 
-                case SubToolselected.tool2: {
+                case SubToolSelected.tool2: {
                     this.drawingService.clearCanvas(this.drawingService.previewCtx);
                     this.drawEllipseOutline(this.drawingService.baseCtx, mouseDownCoord, mousePosition);
                     break;
                 }
 
-                case SubToolselected.tool3: {
+                case SubToolSelected.tool3: {
                     this.drawingService.clearCanvas(this.drawingService.previewCtx);
                     this.drawFillEllipseOutline(this.drawingService.baseCtx, mouseDownCoord, mousePosition);
                     break;
@@ -183,15 +183,15 @@ export class EllipseService extends Tool {
             }
         } else {
             switch (generalInfo.selectSubTool) {
-                case SubToolselected.tool1:
+                case SubToolSelected.tool1:
                     this.drawFillEllipse(this.drawingService.previewCtx, mouseDownCoord);
                     break;
 
-                case SubToolselected.tool2:
+                case SubToolSelected.tool2:
                     this.drawEllipseOutline(this.drawingService.previewCtx, mouseDownCoord, mousePosition);
                     break;
 
-                case SubToolselected.tool3:
+                case SubToolSelected.tool3:
                     this.drawFillEllipseOutline(this.drawingService.previewCtx, mouseDownCoord, mousePosition);
                     break;
             }

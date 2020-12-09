@@ -4,7 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { cursorName } from '@app/classes/cursor-name';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { ToolUsed } from '@app/classes/tool';
 import { CarrouselPictureComponent } from '@app/components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
@@ -219,7 +219,7 @@ export class SidebarComponent {
     pickLine(): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Line);
-        this.toolService.currentTool.subToolSelect = SubToolselected.tool1;
+        this.toolService.currentTool.subToolSelect = SubToolSelected.tool1;
         this.isDialogLoadSaveExport = true;
     }
 
@@ -227,7 +227,7 @@ export class SidebarComponent {
         return this.isLineChecked;
     }
 
-    pickRectangle(subTool: SubToolselected): void {
+    pickRectangle(subTool: SubToolSelected): void {
         this.drawingService.cursorUsed = cursorName.default;
         this.toolService.switchTool(ToolUsed.Rectangle);
         this.toolService.currentTool.subToolSelect = subTool;
@@ -396,7 +396,7 @@ export class SidebarComponent {
     }
 
     checkboxChangeToggle(args: MatCheckboxChange): void {
-        this.toolService.currentTool.subToolSelect = args.checked ? SubToolselected.tool2 : SubToolselected.tool1;
+        this.toolService.currentTool.subToolSelect = args.checked ? SubToolSelected.tool2 : SubToolSelected.tool1;
     }
 
     btnCallRedo(): void {
@@ -446,7 +446,7 @@ export class SidebarComponent {
         if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isEllipseChecked = true;
-            this.pickEllipse(SubToolselected.tool1);
+            this.pickEllipse(SubToolSelected.tool1);
         }
     }
 
@@ -455,7 +455,7 @@ export class SidebarComponent {
         if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isPolygonChecked = true;
-            this.pickPolygon(SubToolselected.tool3);
+            this.pickPolygon(SubToolSelected.tool3);
         }
     }
 
@@ -482,7 +482,7 @@ export class SidebarComponent {
         if (this.toolService.currentToolName !== ToolUsed.Color && this.isDialogLoadSaveExport && this.isOnPreviewCtx()) {
             this.resetCheckedButton();
             this.isBrushChecked = true;
-            this.pickBrush(SubToolselected.tool1);
+            this.pickBrush(SubToolSelected.tool1);
         }
     }
 
