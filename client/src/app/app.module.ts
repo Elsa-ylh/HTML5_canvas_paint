@@ -42,8 +42,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
 import { ColorErrorComponent } from './components/color-error/color-error.component';
 import { ColorComponent } from './components/color/color.component';
-import { CarrouselPictureComponent } from './components/dialog-carrousel-picture/dialog-carrousel-picture.component';
+import { CarouselComponent } from './components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from './components/dialog-create-new-drawing/dialog-create-new-drawing.component';
+import { DialogExportEmailComponent } from './components/dialog-export-email/dialog-export-email.component';
 import { DialogExportDrawingComponent } from './components/dialog-export-locally/dialog-export-locally.component';
 import { DialogUploadComponent } from './components/dialog-upload/dialog-upload.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
@@ -52,12 +53,15 @@ import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { PaintBucketColorComponent } from './components/paint-bucket-color/paint-bucket-color.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { SprayComponent } from './components/spray/spray.component';
+import { StampComponent } from './components/stamp/stamp.component';
 import { WriteTextDialogUserGuideComponent } from './components/write-text-dialog-user-guide/write-text-dialog-user-guide.component';
+import { WriteTextOptionComponent } from './components/write-text-option/write-text-option.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        CarrouselPictureComponent,
+        CarouselComponent,
         ColorComponent,
         ColorErrorComponent,
         DialogCreateNewDrawingComponent,
@@ -68,12 +72,16 @@ import { WriteTextDialogUserGuideComponent } from './components/write-text-dialo
         DialogCreateNewDrawingComponent,
         DialogExportDrawingComponent,
         SidebarComponent,
+        StampComponent,
+        SprayComponent,
         WriteTextDialogUserGuideComponent,
         ColorComponent,
-        CarrouselPictureComponent,
+        CarouselComponent,
         DropperColorComponent,
         DialogUploadComponent,
         PaintBucketColorComponent,
+        DialogExportEmailComponent,
+        WriteTextOptionComponent,
     ],
     imports: [
         ReactiveFormsModule,

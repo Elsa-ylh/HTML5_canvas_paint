@@ -255,13 +255,13 @@ describe('ColorComponent', () => {
 
     it('should open warning message', () => {
         const rgba = { red: 256, green: 0, blue: 0, alpha: 1 } as RGBA;
-        const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+        const matDialogRef = jasmine.createSpyObj('matDialogRef', ['close']);
         component.errorMsg = jasmine.createSpyObj('MatDialog', ['open']);
         component.errorMsg.open = jasmine.createSpy().and.callFake(() => {
-            return matdialogRef;
+            return matDialogRef;
         });
 
         component.sendInput(rgba);
-        expect(component.message).toEqual(matdialogRef);
+        expect(component.message).toEqual(matDialogRef);
     });
 });

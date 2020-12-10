@@ -5,7 +5,6 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
 const HTTP_STATUS_BAD_REQUEST = 400;
-const MIN_CHARACTER = 6;
 const MAX_CHARACTER = 64;
 @injectable()
 export class DataController {
@@ -40,7 +39,7 @@ export class DataController {
                 .getAllLabels()
                 .then((labelsInformation: Label[]) => {
                     const informationMessage: CanvasInformation = {
-                        _id: 'list_of_all_labals',
+                        _id: 'list_of_all_labels',
                         name: 'labels',
                         labels: labelsInformation,
                         width: 0,
@@ -198,20 +197,21 @@ export class DataController {
                     height: req.body.height,
                     width: req.body.width,
                 };
-                console.log();
+
                 if (this.checkName(newPicture.name) || this.checkLabel(newPicture.labels)) {
                     const errorMessage: Message = {
                         title: 'Error',
                         body:
                             'name error : ' +
                             this.checkName(newPicture.name) +
-                            ' Request : ' +
+                            '\nRequest : ' +
                             newPicture.name +
-                            '; label error : ' +
+                            ';\nlabel error : ' +
                             this.checkLabel(newPicture.labels) +
-                            ' Request : ' +
+                            '\nRequest : ' +
                             newPicture.labels,
                     };
+                    console.log(errorMessage);
                     res.status(HTTP_STATUS_BAD_REQUEST).json(errorMessage);
                 } else {
                     if (newPicture._id === '') {
@@ -230,6 +230,7 @@ export class DataController {
                                     body: reason as string,
                                 };
                                 res.json(errorMessage);
+                                console.log(reason);
                             });
                     } else {
                         this.databaseService
@@ -247,6 +248,7 @@ export class DataController {
                                     body: reason as string,
                                 };
                                 res.json(errorMessage);
+                                console.log(reason);
                             });
                     }
                 }
@@ -311,10 +313,11 @@ export class DataController {
     }
     private checkLabel(labels: Label[]): boolean {
         for (const label of labels) {
+            console.log(label);
             if (this.notGoodCharacter(label.label)) {
                 return true;
             }
-            if (label.label.length < MIN_CHARACTER || label.label.length > MAX_CHARACTER) return true;
+            if (label.label.length > MAX_CHARACTER) return true;
         }
         return false;
     }

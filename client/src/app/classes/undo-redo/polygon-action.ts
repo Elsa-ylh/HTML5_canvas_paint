@@ -1,20 +1,20 @@
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 
-export class PolygoneAction extends AbsUndoRedo {
+export class PolygonAction extends AbsUndoRedo {
     constructor(
         private mousePosition: Vec2,
         private mouseDownCord: Vec2,
         private primaryColor: string,
         private secondaryColor: string,
         private lineWidth: number,
-        private nbsides: number,
+        private nbSides: number,
         private isRenderingBase: boolean,
-        private selectSubTool: SubToolselected,
-        private polygoneService: PolygonService,
+        private selectSubTool: SubToolSelected,
+        private polygonService: PolygonService,
         private drawingService: DrawingService,
     ) {
         super();
@@ -25,14 +25,14 @@ export class PolygoneAction extends AbsUndoRedo {
         this.drawingService.baseCtx.strokeStyle = this.primaryColor;
         this.drawingService.baseCtx.shadowColor = this.secondaryColor;
         this.drawingService.baseCtx.lineWidth = this.lineWidth;
-        this.polygoneService.selectPolygon(this.mousePosition, this.mouseDownCord, {
+        this.polygonService.selectPolygon(this.mousePosition, this.mouseDownCord, {
             primaryColor: this.primaryColor,
             secondaryColor: this.secondaryColor,
             lineWidth: this.lineWidth,
-            nbsides: this.nbsides,
+            nbSides: this.nbSides,
             selectSubTool: this.selectSubTool,
             isRenderingBase: this.isRenderingBase,
         });
-        this.polygoneService.clearEffectTool();
+        this.polygonService.clearEffectTool();
     }
 }

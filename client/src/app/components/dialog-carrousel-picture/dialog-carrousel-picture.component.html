@@ -2,10 +2,10 @@
     <h1>Carrousel d'images</h1>
 </div>
 <div>
-    <button mat-raised-button (click)="reset()">réinitialise tout</button>
-    <div *ngIf="!getPicturesAll()"><p>Aucune image retrouvée. Veuillez changer le critère de recherche ou tout réinitialiser.</p></div>
+    <button mat-raised-button (click)="reset()">Réinitialise tout</button>
+    <div *ngIf="!getPictureLength()"><p>Aucune image retrouvée. Veuillez changer le critère de recherche ou tout réinitialiser.</p></div>
 </div>
-<div *ngIf="getPicturesAll()">
+<div *ngIf="getPictureLength()">
     <mat-grid-list cols="3" rowH eight="1:1">
         <mat-grid-tile *ngIf="getPictures().length >= 1">
             <mat-card class="card-picture">
@@ -21,11 +21,11 @@
                 </mat-card-content>
                 <mat-card-actions>
                     <button mat-button (click)="loadPicture(threePictures[0])">Charger</button>
-                    <button mat-button (click)="deletePicture(threePictures[0])">Supprimer</button>
+                    <button mat-button (click)="deletePictureInDataBase(threePictures[0])">Supprimer</button>
                 </mat-card-actions>
             </mat-card>
         </mat-grid-tile>
-        <mat-grid-tile *ngIf="getPicturesAll() >= 2">
+        <mat-grid-tile *ngIf="getPictureLength() >= 2">
             <mat-card class="card-picture">
                 <mat-card-header>
                     <mat-card-title>{{ threePictures[1].name }}</mat-card-title>
@@ -39,11 +39,11 @@
                 </mat-card-content>
                 <mat-card-actions>
                     <button mat-button (click)="loadPicture(threePictures[1])">Charger</button>
-                    <button mat-button (click)="deletePicture(threePictures[1])">Supprimer</button>
+                    <button mat-button (click)="deletePictureInDataBase(threePictures[1])">Supprimer</button>
                 </mat-card-actions>
             </mat-card>
         </mat-grid-tile>
-        <mat-grid-tile *ngIf="getPicturesAll() >= 3">
+        <mat-grid-tile *ngIf="getPictureLength() >= 3">
             <mat-card class="card-picture">
                 <mat-card-header>
                     <mat-card-title>{{ threePictures[2].name }}</mat-card-title>
@@ -57,13 +57,13 @@
                 </mat-card-content>
                 <mat-card-actions>
                     <button mat-button (click)="loadPicture(threePictures[2])">Charger</button>
-                    <button mat-button (click)="deletePicture(threePictures[2])">Supprimer</button>
+                    <button mat-button (click)="deletePictureInDataBase(threePictures[2])">Supprimer</button>
                 </mat-card-actions>
             </mat-card>
         </mat-grid-tile>
     </mat-grid-list>
-    <button mat-raised-button class="sub-button-cart" (click)="prior()">antérieur</button>
-    <button mat-raised-button class="sub-button-cart" (click)="next()">suivant</button>
+    <button mat-raised-button class="sub-button-cart" (click)="prior()">Antérieur</button>
+    <button mat-raised-button class="sub-button-cart" (click)="next()">Suivant</button>
 </div>
 <div>
     <h2>recherche</h2>
@@ -88,9 +88,9 @@
     <button mat-raised-button (click)="setSearchCriteria()">Soumettre</button>
 </div>
 <div>
-    <h1>liste d'étiquettes</h1>
-    <p *ngIf="!dataLabel.length">Appuyer sur le button "rafraichir la liste" étiquettes</p>
-    <button mat-raised-button (click)="refresh()">rafraichir la liste</button>
+    <h1>Liste d'étiquettes</h1>
+    <p *ngIf="!dataLabel.length">Appuyer sur le button "Rafraichir la liste" étiquettes</p>
+    <button mat-raised-button (click)="refresh()">Rafraichir la liste</button>
     <div>
         <mat-button-toggle
             *ngFor="let element of dataLabel"
@@ -98,8 +98,9 @@
             mat-button
             color="primary"
             id="{{ element.label }}"
-            (click)="selectionLabel(element.label)"
+            (click)="isLabelExisting(element.label)"
             >{{ element.label }}</mat-button-toggle
         >
     </div>
 </div>
+<button mat-raised-button mat-dialog-close>Fermé</button>

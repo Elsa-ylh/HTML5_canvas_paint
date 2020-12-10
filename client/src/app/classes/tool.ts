@@ -1,6 +1,8 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SubToolselected } from './sub-tool-selected';
+import { SubToolSelected } from './sub-tool-selected';
 import { Vec2 } from './vec2';
+
+// tslint:disable:no-empty
 
 export enum ToolUsed {
     NONE = 0,
@@ -12,19 +14,23 @@ export enum ToolUsed {
     Ellipse = 6,
     Polygon = 7,
     PaintBucket = 8,
+    Feather = 9,
+    Text = 50,
     Color = 1000,
     Dropper = 1003,
     SelectionRectangle = 10010,
     SelectionEllipse = 10021,
+    MagicWand = 10023,
+    Stamp = 58,
+    Grid = 9001,
+    Spray = 1004,
 }
 
-// Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
-// tslint:disable:no-empty
 export abstract class Tool {
-    mouseDownCoord: Vec2;
+    mouseDownCoords: Vec2;
     mouseDown: boolean = false;
-    mouseMove: boolean = false; // pr le point
-    subToolSelect: SubToolselected;
+    mouseMove: boolean = false;
+    subToolSelect: SubToolSelected;
 
     constructor(protected drawingService: DrawingService) {}
 

@@ -6,6 +6,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from './pencil-service';
 
 // tslint:disable:no-any
+// tslint:disable:no-string-literal
+
 describe('PencilService', () => {
     let service: PencilService;
     let mouseEvent: MouseEvent;
@@ -26,9 +28,7 @@ describe('PencilService', () => {
         service = TestBed.inject(PencilService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
-        // Configuration du spy du service
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
@@ -42,10 +42,10 @@ describe('PencilService', () => {
         expect(service).toBeTruthy();
     });
 
-    it(' mouseDown should set mouseDownCoord to correct position', () => {
+    it(' mouseDown should set mouseDownCoords to correct position', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
         service.onMouseDown(mouseEvent);
-        expect(service.mouseDownCoord).toEqual(expectedResult);
+        expect(service.mouseDownCoords).toEqual(expectedResult);
     });
 
     it(' mouseDown should set mouseDown property to true on left click', () => {
@@ -57,14 +57,14 @@ describe('PencilService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: 1,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
     });
 
     it(' onMouseUp should call drawLine if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
         service.mouseMove = true;
 
@@ -74,14 +74,14 @@ describe('PencilService', () => {
 
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
         service.mouseDown = false;
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
 
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseMove should call drawLine if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = true;
 
         service.onMouseMove(mouseEvent);
@@ -90,7 +90,7 @@ describe('PencilService', () => {
     });
 
     it(' onMouseMove should not call drawLine if mouse was not already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoords = { x: 0, y: 0 };
         service.mouseDown = false;
 
         service.onMouseMove(mouseEvent);

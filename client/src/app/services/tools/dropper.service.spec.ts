@@ -5,6 +5,8 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DropperService } from '@app/services/tools/dropper.service';
 
+// tslint:disable:no-magic-numbers
+
 describe('DropperService', () => {
     let dropperService: DropperService;
     let colorServiceMock: jasmine.SpyObj<ColorService>;
@@ -25,7 +27,7 @@ describe('DropperService', () => {
         dropperService = TestBed.inject(DropperService);
         colorServiceMock = TestBed.inject(ColorService) as jasmine.SpyObj<ColorService>;
         // tslint:disable:no-string-literal
-        dropperService['drawingService'].dropperCtx = dropperStubCtx;
+        dropperService['drawingService'].cursorCtx = dropperStubCtx;
         dropperService.circleCtx = circleCtxStub;
     });
 

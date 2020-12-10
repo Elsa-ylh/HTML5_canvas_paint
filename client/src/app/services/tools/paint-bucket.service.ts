@@ -4,7 +4,7 @@ import { RGBA } from '@app/classes/rgba';
 import { Tool } from '@app/classes/tool';
 import { PaintBucketAction } from '@app/classes/undo-redo/paint-bucket-action';
 import { Vec2 } from '@app/classes/vec2';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -19,8 +19,8 @@ export class PaintBucketService extends Tool {
     constructor(
         drawingService: DrawingService,
         private colorService: ColorService,
-        private cvsResizerService: CanvasResizerService,
         private undoRedoService: UndoRedoService,
+        private automaticSaveService: AutomaticSaveService,
     ) {
         super(drawingService);
     }
@@ -37,13 +37,8 @@ export class PaintBucketService extends Tool {
     private floodFill(x: number, y: number, replacementColor: RGBA): void {
         const pixelStack: Vec2[] = [];
         pixelStack.push({ x, y });
-        const pixels: ImageData = this.drawingService.baseCtx.getImageData(
-            0,
-            0,
-            this.cvsResizerService.canvasSize.x,
-            this.cvsResizerService.canvasSize.y,
-        );
-        let linearCords: number = (y * this.cvsResizerService.canvasSize.x + x) * this.colorAttributes;
+        const pixels: ImageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+        let linearCords: number = (y * this.drawingService.canvas.width + x) * this.colorAttributes;
         const originalColor = {
             red: pixels.data[linearCords],
             green: pixels.data[linearCords + 1],
@@ -63,7 +58,7 @@ export class PaintBucketService extends Tool {
             x = newPixel.x;
             y = newPixel.y;
 
-            linearCords = (y * this.cvsResizerService.canvasSize.x + x) * this.colorAttributes;
+            linearCords = (y * this.drawingService.canvas.width + x) * this.colorAttributes;
             while (
                 y-- >= 0 &&
                 pixels.data[linearCords] === originalColor.red &&
@@ -73,15 +68,15 @@ export class PaintBucketService extends Tool {
                 // tslint:disable-next-line:no-magic-numbers
                 pixels.data[linearCords + 3] === originalColor.alpha
             ) {
-                linearCords -= this.cvsResizerService.canvasSize.x * this.colorAttributes;
+                linearCords -= this.drawingService.canvas.width * this.colorAttributes;
             }
-            linearCords += this.cvsResizerService.canvasSize.x * this.colorAttributes;
+            linearCords += this.drawingService.canvas.width * this.colorAttributes;
             y++;
 
             let reachedLeft = false;
             let reachedRight = false;
             while (
-                y++ < this.cvsResizerService.canvasSize.y &&
+                y++ < this.drawingService.canvas.height &&
                 pixels.data[linearCords] === originalColor.red &&
                 pixels.data[linearCords + 1] === originalColor.green &&
                 pixels.data[linearCords + 2] === originalColor.blue &&
@@ -114,7 +109,7 @@ export class PaintBucketService extends Tool {
                     }
                 }
 
-                if (x < this.cvsResizerService.canvasSize.x - 1) {
+                if (x < this.drawingService.canvas.width - 1) {
                     if (
                         pixels.data[linearCords + this.colorAttributes] === originalColor.red &&
                         pixels.data[linearCords + this.colorAttributes + 1] === originalColor.green &&
@@ -131,7 +126,7 @@ export class PaintBucketService extends Tool {
                         }
                     }
 
-                    linearCords += this.cvsResizerService.canvasSize.x * this.colorAttributes;
+                    linearCords += this.drawingService.canvas.width * this.colorAttributes;
                 }
             }
         }
@@ -140,11 +135,12 @@ export class PaintBucketService extends Tool {
         const paintBucketAction = new PaintBucketAction(pixels, this.drawingService);
         this.undoRedoService.addUndo(paintBucketAction);
         this.undoRedoService.clearRedo();
+        this.automaticSaveService.save();
     }
     /*tslint:enable:cyclomatic-complexity*/
 
     // transform #000000 in {red : 0, green : 0, blue : 0, alpha : 0}
-    private hexToRGBA(hex: string): RGBA {
+    hexToRGBA(hex: string): RGBA {
         // tslint:disable-next-line:no-magic-numbers
         const r: number = parseInt(hex.slice(1, 3), this.radix);
         // tslint:disable-next-line:no-magic-numbers
@@ -157,7 +153,7 @@ export class PaintBucketService extends Tool {
         return { red: r, green: g, blue: b, alpha: a };
     }
 
-    private matchFillColor(currentColor: RGBA, targetColor: RGBA): boolean {
+    matchFillColor(currentColor: RGBA, targetColor: RGBA): boolean {
         let matchFillColor = true;
         const tolerance = this.toleranceToRGBA();
         matchFillColor = matchFillColor && targetColor.red >= currentColor.red - tolerance && targetColor.red <= currentColor.red + tolerance;
@@ -168,13 +164,8 @@ export class PaintBucketService extends Tool {
     }
 
     private paintAllSimilar(x: number, y: number, replacementColor: RGBA): void {
-        const pixels: ImageData = this.drawingService.baseCtx.getImageData(
-            0,
-            0,
-            this.cvsResizerService.canvasSize.x,
-            this.cvsResizerService.canvasSize.y,
-        );
-        const linearCords: number = (y * this.cvsResizerService.canvasSize.x + x) * this.colorAttributes;
+        const pixels: ImageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+        const linearCords: number = (y * this.drawingService.canvas.width + x) * this.colorAttributes;
         const originalColor = {
             red: pixels.data[linearCords],
             green: pixels.data[linearCords + 1],
@@ -211,7 +202,7 @@ export class PaintBucketService extends Tool {
         this.undoRedoService.clearRedo();
     }
 
-    private toleranceToRGBA(): number {
+    toleranceToRGBA(): number {
         if (this.tolerance === MIN_TOLERANCE) return 0;
         // tslint:disable-next-line:no-magic-numbers
         if (this.tolerance === MAX_TOLERANCE) return 255;

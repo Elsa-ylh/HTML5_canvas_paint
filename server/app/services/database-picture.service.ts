@@ -2,28 +2,45 @@ import { CanvasInformation, Label } from '@common/communication/canvas-informati
 import { injectable } from 'inversify';
 import { Collection, MongoClient, MongoClientOptions, ObjectId } from 'mongodb';
 import 'reflect-metadata';
+import { ReadFileService } from './read-file.service';
 
-const DATABASE_URL = 'mongodb+srv://Admin:LOG2990gr103@saved-canvas-images.2ticq.mongodb.net/project2?retryWrites=true&w=majority';
-const DATABASE_NAME = 'project2';
-const DATABASE_COLLECTION = 'saved_canvas_pictures';
 const HOURS_MIDNIGHT = 23;
 const MINUTE_MIDNIGHT = 59;
 const SECOND_MIDNIGHT = 59;
 @injectable()
 export class DatabasePictureService {
     private collection: Collection<CanvasInformation>;
-
     private options: MongoClientOptions = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     };
 
     constructor() {
-        MongoClient.connect(DATABASE_URL, this.options)
+        this.connectMongoClient('mongodb_url.txt');
+    }
+    private async connectMongoClient(nomFile: string): Promise<void> {
+        const readFileService = new ReadFileService();
+        readFileService.openFileRead(nomFile);
+        let databaseUrl = 'DATABASE_URL';
+        let databaseName = 'DATABASE_NAME';
+        let databaseCollection = 'DATABASE_COLLECTION';
+        const keyElement = readFileService.getInfos();
+        keyElement.forEach((element) => {
+            if (element[0] === databaseUrl) {
+                databaseUrl = element[1];
+            }
+            if (element[0] === databaseName) {
+                databaseName = element[1];
+            }
+            if (element[0] === databaseCollection) {
+                databaseCollection = element[1];
+            }
+        });
+        MongoClient.connect(databaseUrl, this.options)
             .then((client: MongoClient) => {
-                this.collection = client.db(DATABASE_NAME).collection(DATABASE_COLLECTION);
+                this.collection = client.db(databaseName).collection(databaseCollection);
             })
-            .catch(() => {
+            .catch((err) => {
                 console.error('CONNECTION ERROR. EXITING PROCESS');
                 process.exit(1);
             });
@@ -71,16 +88,16 @@ export class DatabasePictureService {
                     return pictures;
                 });
             collectionPictures.forEach((element) => {
-                element.labels.forEach((lable) => {
-                    if (this.testLabelItsNotinList(listLabels, lable)) listLabels.push(lable);
+                element.labels.forEach((label) => {
+                    if (this.isLabelNotInTheList(listLabels, label)) listLabels.push(label);
                 });
             });
             return listLabels;
         } catch (error) {
-            return error;
+            throw error;
         }
     }
-    private testLabelItsNotinList(listLabels: Label[], label: Label): boolean {
+    private isLabelNotInTheList(listLabels: Label[], label: Label): boolean {
         let isNotInTheList = true;
         for (let index = 0; index < listLabels.length; index++) {
             if (listLabels[index].label === label.label) {
@@ -131,6 +148,7 @@ export class DatabasePictureService {
                 throw error;
             });
     }
+
     async delete(deleteId: string): Promise<boolean> {
         const response = await this.collection.deleteOne({ _id: deleteId }).catch((err) => {
             throw err;
@@ -138,40 +156,43 @@ export class DatabasePictureService {
         return response.result.n === 1;
     }
 
-    async addPicture(newpicture: CanvasInformation): Promise<boolean> {
+    async addPicture(canvasInfo: CanvasInformation): Promise<boolean> {
         const newID = new ObjectId();
         const picture: CanvasInformation = {
             _id: newID.toHexString(),
-            name: newpicture.name,
-            labels: newpicture.labels,
-            date: newpicture.date,
-            picture: newpicture.picture,
-            height: newpicture.height,
-            width: newpicture.width,
+            name: canvasInfo.name,
+            labels: canvasInfo.labels,
+            date: canvasInfo.date,
+            picture: canvasInfo.picture,
+            height: canvasInfo.height,
+            width: canvasInfo.width,
         };
-        const bool = this.validatePicture(picture);
-        if (bool) {
-            const resolt = await this.collection.insertOne(picture).catch((error: Error) => {
+        const isPictureValid = this.validatePicture(picture);
+        if (isPictureValid) {
+            const response = await this.collection.insertOne(picture).catch((error: Error) => {
                 throw error;
             });
-            return resolt.result.ok === 1;
+            return response.result.ok === 1;
         } else {
             throw new Error('Invalid picture');
         }
     }
+
     async modifyPicture(canvasInfo: CanvasInformation): Promise<boolean> {
         if (this.validatePicture(canvasInfo)) {
-            const res = await this.collection.updateOne({ _id: canvasInfo._id }, { $set: canvasInfo }, { upsert: true }).catch((error: Error) => {
-                throw error;
-            });
-            return res.matchedCount === 1;
+            const response = await this.collection
+                .updateOne({ _id: canvasInfo._id }, { $set: canvasInfo }, { upsert: true })
+                .catch((error: Error) => {
+                    throw error;
+                });
+            return response.matchedCount === 1;
         } else {
             throw new Error('Invalid picture');
         }
     }
 
     private validatePicture(canvasInfo: CanvasInformation): boolean {
-        const boolTestCancas = canvasInfo.picture !== '' && canvasInfo.name !== '' && canvasInfo.height >= 0 && canvasInfo.width >= 0;
-        return boolTestCancas;
+        const isPictureValid = canvasInfo.picture !== '' && canvasInfo.name !== '' && canvasInfo.height >= 0 && canvasInfo.width >= 0;
+        return isPictureValid;
     }
 }

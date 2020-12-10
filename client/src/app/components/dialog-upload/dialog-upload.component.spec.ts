@@ -10,18 +10,21 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Vec2 } from '@app/classes/vec2';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { of } from 'rxjs';
 import { DialogUploadComponent } from './dialog-upload.component';
+
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
 // tslint:disable:no-unused-expression
 // tslint:disable:no-empty
+
 describe('DialogUpload', () => {
     let component: DialogUploadComponent;
     let fixture: ComponentFixture<DialogUploadComponent>;
@@ -38,8 +41,7 @@ describe('DialogUpload', () => {
         picture: 'test5',
     };
     const vec = { x: 50, y: 45 } as Vec2;
-    const testCanvasInformationAdds = [testCanvasInformationAdd];
-    const labels: Label[] = [{ label: 'lable1' }, { label: 'label2' }];
+    const labels: Label[] = [{ label: 'label1' }, { label: 'label2' }];
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [
@@ -49,6 +51,7 @@ describe('DialogUpload', () => {
                 MatGridListModule,
                 MatIconModule,
                 MatSelectModule,
+                MatSliderModule,
                 MatFormFieldModule,
                 MatInputModule,
                 FormsModule,
@@ -61,15 +64,15 @@ describe('DialogUpload', () => {
                 {
                     provide: ClientServerCommunicationService,
                     useValue: {
-                        getAllLabel: () => labels,
-                        resetDatas: () => '',
-                        getInformation: () => testCanvasInformationAdds,
-                        getElementResearch: () => testCanvasInformationAdds,
+                        getAllLabels: () => labels,
+                        resetData: () => '',
+                        getInformation: () => testCanvasInformationAdd,
+                        getElementResearch: () => testCanvasInformationAdd,
                         savePicture: () => Message,
                     },
                 },
                 {
-                    provide: CanvasResizerService,
+                    provide: CanvasResizeService,
                     useValue: { canvasSize: () => vec },
                 },
                 {
@@ -83,7 +86,7 @@ describe('DialogUpload', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(DialogUploadComponent);
         component = fixture.componentInstance;
-        spyOn(component['clientServerComSvc'], 'savePicture').and.returnValue(of());
+        spyOn(component['clientServerComService'], 'savePicture').and.returnValue(of());
         httpMock = TestBed.inject(HttpTestingController);
         fixture.detectChanges();
         processedMessageSpy = spyOn<any>(component, 'processedMessage').and.callThrough();
@@ -123,32 +126,33 @@ describe('DialogUpload', () => {
         expect(component.checkName('a_a_a_a')).toEqual(false);
     });
     it('test checkLabel', () => {
+        expect(component.checkLabel('#aaaa')).toEqual(false);
         expect(component.checkLabel('')).toEqual(false);
         expect(component.checkLabel(' a ')).toEqual(true);
-        expect(component.checkLabel('a')).toEqual(true);
+        expect(component.checkLabel('a')).toEqual(false);
         expect(component.checkLabel('aaaaaaa&')).toEqual(true);
         expect(component.checkLabel('a_a_a_a')).toEqual(false);
     });
-    it('test selectionLabel', () => {
+    it('test isLabelExisting', () => {
         component.ngOnInit();
-        component.selectionLabel(labels[0].label);
+        component.isLabelExisting(labels[0].label);
         expect(component['labelSelect'][0]).toEqual(labels[0].label);
     });
-    it('test selectionLabel with the parameter not in liste dataLabel', () => {
+    it('test isLabelExisting with the parameter not in liste dataLabel', () => {
         component.ngOnInit();
-        component.selectionLabel('label3');
+        component.isLabelExisting('label3');
         expect(component['labelSelect'].length).toEqual(1);
     });
-    it('test the selectionLabel 3 times with the parameter label1', () => {
-        component.selectionLabel(labels[1].label);
-        component.selectionLabel(labels[1].label);
-        component.selectionLabel(labels[1].label);
+    it('test the isLabelExisting 3 times with the parameter label1', () => {
+        component.isLabelExisting(labels[1].label);
+        component.isLabelExisting(labels[1].label);
+        component.isLabelExisting(labels[1].label);
         expect(component['labelSelect'][0]).toEqual(labels[1].label);
     });
-    it('test the selectionLabel times with the parameter label1', () => {
-        component.selectionLabel(labels[0].label);
-        component.selectionLabel(labels[1].label);
-        component.selectionLabel(labels[0].label);
+    it('test the isLabelExisting times with the parameter label1', () => {
+        component.isLabelExisting(labels[0].label);
+        component.isLabelExisting(labels[1].label);
+        component.isLabelExisting(labels[0].label);
         expect(component['labelSelect'][0]).toEqual(labels[1].label);
     });
     it('test not name and not label function saveServer', () => {
@@ -162,22 +166,22 @@ describe('DialogUpload', () => {
     });
     it('refresh is testing', async () => {
         expect(component.dataLabel[0].label).toEqual(labels[0].label);
-        const labeltest: Label = { label: 'modif' };
-        spyOn(component['clientServerComSvc'], 'getAllLabel').and.returnValue([labeltest]);
+        const labelTest: Label = { label: 'modif' };
+        spyOn(component['clientServerComService'], 'getAllLabels').and.returnValue([labelTest]);
         component.refresh();
-        expect(component.dataLabel[0].label).toEqual(labeltest.label);
+        expect(component.dataLabel[0].label).toEqual(labelTest.label);
     });
 
     it('test name and label function saveServer', () => {
         component.textName = 'aaaaaa';
-        component.selectionLabel(labels[0].label);
+        component.isLabelExisting(labels[0].label);
         component.textLabel = 'aaaaaaaaa';
         component.saveServer();
         expect(processedMessageSpy).not.toHaveBeenCalled();
     });
     it('', () => {
-        component.saveload = true;
-        component.processedMessage({ title: 'succes', body: 'reussi' });
-        expect(component.saveload).toEqual(false);
+        component.saveLoad = true;
+        component.processedMessage({ title: 'succès', body: 'réussi' });
+        expect(component.saveLoad).toEqual(false);
     });
 });

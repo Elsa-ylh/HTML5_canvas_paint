@@ -1,4 +1,4 @@
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -12,7 +12,7 @@ export class EllipseAction extends AbsUndoRedo {
         private secondaryColor: string,
         private lineWidth: number,
         private shiftPressed: boolean,
-        private selectSubTool: SubToolselected,
+        private selectSubTool: SubToolSelected,
         private canvasSelected: boolean,
         private ellipseService: EllipseService,
         private drawingService: DrawingService,

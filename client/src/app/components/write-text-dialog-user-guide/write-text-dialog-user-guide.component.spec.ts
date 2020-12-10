@@ -28,22 +28,22 @@ describe('WriteTextDialogUserGuideComponent', () => {
     });
     it('Is a change for with the user guide list of the various section with something bad', () => {
         component.diversListSelection();
-        const hasboolSelecteur = component.testDataGuide(txtDrawListSelection);
-        expect(hasboolSelecteur).toEqual(false);
+        const hasBoolSelecteur = component.testDataGuide(txtDrawListSelection);
+        expect(hasBoolSelecteur).toEqual(false);
     });
     it('Is a change for with the User Guide list from the various section', () => {
         component.diversListSelection();
-        const hasboolSelecteur = component.testDataGuide(txtDiversListSelection);
-        expect(hasboolSelecteur).toEqual(true);
+        const hasBoolSelecteur = component.testDataGuide(txtDiversListSelection);
+        expect(hasBoolSelecteur).toEqual(true);
     });
     it('Est un changement pour avec la liste du guide utilisateur de la section pinceau avec quelque chose de mauvais', () => {
         component.drawListSelection();
-        const hasboolSelecteur = component.testDataGuide(txtDiversListSelection);
-        expect(hasboolSelecteur).toEqual(false);
+        const hasBoolSelecteur = component.testDataGuide(txtDiversListSelection);
+        expect(hasBoolSelecteur).toEqual(false);
     });
     it('Is a change for with the user guide list of the brush section', () => {
         component.drawListSelection();
-        const hasboolSelecteur = component.testDataGuide(txtDrawListSelection);
-        expect(hasboolSelecteur).toEqual(true);
+        const hasBoolSelecteur = component.testDataGuide(txtDrawListSelection);
+        expect(hasBoolSelecteur).toEqual(true);
     });
 });

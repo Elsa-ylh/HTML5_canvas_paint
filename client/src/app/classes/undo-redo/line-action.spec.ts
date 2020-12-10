@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { LineAction } from '@app/classes/undo-redo/line-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from '@app/services/tools/line.service';
@@ -21,28 +22,28 @@ describe('LineAction', () => {
     let pointMouse: Vec2;
     let colorLine: string;
     let thickness: number;
-    let secondaryTickness: number;
-    let subToolselected: SubToolselected;
+    let secondaryThickness: number;
+    let subToolSelected: SubToolSelected;
 
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
-
+    let autoSaveStub: AutomaticSaveService;
     beforeEach(() => {
         changesLine.push({ x: 5, y: 6 });
         changesLine.push({ x: 25, y: 15 });
         pointMouse = { x: 5, y: 6 };
         colorLine = '#000000';
         thickness = 2;
-        secondaryTickness = 3;
-        subToolselected = SubToolselected.tool1;
+        secondaryThickness = 3;
+        subToolSelected = SubToolSelected.tool1;
 
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        lineStub = new LineService(drawingStub, colorStub, undoRedoStub);
+        lineStub = new LineService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
-        lineActionStub = new LineAction(changesLine, pointMouse, colorLine, thickness, secondaryTickness, lineStub, drawingStub, subToolselected);
+        lineActionStub = new LineAction(changesLine, pointMouse, colorLine, thickness, secondaryThickness, lineStub, drawingStub, subToolSelected);
 
         canvas = canvasTestHelper.canvas;
         canvas.width = 100;
@@ -67,14 +68,14 @@ describe('LineAction', () => {
         lineStub = TestBed.inject(LineService);
     });
 
-    it('strokeColor and linewidth match with primaryColor and thickness of a lineAction', () => {
+    it('strokeColor and lineWidth match with primaryColor and thickness of a lineAction', () => {
         drawingStub.baseCtx.shadowColor = drawingStub.previewCtx.shadowColor = '#000000' as string;
         lineActionStub.apply();
         expect(drawingStub.baseCtx.strokeStyle).toEqual(colorLine);
         expect(drawingStub.baseCtx.lineWidth).toEqual(thickness);
     });
 
-    it('should call drawline', () => {
+    it('should call drawLine', () => {
         const drawLineSpy = spyOn(lineStub, 'drawLine').and.stub();
         lineActionStub.apply();
         expect(drawLineSpy).toHaveBeenCalled();

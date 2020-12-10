@@ -18,14 +18,14 @@ export class DialogExportDrawingComponent implements AfterViewInit {
     private filterString: Map<Filter, string> = new Map([
         [Filter.BLUR, 'blur(4px)'],
         [Filter.BRIGHTNESS, 'brightness(200)'],
-        [Filter.GRAYSCALE, 'grayscale(100)'],
+        [Filter.GRAY_SCALE, 'grayscale(100)'],
         [Filter.INVERT, 'invert(50)'],
         [Filter.SEPIA, 'sepia(50)'],
     ]);
 
     private imageFormatString: Map<ImageFormat, string> = new Map([
         [ImageFormat.PNG, '.png'],
-        [ImageFormat.JPG, '.jpg'],
+        [ImageFormat.JPG, '.jpeg'],
     ]);
 
     constructor(private drawingService: DrawingService) {
@@ -57,7 +57,7 @@ export class DialogExportDrawingComponent implements AfterViewInit {
     }
 
     checkSecond(): void {
-        this.whichFilter = Filter.GRAYSCALE;
+        this.whichFilter = Filter.GRAY_SCALE;
         this.previewImage.nativeElement.style.filter = 'grayscale(100)';
     }
 
@@ -84,7 +84,7 @@ export class DialogExportDrawingComponent implements AfterViewInit {
                     textImageFormat += '.png';
                     break;
                 case ImageFormat.JPG:
-                    textImageFormat += '.jpg';
+                    textImageFormat += '.jpeg';
                     break;
             }
             switch (this.whichFilter) {
@@ -97,7 +97,7 @@ export class DialogExportDrawingComponent implements AfterViewInit {
                 case Filter.BRIGHTNESS:
                     textImageFormat += '\n Filtre brightness';
                     break;
-                case Filter.GRAYSCALE:
+                case Filter.GRAY_SCALE:
                     textImageFormat += '\n Filtre grayscale';
                     break;
                 case Filter.INVERT:
@@ -120,7 +120,11 @@ export class DialogExportDrawingComponent implements AfterViewInit {
                 // https://stackoverflow.com/a/50300880
                 const link = document.createElement('a');
                 link.download = this.nameFormControl.value + this.imageFormatString.get(this.whichExportType);
-                link.href = finalImageCanvas.toDataURL();
+                if (this.whichExportType === ImageFormat.JPG) {
+                    link.href = finalImageCanvas.toDataURL('image/jpeg', 1.0);
+                } else {
+                    link.href = finalImageCanvas.toDataURL('image/png', 1.0);
+                }
                 link.click();
             }
         }

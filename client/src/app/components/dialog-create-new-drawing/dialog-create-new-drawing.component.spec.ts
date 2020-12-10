@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSliderModule } from '@angular/material/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { DialogCreateNewDrawingComponent } from './dialog-create-new-drawing.component';
 
@@ -17,11 +19,12 @@ describe('DialogCreateNewDrawingComponent', () => {
     let component: DialogCreateNewDrawingComponent;
     let fixture: ComponentFixture<DialogCreateNewDrawingComponent>;
     let drawingStub: DrawingService;
-    let canvasResizerStub: CanvasResizerService;
+    let canvasResizeStub: CanvasResizeService;
     let onConfirmClickSpy: jasmine.Spy<any>;
     let alertSpy: jasmine.Spy<any>;
     let keyboardEvent: KeyboardEvent;
     let undoRedoStub: UndoRedoService;
+    let gridStub: GridService;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -29,20 +32,21 @@ describe('DialogCreateNewDrawingComponent', () => {
     beforeEach(async () => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(undoRedoStub);
+        gridStub = new GridService(drawingStub);
+        canvasResizeStub = new CanvasResizeService(gridStub, undoRedoStub);
 
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
 
         await TestBed.configureTestingModule({
-            imports: [MatDialogModule, MatIconModule, MatGridListModule, FormsModule, BrowserAnimationsModule, HttpClientModule],
+            imports: [MatDialogModule, MatSliderModule, MatIconModule, MatGridListModule, FormsModule, BrowserAnimationsModule, HttpClientModule],
             declarations: [DialogCreateNewDrawingComponent],
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: { close: () => '' } },
                 { provide: DrawingService, useValue: { drawingStub, isCanvasBlank: () => false } },
                 { provide: Router, useValue: { navigate: () => '' } },
-                { provide: CanvasResizerService, useValue: canvasResizerStub },
+                { provide: CanvasResizeService, useValue: canvasResizeStub },
             ],
         }).compileComponents();
         drawingStub.baseCtx = baseCtxStub;

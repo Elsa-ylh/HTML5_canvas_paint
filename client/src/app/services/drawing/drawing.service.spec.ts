@@ -1,8 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+
 // tslint:disable:no-string-literal
 // tslint:disable:no-magic-numbers
+
 describe('DrawingService', () => {
     let service: DrawingService;
 

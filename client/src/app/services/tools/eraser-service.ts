@@ -3,6 +3,7 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { Tool } from '@app/classes/tool';
 import { EraseAction } from '@app/classes/undo-redo/erase-actions';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
@@ -11,9 +12,10 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
-    private color: string = '#ffffff';
+    private color: string = '#FFFFFF';
     eraserWidth: number = 5;
-    constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService) {
+
+    constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService, private automaticSaveService: AutomaticSaveService) {
         super(drawingService);
         this.clearPath();
     }
@@ -23,10 +25,10 @@ export class EraserService extends Tool {
         if (this.mouseDown) {
             this.mouseMove = false;
             this.drawingService.baseCtx.strokeStyle = this.color; // draw in white
-            this.drawingService.previewCtx.strokeStyle = this.color; // when changecolor is implemented call pencil with white.
+            this.drawingService.previewCtx.strokeStyle = this.color; // when change color is implemented call pencil with white.
             this.clearEffectTool();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
+            this.mouseDownCoords = this.getPositionFromMouse(event);
+            this.pathData.push(this.mouseDownCoords);
         }
         this.clearPath();
     }
@@ -39,7 +41,7 @@ export class EraserService extends Tool {
                 this.removeLine(this.drawingService.baseCtx, this.pathData);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
             } else {
-                // code to draw dot
+                // code to draw the dot
                 this.clearPath();
                 this.drawingService.baseCtx.fillStyle = this.color;
                 this.drawingService.baseCtx.fillRect(mousePosition.x, mousePosition.y, this.eraserWidth, this.eraserWidth);
@@ -54,6 +56,7 @@ export class EraserService extends Tool {
         this.undoRedoService.clearRedo();
         this.clearPath();
         this.mouseDown = false;
+        this.automaticSaveService.save();
     }
 
     onMouseMove(event: MouseEvent): void {

@@ -4,11 +4,13 @@ import { CanvasInformation, Label } from '@common/communication/canvas-informati
 import { Message } from '@common/communication/message';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+
 @Injectable({
     providedIn: 'root',
 })
 export class ClientServerCommunicationService {
     private readonly HTTP_SERVE_LOCAL: string = 'http://localhost:3000/api/data';
+    private readonly HTTP_SERVE_LOCAL_EMAIL: string = 'http://localhost:3000/api/email';
     private information: CanvasInformation;
     constructor(private http: HttpClient) {}
 
@@ -28,20 +30,20 @@ export class ClientServerCommunicationService {
         };
     }
 
-    allLabel(): Observable<CanvasInformation> {
+    allLabels(): Observable<CanvasInformation> {
         return this.http
             .get<CanvasInformation>(this.HTTP_SERVE_LOCAL + '/all_labels')
             .pipe(catchError(this.handleError<CanvasInformation>('basicGet')));
     }
 
     private catchInformation(): void {
-        this.allLabel().subscribe((info) => (this.information = info));
+        this.allLabels().subscribe((info) => (this.information = info));
     }
 
-    getAllLabel(): Label[] {
+    getAllLabels(): Label[] {
         this.catchInformation();
         if (this.information == undefined) return [];
-        if (this.information._id === 'list_of_all_labals') {
+        if (this.information._id === 'list_of_all_labels') {
             return this.information.labels;
         }
         return [];
@@ -58,5 +60,12 @@ export class ClientServerCommunicationService {
     }
     deleteQuery(message: Message): Observable<Message> {
         return this.http.post<Message>(this.HTTP_SERVE_LOCAL + '/delete', message).pipe(catchError(this.handleError<Message>('basicPost')));
+    }
+
+    sendEmail(formData: FormData): Observable<string> {
+        // the response wants an object as type but the containing data is not necessarily an object
+        // tslint:disable:next-line: ban-types
+        const responseOption: Object = { responseType: 'text' };
+        return this.http.post<string>(this.HTTP_SERVE_LOCAL_EMAIL, formData, responseOption);
     }
 }
