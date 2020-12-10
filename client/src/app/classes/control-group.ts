@@ -1,5 +1,5 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ControlPoint, ControlPointName, CPSIZE } from './control-points';
+import { ControlPoint, ControlPointName, CONTROLPOINT_SIZESIZE } from './control-points';
 import { Vec2 } from './vec2';
 
 export class ControlGroup {
@@ -7,9 +7,7 @@ export class ControlGroup {
 
     // the next variable is not linked to the selection service
     controlPointName: ControlPointName = ControlPointName.none;
-
     controlPoints: Map<ControlPointName, ControlPoint> = new Map<ControlPointName, ControlPoint>();
-
     sizeControlGroup: Vec2;
 
     constructor(drawingService: DrawingService) {
@@ -38,43 +36,43 @@ export class ControlGroup {
 
     setPositions(startingPos: Vec2, endingPos: Vec2, size: Vec2): void {
         (this.controlPoints.get(ControlPointName.center) as ControlPoint).setPosition({
-            x: startingPos.x + size.x / 2 - CPSIZE / 2,
-            y: startingPos.y + size.y / 2 - CPSIZE / 2,
+            x: startingPos.x + size.x / 2 - CONTROLPOINT_SIZESIZE / 2,
+            y: startingPos.y + size.y / 2 - CONTROLPOINT_SIZESIZE / 2,
         });
 
         (this.controlPoints.get(ControlPointName.topLeft) as ControlPoint).setPosition({
-            x: startingPos.x - CPSIZE / 2,
-            y: startingPos.y - CPSIZE / 2,
+            x: startingPos.x - CONTROLPOINT_SIZESIZE / 2,
+            y: startingPos.y - CONTROLPOINT_SIZESIZE / 2,
         });
         (this.controlPoints.get(ControlPointName.top) as ControlPoint).setPosition({
-            x: startingPos.x + size.x / 2 - CPSIZE / 2,
-            y: startingPos.y - CPSIZE / 2,
+            x: startingPos.x + size.x / 2 - CONTROLPOINT_SIZESIZE / 2,
+            y: startingPos.y - CONTROLPOINT_SIZESIZE / 2,
         });
         (this.controlPoints.get(ControlPointName.topRight) as ControlPoint).setPosition({
-            x: startingPos.x + size.x - CPSIZE / 2,
-            y: startingPos.y - CPSIZE / 2,
+            x: startingPos.x + size.x - CONTROLPOINT_SIZESIZE / 2,
+            y: startingPos.y - CONTROLPOINT_SIZESIZE / 2,
         });
 
         (this.controlPoints.get(ControlPointName.left) as ControlPoint).setPosition({
-            x: startingPos.x - CPSIZE / 2,
-            y: startingPos.y + size.y / 2 - CPSIZE / 2,
+            x: startingPos.x - CONTROLPOINT_SIZESIZE / 2,
+            y: startingPos.y + size.y / 2 - CONTROLPOINT_SIZESIZE / 2,
         });
         (this.controlPoints.get(ControlPointName.right) as ControlPoint).setPosition({
-            x: startingPos.x + size.x - CPSIZE / 2,
-            y: startingPos.y + size.y / 2 - CPSIZE / 2,
+            x: startingPos.x + size.x - CONTROLPOINT_SIZESIZE / 2,
+            y: startingPos.y + size.y / 2 - CONTROLPOINT_SIZESIZE / 2,
         });
 
         (this.controlPoints.get(ControlPointName.bottomLeft) as ControlPoint).setPosition({
-            x: endingPos.x - CPSIZE / 2,
-            y: endingPos.y - CPSIZE / 2,
+            x: endingPos.x - CONTROLPOINT_SIZESIZE / 2,
+            y: endingPos.y - CONTROLPOINT_SIZESIZE / 2,
         });
         (this.controlPoints.get(ControlPointName.bottom) as ControlPoint).setPosition({
-            x: endingPos.x - size.x / 2 - CPSIZE / 2,
-            y: endingPos.y - CPSIZE / 2,
+            x: endingPos.x - size.x / 2 - CONTROLPOINT_SIZESIZE / 2,
+            y: endingPos.y - CONTROLPOINT_SIZESIZE / 2,
         });
         (this.controlPoints.get(ControlPointName.bottomRight) as ControlPoint).setPosition({
-            x: endingPos.x - size.x - CPSIZE / 2,
-            y: endingPos.y - CPSIZE / 2,
+            x: endingPos.x - size.x - CONTROLPOINT_SIZESIZE / 2,
+            y: endingPos.y - CONTROLPOINT_SIZESIZE / 2,
         });
     }
 

@@ -120,7 +120,7 @@ describe('StampService', () => {
         expect(stampService['angle']).toEqual(oldAngle + 1);
     });
 
-    it('should substract 15 to angle', () => {
+    it('should subtract 15 to angle', () => {
         const oldAngle = stampService['angle'];
         stampService['isWheelUp'] = false;
         stampService['isAltPressed'] = false;
@@ -130,7 +130,7 @@ describe('StampService', () => {
         expect(stampService['angle']).toEqual(oldAngle - 15);
     });
 
-    it('should substract 1 to angle', () => {
+    it('should subtract 1 to angle', () => {
         const oldAngle = stampService['angle'];
         stampService['isWheelUp'] = false;
         stampService['isAltPressed'] = true;
@@ -140,13 +140,13 @@ describe('StampService', () => {
         expect(stampService['angle']).toEqual(oldAngle - 1);
     });
 
-    it('should set isWheelup', () => {
+    it('should set isWheelUp', () => {
         const event = { deltaY: -20 } as WheelEvent;
         stampService.addOrRetract(event);
         expect(stampService['isWheelUp']).toEqual(true);
     });
 
-    it('should set isWheelup', () => {
+    it('should set isWheelUp', () => {
         const event = { deltaY: 20 } as WheelEvent;
         stampService.addOrRetract(event);
         expect(stampService['isWheelUp']).toEqual(false);

@@ -10,6 +10,9 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
+const DOTTED_SPACE = 10;
+const DOTTED_LINE_WIDTH = 2;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -17,17 +20,15 @@ export class EllipseService extends Tool {
     lineWidth: number = 1;
     fillColor: string;
     strokeColor: string;
-    strokeRectColor: string = '#000000';
-    lineRectWidth: number = 1;
+    private strokeRectColor: string = '#000000';
+    private lineRectWidth: number = 1;
     circle: boolean = false;
     mousePosition: Vec2;
-    dottedLineWidth: number = 2;
-    dottedSpace: number = 10;
     width: number;
     height: number;
-    mouseEnter: boolean = false;
-    mouseOut: boolean = false;
-    canvasSelected: boolean;
+    private mouseEnter: boolean = false;
+    private mouseOut: boolean = false;
+    canvasSelected: boolean; // which canvas
 
     constructor(
         drawingService: DrawingService,
@@ -40,8 +41,8 @@ export class EllipseService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-        this.drawingService.baseCtx.lineWidth = this.dottedLineWidth;
-        this.drawingService.previewCtx.lineWidth = this.dottedLineWidth;
+        this.drawingService.baseCtx.lineWidth = DOTTED_LINE_WIDTH;
+        this.drawingService.previewCtx.lineWidth = DOTTED_LINE_WIDTH;
         this.clearEffectTool();
         this.strokeColor = this.colorService.secondaryColor;
         this.fillColor = this.colorService.primaryColor;
@@ -153,47 +154,28 @@ export class EllipseService extends Tool {
         }
     }
 
-    selectEllipse(mousePosition: Vec2, mouseDownCoord: Vec2, generalInfo: ToolGeneralInfo): void {
-        this.height = mousePosition.y - mouseDownCoord.y;
-        this.width = mousePosition.x - mouseDownCoord.x;
-        this.mouseDownCoords = mouseDownCoord;
+    selectEllipse(mousePosition: Vec2, mouseDownCoords: Vec2, generalInfo: ToolGeneralInfo): void {
+        this.height = mousePosition.y - mouseDownCoords.y;
+        this.width = mousePosition.x - mouseDownCoords.x;
+        this.mouseDownCoords = mouseDownCoords;
         this.strokeColor = generalInfo.primaryColor;
         this.fillColor = generalInfo.secondaryColor;
         this.lineWidth = generalInfo.lineWidth;
 
-        if (generalInfo.canvasSelected) {
-            switch (generalInfo.selectSubTool) {
-                case SubToolSelected.tool1: {
-                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                    this.drawFillEllipse(this.drawingService.baseCtx, mouseDownCoord);
-                    break;
-                }
-
-                case SubToolSelected.tool2: {
-                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                    this.drawEllipseOutline(this.drawingService.baseCtx, mouseDownCoord, mousePosition);
-                    break;
-                }
-
-                case SubToolSelected.tool3: {
-                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                    this.drawFillEllipseOutline(this.drawingService.baseCtx, mouseDownCoord, mousePosition);
-                    break;
-                }
+        const onWhichCanvas = generalInfo.canvasSelected ? this.drawingService.baseCtx : this.drawingService.previewCtx;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        switch (generalInfo.selectSubTool) {
+            case SubToolSelected.tool1: {
+                this.drawFillEllipse(onWhichCanvas, mouseDownCoords);
+                break;
             }
-        } else {
-            switch (generalInfo.selectSubTool) {
-                case SubToolSelected.tool1:
-                    this.drawFillEllipse(this.drawingService.previewCtx, mouseDownCoord);
-                    break;
-
-                case SubToolSelected.tool2:
-                    this.drawEllipseOutline(this.drawingService.previewCtx, mouseDownCoord, mousePosition);
-                    break;
-
-                case SubToolSelected.tool3:
-                    this.drawFillEllipseOutline(this.drawingService.previewCtx, mouseDownCoord, mousePosition);
-                    break;
+            case SubToolSelected.tool2: {
+                this.drawEllipseOutline(onWhichCanvas, mouseDownCoords, mousePosition);
+                break;
+            }
+            case SubToolSelected.tool3: {
+                this.drawFillEllipseOutline(onWhichCanvas, mouseDownCoords, mousePosition);
+                break;
             }
         }
         this.automaticSaveService.save();
@@ -238,7 +220,7 @@ export class EllipseService extends Tool {
         this.drawingService.baseCtx.beginPath();
         ctx.fillStyle = this.fillColor;
         ctx.strokeStyle = this.strokeRectColor;
-        ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
+        ctx.setLineDash([DOTTED_SPACE, DOTTED_SPACE]);
         this.drawEllipse(ctx, this.width / 2, this.height / 2);
         ctx.fill();
         if (this.drawingService.previewCtx === ctx) {
@@ -259,7 +241,7 @@ export class EllipseService extends Tool {
 
         ctx.strokeStyle = this.strokeRectColor;
         ctx.lineWidth = this.lineRectWidth;
-        ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
+        ctx.setLineDash([DOTTED_SPACE, DOTTED_SPACE]);
         this.drawPreviewRect(ctx, mouseDownPos, mouseUpPos);
     }
 
@@ -279,7 +261,7 @@ export class EllipseService extends Tool {
 
         ctx.strokeStyle = this.strokeRectColor;
         ctx.lineWidth = this.lineRectWidth;
-        ctx.setLineDash([this.dottedSpace, this.dottedSpace]);
+        ctx.setLineDash([DOTTED_SPACE, DOTTED_SPACE]);
         this.drawPreviewRect(ctx, mouseDownPos, mouseUpPos);
     }
 

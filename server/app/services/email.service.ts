@@ -5,17 +5,35 @@ import { FileTypeResult } from 'file-type/core';
 import * as FormData from 'form-data';
 import { injectable } from 'inversify';
 import 'reflect-metadata';
+import { ReadFileService } from './read-file.service';
 
 @injectable()
 export class EmailService {
-    private readonly url: string = 'http://log2990.step.polymtl.ca/email?address_validation\n=true&quick_return=true&dry_run=false';
-    private readonly xTeamKey: string = '42e98715-06d2-4f68-a853-e3fa5f7f9151';
-
+    private url: string = 'URL';
+    private X_TEAM_KEY: string = 'X_TEAM_KEY';
     // https://regexr.com/3e48o
-    private readonly emailRegexValidation: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+    private readonly EMAIL_REGEX_VALIDATION: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+
+    constructor() {
+        this.readFile('email_info.txt');
+    }
+
+    private readFile(nomFile: string): void {
+        const readFileService = new ReadFileService();
+        readFileService.openFileRead(nomFile);
+        const keyElement: string[][] = readFileService.getInfos();
+        keyElement.forEach((element) => {
+            if (element[0] === this.url) {
+                this.url = element[1];
+            }
+            if (element[0] === this.X_TEAM_KEY) {
+                this.X_TEAM_KEY = element[1];
+            }
+        });
+    }
 
     isEmailValid(email: string): boolean {
-        return email.match(this.emailRegexValidation) !== null;
+        return email.match(this.EMAIL_REGEX_VALIDATION) !== null;
     }
 
     getImageExtension(imagePath: string): ImageFormat {
@@ -46,7 +64,7 @@ export class EmailService {
         return axios
             .post(this.url, emailAndImage, {
                 headers: {
-                    'x-team-key': this.xTeamKey,
+                    'x-team-key': this.X_TEAM_KEY,
                     ...emailAndImage.getHeaders(),
                 },
             })

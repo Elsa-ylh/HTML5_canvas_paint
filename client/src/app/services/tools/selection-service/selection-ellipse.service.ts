@@ -4,17 +4,13 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SelectionImage } from '@app/classes/selection';
 import { SelectionEllipseAction } from '@app/classes/undo-redo/selection-ellipse-action';
 import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
-// import { SelectionEllipseAction } from '@app/classes/undo-redo/selection-ellipse-action';
-// import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { RotationService } from './rotation.service';
 import { SelectionRectangleService } from './selection-rectangle.service';
-// import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-// import { SelectionRectangleService } from './selection-rectangle.service';
-import { DOTTEDSPACE, LINEWIDTH, SelectionService } from './selection-service';
+import { DOTTED_SPACE, LINE_WIDTH, SelectionService } from './selection-service';
 
 @Injectable({
     providedIn: 'root',
@@ -31,7 +27,7 @@ export class SelectionEllipseService extends SelectionService {
 
     onMouseDown(event: MouseEvent): void {
         this.clearEffectTool();
-        this.drawingService.previewCtx.lineWidth = LINEWIDTH;
+        this.drawingService.previewCtx.lineWidth = LINE_WIDTH;
         this.drawingService.previewCtx.strokeStyle = 'black';
         this.drawingService.previewCtx.fillStyle = 'black';
 
@@ -43,18 +39,18 @@ export class SelectionEllipseService extends SelectionService {
 
             // check if mouse is inside selection
             if (this.selection.imagePosition && this.selection.endingPos) {
-                this.inSelection = this.isInsideSelection(this.getPositionFromMouse(event));
+                this.inSelection = this.isInsideSelectionCoords(this.getPositionFromMouse(event));
             }
 
             // check if mouse is inside a control point
             if (!this.drawingService.isPreviewCanvasBlank()) {
                 this.controlPointName = this.controlGroup.isInControlPoint(this.mouseDownCoords);
             }
-            // for drawing preview
+            // to draw preview
             if (this.drawingService.isPreviewCanvasBlank()) {
                 this.selection.imagePosition = this.mouseDownCoords;
 
-                // for  pasting selection
+                // to  paste selection
             } else if (!this.inSelection && !this.drawingService.isPreviewCanvasBlank() && this.controlPointName === ControlPointName.none) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
@@ -222,14 +218,14 @@ export class SelectionEllipseService extends SelectionService {
     protected drawPreview(): void {
         if (this.selection.imagePosition !== this.selection.endingPos) {
             if (!this.shiftPressed) {
-                this.selection.ellipseRad = { x: Math.abs(this.selection.width / 2), y: Math.abs(this.selection.height / 2) };
+                this.selection.ellipseRadian = { x: Math.abs(this.selection.width / 2), y: Math.abs(this.selection.height / 2) };
             } else {
-                this.selection.ellipseRad = {
+                this.selection.ellipseRadian = {
                     x: Math.min(Math.abs(this.selection.width / 2), Math.abs(this.selection.height / 2)),
                     y: Math.min(Math.abs(this.selection.width / 2), Math.abs(this.selection.height / 2)),
                 };
             }
-            this.drawingService.previewCtx.setLineDash([DOTTEDSPACE, DOTTEDSPACE]);
+            this.drawingService.previewCtx.setLineDash([DOTTED_SPACE, DOTTED_SPACE]);
             this.drawPreviewRect(this.drawingService.previewCtx, false);
             this.drawingService.previewCtx.beginPath();
             this.drawEllipse(this.drawingService.previewCtx, this.selection.imagePosition, this.selection.width / 2, this.selection.height / 2);
@@ -242,7 +238,7 @@ export class SelectionEllipseService extends SelectionService {
         let centerY = 0 as number;
         centerX = mouseCoords.x + radiusX;
         centerY = mouseCoords.y + radiusY;
-        ctx.ellipse(centerX, centerY, Math.abs(this.selection.ellipseRad.x), Math.abs(this.selection.ellipseRad.y), 0, 0, 2 * Math.PI);
+        ctx.ellipse(centerX, centerY, Math.abs(this.selection.ellipseRadian.x), Math.abs(this.selection.ellipseRadian.y), 0, 0, 2 * Math.PI);
     }
 
     clearSelection(): void {

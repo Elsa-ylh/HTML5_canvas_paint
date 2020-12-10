@@ -4,7 +4,7 @@ import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { RectangleAction } from '@app/classes/undo-redo/rectangle-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
@@ -33,14 +33,13 @@ describe('RectangleAction', () => {
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
     let autoSaveStub: AutomaticSaveService;
-    let canvasResizerStub: CanvasResizerService;
+    let canvasResizeStub: CanvasResizeService;
 
     beforeEach(() => {
         mousePosition = { x: 5, y: 6 };
         mouseDownCord = { x: 8, y: 16 };
         primaryColor = '#000000';
         secondaryColor = '#ffffff';
-        // tslint:disable:no-magic-numbers
         lineWidth = 2;
         canvasSelected = false;
         shiftPressed = true;
@@ -50,8 +49,8 @@ describe('RectangleAction', () => {
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         gridStub = new GridService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
+        canvasResizeStub = new CanvasResizeService(gridStub, undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizeStub, drawingStub, undoRedoStub);
         rectStub = new RectangleService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
         rectangleActionStub = new RectangleAction(
@@ -68,7 +67,6 @@ describe('RectangleAction', () => {
         );
 
         canvas = canvasTestHelper.canvas;
-        // tslint:disable:no-magic-numbers
         canvas.width = 100;
         canvas.height = 100;
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -91,7 +89,7 @@ describe('RectangleAction', () => {
         rectStub = TestBed.inject(RectangleService);
     });
 
-    it('strokeColor and linewidth must be equal to primary color and thickness of rectangleAction', () => {
+    it('strokeColor and lineWidth must be equal to primary color and thickness of rectangleAction', () => {
         drawingStub.baseCtx.shadowColor = drawingStub.previewCtx.shadowColor = '#000000' as string;
         rectangleActionStub.apply();
         expect(drawingStub.baseCtx.strokeStyle).toEqual(primaryColor);

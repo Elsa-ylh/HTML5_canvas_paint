@@ -20,7 +20,7 @@ export class DialogExportEmailComponent implements AfterViewInit {
     private filterString: Map<Filter, string> = new Map([
         [Filter.BLUR, 'blur(4px)'],
         [Filter.BRIGHTNESS, 'brightness(200)'],
-        [Filter.GRAYSCALE, 'grayscale(100)'],
+        [Filter.GRAY_SCALE, 'grayscale(100)'],
         [Filter.INVERT, 'invert(50)'],
         [Filter.SEPIA, 'sepia(50)'],
     ]);
@@ -60,7 +60,7 @@ export class DialogExportEmailComponent implements AfterViewInit {
     }
 
     checkSecond(): void {
-        this.whichFilter = Filter.GRAYSCALE;
+        this.whichFilter = Filter.GRAY_SCALE;
         this.previewImage.nativeElement.style.filter = 'grayscale(100)';
     }
 
@@ -100,7 +100,7 @@ export class DialogExportEmailComponent implements AfterViewInit {
                 case Filter.BRIGHTNESS:
                     textImageFormat += '\n Filtre brightness';
                     break;
-                case Filter.GRAYSCALE:
+                case Filter.GRAY_SCALE:
                     textImageFormat += '\n Filtre grayscale';
                     break;
                 case Filter.INVERT:

@@ -15,6 +15,7 @@ describe('Email controller', () => {
 
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
+        container.rebind(TYPES.EmailService).toConstantValue({});
         testsContainer = container;
         testsSandbox = sandbox;
     });

@@ -8,7 +8,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -19,7 +19,7 @@ describe('DialogCreateNewDrawingComponent', () => {
     let component: DialogCreateNewDrawingComponent;
     let fixture: ComponentFixture<DialogCreateNewDrawingComponent>;
     let drawingStub: DrawingService;
-    let canvasResizerStub: CanvasResizerService;
+    let canvasResizeStub: CanvasResizeService;
     let onConfirmClickSpy: jasmine.Spy<any>;
     let alertSpy: jasmine.Spy<any>;
     let keyboardEvent: KeyboardEvent;
@@ -33,7 +33,7 @@ describe('DialogCreateNewDrawingComponent', () => {
         drawingStub = new DrawingService();
         undoRedoStub = new UndoRedoService(drawingStub);
         gridStub = new GridService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
+        canvasResizeStub = new CanvasResizeService(gridStub, undoRedoStub);
 
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -46,7 +46,7 @@ describe('DialogCreateNewDrawingComponent', () => {
                 { provide: MatDialogRef, useValue: { close: () => '' } },
                 { provide: DrawingService, useValue: { drawingStub, isCanvasBlank: () => false } },
                 { provide: Router, useValue: { navigate: () => '' } },
-                { provide: CanvasResizerService, useValue: canvasResizerStub },
+                { provide: CanvasResizeService, useValue: canvasResizeStub },
             ],
         }).compileComponents();
         drawingStub.baseCtx = baseCtxStub;

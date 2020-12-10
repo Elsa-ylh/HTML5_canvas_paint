@@ -20,7 +20,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 @Injectable({
     providedIn: 'root',
 })
-export class CanvasResizerService {
+export class CanvasResizeService {
     readonly DEFAULT_WIDTH: number = (window.innerWidth - SIDEBAR_WIDTH - ICON_WIDTH) / 2;
     readonly DEFAULT_HEIGHT: number = window.innerHeight / 2;
 
@@ -35,10 +35,10 @@ export class CanvasResizerService {
 
     addToUndoRedo: boolean = false;
 
-    // Resizer canvas index
+    // Resize canvas index
     readonly PRIORITY_INDEX: number = 10;
     readonly NORMAL_INDEX: number = 1;
-    resizerIndex: number = 1;
+    resizeIndex: number = 1;
 
     constructor(private gridService: GridService, private undoRedoService: UndoRedoService) {}
 
@@ -50,28 +50,28 @@ export class CanvasResizerService {
         this.isResizeDown = event.button === MouseButton.Left;
         this.resizeDirection = resizeDirection;
         if (this.isResizeDown) {
-            this.resizerIndex = this.PRIORITY_INDEX; // We now put the whole surface in the foreground.
+            this.resizeIndex = this.PRIORITY_INDEX; // We now put the whole surface in the foreground.
             this.resizeDirection = resizeDirection;
             this.addToUndoRedo = true;
         }
     }
 
-    private changeResizeY(event: MouseEvent, cvsResizerService: CanvasResizerService): number {
+    private changeResizeY(event: MouseEvent, canvasResizeService: CanvasResizeService): number {
         if (event.offsetY < MIN_CANVAS_SIZE) {
             return MIN_CANVAS_SIZE;
         }
-        if (event.offsetY > cvsResizerService.resizeHeight - WORK_AREA_PADDING_SIZE) {
-            return cvsResizerService.resizeHeight - WORK_AREA_PADDING_SIZE;
+        if (event.offsetY > canvasResizeService.resizeHeight - WORK_AREA_PADDING_SIZE) {
+            return canvasResizeService.resizeHeight - WORK_AREA_PADDING_SIZE;
         }
         return event.offsetY;
     }
 
-    private changeResizeX(event: MouseEvent, cvsResizerService: CanvasResizerService): number {
+    private changeResizeX(event: MouseEvent, canvasResizeService: CanvasResizeService): number {
         if (event.offsetX < MIN_CANVAS_SIZE) {
             return MIN_CANVAS_SIZE;
         }
-        if (event.offsetX > cvsResizerService.resizeWidth - WORK_AREA_PADDING_SIZE) {
-            return cvsResizerService.resizeWidth - WORK_AREA_PADDING_SIZE;
+        if (event.offsetX > canvasResizeService.resizeWidth - WORK_AREA_PADDING_SIZE) {
+            return canvasResizeService.resizeWidth - WORK_AREA_PADDING_SIZE;
         }
         return event.offsetX;
     }
@@ -151,7 +151,7 @@ export class CanvasResizerService {
             };
         }
         this.clearCanvas(resizeCtx, { x: this.resizeWidth, y: this.resizeHeight });
-        this.resizerIndex = this.NORMAL_INDEX;
+        this.resizeIndex = this.NORMAL_INDEX;
 
         this.isResizeDown = false;
         this.resizeCursor = cursorName.default;

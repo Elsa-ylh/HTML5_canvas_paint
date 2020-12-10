@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { UserGuide } from '@app/classes/interface-guide';
 import { dataUserGuide } from '@app/classes/user-guide-data';
+
 @Component({
     selector: 'app-write-text-dialog-user-guide',
     templateUrl: './write-text-dialog-user-guide.component.html',

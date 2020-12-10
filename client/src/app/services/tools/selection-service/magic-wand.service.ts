@@ -316,7 +316,7 @@ export class MagicWandService extends SelectionService {
             this.previousMousePos = this.getPositionFromMouse(event);
             // check if mouse is inside selection
             if (this.selection.imagePosition && this.selection.endingPos && !this.drawingService.isPreviewCanvasBlank()) {
-                this.inSelection = this.isInsideSelection(this.mouseDownCoords);
+                this.inSelection = this.isInsideSelectionCoords(this.mouseDownCoords);
             }
 
             // check if mouse is inside a control point

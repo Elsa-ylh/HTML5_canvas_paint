@@ -90,27 +90,27 @@ export class LineService extends Tool {
     }
 
     private shiftDrawAngleLine(path: Vec2[], lastPoint: Vec2): Vec2 {
-        const atLeastOne = -1;
+        const minusOne = -1;
         const denominator8 = 8;
         const denominator4 = 4;
         const numerator7 = 7;
         const numerator5 = 5;
         const numerator3 = 3;
-        const firstPoint = path[path.length + atLeastOne];
+        const firstPoint = path[path.length + minusOne];
         const dx = lastPoint.x - firstPoint.x;
         const dy = lastPoint.y - firstPoint.y;
-        const absoluteAngle = Math.abs(Math.atan2(dy, dx));
-        if (absoluteAngle < Math.PI / denominator8 || absoluteAngle > (Math.PI * numerator7) / denominator8) {
+        const angleABS = Math.abs(Math.atan2(dy, dx));
+        if (angleABS < Math.PI / denominator8 || angleABS > (Math.PI * numerator7) / denominator8) {
             return { x: lastPoint.x, y: firstPoint.y };
         }
-        if (absoluteAngle >= Math.PI / denominator8 && absoluteAngle <= (Math.PI * numerator3) / denominator8) {
-            const yAxis: number = dy > 0 ? atLeastOne : 1;
-            const newY: number = Math.round(Math.tan((Math.PI * numerator3) / denominator4) * dx * yAxis);
+        if (angleABS >= Math.PI / denominator8 && angleABS <= (Math.PI * numerator3) / denominator8) {
+            const axeY: number = dy > 0 ? minusOne : 1;
+            const newY: number = Math.round(Math.tan((Math.PI * numerator3) / denominator4) * dx * axeY);
             return { x: lastPoint.x, y: firstPoint.y + newY };
         }
-        if (absoluteAngle <= (Math.PI * numerator7) / denominator8 && absoluteAngle >= (Math.PI * numerator5) / denominator8) {
-            const yAxis: number = dy > 0 ? atLeastOne : 1;
-            const newY: number = Math.round(Math.tan(Math.PI / denominator4) * dx * yAxis);
+        if (angleABS <= (Math.PI * numerator7) / denominator8 && angleABS >= (Math.PI * numerator5) / denominator8) {
+            const axeY: number = dy > 0 ? minusOne : 1;
+            const newY: number = Math.round(Math.tan(Math.PI / denominator4) * dx * axeY);
             return { x: lastPoint.x, y: firstPoint.y + newY };
         }
         return { x: firstPoint.x, y: lastPoint.y };

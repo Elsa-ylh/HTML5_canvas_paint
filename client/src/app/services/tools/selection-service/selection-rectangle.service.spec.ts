@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 // tslint:disable:no-magic-numbers
 // tslint:disable:no-string-literal
 // tslint:disable:prefer-const
+
 describe('Service: SelectionRectangle', () => {
     let service: SelectionRectangleService;
 
@@ -76,7 +77,7 @@ describe('Service: SelectionRectangle', () => {
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         pasteSelectionSpy = spyOn<any>(service, 'pasteSelection');
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 10, y: 10 });
-        spyOn<any>(service, 'isInsideSelection').and.returnValue(false);
+        spyOn<any>(service, 'isInsideSelectionCoords').and.returnValue(false);
 
         service['controlGroup'] = new ControlGroup(drawServiceSpy);
         spyOn<any>(service['controlGroup'], 'isInControlPoint').and.returnValue(ControlPointName.none);

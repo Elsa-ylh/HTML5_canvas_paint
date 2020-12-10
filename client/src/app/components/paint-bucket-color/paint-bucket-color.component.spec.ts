@@ -18,7 +18,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PaintBucketColorComponent } from './paint-bucket-color.component';
 
 describe('PaintBucketColorComponent', () => {
-    let component: PaintBucketColorComponent;
+    let paintBucketComponent: PaintBucketColorComponent;
     let fixture: ComponentFixture<PaintBucketColorComponent>;
 
     let drawingStub: DrawingService;
@@ -51,7 +51,7 @@ describe('PaintBucketColorComponent', () => {
             }).compileComponents();
 
             fixture = TestBed.createComponent(PaintBucketColorComponent);
-            component = fixture.componentInstance;
+            paintBucketComponent = fixture.componentInstance;
             fixture.detectChanges();
         }),
     );
@@ -63,7 +63,7 @@ describe('PaintBucketColorComponent', () => {
     });
 
     it('should create', () => {
-        expect(component).toBeTruthy();
+        expect(paintBucketComponent).toBeTruthy();
     });
 
     it('should call drawMovingStopper if colorStopperPosition != NaN', () => {
@@ -71,11 +71,11 @@ describe('PaintBucketColorComponent', () => {
         const event = { offsetX: 3, offsetY: 4 } as MouseEvent;
         colorStub.colorStopperPosition = event;
         const drawMovStopSpy = spyOn(colorStub, 'drawMovingStopper').and.stub();
-        const drawSquareSpy = spyOn(component, 'drawSquarePalette').and.callThrough();
-        const drawHorizontalSpy = spyOn(component, 'drawHorizontalPalette').and.callThrough();
-        const drawOpacitySpy = spyOn(component, 'drawOpacitySlider').and.callThrough();
+        const drawSquareSpy = spyOn(paintBucketComponent, 'drawSquarePalette').and.callThrough();
+        const drawHorizontalSpy = spyOn(paintBucketComponent, 'drawHorizontalPalette').and.callThrough();
+        const drawOpacitySpy = spyOn(paintBucketComponent, 'drawOpacitySlider').and.callThrough();
 
-        component.ngAfterViewInit();
+        paintBucketComponent.ngAfterViewInit();
 
         expect(drawMovStopSpy).toHaveBeenCalled();
         expect(drawSquareSpy).toHaveBeenCalled();
@@ -87,11 +87,11 @@ describe('PaintBucketColorComponent', () => {
         // tslint:disable-next-line: use-isnan
         const event = { offsetX: 3, offsetY: 4 } as MouseEvent;
         colorStub.alphaStopperPosition = event;
-        const drawSquareSpy = spyOn(component, 'drawSquarePalette').and.callThrough();
-        const drawHorizontalSpy = spyOn(component, 'drawHorizontalPalette').and.callThrough();
-        const drawOpacitySpy = spyOn(component, 'drawOpacitySlider').and.callThrough();
+        const drawSquareSpy = spyOn(paintBucketComponent, 'drawSquarePalette').and.callThrough();
+        const drawHorizontalSpy = spyOn(paintBucketComponent, 'drawHorizontalPalette').and.callThrough();
+        const drawOpacitySpy = spyOn(paintBucketComponent, 'drawOpacitySlider').and.callThrough();
 
-        component.ngAfterViewInit();
+        paintBucketComponent.ngAfterViewInit();
 
         expect(drawSquareSpy).toHaveBeenCalled();
         expect(drawHorizontalSpy).toHaveBeenCalled();
@@ -99,30 +99,30 @@ describe('PaintBucketColorComponent', () => {
     });
 
     it('should set isClicked to true', () => {
-        component.primaryClick();
+        paintBucketComponent.primaryClick();
         expect(colorStub.isClicked).toBe(true);
     });
 
     it('should set secondaryColor to false', () => {
-        component.secondaryClick();
+        paintBucketComponent.secondaryClick();
         expect(colorStub.isClicked).toBe(false);
     });
 
     it('should call drawPalette for square', () => {
         const colorSpy = spyOn(colorStub, 'drawPalette').and.callThrough();
-        component.drawSquarePalette();
+        paintBucketComponent.drawSquarePalette();
         expect(colorSpy).toHaveBeenCalled();
     });
 
     it('should call drawPalette for horizontal', () => {
         const colorSpy = spyOn(colorStub, 'drawPalette').and.callThrough();
-        component.drawHorizontalPalette();
+        paintBucketComponent.drawHorizontalPalette();
         expect(colorSpy).toHaveBeenCalled();
     });
 
     it('should call drawPalette for Opacity', () => {
         const colorSpy = spyOn(colorStub, 'drawPalette').and.callThrough();
-        component.drawOpacitySlider();
+        paintBucketComponent.drawOpacitySlider();
         expect(colorSpy).toHaveBeenCalled();
     });
 
@@ -132,7 +132,7 @@ describe('PaintBucketColorComponent', () => {
 
         const event = { offsetX: 15, offsetY: 47 } as MouseEvent;
 
-        component.onMouseOverSquare(event);
+        paintBucketComponent.onMouseOverSquare(event);
 
         expect(getColorSpy).toHaveBeenCalled();
         expect(numToHexSpy).toHaveBeenCalled();
@@ -142,7 +142,7 @@ describe('PaintBucketColorComponent', () => {
         const event = { x: 15, y: 38 } as MouseEvent;
         colorStub.isClicked = true;
         const addLastSpy = spyOn(colorStub, 'addLastColor').and.callThrough();
-        component.onMouseOverSquareClick(event);
+        paintBucketComponent.onMouseOverSquareClick(event);
 
         expect(colorStub.primaryColor).toEqual(colorStub.previewColor);
         expect(addLastSpy).toHaveBeenCalled();
@@ -152,7 +152,7 @@ describe('PaintBucketColorComponent', () => {
         const event = { x: 15, y: 38 } as MouseEvent;
         colorStub.isClicked = false;
         const addLastSpy = spyOn(colorStub, 'addLastColor').and.callThrough();
-        component.onMouseOverSquareClick(event);
+        paintBucketComponent.onMouseOverSquareClick(event);
 
         expect(colorStub.secondaryColor).toEqual(colorStub.previewColor);
         expect(addLastSpy).toHaveBeenCalled();
@@ -164,7 +164,7 @@ describe('PaintBucketColorComponent', () => {
         const addLastSpy = spyOn(colorStub, 'addLastColor').and.callThrough();
         const movStopper = spyOn(colorStub, 'drawMovingStopper').and.callThrough();
 
-        component.onMouseOverHorizontalClick(event);
+        paintBucketComponent.onMouseOverHorizontalClick(event);
 
         expect(colorStub.primaryColor).toEqual(colorStub.previewColor);
         expect(addLastSpy).toHaveBeenCalled();
@@ -179,7 +179,7 @@ describe('PaintBucketColorComponent', () => {
         const addLastSpy = spyOn(colorStub, 'addLastColor').and.callThrough();
         const movStopper = spyOn(colorStub, 'drawMovingStopper').and.callThrough();
 
-        component.onMouseOverHorizontalClick(event);
+        paintBucketComponent.onMouseOverHorizontalClick(event);
 
         expect(colorStub.secondaryColor).toEqual(colorStub.previewColor);
         expect(addLastSpy).toHaveBeenCalled();
@@ -194,21 +194,21 @@ describe('PaintBucketColorComponent', () => {
 
         const event = { offsetX: 15, offsetY: 47 } as MouseEvent;
 
-        component.onMouseOverHorizontal(event);
+        paintBucketComponent.onMouseOverHorizontal(event);
 
         expect(getColorSpy).toHaveBeenCalled();
         expect(numToHexSpy).toHaveBeenCalled();
     });
 
     it('should set alphaStopper should call draw moving stopper should call change coloropacity', () => {
-        const drawOpSliderSpy = spyOn(component, 'drawOpacitySlider').and.callThrough();
+        const drawOpSliderSpy = spyOn(paintBucketComponent, 'drawOpacitySlider').and.callThrough();
         const drawMovStopSpy = spyOn(colorStub, 'drawMovingStopper').and.stub();
-        const posSliderSpy = spyOn(component, 'findPositionSlider').and.callThrough();
+        const posSliderSpy = spyOn(paintBucketComponent, 'findPositionSlider').and.callThrough();
         const colorOpacitySpy = spyOn(colorStub, 'changeColorOpacity').and.stub();
 
         const event = { offsetX: 15, offsetY: 47, button: MouseButton.Left } as MouseEvent;
 
-        component.onMouseOverOpacitySliderClick(event);
+        paintBucketComponent.onMouseOverOpacitySliderClick(event);
 
         expect(drawOpSliderSpy).toHaveBeenCalled();
         expect(drawMovStopSpy).toHaveBeenCalled();
@@ -220,7 +220,7 @@ describe('PaintBucketColorComponent', () => {
         const event = { x: 15, y: 38, button: MouseButton.Left } as MouseEvent;
         const lastColor = { color: 'white' as string, active: true };
 
-        component.onMouseLastColorClick(event, lastColor);
+        paintBucketComponent.onMouseLastColorClick(event, lastColor);
 
         expect(colorStub.primaryColor).toEqual(lastColor.color);
     });
@@ -229,7 +229,7 @@ describe('PaintBucketColorComponent', () => {
         const event = { x: 15, y: 38, button: MouseButton.Right } as MouseEvent;
         const lastColor = { color: 'white' as string, active: true };
 
-        component.onMouseLastColorClick(event, lastColor);
+        paintBucketComponent.onMouseLastColorClick(event, lastColor);
 
         expect(colorStub.secondaryColor).toEqual(lastColor.color);
     });
@@ -238,7 +238,7 @@ describe('PaintBucketColorComponent', () => {
         const rgba = { alpha: 1 } as RGBA;
         const spyColorOpacity = spyOn(colorStub, 'changeColorOpacity').and.stub();
 
-        component.sendInput(rgba);
+        paintBucketComponent.sendInput(rgba);
 
         expect(spyColorOpacity).toHaveBeenCalled();
     });
@@ -248,7 +248,7 @@ describe('PaintBucketColorComponent', () => {
         const numToHexSpy = spyOn(colorStub, 'numeralToHex').and.stub();
         const colorOpacitySpy = spyOn(colorStub, 'changeColorOpacity').and.stub();
 
-        component.sendInput(rgba);
+        paintBucketComponent.sendInput(rgba);
 
         expect(numToHexSpy).toHaveBeenCalled();
         expect(colorOpacitySpy).toHaveBeenCalled();

@@ -7,19 +7,19 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class UndoRedoService {
-    isUndoDisabled: boolean = true; // to disactivate the option to redo-redo. diabled=true (cant undo-red0 when app loads)
+    isUndoDisabled: boolean = true;
     isRedoDisabled: boolean = true;
-    defaultCanvasAction: ResizeCanvasAction; // will be instanciated when canvas is ngAfterViewInit
-    isloadImg: boolean = false;
+    defaultCanvasAction: ResizeCanvasAction; // will be instantiated when canvas is ngAfterViewInit
+    isImageLoaded: boolean = false;
     private firstLoadedImage: LoadAction;
     private listUndo: AbsUndoRedo[] = [];
-    private listRedo: AbsUndoRedo[] = [];
+    private redoList: AbsUndoRedo[] = [];
 
     constructor(private drawingService: DrawingService) {}
 
     redo(): void {
-        if (this.listRedo.length > 0) {
-            const action = this.listRedo.pop();
+        if (this.redoList.length > 0) {
+            const action = this.redoList.pop();
             if (action) {
                 this.listUndo.push(action);
                 action.apply(); // applies the action
@@ -31,12 +31,12 @@ export class UndoRedoService {
     // allows to reset the listUndo after we redo something.
     clearUndo(): void {
         this.listUndo = [];
-        this.isloadImg = false;
+        this.isImageLoaded = false;
         this.updateStatus();
     }
-    // allows to reset the listRedo
+    // allows to reset the redoList
     clearRedo(): void {
-        this.listRedo = [];
+        this.redoList = [];
         this.updateStatus();
     }
 
@@ -46,20 +46,18 @@ export class UndoRedoService {
         this.updateStatus();
     }
 
-    // to load an image from the caroussel
     loadImage(action: LoadAction): void {
         this.firstLoadedImage = action;
-        this.isloadImg = true;
+        this.isImageLoaded = true;
     }
 
-    // function that cancels the lastest modification.(ctrl z) we push the lastest element removed from the undo stack.
     async undo(): Promise<void> {
         const action = this.listUndo.pop(); // last modification is removed and pushed into the redo stack
         if (action) {
-            this.listRedo.push(action);
+            this.redoList.push(action);
             const listOfResize: AbsUndoRedo[] = [];
 
-            if (this.isloadImg) {
+            if (this.isImageLoaded) {
                 await this.firstLoadedImage.apply();
             } else {
                 this.drawingService.clearCanvas(this.drawingService.baseCtx);
@@ -73,7 +71,7 @@ export class UndoRedoService {
                 }
             }
 
-            if (listOfResize.length === 0 && !this.isloadImg) {
+            if (listOfResize.length === 0 && !this.isImageLoaded) {
                 this.defaultCanvasAction.apply();
             }
             if (listOfResize.length > 0) {
@@ -83,13 +81,11 @@ export class UndoRedoService {
         this.updateStatus();
     }
 
-    // Controls the buttons of redo-undo
     updateStatus(): void {
-        this.isRedoDisabled = this.listRedo.length === 0;
+        this.isRedoDisabled = this.redoList.length === 0;
         this.isUndoDisabled = this.listUndo.length === 0;
     }
 
-    // deactivate the buttons when drawing on the canvas
     whileDrawingUndoRedo(event: MouseEvent): void {
         this.isUndoDisabled = true;
         this.isRedoDisabled = true;

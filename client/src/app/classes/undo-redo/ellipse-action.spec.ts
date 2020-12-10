@@ -4,7 +4,7 @@ import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { EllipseAction } from '@app/classes/undo-redo/ellipse-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse.service';
@@ -31,7 +31,7 @@ describe('EllipseAction', () => {
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
-    let canvasResizerStub: CanvasResizerService;
+    let canvasResizeStub: CanvasResizeService;
     let gridStub: GridService;
     beforeEach(() => {
         mousePosition = { x: 5, y: 6 };
@@ -46,8 +46,8 @@ describe('EllipseAction', () => {
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         gridStub = new GridService(drawingStub);
-        canvasResizerStub = new CanvasResizerService(gridStub, undoRedoStub);
-        autoSaveStub = new AutomaticSaveService(canvasResizerStub, drawingStub, undoRedoStub);
+        canvasResizeStub = new CanvasResizeService(gridStub, undoRedoStub);
+        autoSaveStub = new AutomaticSaveService(canvasResizeStub, drawingStub, undoRedoStub);
         ellipseStub = new EllipseService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
         ellipseActionStub = new EllipseAction(
@@ -87,7 +87,7 @@ describe('EllipseAction', () => {
         ellipseStub = TestBed.inject(EllipseService);
     });
 
-    it('strokeColor and linewidth must be equal to be primaryColor and thickness of an ellipseAction', () => {
+    it('strokeColor and lineWidth must be equal to be primaryColor and thickness of an ellipseAction', () => {
         drawingStub.baseCtx.shadowColor = drawingStub.previewCtx.shadowColor = '#000000' as string;
         ellipseActionStub.apply();
         expect(drawingStub.baseCtx.strokeStyle).toEqual(primaryColor);

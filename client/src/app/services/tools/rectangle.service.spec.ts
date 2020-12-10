@@ -41,7 +41,6 @@ describe('Service: Rectangle', () => {
         drawFillRectangleOutlineSpy = spyOn<any>(service, 'drawFillRectangleOutline').and.callThrough();
         onMouseUpSpy = spyOn<any>(service, 'onMouseUp').and.callThrough();
 
-        // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesn't copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;

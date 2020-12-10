@@ -9,12 +9,14 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
+// tslint:disable:no-string-literal
+// tslint:disable:no-any
+// tslint:disable:no-magic-numbers
+// tslint:disable:prefer-const
+
 describe('Service: PaintBucket', () => {
-    /*tslint:disable:no-any*/
-    /*tslint:disable:no-magic-numbers*/
     let colorService: ColorService;
     let paintBucketService: PaintBucketService;
-    // tslint:disable-next-line:prefer-const
 
     let drawingService: DrawingService;
     let undoRedoService: UndoRedoService;

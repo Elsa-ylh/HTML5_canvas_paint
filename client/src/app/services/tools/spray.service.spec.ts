@@ -10,7 +10,6 @@ import { SprayService } from '@app/services/tools/spray.service';
 describe('SprayService', () => {
     let sprayService: SprayService;
     let baseStubCtx: CanvasRenderingContext2D;
-    // let previewStubCtx: CanvasRenderingContext2D;
     let colorServiceMock: jasmine.SpyObj<ColorService>;
     let drawingServiceMock: jasmine.SpyObj<DrawingService>;
     let transformSpy: jasmine.SpyObj<any>;
@@ -19,7 +18,6 @@ describe('SprayService', () => {
         colorServiceMock = jasmine.createSpyObj('ColorService', ['numeralToHex', 'getColor']);
         drawingServiceMock = jasmine.createSpyObj('DrawingService', ['baseCtx', 'previewCtx']);
         baseStubCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        // previewStubCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         TestBed.configureTestingModule({
             providers: [
                 { provide: ColorService, useValue: colorServiceMock },

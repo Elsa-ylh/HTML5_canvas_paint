@@ -30,7 +30,7 @@ export class SprayService extends Tool {
     private minAngle: number = 0;
     private maxAngle: number = Math.PI * 2;
     private minLength: number = 0;
-    zoneDiameter: number = 60; // diametre de la zone d'application
+    zoneDiameter: number = 60;
     dropDiameter: number = 2; // drop diameter
     private rotation: number = 0;
     private beginAngle: number = 0;

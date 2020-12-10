@@ -10,10 +10,10 @@ export class LineAction extends AbsUndoRedo {
         private pointMouse: Vec2,
         private colorLine: string,
         private thickness: number,
-        private secondaryTickness: number,
+        private secondaryThickness: number,
         private lineService: LineService,
         private drawingService: DrawingService,
-        private subToolselected: SubToolSelected,
+        private subToolSelected: SubToolSelected,
     ) {
         super();
     }
@@ -21,11 +21,11 @@ export class LineAction extends AbsUndoRedo {
     apply(): void {
         this.drawingService.baseCtx.strokeStyle = this.colorLine;
         this.drawingService.baseCtx.lineWidth = this.thickness;
-        this.lineService.drawLine(this.drawingService.baseCtx, { data: this.changesLine, selectedLineTool: this.subToolselected }, this.thickness);
-        this.lineService.drawPoint(this.drawingService.baseCtx, this.changesLine, this.secondaryTickness);
+        this.lineService.drawLine(this.drawingService.baseCtx, { data: this.changesLine, selectedLineTool: this.subToolSelected }, this.thickness);
+        this.lineService.drawPoint(this.drawingService.baseCtx, this.changesLine, this.secondaryThickness);
         this.lineService.drawLineLastPoint(
             this.drawingService.baseCtx,
-            { data: this.changesLine, selectedLineTool: this.subToolselected },
+            { data: this.changesLine, selectedLineTool: this.subToolSelected },
             this.pointMouse,
         );
         this.lineService.clearEffectTool();

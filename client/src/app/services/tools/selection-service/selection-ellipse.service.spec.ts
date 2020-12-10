@@ -5,7 +5,6 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ControlGroup } from '@app/classes/control-group';
 import { ControlPointName } from '@app/classes/control-points';
 import { MouseButton } from '@app/classes/mouse-button';
-// import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
@@ -19,6 +18,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 // tslint:disable:no-string-literal
 // tslint:disable:no-shadowed-variable
 // tslint:disable:prefer-const
+
 describe('Service: SelectionRectangle', () => {
     let service: SelectionEllipseService;
 
@@ -26,7 +26,6 @@ describe('Service: SelectionRectangle', () => {
     let rotationStub: RotationService;
     let undoStub: UndoRedoService;
     let gridStub: GridService;
-    // let canvasResizeStub: CanvasResizerService;
     let drawSelectionRectSpy: jasmine.Spy<any>;
     let drawImageSpy: jasmine.Spy<any>;
     let drawEllipseSpy: jasmine.Spy<any>;
@@ -61,7 +60,7 @@ describe('Service: SelectionRectangle', () => {
 
         service = TestBed.inject(SelectionEllipseService);
 
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesn't copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasTestHelper.canvas as HTMLCanvasElement;
     });
@@ -74,7 +73,7 @@ describe('Service: SelectionRectangle', () => {
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         pasteSelectionSpy = spyOn<any>(service, 'pasteSelection');
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 10, y: 10 });
-        spyOn<any>(service, 'isInsideSelection').and.returnValue(false);
+        spyOn<any>(service, 'isInsideSelectionCoords').and.returnValue(false);
 
         service['controlGroup'] = new ControlGroup(drawServiceSpy);
         spyOn<any>(service['controlGroup'], 'isInControlPoint').and.returnValue(ControlPointName.none);
@@ -98,7 +97,7 @@ describe('Service: SelectionRectangle', () => {
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         pasteSelectionSpy = spyOn<any>(service, 'pasteSelection');
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 10, y: 10 });
-        spyOn<any>(service, 'isInsideSelection').and.returnValue(false);
+        spyOn<any>(service, 'isInsideSelectionCoords').and.returnValue(false);
 
         service['controlGroup'] = new ControlGroup(drawServiceSpy);
         spyOn<any>(service['controlGroup'], 'isInControlPoint').and.returnValue(ControlPointName.none);
@@ -114,7 +113,7 @@ describe('Service: SelectionRectangle', () => {
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
         pasteSelectionSpy = spyOn<any>(service, 'pasteSelection');
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 10, y: 10 });
-        spyOn<any>(service, 'isInsideSelection').and.returnValue(false);
+        spyOn<any>(service, 'isInsideSelectionCoords').and.returnValue(false);
 
         service['controlGroup'] = new ControlGroup(drawServiceSpy);
         spyOn<any>(service['controlGroup'], 'isInControlPoint').and.returnValue(ControlPointName.none);
@@ -295,7 +294,7 @@ describe('Service: SelectionRectangle', () => {
     it('drawEllipse should draw an ellipse in the appropriate canvas', () => {
         ellipseSpy = spyOn<any>(service['drawingService'].previewCtx, 'ellipse');
 
-        service.selection.ellipseRad = { x: 5, y: 5 };
+        service.selection.ellipseRadian = { x: 5, y: 5 };
 
         service['drawEllipse'](service['drawingService'].previewCtx, { x: 10, y: 10 }, 5, 5);
 
