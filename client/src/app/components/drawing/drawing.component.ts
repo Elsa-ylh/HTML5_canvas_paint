@@ -89,6 +89,15 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
             ResizeDirection.verticalAndHorizontal,
             this.canvasResizeService,
         );
+
+        // https://stackoverflow.com/a/40239459/14068057
+        // to make sure everything is lock and loaded
+        if (localStorage.getItem('firstTimeLoading') === null) {
+            localStorage.setItem('firstTimeLoading', 'isLoaded');
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        }
     }
 
     setCanvasBackgroundColor(): void {
