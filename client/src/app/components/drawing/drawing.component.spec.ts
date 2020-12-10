@@ -82,14 +82,14 @@ describe('DrawingComponent', () => {
             gridStub = new GridService(drawingStub);
             magnetismStub = new MagnetismService(gridStub);
             polygonStub = new PolygonService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
-            paintBucketStub = new PaintBucketService(drawingStub, colorStub, canvasResizeStub, undoRedoStub, autoSaveStub);
+            paintBucketStub = new PaintBucketService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub, autoSaveStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub, autoSaveStub);
             sprayStub = new SprayService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
 
             selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub, autoSaveStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub, autoSaveStub);
-            textServiceStub = new TextService(drawingStub, colorStub, undoRedoStub);
+            textServiceStub = new TextService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             stampServiceStub = new StampService(drawingStub, undoRedoStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             magnetismStub = new MagnetismService(gridStub);

@@ -105,31 +105,6 @@ describe('Service: SelectionService', () => {
         expect(drawSelectionSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseMove should draw a selection with new coordinates when the selection has been moved', () => {
-        drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
-
-        const mouseEvent = {
-            button: 0,
-            offsetX: 20,
-            offsetY: 20,
-        } as MouseEvent;
-
-        service.mouseDown = true;
-        service['inSelection'] = true;
-        service.selection.imagePosition = { x: 1, y: 1 };
-        service.selection.endingPos = { x: 11, y: 11 };
-        service['previousMousePos'] = { x: 10, y: 10 };
-        service['controlPointName'] = ControlPointName.none;
-        service['controlGroup'] = new ControlGroup(service['drawingService']);
-        service.selection.width = 10;
-        service.selection.height = 10;
-        service.selection.imageData = new ImageData(10, 10);
-        service.selection.image = new Image();
-        service.onMouseMove(mouseEvent);
-        expect(service['mouseMovement']).toEqual({ x: 10, y: 10 });
-        expect(drawSelectionSpy).toHaveBeenCalled();
-    });
-
     it(' onMouseMove should scale and draw a selection if a control point has been selected', () => {
         drawSelectionSpy = spyOn<any>(service, 'drawSelection').and.callThrough();
         scaleSelectionSpy = spyOn<any>(service, 'scaleSelection').and.callThrough();

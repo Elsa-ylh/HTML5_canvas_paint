@@ -6,6 +6,7 @@ import { Tool } from '@app/classes/tool';
 import { ToolInfoText } from '@app/classes/tool-info-text';
 import { TextAction } from '@app/classes/undo-redo/text-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -51,7 +52,12 @@ export class TextService extends Tool {
 
     private textAlign: number = 2;
     private textControl: TextControl;
-    constructor(drawingService: DrawingService, private colorService: ColorService, private undoRedoService: UndoRedoService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private undoRedoService: UndoRedoService,
+        private automaticSaveService: AutomaticSaveService,
+    ) {
         super(drawingService);
         this.textControl = new TextControl(this.drawingService.previewCtx);
     }
@@ -147,12 +153,16 @@ export class TextService extends Tool {
 
     setBold(bold: boolean): void {
         this.fontStyleBold = bold;
-        this.previewText();
+        if (this.writeOnPreviewCtx) {
+            this.previewText();
+        }
     }
 
     setItalic(italic: boolean): void {
         this.fontStyleItalic = italic;
-        this.previewText();
+        if (this.writeOnPreviewCtx) {
+            this.previewText();
+        }
     }
 
     private getItalic(): string {
@@ -182,7 +192,9 @@ export class TextService extends Tool {
                 break;
             }
         }
-        this.previewText();
+        if (this.writeOnPreviewCtx) {
+            this.previewText();
+        }
     }
 
     private drawPreviewRect(ctx: CanvasRenderingContext2D, mouseDownCoords: Vec2, mousePosition: Vec2): void {
@@ -269,6 +281,7 @@ export class TextService extends Tool {
             mouseDownCoords: this.mouseDownCoords,
             mousePosition: this.mousePosition,
         } as ToolInfoText);
+        this.automaticSaveService.save();
     }
 
     previewText(): void {
@@ -306,6 +319,7 @@ export class TextService extends Tool {
             case SubToolSelected.tool1:
                 text.forEach((element) => {
                     if (this.textControl.checkHeightText(lineBreak, toolInfoText.sizeFont, toolInfoText.height)) {
+                        ctx.textAlign = 'center';
                         ctx.fillText(
                             element,
                             this.xTop(toolInfoText.width / 2, toolInfoText.mouseDownCoords, toolInfoText.mousePosition),
@@ -320,6 +334,7 @@ export class TextService extends Tool {
             case SubToolSelected.tool2:
                 text.forEach((element) => {
                     if (this.textControl.checkHeightText(lineBreak, toolInfoText.sizeFont, toolInfoText.height)) {
+                        ctx.textAlign = 'left';
                         ctx.fillText(
                             element,
                             this.xTop(0, toolInfoText.mouseDownCoords, toolInfoText.mousePosition),
@@ -334,6 +349,7 @@ export class TextService extends Tool {
             case SubToolSelected.tool3:
                 text.forEach((element) => {
                     if (this.textControl.checkHeightText(lineBreak, toolInfoText.sizeFont, toolInfoText.height)) {
+                        ctx.textAlign = 'right';
                         ctx.fillText(
                             element,
                             this.xTop(toolInfoText.width, toolInfoText.mouseDownCoords, toolInfoText.mousePosition),
