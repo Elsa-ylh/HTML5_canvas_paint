@@ -19,7 +19,7 @@ let drawingStub: DrawingService;
 let baseCtxStub: CanvasRenderingContext2D;
 let previewCtxStub: CanvasRenderingContext2D;
 
-let ajustedPosition: Vec2;
+let adjustedPosition: Vec2;
 let selectionSize: Vec2;
 
 describe('Service: Magnetism', () => {
@@ -48,7 +48,7 @@ describe('Service: Magnetism', () => {
         drawingStub['previewCtx'] = previewCtxStub;
         drawingStub['gridCtx'] = gridCtxStub;
 
-        ajustedPosition = { x: 200, y: 200 } as Vec2;
+        adjustedPosition = { x: 200, y: 200 } as Vec2;
         selectionSize = { x: 50, y: 50 } as Vec2;
     });
 
@@ -64,70 +64,70 @@ describe('Service: Magnetism', () => {
 
     it('should convert to position center', () => {
         const spy = spyOn<any>(service, 'convertCalculatingPosition').and.callThrough();
-        const returnValue = service['convertCalculatingPosition'](ajustedPosition, ControlPointName.center, selectionSize);
+        const returnValue = service['convertCalculatingPosition'](adjustedPosition, ControlPointName.center, selectionSize);
         expect(spy).toHaveBeenCalled();
         expect(returnValue).toEqual({ x: 175, y: 175 } as Vec2);
     });
 
     it('should convert to position top left', () => {
         const spy = spyOn<any>(service, 'convertCalculatingPosition').and.callThrough();
-        const returnValue = service['convertCalculatingPosition'](ajustedPosition, ControlPointName.topLeft, selectionSize);
+        const returnValue = service['convertCalculatingPosition'](adjustedPosition, ControlPointName.topLeft, selectionSize);
         expect(spy).toHaveBeenCalled();
         expect(returnValue).toEqual({ x: 200, y: 200 } as Vec2);
     });
 
     it('should convert to position top', () => {
         const spy = spyOn<any>(service, 'convertCalculatingPosition').and.callThrough();
-        const returnValue = service['convertCalculatingPosition'](ajustedPosition, ControlPointName.top, selectionSize);
+        const returnValue = service['convertCalculatingPosition'](adjustedPosition, ControlPointName.top, selectionSize);
         expect(spy).toHaveBeenCalled();
         expect(returnValue).toEqual({ x: 175, y: 200 } as Vec2);
     });
 
     it('should convert to position top right', () => {
         const spy = spyOn<any>(service, 'convertCalculatingPosition').and.callThrough();
-        const returnValue = service['convertCalculatingPosition'](ajustedPosition, ControlPointName.topRight, selectionSize);
+        const returnValue = service['convertCalculatingPosition'](adjustedPosition, ControlPointName.topRight, selectionSize);
         expect(spy).toHaveBeenCalled();
         expect(returnValue).toEqual({ x: 150, y: 200 } as Vec2);
     });
 
     it('should convert to position left', () => {
         const spy = spyOn<any>(service, 'convertCalculatingPosition').and.callThrough();
-        const returnValue = service['convertCalculatingPosition'](ajustedPosition, ControlPointName.left, selectionSize);
+        const returnValue = service['convertCalculatingPosition'](adjustedPosition, ControlPointName.left, selectionSize);
         expect(spy).toHaveBeenCalled();
         expect(returnValue).toEqual({ x: 200, y: 175 } as Vec2);
     });
 
     it('should convert to position right', () => {
         const spy = spyOn<any>(service, 'convertCalculatingPosition').and.callThrough();
-        const returnValue = service['convertCalculatingPosition'](ajustedPosition, ControlPointName.right, selectionSize);
+        const returnValue = service['convertCalculatingPosition'](adjustedPosition, ControlPointName.right, selectionSize);
         expect(spy).toHaveBeenCalled();
         expect(returnValue).toEqual({ x: 150, y: 175 } as Vec2);
     });
 
     it('should convert to position bottom left', () => {
         const spy = spyOn<any>(service, 'convertCalculatingPosition').and.callThrough();
-        const returnValue = service['convertCalculatingPosition'](ajustedPosition, ControlPointName.bottomLeft, selectionSize);
+        const returnValue = service['convertCalculatingPosition'](adjustedPosition, ControlPointName.bottomLeft, selectionSize);
         expect(spy).toHaveBeenCalled();
         expect(returnValue).toEqual({ x: 150, y: 150 } as Vec2);
     });
 
     it('should convert to position bottom', () => {
         const spy = spyOn<any>(service, 'convertCalculatingPosition').and.callThrough();
-        const returnValue = service['convertCalculatingPosition'](ajustedPosition, ControlPointName.bottom, selectionSize);
+        const returnValue = service['convertCalculatingPosition'](adjustedPosition, ControlPointName.bottom, selectionSize);
         expect(spy).toHaveBeenCalled();
         expect(returnValue).toEqual({ x: 175, y: 150 } as Vec2);
     });
 
     it('should convert to position bottom right', () => {
         const spy = spyOn<any>(service, 'convertCalculatingPosition').and.callThrough();
-        const returnValue = service['convertCalculatingPosition'](ajustedPosition, ControlPointName.bottomRight, selectionSize);
+        const returnValue = service['convertCalculatingPosition'](adjustedPosition, ControlPointName.bottomRight, selectionSize);
         expect(spy).toHaveBeenCalled();
         expect(returnValue).toEqual({ x: 200, y: 150 } as Vec2);
     });
 
     it('should convert to position NONE', () => {
         const spy = spyOn<any>(service, 'convertCalculatingPosition').and.callThrough();
-        const returnValue = service['convertCalculatingPosition'](ajustedPosition, ControlPointName.none, selectionSize);
+        const returnValue = service['convertCalculatingPosition'](adjustedPosition, ControlPointName.none, selectionSize);
         expect(spy).toHaveBeenCalled();
         expect(returnValue).toEqual({} as Vec2);
     });
@@ -138,7 +138,7 @@ describe('Service: Magnetism', () => {
         const spy = spyOn<any>(service, 'calculateRemainder').and.callThrough();
         service['calculateRemainder'](squareWidth, calculatingPosition);
         expect(spy).toHaveBeenCalled();
-        expect(service['ajustedPosition']).toEqual({ x: 500, y: 500 } as Vec2);
+        expect(service['adjustedPosition']).toEqual({ x: 500, y: 500 } as Vec2);
     });
 
     it('should calculate remainder when position is above the squareWidth', () => {
@@ -147,11 +147,11 @@ describe('Service: Magnetism', () => {
         const spy = spyOn<any>(service, 'calculateRemainder').and.callThrough();
         service['calculateRemainder'](squareWidth, calculatingPosition);
         expect(spy).toHaveBeenCalled();
-        expect(service['ajustedPosition']).toEqual({ x: 600, y: 600 } as Vec2);
+        expect(service['adjustedPosition']).toEqual({ x: 600, y: 600 } as Vec2);
     });
 
     it('should apply final position for selectionService', () => {
-        service['ajustedPosition'] = { x: 50, y: 50 } as Vec2;
+        service['adjustedPosition'] = { x: 50, y: 50 } as Vec2;
         const params = {
             imagePosition: { x: 100, y: 100 } as Vec2,
             endingPosition: { x: 300, y: 300 } as Vec2,

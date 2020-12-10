@@ -41,9 +41,7 @@ describe('SelectionRectAction', () => {
         selectionRectStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
         selectionRectActionStub = new SelectionRectAction(selectionRectStub, drawingStub, selection);
         canvas = canvasTestHelper.canvas;
-        // tslint:disable:no-magic-numbers
         canvas.width = 100;
-        // tslint:disable:no-magic-numbers
         canvas.height = 100;
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;

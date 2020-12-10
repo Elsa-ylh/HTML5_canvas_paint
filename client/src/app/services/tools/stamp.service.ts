@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { STAMP } from '@app/classes/stamp';
 import { Tool } from '@app/classes/tool';
+import { StampAction } from '@app/classes/undo-redo/stamp-action';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // tslint:disable:max-file-line-count
 // tslint:disable:max-line-length
@@ -36,10 +38,11 @@ export class StampService extends Tool {
 
     angle: number = 0; // angle of the image
 
-    isWheelUp: boolean = true; // add or substract
+    isWheelUp: boolean = true; // add or subtract
     isAltPressed: boolean = false;
+    isUndoRedo: boolean = false;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, private undoRedoService: UndoRedoService) {
         super(drawingService);
     }
 
@@ -71,9 +74,14 @@ export class StampService extends Tool {
         this.drawingService.cursorCtx.restore();
     }
 
-    saveCanvas(): void {
+    saveCanvas(image: HTMLImageElement, mousePosX: number, mousePosY: number): void {
         // saves the current cursor image so that it can be used on the main canvas
         this.stampToDrawName = this.drawingService.cursorCtx.canvas.toDataURL();
+        this.stampToDraw = new Image();
+        this.stampToDraw.src = this.stampToDrawName;
+        image = this.stampToDraw;
+        this.mouseCenterX = mousePosX;
+        this.mouseCenterY = mousePosY;
     }
 
     increaseSize(): void {
@@ -95,15 +103,21 @@ export class StampService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.saveCanvas(); // on mouse down, calls function to save the current cursor image
-        this.stampToDraw = new Image();
-        this.stampToDraw.src = this.stampToDrawName;
+        this.saveCanvas(this.stampToDraw, this.mouseCenterX, this.mouseCenterY); // on mouse down, calls function to save the current cursor image
+
         this.mouseCenterX = event.offsetX - this.canvasWidth; // updates the current mouse position in x
         this.mouseCenterY = event.offsetY - this.canvasHeight; // updates the current mouse position in y
 
-        this.stampToDraw.onload = () => {
-            this.drawingService.baseCtx.drawImage(this.stampToDraw, this.mouseCenterX, this.mouseCenterY);
-        };
+        // undo-redo
+        const stampFeather = new StampAction(this.stampToDraw, this.mouseCenterX, this.mouseCenterY, this.drawingService, this);
+        this.undoRedoService.addUndo(stampFeather);
+        // this.undoRedoService.clearRedo();
+
+        if (this.isUndoRedo) {
+            this.stampToDraw.onload = () => {
+                this.drawingService.baseCtx.drawImage(this.stampToDraw, this.mouseCenterX, this.mouseCenterY);
+            };
+        }
     }
 
     onMouseEnter(event: MouseEvent): void {

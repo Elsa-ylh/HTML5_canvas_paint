@@ -12,6 +12,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 const MOTION_DIFFERENCE = 4;
 const CIRCLE_CIRCUMFERENCE = Math.PI * 2;
+
 @Injectable({
     providedIn: 'root',
 })

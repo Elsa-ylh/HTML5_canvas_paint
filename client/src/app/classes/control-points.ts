@@ -1,8 +1,7 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
-// import { SelectionImage } from './selection';
 import { Vec2 } from './vec2';
 
-export const CPSIZE = 10;
+export const CONTROLPOINT_SIZESIZE = 10;
 
 export enum ControlPointName {
     center = 0,
@@ -34,8 +33,8 @@ export class ControlPoint {
         } else {
             this.drawingService.previewCtx.fillStyle = '#FFFFFF';
         }
-        this.drawingService.previewCtx.strokeRect(this.position.x, this.position.y, CPSIZE, CPSIZE);
-        this.drawingService.previewCtx.fillRect(this.position.x, this.position.y, CPSIZE, CPSIZE);
+        this.drawingService.previewCtx.strokeRect(this.position.x, this.position.y, CONTROLPOINT_SIZESIZE, CONTROLPOINT_SIZESIZE);
+        this.drawingService.previewCtx.fillRect(this.position.x, this.position.y, CONTROLPOINT_SIZESIZE, CONTROLPOINT_SIZESIZE);
     }
 
     movePosition(movement: Vec2): void {
@@ -44,7 +43,12 @@ export class ControlPoint {
     }
 
     isInside(mouse: Vec2): boolean {
-        if (mouse.x >= this.position.x && mouse.x <= this.position.x + CPSIZE && mouse.y >= this.position.y && mouse.y <= this.position.y + CPSIZE) {
+        if (
+            mouse.x >= this.position.x &&
+            mouse.x <= this.position.x + CONTROLPOINT_SIZESIZE &&
+            mouse.y >= this.position.y &&
+            mouse.y <= this.position.y + CONTROLPOINT_SIZESIZE
+        ) {
             return true;
         }
         return false;

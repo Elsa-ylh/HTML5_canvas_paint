@@ -18,8 +18,7 @@ import { TextService } from './text.service';
 describe('Service: Text', () => {
     let textService: TextService;
     let mouseEvent0: MouseEvent;
-    // let mouseEvent1: MouseEvent;
-    // let mouseEvent2: MouseEvent;
+
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let colorServiceSpy: jasmine.SpyObj<ColorService>;
 
@@ -27,7 +26,6 @@ describe('Service: Text', () => {
     let previewCtxStub: CanvasRenderingContext2D;
 
     beforeEach(() => {
-        // textControlStub =new TextControl(previewCtxStub);
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'clearEffectTool']);
@@ -39,9 +37,8 @@ describe('Service: Text', () => {
             ],
         });
         textService = TestBed.inject(TextService);
-        // Configuration du spy du service
         // tslint:disable:no-string-literal
-        textService['drawingService'].baseCtx = baseCtxStub; // Jasmine doesn't copy properties with underlying data
+        textService['drawingService'].baseCtx = baseCtxStub;
         textService['drawingService'].previewCtx = previewCtxStub;
         textService['mouseDownCoords'] = { x: 100, y: 150 };
         textService['mousePosition'] = { x: 40, y: 55 };

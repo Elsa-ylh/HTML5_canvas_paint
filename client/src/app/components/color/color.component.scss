@@ -51,10 +51,14 @@ mat-divider {
     padding-left: 48px;
 }
 
+#secondaryName {
+    margin-left: 2px;
+}
+
 #secondaryColor {
     width: 40px;
     height: 40px;
-    margin-left: 5px;
+    margin-left: 15px;
     &:hover {
         cursor: pointer;
     }
@@ -62,7 +66,7 @@ mat-divider {
 
 #secondaryColorHexa {
     padding-right: 20px;
-    margin-left: -4px;
+    margin-left: 6px;
 }
 
 #previewSquare {
@@ -108,14 +112,20 @@ mat-divider {
     }
 }
 
+#previewTheColor {
+    margin-left: 5px;
+}
+
 #opacitySlider {
     margin-left: 13px;
     top: 250px;
     position: absolute;
     z-index: 0;
 }
-#swapbutton {
-    margin-bottom: -80px;
+
+#swapButton {
+    top: 5px !important;
+    left: 5px !important;
 }
 
 #table {
@@ -139,4 +149,10 @@ mat-divider {
     width: 10px;
     border: black;
     margin: 5px;
+}
+
+#validationButton {
+    position: relative;
+    margin-left: 12px;
+    margin-right: 9px;
 }

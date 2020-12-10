@@ -1,14 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { AutomaticSaveService } from './automatic-save.service';
 
 const KEY_SAVE_CANVAS = 'KeySaveCanvas';
 const KEY_SAVE_WIDTH = 'KeySaveWidth';
 const KEY_SAVE_HEIGHT = 'KeySaveHeight';
+
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
+
 describe('AutomaticSaveService', () => {
     let service: AutomaticSaveService;
     const vec2: Vec2 = { x: 5, y: 6 };
@@ -20,7 +22,7 @@ describe('AutomaticSaveService', () => {
                     useValue: { convertBase64ToBaseCanvas: (a: string) => '', convertBaseCanvasToBase64: () => ' ' },
                 },
                 {
-                    provide: CanvasResizerService,
+                    provide: CanvasResizeService,
                     useValue: {
                         canvasSize: vec2,
                     },

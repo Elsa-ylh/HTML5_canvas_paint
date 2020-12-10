@@ -1,10 +1,11 @@
-// import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { TextControl } from './text-control';
 
+// magic numbers needed for testing
 // tslint:disable:no-magic-numbers
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
+// test file are often longer than 350 lines
 // tslint:disable:max-file-line-count
 // tslint:disable:prefer-for-of
 
@@ -130,7 +131,6 @@ describe('TextControl', () => {
     });
     it('should call endLineReturn (3)', () => {
         const text: string[] = [];
-        console.log(text);
         spyOn<any>(textControl, 'endLineReturn').and.callThrough();
         const texts = textControl['endLineReturn'](text, 'adce', 3);
         expect(text).toEqual(text);

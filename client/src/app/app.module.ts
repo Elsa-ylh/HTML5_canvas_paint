@@ -42,7 +42,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
 import { ColorErrorComponent } from './components/color-error/color-error.component';
 import { ColorComponent } from './components/color/color.component';
-import { CarrouselPictureComponent } from './components/dialog-carrousel-picture/dialog-carrousel-picture.component';
+import { CarouselComponent } from './components/dialog-carrousel-picture/dialog-carrousel-picture.component';
 import { DialogCreateNewDrawingComponent } from './components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { DialogExportEmailComponent } from './components/dialog-export-email/dialog-export-email.component';
 import { DialogExportDrawingComponent } from './components/dialog-export-locally/dialog-export-locally.component';
@@ -61,7 +61,7 @@ import { WriteTextOptionComponent } from './components/write-text-option/write-t
 @NgModule({
     declarations: [
         AppComponent,
-        CarrouselPictureComponent,
+        CarouselComponent,
         ColorComponent,
         ColorErrorComponent,
         DialogCreateNewDrawingComponent,
@@ -76,7 +76,7 @@ import { WriteTextOptionComponent } from './components/write-text-option/write-t
         SprayComponent,
         WriteTextDialogUserGuideComponent,
         ColorComponent,
-        CarrouselPictureComponent,
+        CarouselComponent,
         DropperColorComponent,
         DialogUploadComponent,
         PaintBucketColorComponent,

@@ -10,6 +10,7 @@ import { ColorService, GradientStyle, LastColor } from '@app/services/color/colo
 
 const SIZE_OPACITY = 207;
 const MAX_VALUE_RGB = 255;
+
 @Component({
     selector: 'app-color',
     templateUrl: './color.component.html',
@@ -31,26 +32,23 @@ export class ColorComponent implements AfterViewInit {
     @ViewChild('opacitySlider') opacitySliderCanvas: ElementRef<HTMLCanvasElement>; // to have an opacity slider
     @ViewChild('opacitySliderPreview') opacitySliderPreview: ElementRef<HTMLCanvasElement>; // to have a hover
 
-    squareDimension: Vec2 = { x: this.WIDTH, y: this.SQUARE_HEIGHT };
-    horizontalDimension: Vec2 = { x: this.WIDTH, y: this.horizontalHeight };
+    protected squareDimension: Vec2 = { x: this.WIDTH, y: this.SQUARE_HEIGHT };
+    protected horizontalDimension: Vec2 = { x: this.WIDTH, y: this.horizontalHeight };
 
-    previewSquareCtx: CanvasRenderingContext2D;
-    squareCtx: CanvasRenderingContext2D;
-
-    previewHorizontalCtx: CanvasRenderingContext2D;
-    horizontalCtx: CanvasRenderingContext2D;
-
-    opacitySliderCtx: CanvasRenderingContext2D;
-    previewOpacitySliderCtx: CanvasRenderingContext2D;
+    protected previewSquareCtx: CanvasRenderingContext2D;
+    protected squareCtx: CanvasRenderingContext2D;
+    protected previewHorizontalCtx: CanvasRenderingContext2D;
+    protected horizontalCtx: CanvasRenderingContext2D;
+    protected opacitySliderCtx: CanvasRenderingContext2D;
+    protected previewOpacitySliderCtx: CanvasRenderingContext2D;
 
     lastColors: LastColor[];
-
-    color: string;
+    protected color: string;
     message: MatDialogRef<ColorErrorComponent>;
 
     constructor(
-        private iconRegistry: MatIconRegistry,
-        private sanitizer: DomSanitizer,
+        protected iconRegistry: MatIconRegistry,
+        protected sanitizer: DomSanitizer,
         public colorService: ColorService,
         public matDialog: MatDialog,
         public errorMsg: MatDialog,

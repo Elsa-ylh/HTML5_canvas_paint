@@ -5,6 +5,8 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DropperService } from '@app/services/tools/dropper.service';
 
+// tslint:disable:no-magic-numbers
+
 describe('DropperService', () => {
     let dropperService: DropperService;
     let colorServiceMock: jasmine.SpyObj<ColorService>;

@@ -1,6 +1,7 @@
-/* tslint:disable:no-unused-variable */
-/* tslint:disable:no-string-literal */
-/* tslint:disable:no-any */
+// tslint:disable:no-unused-variable
+// tslint:disable:no-string-literal
+// tslint:disable:no-any
+
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -74,7 +75,7 @@ describe('DialogExportDrawingComponent', () => {
 
     it(' should checkSecond', () => {
         component.checkSecond();
-        expect(component['whichFilter']).toBe(Filter.GRAYSCALE);
+        expect(component['whichFilter']).toBe(Filter.GRAY_SCALE);
     });
 
     it(' should checkThird', () => {

@@ -6,9 +6,9 @@ import { ControlGroup } from './control-group';
 import { ControlPointName } from './control-points';
 import { Vec2 } from './vec2';
 
-export const PIXELMOVEMENT = 3;
-export const MOVEMENTDELAY = 100;
-export const MINTIMEMOVEMENT = 500;
+export const PIXEL_MOVEMENT = 3;
+export const MOVEMENT_DELAY = 100;
+export const MIN_TIME_MOVEMENT = 500;
 export class ArrowInfo {
     constructor(
         private direction: Vec2,
@@ -66,7 +66,7 @@ export class ArrowInfo {
                 this.arrowPressed = true;
                 this.selectionService.startTimer();
                 // for continuous movement
-                if (this.selectionService.time >= MINTIMEMOVEMENT) {
+                if (this.selectionService.time >= MIN_TIME_MOVEMENT) {
                     this.startMoveSelectionTimer();
                 }
             }
@@ -76,7 +76,7 @@ export class ArrowInfo {
     startMoveSelectionTimer(): void {
         if (!this.timerStarted) {
             this.timerStarted = true;
-            const timerMove = timer(MOVEMENTDELAY, MOVEMENTDELAY);
+            const timerMove = timer(MOVEMENT_DELAY, MOVEMENT_DELAY);
 
             this.subscription = timerMove.subscribe(() => {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);

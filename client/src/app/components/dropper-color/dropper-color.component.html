@@ -2,7 +2,6 @@
     <table>
         <mat-grid-list cols="2" rowHeight="2:1">
             <div>Aperçu</div>
-            <!--<canvas id="previewColor" [ngStyle]="{ 'background-color': this.colorService.previewColor }"></canvas>-->
             <canvas id="previewColor" #previewColor width="40px" height="40px"></canvas>
             <mat-grid-tile id="previewColorHexa">{{ this.colorService.previewColor }}</mat-grid-tile>
         </mat-grid-list>
