@@ -225,7 +225,7 @@ describe('Service: MagicWand', () => {
         const pasteSelectionSpy = spyOn<any>(magicWandService, 'pasteSelection');
 
         drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
-        spyOn<any>(magicWandService, 'isInsideSelection').and.returnValue(false);
+        spyOn<any>(magicWandService, 'isInsideSelectionCoords').and.returnValue(false);
         magicWandService['controlGroup'] = new ControlGroup(magicWandService['drawingService']);
         spyOn<any>(magicWandService['controlGroup'], 'isInControlPoint').and.returnValue(ControlPointName.none);
 
