@@ -22,6 +22,8 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterContentInit, AfterViewInit {
+    private readonly RELOAD_TIMEOUT: number = 1500; // milliseconds
+
     constructor(
         private drawingService: DrawingService,
         public toolService: ToolService,
@@ -96,7 +98,7 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
             window.location.hash = 'loaded';
             setTimeout(() => {
                 window.location.reload();
-            }, 1500);
+            }, this.RELOAD_TIMEOUT);
         }
     }
 
