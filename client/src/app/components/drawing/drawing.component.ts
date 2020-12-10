@@ -92,11 +92,11 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
 
         // https://stackoverflow.com/a/40239459/14068057
         // to make sure everything is lock and loaded
-        if (localStorage.getItem('firstTimeLoading') === null) {
-            localStorage.setItem('firstTimeLoading', 'isLoaded');
+        if (!window.location.hash) {
+            window.location.hash = 'loaded';
             setTimeout(() => {
                 window.location.reload();
-            }, 500);
+            }, 1500);
         }
     }
 
