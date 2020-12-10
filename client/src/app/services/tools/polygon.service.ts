@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { Tool } from '@app/classes/tool';
-import { ToolInfoPolygon as ToolInfoPolygon } from '@app/classes/tool-info-polygone';
+import { ToolInfoPolygon } from '@app/classes/tool-info-polygone';
 import { PolygonAction as PolygonsAction } from '@app/classes/undo-redo/polygon-action';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';

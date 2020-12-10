@@ -7,6 +7,7 @@ import { ImageClipboard } from '@app/classes/image-clipboard';
 import { SelectionImage } from '@app/classes/selection';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism.service';
 import { interval, Subscription } from 'rxjs';
@@ -24,7 +25,12 @@ export const DOTTED_SPACE = 10;
 // This file is larger than 350 lines but is entirely used by the methods.
 // tslint:disable:max-file-line-count
 export class SelectionService extends Tool {
-    constructor(drawingService: DrawingService, protected magnetismService: MagnetismService, protected rotationService: RotationService) {
+    constructor(
+        drawingService: DrawingService,
+        protected magnetismService: MagnetismService,
+        protected rotationService: RotationService,
+        protected autoSave: AutomaticSaveService,
+    ) {
         super(drawingService);
     }
     // initialization of local const
@@ -413,21 +419,23 @@ export class SelectionService extends Tool {
     }
 
     pasteImage(): void {
-        if (!this.drawingService.isPreviewCanvasBlank()) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.pasteSelection(this.selection);
+        if (this.clipboard.imageSize !== undefined) {
+            if (!this.drawingService.isPreviewCanvasBlank()) {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.pasteSelection(this.selection);
+            }
+            this.cleared = true;
+            this.selection.imageData = this.clipboard.imageData;
+            this.selection.imagePosition = { x: 1, y: 1 };
+            this.selection.width = this.clipboard.width;
+            this.selection.height = this.clipboard.height;
+            this.selection.imageSize = { x: this.clipboard.imageSize.x, y: this.clipboard.imageSize.y };
+            this.selection.ellipseRadian = { x: this.clipboard.ellipseRadian.x, y: this.clipboard.ellipseRadian.y };
+            this.selection.endingPos = { x: Math.abs(this.selection.width), y: Math.abs(this.selection.height) };
+            this.selection.image = new Image();
+            this.selection.image.src = this.selection.getImageURL(this.clipboard.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
+            this.drawSelection({ x: 1, y: 1 });
         }
-        this.cleared = true;
-        this.selection.imageData = this.clipboard.imageData;
-        this.selection.imagePosition = { x: 1, y: 1 };
-        this.selection.width = this.clipboard.width;
-        this.selection.height = this.clipboard.height;
-        this.selection.imageSize = { x: this.clipboard.imageSize.x, y: this.clipboard.imageSize.y };
-        this.selection.ellipseRadian = { x: this.clipboard.ellipseRadian.x, y: this.clipboard.ellipseRadian.y };
-        this.selection.endingPos = { x: Math.abs(this.selection.width), y: Math.abs(this.selection.height) };
-        this.selection.image = new Image();
-        this.selection.image.src = this.selection.getImageURL(this.clipboard.imageData, this.selection.imageSize.x, this.selection.imageSize.y);
-        this.drawSelection({ x: 1, y: 1 });
     }
 
     // tslint:disable:cyclomatic-complexity
