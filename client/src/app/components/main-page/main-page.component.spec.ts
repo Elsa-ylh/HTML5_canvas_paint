@@ -1,16 +1,18 @@
 // tslint:disable: no-any
 import { HttpClientModule } from '@angular/common/http';
+import { NgZone } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DialogCreateNewDrawingComponent } from '@app/components/dialog-create-new-drawing/dialog-create-new-drawing.component';
 import { MainPageComponent } from '@app/components/main-page/main-page.component';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -21,7 +23,7 @@ describe('MainPageComponent', () => {
     let fixture: ComponentFixture<MainPageComponent>;
     let dialogMock: jasmine.SpyObj<MatDialog>;
     let automaticSaveStub: AutomaticSaveService;
-    let canvasReziseStub: CanvasResizerService;
+    let canvasReziseStub: CanvasResizeService;
     let drawingStub: DrawingService;
     let undoRedoStub: UndoRedoService;
     let gridStub: GridService;
@@ -31,9 +33,11 @@ describe('MainPageComponent', () => {
             dialogMock = jasmine.createSpyObj('dialogCreator', ['open']);
             drawingStub = new DrawingService();
             gridStub = new GridService(drawingStub);
-            canvasReziseStub = new CanvasResizerService(gridStub, undoRedoStub);
+            canvasReziseStub = new CanvasResizeService(gridStub, undoRedoStub);
             undoRedoStub = new UndoRedoService(drawingStub);
             automaticSaveStub = new AutomaticSaveService(canvasReziseStub, drawingStub, undoRedoStub);
+            automaticSaveStub.save = () => '';
+            automaticSaveStub.check = () => false;
 
             TestBed.configureTestingModule({
                 imports: [
@@ -49,15 +53,18 @@ describe('MainPageComponent', () => {
                 providers: [
                     { provide: MatDialog, useValue: dialogMock },
                     { provide: MatDialogRef, useValue: {} },
-                    { provide: AutomaticSaveService, useValue: { save: () => '', check: () => false } },
                     { provide: AutomaticSaveService, useValue: automaticSaveStub },
                 ],
             }).compileComponents();
             TestBed.inject(MatDialog);
+            const router = TestBed.inject(Router);
 
             fixture = TestBed.createComponent(MainPageComponent);
             component = fixture.componentInstance;
             fixture.detectChanges();
+            (fixture.ngZone as NgZone).run(() => {
+                router.initialNavigation();
+            });
         }),
     );
 
@@ -72,15 +79,15 @@ describe('MainPageComponent', () => {
     });
 
     it('should open warning message when creating a new drawing', () => {
-        const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+        const matDialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
 
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
         component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
-            return matdialogRef;
+            return matDialogRef;
         });
 
         component.createNewDrawing();
-        expect(component.newDrawingRef).toEqual(matdialogRef);
+        expect(component.newDrawingRef).toEqual(matDialogRef);
     });
 
     it('should set isDialogOpenSaveExport to true after closed', () => {
@@ -106,19 +113,21 @@ describe('MainPageComponent', () => {
     });
 
     it('should open warning message when opening "guide dutilisation"', () => {
-        const matdialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+        const matDialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
 
         component.dialogCreator = jasmine.createSpyObj('MatDialog', ['open']);
         component.dialogCreator.open = jasmine.createSpy().and.callFake(() => {
-            return matdialogRef;
+            return matDialogRef;
         });
 
         component.openUserGuide();
-        expect(component.checkDocumentationRef).toEqual(matdialogRef);
+        expect(component.checkDocumentationRef).toEqual(matDialogRef);
     });
 
     it('should call getUpload ', () => {
-        const getUploadSpy = spyOn(automaticSaveStub, 'getUpload').and.stub();
+        const getUploadSpy = spyOn(automaticSaveStub, 'getUpload').and.callThrough();
+        // tslint:disable-next-line: no-string-literal
+        spyOn<any>(component['router'], 'navigate').and.returnValue(true);
         component.continueDrawing();
         expect(getUploadSpy).toHaveBeenCalled();
     });

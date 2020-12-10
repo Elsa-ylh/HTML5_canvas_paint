@@ -8,6 +8,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatSliderModule } from '@angular/material/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorComponent } from '@app/components/color/color.component';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
@@ -27,6 +28,7 @@ describe('EditorComponent', () => {
                     MatButtonModule,
                     MatGridListModule,
                     MatListModule,
+                    MatSliderModule,
                     MatInputModule,
                     MatButtonToggleModule,
                     MatDividerModule,

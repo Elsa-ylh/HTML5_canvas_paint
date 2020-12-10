@@ -1,6 +1,6 @@
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { AbsUndoRedo } from '@app/classes/undo-redo/abs-undo-redo';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 // class that allows to undo and redo resize of the canvas
 export class ResizeCanvasAction extends AbsUndoRedo {
     constructor(
@@ -8,15 +8,15 @@ export class ResizeCanvasAction extends AbsUndoRedo {
         private resizeCtx: CanvasRenderingContext2D,
         private baseCanvas: HTMLCanvasElement,
         private resizeDirection: ResizeDirection,
-        private cvsResizerService: CanvasResizerService,
+        private canvasResizeService: CanvasResizeService,
     ) {
         super();
     }
 
     apply(): void {
-        this.cvsResizerService.isResizeDown = true;
-        this.cvsResizerService.resizeDirection = this.resizeDirection;
-        this.cvsResizerService.addToUndoRedo = false;
-        this.cvsResizerService.onResizeUp(this.event, this.resizeCtx, this.baseCanvas);
+        this.canvasResizeService.isResizeDown = true;
+        this.canvasResizeService.resizeDirection = this.resizeDirection;
+        this.canvasResizeService.addToUndoRedo = false;
+        this.canvasResizeService.onResizeUp(this.event, this.resizeCtx, this.baseCanvas);
     }
 }

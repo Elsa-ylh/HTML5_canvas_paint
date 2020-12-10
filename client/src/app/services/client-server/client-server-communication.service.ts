@@ -30,20 +30,20 @@ export class ClientServerCommunicationService {
         };
     }
 
-    allLabel(): Observable<CanvasInformation> {
+    allLabels(): Observable<CanvasInformation> {
         return this.http
             .get<CanvasInformation>(this.HTTP_SERVE_LOCAL + '/all_labels')
             .pipe(catchError(this.handleError<CanvasInformation>('basicGet')));
     }
 
     private catchInformation(): void {
-        this.allLabel().subscribe((info) => (this.information = info));
+        this.allLabels().subscribe((info) => (this.information = info));
     }
 
-    getAllLabel(): Label[] {
+    getAllLabels(): Label[] {
         this.catchInformation();
         if (this.information == undefined) return [];
-        if (this.information._id === 'list_of_all_labals') {
+        if (this.information._id === 'list_of_all_labels') {
             return this.information.labels;
         }
         return [];

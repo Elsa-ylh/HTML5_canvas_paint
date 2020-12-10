@@ -5,12 +5,15 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { MouseButton } from '@app/classes/mouse-button';
 import { Vec2 } from '@app/classes/vec2';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { FeatherService } from '@app/services/tools/feather.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { GridService } from './grid.service';
+
+// tslint:disable:no-magic-numbers
+// tslint:disable:no-string-literal
 
 describe('Service: Feather', () => {
     let featherStub: FeatherService;
@@ -19,7 +22,7 @@ describe('Service: Feather', () => {
     let undoRedoStub: UndoRedoService;
     let gridStub: GridService;
     let automaticSaveStub: AutomaticSaveService;
-    let canvasResizeStub: CanvasResizerService;
+    let canvasResizeStub: CanvasResizeService;
     let mouseEvent: MouseEvent;
 
     let baseCtxStub: CanvasRenderingContext2D;
@@ -36,7 +39,7 @@ describe('Service: Feather', () => {
         automaticSaveStub = new AutomaticSaveService(canvasResizeStub, drawingStub, undoRedoStub);
         featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
         gridStub = new GridService(drawingStub);
-        canvasResizeStub = new CanvasResizerService(gridStub, undoRedoStub);
+        canvasResizeStub = new CanvasResizeService(gridStub, undoRedoStub);
         featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -45,13 +48,10 @@ describe('Service: Feather', () => {
         lineCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
 
         canvas = canvasTestHelper.canvas;
-        // tslint:disable:no-magic-numbers
         canvas.width = 100;
-        // tslint:disable:no-magic-numbers
         canvas.height = 100;
         drawingStub.canvas = canvas;
 
-        // tslint:disable:no-string-literal
         featherStub['drawingService'].cursorCtx = featherStubCtx;
         drawingStub.cursorCtx = lineCtxStub;
 
@@ -61,13 +61,12 @@ describe('Service: Feather', () => {
                 { provide: AutomaticSaveService, useValue: automaticSaveStub },
                 { provide: ColorService, useValue: colorStub },
                 { provide: FeatherService, useValue: featherStub },
-                { provide: CanvasResizerService, useValue: canvasResizeStub },
+                { provide: CanvasResizeService, useValue: canvasResizeStub },
                 { provide: UndoRedoService, useValue: undoRedoStub },
             ],
         });
 
         featherStub = TestBed.inject(FeatherService);
-        // tslint:disable:no-string-literal
         featherStub['drawingService'].baseCtx = baseCtxStub;
         featherStub['drawingService'].previewCtx = previewCtxStub;
 

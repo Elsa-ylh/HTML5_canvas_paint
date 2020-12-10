@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MouseButton } from '@app/classes/mouse-button';
-import { SubToolselected } from '@app/classes/sub-tool-selected';
+import { SubToolSelected } from '@app/classes/sub-tool-selected';
 import { TextControl } from '@app/classes/text-control';
 import { Tool } from '@app/classes/tool';
 import { ToolInfoText } from '@app/classes/tool-info-text';
@@ -14,18 +14,18 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // tslint:disable:deprecation
 // tslint:disable:max-file-line-count
-const STROKECOLOR = '#000000';
+const STROKE_COLOR = '#000000';
 const SPACE = 32;
-const ARROWUP = 37;
-const ARROWDOWN = 38;
-const ARROWLEFT = 39;
-const ARROWRIGHT = 40;
+const ARROW_UP = 37;
+const ARROW_DOWN = 38;
+const ARROW_LEFT = 39;
+const ARROW_RIGHT = 40;
 const DEL = 56;
 const F1 = 112;
 const F12 = 123;
 const ZERO = 48;
-const DOTTEDSPACE = 10;
-const TEXTZONEMINWIDTH = 100;
+const DOTTED_SPACE = 10;
+const TEXT_ZONE_MIN_WIDTH = 100;
 
 @Injectable({
     providedIn: 'root',
@@ -68,7 +68,6 @@ export class TextService extends Tool {
         }
         if (this.writeOnPreviewCtx) {
             this.setCtxFont(this.drawingService.baseCtx);
-            // this.drawText();
             this.drawTextUndo(
                 {
                     primaryColor: this.colorService.primaryColor,
@@ -167,17 +166,17 @@ export class TextService extends Tool {
     selectTextPosition(subTool: number): void {
         this.textAlign = subTool;
         switch (subTool) {
-            case SubToolselected.tool1: {
+            case SubToolSelected.tool1: {
                 this.drawingService.previewCtx.textAlign = 'center';
                 this.drawingService.baseCtx.textAlign = 'center';
                 break;
             }
-            case SubToolselected.tool2: {
+            case SubToolSelected.tool2: {
                 this.drawingService.previewCtx.textAlign = 'left';
                 this.drawingService.baseCtx.textAlign = 'left';
                 break;
             }
-            case SubToolselected.tool3: {
+            case SubToolSelected.tool3: {
                 this.drawingService.previewCtx.textAlign = 'right';
                 this.drawingService.baseCtx.textAlign = 'right';
                 break;
@@ -187,13 +186,13 @@ export class TextService extends Tool {
     }
 
     private drawPreviewRect(ctx: CanvasRenderingContext2D, mouseDownCoords: Vec2, mousePosition: Vec2): void {
-        ctx.strokeStyle = STROKECOLOR;
-        ctx.fillStyle = STROKECOLOR;
+        ctx.strokeStyle = STROKE_COLOR;
+        ctx.fillStyle = STROKE_COLOR;
         ctx.lineWidth = this.lineWidth;
-        ctx.setLineDash([DOTTEDSPACE, DOTTEDSPACE]);
+        ctx.setLineDash([DOTTED_SPACE, DOTTED_SPACE]);
         if (this.drawingService.previewCtx === ctx) {
-            if (Math.abs(this.width) <= TEXTZONEMINWIDTH || Math.abs(this.height) <= this.sizeFont) {
-                this.width = Math.abs(this.width) > TEXTZONEMINWIDTH ? this.width : TEXTZONEMINWIDTH;
+            if (Math.abs(this.width) <= TEXT_ZONE_MIN_WIDTH || Math.abs(this.height) <= this.sizeFont) {
+                this.width = Math.abs(this.width) > TEXT_ZONE_MIN_WIDTH ? this.width : TEXT_ZONE_MIN_WIDTH;
                 this.height = Math.abs(this.height) > this.sizeFont ? this.height : this.sizeFont + 1;
             }
             this.textControl.setWidth(this.width);
@@ -302,10 +301,9 @@ export class TextService extends Tool {
     }
 
     private position(ctx: CanvasRenderingContext2D, text: string[], toolInfoText: ToolInfoText): void {
-        // todo
         let lineBreak = 0;
         switch (toolInfoText.textAlign) {
-            case SubToolselected.tool1:
+            case SubToolSelected.tool1:
                 text.forEach((element) => {
                     if (this.textControl.checkHeightText(lineBreak, toolInfoText.sizeFont, toolInfoText.height)) {
                         ctx.fillText(
@@ -319,7 +317,7 @@ export class TextService extends Tool {
                     }
                 });
                 break;
-            case SubToolselected.tool2:
+            case SubToolSelected.tool2:
                 text.forEach((element) => {
                     if (this.textControl.checkHeightText(lineBreak, toolInfoText.sizeFont, toolInfoText.height)) {
                         ctx.fillText(
@@ -333,7 +331,7 @@ export class TextService extends Tool {
                     }
                 });
                 break;
-            case SubToolselected.tool3:
+            case SubToolSelected.tool3:
                 text.forEach((element) => {
                     if (this.textControl.checkHeightText(lineBreak, toolInfoText.sizeFont, toolInfoText.height)) {
                         ctx.fillText(
@@ -350,7 +348,7 @@ export class TextService extends Tool {
         }
     }
 
-    // keyboard action functions
+    // keyboard action methods
     arrowTop(): void {
         this.textControl.arrowTop();
         this.previewText();
@@ -391,10 +389,10 @@ export class TextService extends Tool {
                 event.keyCode === SPACE ||
                 (event.keyCode >= ZERO &&
                     event.keyCode !== DEL &&
-                    event.keyCode !== ARROWLEFT &&
-                    event.keyCode !== ARROWDOWN &&
-                    event.keyCode !== ARROWRIGHT &&
-                    event.keyCode !== ARROWUP)
+                    event.keyCode !== ARROW_LEFT &&
+                    event.keyCode !== ARROW_DOWN &&
+                    event.keyCode !== ARROW_RIGHT &&
+                    event.keyCode !== ARROW_UP)
             )
                 if (event.keyCode < F1 || event.keyCode > F12) {
                     this.textControl.addLetter(event.key.toString());

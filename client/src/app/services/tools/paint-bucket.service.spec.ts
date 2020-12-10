@@ -4,23 +4,25 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { MouseButton } from '@app/classes/mouse-button';
 import { RGBA } from '@app/classes/rgba';
 import { Vec2 } from '@app/classes/vec2';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { GridService } from './grid.service';
 
+// tslint:disable:no-string-literal
+// tslint:disable:no-any
+// tslint:disable:no-magic-numbers
+// tslint:disable:prefer-const
+
 describe('Service: PaintBucket', () => {
-    /*tslint:disable:no-any*/
-    /*tslint:disable:no-magic-numbers*/
     let colorService: ColorService;
     let paintBucketService: PaintBucketService;
-    // tslint:disable-next-line:prefer-const
 
     let drawingService: DrawingService;
     let undoRedoService: UndoRedoService;
-    let canvasReziserService: CanvasResizerService;
+    let canvasReziseService: CanvasResizeService;
     let gridStub: GridService;
 
     let baseCtxStub: CanvasRenderingContext2D;
@@ -43,20 +45,20 @@ describe('Service: PaintBucket', () => {
 
         undoRedoService = new UndoRedoService(drawingService);
         gridStub = new GridService(drawingService);
-        canvasReziserService = new CanvasResizerService(gridStub, undoRedoService);
+        canvasReziseService = new CanvasResizeService(gridStub, undoRedoService);
         colorService = new ColorService(drawingService);
 
         TestBed.configureTestingModule({
             providers: [
                 { provide: DrawingService, useValue: drawingService },
                 { provide: ColorService, useValue: colorService },
-                { provide: CanvasResizerService, useValue: canvasReziserService },
+                { provide: CanvasResizeService, useValue: canvasReziseService },
             ],
         });
         paintBucketService = TestBed.inject(PaintBucketService);
         mouseEventTest = { x: 25, y: 25, button: MouseButton.Left } as MouseEvent;
-        // tslint:disable:no-string-literal
-        paintBucketService['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+
+        paintBucketService['drawingService'].baseCtx = baseCtxStub;
         paintBucketService['drawingService'].previewCtx = previewCtxStub;
         // spy for private methods
         hexToRGBASpy = spyOn<any>(paintBucketService, 'hexToRGBA').and.callThrough();
@@ -91,8 +93,8 @@ describe('Service: PaintBucket', () => {
     });
 
     it('should call paintAllSimilar', () => {
-        canvasReziserService.canvasSize.x = 100;
-        canvasReziserService.canvasSize.y = 100;
+        canvasReziseService.canvasSize.x = 100;
+        canvasReziseService.canvasSize.y = 100;
         paintAllSimilarSpy = spyOn<any>(paintBucketService, 'paintAllSimilar').and.callThrough();
         paintBucketService['paintAllSimilar'](mouseEventTest.x, mouseEventTest.y, { red: 0, green: 0, blue: 0, alpha: 1 });
         expect(paintAllSimilarSpy).toHaveBeenCalled();

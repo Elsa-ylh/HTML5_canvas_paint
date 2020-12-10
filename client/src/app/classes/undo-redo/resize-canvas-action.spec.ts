@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ResizeDirection } from '@app/classes/resize-direction';
 import { ResizeCanvasAction } from '@app/classes/undo-redo/resize-canvas-action';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
@@ -14,7 +14,7 @@ describe('resizeCanvasAction', () => {
     let drawingStub: DrawingService;
     let colorStub: ColorService;
     let undoRedoStub: UndoRedoService;
-    let resizeStub: CanvasResizerService;
+    let resizeStub: CanvasResizeService;
     let gridStub: GridService;
 
     let event: MouseEvent;
@@ -37,17 +37,13 @@ describe('resizeCanvasAction', () => {
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
         gridStub = new GridService(drawingStub);
-        resizeStub = new CanvasResizerService(gridStub, undoRedoStub);
+        resizeStub = new CanvasResizeService(gridStub, undoRedoStub);
         resizeActionStub = new ResizeCanvasAction(event, resizeCtx, baseCanvas, resizeDirection, resizeStub);
         canvas = canvasTestHelper.canvas;
-        // tslint:disable:no-magic-numbers
         canvas.width = 100;
-        // tslint:disable:no-magic-numbers
         canvas.height = 100;
         baseCanvas = canvasTestHelper.canvas;
-        // tslint:disable:no-magic-numbers
         baseCanvas.width = 50;
-        // tslint:disable:no-magic-numbers
         baseCanvas.height = 50;
         baseStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -62,11 +58,11 @@ describe('resizeCanvasAction', () => {
                 { provide: ColorService, useValue: colorStub },
                 { provide: UndoRedoService, useValue: undoRedoStub },
                 { provide: ResizeCanvasAction, useValue: resizeActionStub },
-                { provide: CanvasResizerService, useValue: resizeStub },
+                { provide: CanvasResizeService, useValue: resizeStub },
             ],
         });
         resizeActionStub = TestBed.inject(ResizeCanvasAction);
-        resizeStub = TestBed.inject(CanvasResizerService);
+        resizeStub = TestBed.inject(CanvasResizeService);
     });
 
     it('should call onResizeUp', () => {

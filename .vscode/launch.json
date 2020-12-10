@@ -20,7 +20,7 @@
             "sourceMaps": true,
             "localRoot": "${workspaceFolder}/server",
             "type": "pwa-node"
-        }
+        },
         {
             "type": "node",
             "request": "launch",

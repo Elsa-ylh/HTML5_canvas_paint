@@ -1,11 +1,11 @@
 import { Application } from '@app/app';
 import { TYPES } from '@app/types';
-import { expect } from 'chai';
 import { ImageFormat } from '@common/communication/image-format';
+import { expect } from 'chai';
+import { Container } from 'inversify/dts/container/container';
+import { SinonSandbox } from 'sinon';
 import * as supertest from 'supertest';
 import { testingContainer } from '../../test/test-utils';
-import { SinonSandbox } from 'sinon';
-import { Container } from 'inversify/dts/container/container';
 import * as EmailController from './email.controller';
 
 describe('Email controller', () => {
@@ -15,6 +15,7 @@ describe('Email controller', () => {
 
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
+        container.rebind(TYPES.EmailService).toConstantValue({});
         testsContainer = container;
         testsSandbox = sandbox;
     });

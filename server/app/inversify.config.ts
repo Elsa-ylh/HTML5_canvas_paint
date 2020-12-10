@@ -5,6 +5,7 @@ import { EmailService } from '@app/services/email.service';
 import { Container } from 'inversify';
 import { Application } from './app';
 import { Server } from './server';
+import { ReadFileService } from './services/read-file.service';
 import { TYPES } from './types';
 
 export const containerBootstrapper: () => Promise<Container> = async () => {
@@ -19,5 +20,6 @@ export const containerBootstrapper: () => Promise<Container> = async () => {
     container.bind(TYPES.EmailController).to(EmailController);
     container.bind(TYPES.EmailService).to(EmailService);
 
+    container.bind(TYPES.ReadFileService).to(ReadFileService);
     return container;
 };

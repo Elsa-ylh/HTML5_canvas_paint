@@ -5,29 +5,31 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoadAction } from '@app/classes/undo-redo/load-action';
 import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
-// import { LoadAction } from '@app/classes/undo-redo/load-action';
-import { CanvasResizerService } from '@app/services/canvas/canvas-resizer.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ClientServerCommunicationService } from '@app/services/client-server/client-server-communication.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { CanvasInformation, Label } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
+
 const NB_FILES_OPEN_AT_A_TIME = 3;
+
 @Component({
     selector: 'app-dialog-carrousel-picture',
     templateUrl: './dialog-carrousel-picture.component.html',
     styleUrls: ['./dialog-carrousel-picture.component.scss'],
 })
-export class CarrouselPictureComponent implements OnInit {
+export class CarouselComponent implements OnInit {
     constructor(
-        private clientServerComSvc: ClientServerCommunicationService,
-        private cvsResizerService: CanvasResizerService,
+        private clientServerComService: ClientServerCommunicationService,
+        private canvasResizeService: CanvasResizeService,
         private drawingService: DrawingService,
         private router: Router,
-        private dialogRef: MatDialogRef<CarrouselPictureComponent>,
+        private dialogRef: MatDialogRef<CarouselComponent>,
         private undoRedoService: UndoRedoService,
         private automaticSaveService: AutomaticSaveService,
     ) {}
+
     private dataPicture: CanvasInformation[] = [];
     private position: number = 0;
     dataLabel: Label[] = [];
@@ -44,12 +46,13 @@ export class CarrouselPictureComponent implements OnInit {
         this.addAllData();
         this.addAllLabels();
     }
+
     private addAllData(): void {
-        this.clientServerComSvc.getData().subscribe((info) => (this.dataPicture = info));
+        this.clientServerComService.getData().subscribe((info) => (this.dataPicture = info));
     }
 
     private addAllLabels(): void {
-        this.dataLabel = this.clientServerComSvc.getAllLabel();
+        this.dataLabel = this.clientServerComService.getAllLabels();
     }
 
     reset(): void {
@@ -64,7 +67,8 @@ export class CarrouselPictureComponent implements OnInit {
         this.labelSelect = [];
         this.addAllData();
     }
-    selectionLabel(label: string): void {
+
+    isLabelExisting(label: string): void {
         let itList = true;
         for (let index = 0; index < this.labelSelect.length; index++) {
             if (this.labelSelect[index] === label) {
@@ -77,6 +81,7 @@ export class CarrouselPictureComponent implements OnInit {
         }
         this.labelSelect.length === 0 ? this.addAllData() : this.setMessageLabel(this.labelSelect);
     }
+
     private setMessageLabel(labels: string[]): void {
         let textLabel = '';
         for (let index = 0; index < labels.length; index++) {
@@ -84,20 +89,20 @@ export class CarrouselPictureComponent implements OnInit {
         }
         this.position = 0;
         const message: Message = { title: 'labels', body: textLabel };
-        this.clientServerComSvc.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
+        this.clientServerComService.selectPictureWithLabel(message).subscribe((info) => (this.dataPicture = info));
     }
-    getPicturesAll(): number {
+    getPictureLength(): number {
         return this.dataPicture.length;
     }
     setSearchCriteria(): void {
         switch (this.selectedType) {
             case 'name':
                 const message: Message = { title: 'name', body: this.name };
-                this.clientServerComSvc.getElementResearch(message).subscribe((info) => (this.dataPicture = info));
+                this.clientServerComService.getElementResearch(message).subscribe((info) => (this.dataPicture = info));
                 break;
             case 'date':
                 const messageDate: Message = { title: 'date', body: (this.myDate.value as Date).toString() };
-                this.clientServerComSvc.getElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
+                this.clientServerComService.getElementResearch(messageDate).subscribe((info) => (this.dataPicture = info));
                 break;
         }
         this.position = 0;
@@ -142,18 +147,18 @@ export class CarrouselPictureComponent implements OnInit {
     }
 
     private createImage(listCard: CanvasInformation[]): void {
-        const nbpicture = listCard.length;
-        if (nbpicture >= 1) {
+        const nbPictures = listCard.length;
+        if (nbPictures >= 1) {
             if (this.previewImage1 !== undefined) {
                 this.previewImage1.nativeElement.src = listCard[0].picture;
             }
         }
-        if (nbpicture >= 2) {
+        if (nbPictures >= 2) {
             if (this.previewImage2 !== undefined) {
                 this.previewImage2.nativeElement.src = listCard[1].picture;
             }
         }
-        if (nbpicture >= 3) {
+        if (nbPictures >= 3) {
             if (this.previewImage3 !== undefined) {
                 this.previewImage3.nativeElement.src = listCard[2].picture;
             }
@@ -162,13 +167,13 @@ export class CarrouselPictureComponent implements OnInit {
 
     loadPicture(loadedPicture: CanvasInformation): void {
         if (confirm('load :' + loadedPicture.name)) {
-            this.cvsResizerService.canvasSize.y = loadedPicture.height;
-            this.cvsResizerService.canvasSize.x = loadedPicture.width;
+            this.canvasResizeService.canvasSize.y = loadedPicture.height;
+            this.canvasResizeService.canvasSize.x = loadedPicture.width;
             this.drawingService.convertBase64ToBaseCanvas(loadedPicture.picture);
             // undo-Redo
             const image = new Image();
             image.src = loadedPicture.picture;
-            const actionLoadImg = new LoadAction(image, loadedPicture.height, loadedPicture.width, this.drawingService, this.cvsResizerService);
+            const actionLoadImg = new LoadAction(image, loadedPicture.height, loadedPicture.width, this.drawingService, this.canvasResizeService);
             this.undoRedoService.clearUndo();
             this.undoRedoService.clearRedo();
             this.undoRedoService.loadImage(actionLoadImg);
@@ -178,10 +183,10 @@ export class CarrouselPictureComponent implements OnInit {
         }
     }
 
-    deletePicture(picture: CanvasInformation): void {
+    deletePictureInDataBase(picture: CanvasInformation): void {
         if (confirm('Supprimer : ' + picture.name)) {
             const deleteMassage: Message = { title: 'delete', body: picture._id };
-            this.clientServerComSvc.deleteQuery(deleteMassage).subscribe((info) => this.messageDelete(info));
+            this.clientServerComService.deleteQuery(deleteMassage).subscribe((info) => this.messageDelete(info));
         }
     }
 
