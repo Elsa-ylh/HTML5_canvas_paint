@@ -6,6 +6,7 @@ import { RGBA } from '@app/classes/rgba';
 import { SelectionImage } from '@app/classes/selection';
 import { SelectionWandAction } from '@app/classes/undo-redo/selection-wand-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
@@ -41,8 +42,9 @@ export class MagicWandService extends SelectionService {
         protected magnetismService: MagnetismService,
         protected undoRedoService: UndoRedoService,
         protected rotationService: RotationService,
+        protected autoSave: AutomaticSaveService,
     ) {
-        super(drawingService, magnetismService, rotationService);
+        super(drawingService, magnetismService, rotationService, autoSave);
     }
 
     // the starting x and y means where the mouse was clicked down
@@ -532,6 +534,7 @@ export class MagicWandService extends SelectionService {
         );
         this.drawingService.baseCtx.restore();
         this.selection.resetAngle();
+        this.autoSave.save();
     }
 
     clearSelectionWand(position: Vec2, originalColor: RGBA): void {

@@ -4,6 +4,7 @@ import { MouseButton } from '@app/classes/mouse-button';
 import { SelectionImage } from '@app/classes/selection';
 import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { RotationService } from '@app/services/tools/selection-service/rotation.service';
@@ -19,8 +20,9 @@ export class SelectionRectangleService extends SelectionService {
         protected magnetismService: MagnetismService,
         protected rotationService: RotationService,
         private undoRedoService: UndoRedoService,
+        protected autoSave: AutomaticSaveService,
     ) {
-        super(drawingService, magnetismService, rotationService);
+        super(drawingService, magnetismService, rotationService, autoSave);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -182,6 +184,7 @@ export class SelectionRectangleService extends SelectionService {
         );
         this.drawingService.baseCtx.restore();
         this.selection.resetAngle();
+        this.autoSave.save();
     }
 
     protected drawPreview(): void {

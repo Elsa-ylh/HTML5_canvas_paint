@@ -5,6 +5,7 @@ import { SelectionImage } from '@app/classes/selection';
 import { SelectionEllipseAction } from '@app/classes/undo-redo/selection-ellipse-action';
 import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -21,8 +22,9 @@ export class SelectionEllipseService extends SelectionService {
         protected magnetismService: MagnetismService,
         protected rotationService: RotationService,
         private undoRedoService: UndoRedoService,
+        protected autoSave: AutomaticSaveService,
     ) {
-        super(drawingService, magnetismService, rotationService);
+        super(drawingService, magnetismService, rotationService, autoSave);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -61,6 +63,7 @@ export class SelectionEllipseService extends SelectionService {
                         this.magnetismService,
                         this.rotationService,
                         this.undoRedoService,
+                        this.autoSave,
                     );
 
                     const selectRectAc = new SelectionRectAction(selectionRectService, this.drawingService, this.selection);
@@ -106,6 +109,7 @@ export class SelectionEllipseService extends SelectionService {
                 this.magnetismService,
                 this.rotationService,
                 this.undoRedoService,
+                this.autoSave,
             );
             const selectRectAc = new SelectionRectAction(selectionRectService, this.drawingService, this.selection);
             this.undoRedoService.addUndo(selectRectAc);
@@ -191,6 +195,7 @@ export class SelectionEllipseService extends SelectionService {
                 this.magnetismService,
                 this.rotationService,
                 this.undoRedoService,
+                this.autoSave,
             );
             selectionRectService.pasteSelection(this.selection);
         } else {
@@ -213,6 +218,7 @@ export class SelectionEllipseService extends SelectionService {
             this.drawingService.baseCtx.restore();
             this.selection.resetAngle();
         }
+        this.autoSave.save();
     }
 
     protected drawPreview(): void {

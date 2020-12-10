@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SelectionImage } from '@app/classes/selection';
 import { SelectionEllipseAction } from '@app/classes/undo-redo/selection-ellipse-action';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
@@ -20,6 +22,8 @@ describe('SelectionEllipseAction', () => {
     let magnetismStub: MagnetismService;
     let gridStub: GridService;
     let rotationStub: RotationService;
+    let autoSave: AutomaticSaveService;
+    let canvasResizeStub: CanvasResizeService;
 
     let selection: SelectionImage;
 
@@ -49,7 +53,9 @@ describe('SelectionEllipseAction', () => {
         gridStub = new GridService(drawingStub);
         magnetismStub = new MagnetismService(gridStub);
         rotationStub = new RotationService(drawingStub);
-        selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
+        canvasResizeStub = new CanvasResizeService(gridStub, undoRedoStub);
+        autoSave = new AutomaticSaveService(canvasResizeStub, drawingStub, undoRedoStub);
+        selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub, autoSave);
 
         selectionEllipseActionStub = new SelectionEllipseAction(selectionEllipseStub, drawingStub, selection);
         canvas = canvasTestHelper.canvas;

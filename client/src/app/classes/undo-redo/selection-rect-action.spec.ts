@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SelectionImage } from '@app/classes/selection';
 import { SelectionRectAction } from '@app/classes/undo-redo/selection-rect-action';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
@@ -21,11 +23,13 @@ describe('SelectionRectAction', () => {
     let magnetismStub: MagnetismService;
     let gridStub: GridService;
     let rotationStub: RotationService;
+    let canvasResizeStub: CanvasResizeService;
 
     let selection: SelectionImage;
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
+    let autoSave: AutomaticSaveService;
 
     beforeEach(() => {
         selection = new SelectionImage(drawingStub);
@@ -38,7 +42,9 @@ describe('SelectionRectAction', () => {
         magnetismStub = new MagnetismService(gridStub);
         gridStub = new GridService(drawingStub);
         rotationStub = new RotationService(drawingStub);
-        selectionRectStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
+        canvasResizeStub = new CanvasResizeService(gridStub, undoRedoStub);
+        autoSave = new AutomaticSaveService(canvasResizeStub, drawingStub, undoRedoStub);
+        selectionRectStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub, autoSave);
         selectionRectActionStub = new SelectionRectAction(selectionRectStub, drawingStub, selection);
         canvas = canvasTestHelper.canvas;
         canvas.width = 100;
