@@ -14,17 +14,19 @@ import { Bound, MagicWandService } from '@app/services/tools/selection-service/m
 import { RotationService } from '@app/services/tools/selection-service/rotation.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 // tslint:disable:no-any
 // tslint:disable:no-magic-numbers
 // tslint:disable:max-file-line-count
 // tslint:disable:prefer-const
 // tslint:disable:prettier
+// tslint:disable:no-string-literal
 
-fdescribe('Service: MagicWand', () => {
+describe('Service: MagicWand', () => {
     let magicWandService: MagicWandService;
 
-    let drawingStub: DrawingService;
+    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let magnetismStub: MagnetismService;
     let rotationStub: RotationService;
     let undoRedoStub: UndoRedoService;
@@ -37,23 +39,23 @@ fdescribe('Service: MagicWand', () => {
     let previewCtxStub: CanvasRenderingContext2D;
 
     beforeEach(() => {
-        drawingStub = new DrawingService();
-        magicWandService = new MagicWandService(drawingStub, magnetismStub, undoRedoStub, rotationStub);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'isPreviewCanvasBlank']);
+        magicWandService = new MagicWandService(drawServiceSpy, magnetismStub, undoRedoStub, rotationStub);
         magnetismStub = new MagnetismService(gridStub);
-        gridStub = new GridService(drawingStub);
-        undoRedoStub = new UndoRedoService(drawingStub);
-        rotationStub = new RotationService(drawingStub);
-        selectionStub = new SelectionService(drawingStub, magnetismStub, rotationStub);
+        gridStub = new GridService(drawServiceSpy);
+        undoRedoStub = new UndoRedoService(drawServiceSpy);
+        rotationStub = new RotationService(drawServiceSpy);
+        selectionStub = new SelectionService(drawServiceSpy, magnetismStub, rotationStub);
 
-        controlMock = new ControlGroup(drawingStub);
+        controlMock = new ControlGroup(drawServiceSpy);
         selectionStub['controlGroup'] = controlMock;
 
-        selectionStub.selection = new SelectionImage(drawingStub);
+        selectionStub.selection = new SelectionImage(drawServiceSpy);
         selectionStub.selection.image = new Image();
 
         TestBed.configureTestingModule({
             providers: [
-                { provide: DrawingService, useValue: drawingStub },
+                { provide: DrawingService, useValue: drawServiceSpy },
                 { provide: MagnetismService, useValue: magnetismStub },
                 { provide: UndoRedoService, useValue: undoRedoStub },
                 { provide: RotationService, useValue: rotationStub },
@@ -69,9 +71,9 @@ fdescribe('Service: MagicWand', () => {
         canvasTestHelper.drawCanvas.height = 1000;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
-        drawingStub.baseCtx = baseCtxStub;
-        drawingStub.previewCtx = previewCtxStub;
-        drawingStub.canvas = canvas;
+        drawServiceSpy.baseCtx = baseCtxStub;
+        drawServiceSpy.previewCtx = previewCtxStub;
+        drawServiceSpy.canvas = canvas;
     });
 
     it('should be created', () => {
@@ -191,9 +193,16 @@ fdescribe('Service: MagicWand', () => {
     });
 
     it('should onMouseDown with left click', () => {
+        drawServiceSpy.isPreviewCanvasBlank.and.returnValue(true);
         baseCtxStub.fillStyle = 'rgba(0, 0, 0, 0)';
         baseCtxStub.fillRect(0, 0, 1000, 1000);
+        magicWandService.selection.imagePosition = { x: 1, y: 1 };
+        magicWandService.selection.endingPos = { x: 11, y: 11 };
+        magicWandService['inSelection'] = false;
+        magicWandService['controlGroup'] = new ControlGroup(magicWandService['drawingService']);
+        magicWandService['controlGroup'].controlPointName = ControlPointName.none;
         const event = { offsetX: 11, offsetY: 11, button: MouseButton.Left } as MouseEvent;
+        spyOn<any>(magicWandService['controlGroup'], 'isInControlPoint').and.returnValue(false);
         const spy = spyOn<any>(magicWandService, 'onMouseDown').and.callThrough();
         spyOn<any>(magicWandService, 'snipSelection').and.returnValue(canvas.toDataURL());
         spyOn<any>(magicWandService, 'saveSelectionData').and.callThrough();
@@ -212,31 +221,212 @@ fdescribe('Service: MagicWand', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('should onMouseMove', () => {
-        magicWandService.mouseDown = true;
-        magicWandService['inSelection'] = true;
-        magicWandService['controlPointName'] = ControlPointName.none;
+    it('onMouseDown should paste a selection if the user click outside of it', () => {
+        const pasteSelectionSpy = spyOn<any>(magicWandService, 'pasteSelection');
 
-        baseCtxStub.fillStyle = 'rgba(0, 0, 0, 0)';
-        baseCtxStub.fillRect(0, 0, 1000, 1000);
-        const event = { offsetX: 11, offsetY: 11, button: MouseButton.Right } as MouseEvent;
-        const spy = spyOn<any>(magicWandService, 'onMouseMove').and.callThrough();
-        spyOn<any>(magicWandService, 'snipSelection').and.returnValue(canvas.toDataURL());
-        spyOn<any>(magicWandService, 'saveSelectionData').and.callThrough();
-        magicWandService.onMouseMove(event);
-        expect(spy).toHaveBeenCalled();
+        drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
+        spyOn<any>(magicWandService, 'isInsideSelection').and.returnValue(false);
+        magicWandService['controlGroup'] = new ControlGroup(magicWandService['drawingService']);
+        spyOn<any>(magicWandService['controlGroup'], 'isInControlPoint').and.returnValue(ControlPointName.none);
+
+        magicWandService.selection.imagePosition = { x: 1, y: 1 };
+        magicWandService.selection.endingPos = { x: 11, y: 11 };
+        magicWandService.originalColor = { red: 101, green: 231, blue: 20, alpha: 1 };
+        magicWandService.selection.image = new Image();
+        const event = { offsetX: 11, offsetY: 11, button: MouseButton.Left } as MouseEvent;
+
+        magicWandService.onMouseDown(event);
+
+        expect(pasteSelectionSpy).toHaveBeenCalled();
     });
 
-    it('should onMouseUp', () => {
-        magicWandService.mouseDown = true;
+    it(' onMouseMove should draw a selection with new coordinates when the selection has been moved', () => {
+        const drawWandSelectionSpy = spyOn<any>(magicWandService, 'drawWandSelection');
+        const clearSelectionWandSpy = spyOn<any>(magicWandService, 'clearSelectionWand');
+        spyOn<any>(magicWandService, 'getPositionFromMouse').and.returnValue({ x: 10, y: 10 });
+        const mouseEvent = {
+            button: 0,
+            offsetX: 20,
+            offsetY: 20,
+        } as MouseEvent;
 
-        baseCtxStub.fillStyle = 'rgba(0, 0, 0, 0)';
-        baseCtxStub.fillRect(0, 0, 1000, 1000);
-        const event = { offsetX: 11, offsetY: 11, button: MouseButton.Right } as MouseEvent;
-        const spy = spyOn<any>(magicWandService, 'onMouseDown').and.callThrough();
-        spyOn<any>(magicWandService, 'snipSelection').and.returnValue(canvas.toDataURL());
-        spyOn<any>(magicWandService, 'saveSelectionData').and.callThrough();
-        magicWandService.onMouseDown(event);
-        expect(spy).toHaveBeenCalled();
+        magicWandService.cleared = false;
+        magicWandService.mouseDown = true;
+        magicWandService.selection.imagePosition = { x: 1, y: 1 };
+        magicWandService.selection.endingPos = { x: 11, y: 11 };
+        magicWandService['previousMousePos'] = { x: 5, y: 5 };
+        magicWandService.selection.width = 10;
+        magicWandService.selection.height = 10;
+        magicWandService['inSelection'] = true;
+        magicWandService['controlGroup'] = new ControlGroup(magicWandService['drawingService']);
+        magicWandService['controlGroup'].controlPointName = ControlPointName.none;
+        magicWandService['controlPointName'] = ControlPointName.none;
+
+        magicWandService.onMouseMove(mouseEvent);
+
+        expect(drawWandSelectionSpy).toHaveBeenCalled();
+        expect(clearSelectionWandSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should draw a selection with  a new size when the selection has been scaled', () => {
+        const drawWandSelectionSpy = spyOn<any>(magicWandService, 'drawWandSelection');
+        const scaleSelectionSpy = spyOn<any>(magicWandService, 'scaleSelection');
+        spyOn<any>(magicWandService, 'getPositionFromMouse').and.returnValue({ x: 10, y: 10 });
+        const mouseEvent = {
+            button: 0,
+            offsetX: 20,
+            offsetY: 20,
+        } as MouseEvent;
+
+        magicWandService.cleared = false;
+        magicWandService.mouseDown = true;
+        magicWandService.selection.imagePosition = { x: 1, y: 1 };
+        magicWandService.selection.endingPos = { x: 11, y: 11 };
+        magicWandService['previousMousePos'] = { x: 5, y: 5 };
+        magicWandService.selection.width = 10;
+        magicWandService.selection.height = 10;
+        magicWandService.originalColor = { red: 101, green: 231, blue: 20, alpha: 1 };
+        magicWandService['inSelection'] = true;
+        magicWandService['controlGroup'] = new ControlGroup(magicWandService['drawingService']);
+        magicWandService['controlGroup'].controlPointName = ControlPointName.left;
+        magicWandService['controlPointName'] = ControlPointName.left;
+
+        magicWandService.onMouseMove(mouseEvent);
+
+        expect(drawWandSelectionSpy).toHaveBeenCalled();
+        expect(scaleSelectionSpy).toHaveBeenCalled();
+    });
+
+    it('onMouseUp should clear the preview canvas and draw a selection if it has been scaled or moved', () => {
+        const drawWandSelectionSpy = spyOn<any>(magicWandService, 'drawWandSelection');
+
+        magicWandService.mouseDown = true;
+        magicWandService['inSelection'] = true;
+        const mouseEvent = {
+            button: 0,
+            offsetX: 20,
+            offsetY: 20,
+        } as MouseEvent;
+        magicWandService.selection.imagePosition = { x: 1, y: 1 };
+        magicWandService.selection.endingPos = { x: 11, y: 11 };
+        magicWandService.selection.width = 10;
+        magicWandService.selection.height = 10;
+        magicWandService.selection.image = new Image();
+
+        magicWandService.onMouseUp(mouseEvent);
+
+        expect(drawWandSelectionSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+    });
+
+    it('onKeyEscape should paste a selection if the selection is drawn', () => {
+        drawServiceSpy.isPreviewCanvasBlank.and.returnValue(false);
+        magicWandService.mouseDown = true;
+        const pasteSelectionSpy = spyOn<any>(magicWandService, 'pasteSelection');
+        magicWandService['upArrow'].timerStarted = true;
+        magicWandService['downArrow'].timerStarted = true;
+        magicWandService['leftArrow'].timerStarted = true;
+        magicWandService['rightArrow'].timerStarted = true;
+        magicWandService['timerStarted'] = true;
+
+        magicWandService['upArrow'].subscription = new Subscription();
+        magicWandService['downArrow'].subscription = new Subscription();
+        magicWandService['leftArrow'].subscription = new Subscription();
+        magicWandService['rightArrow'].subscription = new Subscription();
+        magicWandService['subscriptionTimer'] = new Subscription();
+
+        const upSubscription = spyOn<any>(magicWandService['upArrow'].subscription, 'unsubscribe');
+        const downSubscription = spyOn<any>(magicWandService['downArrow'].subscription, 'unsubscribe');
+        const leftSubscription = spyOn<any>(magicWandService['leftArrow'].subscription, 'unsubscribe');
+        const rightSubscription = spyOn<any>(magicWandService['rightArrow'].subscription, 'unsubscribe');
+        const timerSubscription = spyOn<any>(magicWandService['subscriptionTimer'], 'unsubscribe');
+
+        magicWandService.selection.image = new Image();
+
+        magicWandService.onKeyEscape();
+
+        expect(pasteSelectionSpy).toHaveBeenCalled();
+        expect(upSubscription).toHaveBeenCalled();
+        expect(downSubscription).toHaveBeenCalled();
+        expect(leftSubscription).toHaveBeenCalled();
+        expect(rightSubscription).toHaveBeenCalled();
+        expect(timerSubscription).toHaveBeenCalled();
+    });
+
+    it('drawWandSelection should draw a selection and its surrounding rectangle', () => {
+        const drawSelectionRectSpy = spyOn<any>(magicWandService, 'drawSelectionRect');
+        const drawImageSpy = spyOn<any>(magicWandService['drawingService'].previewCtx, 'drawImage');
+        spyOn<any>(magicWandService, 'flipImage');
+        magicWandService['scaled'] = true;
+
+        magicWandService.selection.imagePosition = { x: 1, y: 1 };
+        magicWandService.selection.endingPos = { x: 11, y: 11 };
+        magicWandService.selection.width = 10;
+        magicWandService.selection.height = 10;
+        magicWandService.selection.imageData = new ImageData(10, 10);
+        magicWandService.selection.image = new Image();
+        magicWandService.selection.rotationAngle = 20;
+
+        magicWandService.drawSelection({ x: 1, y: 1 });
+
+        expect(drawSelectionRectSpy).toHaveBeenCalled();
+        expect(drawImageSpy).toHaveBeenCalled();
+    });
+
+    it('pasteSelection should draw the selection in the base canvas', () => {
+        const drawImageSpy = spyOn<any>(magicWandService['drawingService'].baseCtx, 'drawImage');
+
+        magicWandService.selection.imagePosition = { x: 1, y: 1 };
+        magicWandService.selection.endingPos = { x: 11, y: 11 };
+        magicWandService.selection.width = 10;
+        magicWandService.selection.height = 10;
+        magicWandService.selection.imageData = new ImageData(10, 10);
+        magicWandService.selection.image = new Image();
+
+        magicWandService.pasteSelection(magicWandService.selection);
+        expect(drawImageSpy).toHaveBeenCalled();
+    });
+
+    it('clearSelectionWand should replace the selection pixels by white pixels on the base canvas', () => {
+        spyOn<any>(magicWandService['drawingService'].baseCtx, 'getImageData').and.returnValue(new ImageData(10, 10));
+        const putImageDataSpy = spyOn<any>(magicWandService['drawingService'].baseCtx, 'putImageData');
+
+        magicWandService.selection.imagePosition = { x: 1, y: 1 };
+        magicWandService.selection.endingPos = { x: 11, y: 11 };
+        magicWandService.selection.width = 10;
+        magicWandService.selection.height = 10;
+        magicWandService.originalColor = { red: 101, green: 231, blue: 20, alpha: 1 };
+        magicWandService.selection.imageData = new ImageData(10, 10);
+        magicWandService.selection.image = new Image();
+
+        magicWandService.clearSelectionWand({ x: 1, y: 1 }, magicWandService.originalColor);
+        expect(putImageDataSpy).toHaveBeenCalled();
+    });
+
+    it('clearSelection should call clearSelectionWand', () => {
+        const clearSelectionWandSpy = spyOn<any>(magicWandService, 'clearSelectionWand');
+
+        magicWandService.selection.copyImageInitialPos = { x: 1, y: 1 };
+        magicWandService.originalColor = { red: 101, green: 231, blue: 20, alpha: 1 };
+        magicWandService.selection.image = new Image();
+
+        magicWandService.clearSelection();
+        expect(clearSelectionWandSpy).toHaveBeenCalled();
+    });
+
+    it('getColor should return the color of a pixel', () => {
+        const canvasTest = document.createElement('canvas') as HTMLCanvasElement;
+        const ctx = (canvasTest.getContext('2d') as CanvasRenderingContext2D) as CanvasRenderingContext2D;
+        canvasTest.width = 1;
+        canvasTest.height = 1;
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, 1, 1);
+        expect(magicWandService['getColor']({ x: 0, y: 0 }, ctx)).toEqual({ red: 0, green: 0, blue: 0, alpha: 255 });
+    });
+
+    it('drawSelection should call drawSelectionWand', () => {
+        const drawSelectionWandSpy = spyOn<any>(magicWandService, 'drawWandSelection');
+        magicWandService.drawSelection({ x: 0, y: 0 });
+        expect(drawSelectionWandSpy).toHaveBeenCalled();
     });
 });

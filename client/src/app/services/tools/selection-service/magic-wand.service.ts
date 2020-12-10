@@ -142,15 +142,14 @@ export class MagicWandService extends SelectionService {
 
     private matchFillColor(currentColor: RGBA, targetColor: RGBA): boolean {
         let matchFillColor = true;
-        matchFillColor = matchFillColor && targetColor.red == currentColor.red;
-        matchFillColor = matchFillColor && targetColor.green == currentColor.green;
-        matchFillColor = matchFillColor && targetColor.blue == currentColor.blue;
+        matchFillColor = matchFillColor && targetColor.red === currentColor.red;
+        matchFillColor = matchFillColor && targetColor.green === currentColor.green;
+        matchFillColor = matchFillColor && targetColor.blue === currentColor.blue;
 
         return matchFillColor;
     }
 
     private selectAllSimilar(x: number, y: number, replacementColor: RGBA): ImageData {
-        debugger;
         const pixels: ImageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         const linearCords: number = (y * this.drawingService.canvas.width + x) * this.COLORATTRIBUTES;
         const originalColor = {
@@ -436,7 +435,6 @@ export class MagicWandService extends SelectionService {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            // const mousePosition = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             if (this.inSelection || this.controlPointName !== ControlPointName.none) {
@@ -446,11 +444,8 @@ export class MagicWandService extends SelectionService {
                 // reset baseImage to use when flipping the image
                 this.baseImage = new Image();
                 this.baseImage.src = this.selection.image.src;
-                // not in action anymore
-                // this.controlGroup.resetSelected();
             }
         }
-        // this.controlPointName = ControlPointName.none;
         this.mouseDown = false;
         this.rightMouseDown = false;
         this.inSelection = false;
