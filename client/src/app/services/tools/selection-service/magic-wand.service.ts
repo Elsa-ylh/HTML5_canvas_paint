@@ -6,19 +6,18 @@ import { RGBA } from '@app/classes/rgba';
 import { SelectionImage } from '@app/classes/selection';
 import { SelectionWandAction } from '@app/classes/undo-redo/selection-wand-action';
 import { Vec2 } from '@app/classes/vec2';
-import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismParams, MagnetismService } from '@app/services/tools/magnetism.service';
-import { PaintBucketService } from '@app/services/tools/paint-bucket.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection-service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { RotationService } from './rotation.service';
 
-enum Bound {
+export enum Bound {
     UPPER,
     LOWER,
     LEFT,
     RIGHT,
+    NONE,
 }
 
 @Injectable({
@@ -36,12 +35,9 @@ export class MagicWandService extends SelectionService {
     private readonly COLORATTRIBUTES: number = 4;
     private rightMouseDown: boolean;
     originalColor: RGBA;
-    tolerance: number = 0; // from 0 to 100 inclusively, look at paint bucket component
 
     constructor(
         drawingService: DrawingService,
-        private canvasResizeService: CanvasResizeService,
-        private paintBucketService: PaintBucketService,
         protected magnetismService: MagnetismService,
         protected undoRedoService: UndoRedoService,
         protected rotationService: RotationService,
@@ -53,13 +49,8 @@ export class MagicWandService extends SelectionService {
     private selectedFloodFill(x: number, y: number, replacementColor: RGBA): ImageData {
         const pixelStack: Vec2[] = [];
         pixelStack.push({ x, y });
-        const pixels: ImageData = this.drawingService.baseCtx.getImageData(
-            0,
-            0,
-            this.canvasResizeService.canvasSize.x,
-            this.canvasResizeService.canvasSize.y,
-        );
-        let linearCords: number = (y * this.canvasResizeService.canvasSize.x + x) * this.COLORATTRIBUTES;
+        const pixels: ImageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+        let linearCords: number = (y * this.drawingService.canvas.width + x) * this.COLORATTRIBUTES;
         const originalColor = {
             red: pixels.data[linearCords],
             green: pixels.data[linearCords + 1],
@@ -74,7 +65,7 @@ export class MagicWandService extends SelectionService {
             x = newPixel.x;
             y = newPixel.y;
 
-            linearCords = (y * this.canvasResizeService.canvasSize.x + x) * this.COLORATTRIBUTES;
+            linearCords = (y * this.drawingService.canvas.width + x) * this.COLORATTRIBUTES;
             while (
                 y-- >= 0 &&
                 pixels.data[linearCords] === originalColor.red &&
@@ -84,15 +75,15 @@ export class MagicWandService extends SelectionService {
                 // tslint:disable-next-line:no-magic-numbers
                 pixels.data[linearCords + 3] === originalColor.alpha
             ) {
-                linearCords -= this.canvasResizeService.canvasSize.x * this.COLORATTRIBUTES;
+                linearCords -= this.drawingService.canvas.width * this.COLORATTRIBUTES;
             }
-            linearCords += this.canvasResizeService.canvasSize.x * this.COLORATTRIBUTES;
+            linearCords += this.drawingService.canvas.width * this.COLORATTRIBUTES;
             y++;
 
             let reachedLeft = false;
             let reachedRight = false;
             while (
-                y++ < this.canvasResizeService.canvasSize.y &&
+                y++ < this.drawingService.canvas.height &&
                 pixels.data[linearCords] === originalColor.red &&
                 pixels.data[linearCords + 1] === originalColor.green &&
                 pixels.data[linearCords + 2] === originalColor.blue &&
@@ -125,7 +116,7 @@ export class MagicWandService extends SelectionService {
                     }
                 }
 
-                if (x < this.canvasResizeService.canvasSize.x - 1) {
+                if (x < this.drawingService.canvas.width - 1) {
                     if (
                         pixels.data[linearCords + this.COLORATTRIBUTES] === originalColor.red &&
                         pixels.data[linearCords + this.COLORATTRIBUTES + 1] === originalColor.green &&
@@ -142,21 +133,25 @@ export class MagicWandService extends SelectionService {
                         }
                     }
 
-                    linearCords += this.canvasResizeService.canvasSize.x * this.COLORATTRIBUTES;
+                    linearCords += this.drawingService.canvas.width * this.COLORATTRIBUTES;
                 }
             }
         }
         return pixels;
     }
 
+    private matchFillColor(currentColor: RGBA, targetColor: RGBA): boolean {
+        let matchFillColor = true;
+        matchFillColor = matchFillColor && targetColor.red === currentColor.red;
+        matchFillColor = matchFillColor && targetColor.green === currentColor.green;
+        matchFillColor = matchFillColor && targetColor.blue === currentColor.blue;
+
+        return matchFillColor;
+    }
+
     private selectAllSimilar(x: number, y: number, replacementColor: RGBA): ImageData {
-        const pixels: ImageData = this.drawingService.baseCtx.getImageData(
-            0,
-            0,
-            this.canvasResizeService.canvasSize.x,
-            this.canvasResizeService.canvasSize.y,
-        );
-        const linearCords: number = (y * this.canvasResizeService.canvasSize.x + x) * this.COLORATTRIBUTES;
+        const pixels: ImageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+        const linearCords: number = (y * this.drawingService.canvas.width + x) * this.COLORATTRIBUTES;
         const originalColor = {
             red: pixels.data[linearCords],
             green: pixels.data[linearCords + 1],
@@ -175,7 +170,7 @@ export class MagicWandService extends SelectionService {
             // +3 means at alpha position
             // tslint:disable-next-line:no-magic-numbers
             atIteratorColor.alpha = pixels.data[iterator + 3];
-            if (this.paintBucketService.matchFillColor(originalColor, atIteratorColor)) {
+            if (this.matchFillColor(originalColor, atIteratorColor)) {
                 // put selection code
                 pixels.data[iterator] = replacementColor.red;
                 pixels.data[iterator + 1] = replacementColor.green;
@@ -195,10 +190,10 @@ export class MagicWandService extends SelectionService {
         const originalLayer: ImageData = this.drawingService.baseCtx.getImageData(
             0,
             0,
-            this.canvasResizeService.canvasSize.x,
-            this.canvasResizeService.canvasSize.y,
+            this.drawingService.canvas.width,
+            this.drawingService.canvas.height,
         );
-        const previewLayer = new ImageData(this.canvasResizeService.canvasSize.x, this.canvasResizeService.canvasSize.y);
+        const previewLayer = new ImageData(this.drawingService.canvas.width, this.drawingService.canvas.height);
         for (let i = 0; i < size; ++i) {
             if (
                 coloredPixels.data[i * this.COLORATTRIBUTES] === this.replacementColor.red &&
@@ -243,7 +238,6 @@ export class MagicWandService extends SelectionService {
                         }
                     }
                 }
-                break;
             case Bound.LOWER:
                 // go thru all of the lines FROM THE BOTTOM and...
                 for (let i = previewLayer.height - 1; i >= 0; --i) {
@@ -254,7 +248,6 @@ export class MagicWandService extends SelectionService {
                         }
                     }
                 }
-                break;
             case Bound.LEFT:
                 // go thru all of the columns FROM THE LEFT and ...
                 for (let i = 0; i < previewLayer.width; ++i) {
@@ -265,7 +258,6 @@ export class MagicWandService extends SelectionService {
                         }
                     }
                 }
-                break;
             case Bound.RIGHT:
                 // go thru all of the columns FROM THE RIGHT and ...
                 for (let i = previewLayer.width - 1; i >= 0; --i) {
@@ -276,7 +268,6 @@ export class MagicWandService extends SelectionService {
                         }
                     }
                 }
-                break;
         }
         return { x: NaN, y: NaN };
     }
@@ -444,7 +435,6 @@ export class MagicWandService extends SelectionService {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            // const mousePosition = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             if (this.inSelection || this.controlPointName !== ControlPointName.none) {
@@ -454,11 +444,8 @@ export class MagicWandService extends SelectionService {
                 // reset baseImage to use when flipping the image
                 this.baseImage = new Image();
                 this.baseImage.src = this.selection.image.src;
-                // not in action anymore
-                // this.controlGroup.resetSelected();
             }
         }
-        // this.controlPointName = ControlPointName.none;
         this.mouseDown = false;
         this.rightMouseDown = false;
         this.inSelection = false;
