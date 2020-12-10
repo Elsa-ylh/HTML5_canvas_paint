@@ -2,28 +2,45 @@ import { CanvasInformation, Label } from '@common/communication/canvas-informati
 import { injectable } from 'inversify';
 import { Collection, MongoClient, MongoClientOptions, ObjectId } from 'mongodb';
 import 'reflect-metadata';
+import { ReadFileService } from './read-file.service';
 
-const DATABASE_URL = 'mongodb+srv://Admin:LOG2990gr103@saved-canvas-images.2ticq.mongodb.net/project2?retryWrites=true&w=majority';
-const DATABASE_NAME = 'project2';
-const DATABASE_COLLECTION = 'saved_canvas_pictures';
 const HOURS_MIDNIGHT = 23;
 const MINUTE_MIDNIGHT = 59;
 const SECOND_MIDNIGHT = 59;
 @injectable()
 export class DatabasePictureService {
     private collection: Collection<CanvasInformation>;
-
     private options: MongoClientOptions = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     };
 
     constructor() {
-        MongoClient.connect(DATABASE_URL, this.options)
+        this.connectMongoClient('mongodb_url.txt');
+    }
+    private async connectMongoClient(nomFile: string): Promise<void> {
+        const readFileService = new ReadFileService();
+        readFileService.openFileRead(nomFile);
+        let databaseUrl = 'DATABASE_URL';
+        let databaseName = 'DATABASE_NAME';
+        let databaseCollection = 'DATABASE_COLLECTION';
+        const keyElement = readFileService.getInfos();
+        keyElement.forEach((element) => {
+            if (element[0] === databaseUrl) {
+                databaseUrl = element[1];
+            }
+            if (element[0] === databaseName) {
+                databaseName = element[1];
+            }
+            if (element[0] === databaseCollection) {
+                databaseCollection = element[1];
+            }
+        });
+        MongoClient.connect(databaseUrl, this.options)
             .then((client: MongoClient) => {
-                this.collection = client.db(DATABASE_NAME).collection(DATABASE_COLLECTION);
+                this.collection = client.db(databaseName).collection(databaseCollection);
             })
-            .catch(() => {
+            .catch((err) => {
                 console.error('CONNECTION ERROR. EXITING PROCESS');
                 process.exit(1);
             });
@@ -77,7 +94,7 @@ export class DatabasePictureService {
             });
             return listLabels;
         } catch (error) {
-            return error;
+            throw error;
         }
     }
     private isLabelNotInTheList(listLabels: Label[], label: Label): boolean {

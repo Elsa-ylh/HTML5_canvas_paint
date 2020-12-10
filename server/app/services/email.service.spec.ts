@@ -1,10 +1,10 @@
+import { ImageFormat } from '@common/communication/image-format';
 import axios, { AxiosResponse } from 'axios';
 import { expect } from 'chai';
 import * as FormData from 'form-data';
+import * as FileStream from 'fs';
 import * as Sinon from 'sinon';
 import { EmailService } from './email.service';
-import { ImageFormat } from '@common/communication/image-format';
-import * as FileStream from 'fs';
 
 describe('Email service', () => {
     let emailService: EmailService;
@@ -35,28 +35,28 @@ describe('Email service', () => {
         const imagePath = './default.png';
         const imageExtension = emailService.getImageExtension(imagePath);
         expect(imageExtension).to.be.equal(ImageFormat.PNG);
-    })
+    });
 
     it('should check an image extension which is JPEG', () => {
         const imagePath = './default.jpeg';
         const imageExtension = emailService.getImageExtension(imagePath);
         expect(imageExtension).to.be.equal(ImageFormat.JPG);
-    })
+    });
 
     it('should check an image extension which is NONE', () => {
         const imagePath = './default_weird_image_format.highrez';
         const imageExtension = emailService.getImageExtension(imagePath);
         expect(imageExtension).to.be.equal(ImageFormat.NONE);
-    })
+    });
 
     it('should check if content is right extension of PNG', async () => {
-        const imagePath = './default.png'
+        const imagePath = './default.png';
         const isContentValid = await emailService.isContentValid(imagePath, ImageFormat.PNG);
         expect(isContentValid).to.be.true;
     });
 
     it('should check if content is right extension of JPG', async () => {
-        const imagePath = './default.jpeg'
+        const imagePath = './default.jpeg';
         const isContentValid = await emailService.isContentValid(imagePath, ImageFormat.JPG);
         expect(isContentValid).to.be.true;
     });
