@@ -7,6 +7,8 @@ import { ControlPointName } from '@app/classes/control-points';
 import { MouseButton } from '@app/classes/mouse-button';
 import { SelectionImage } from '@app/classes/selection';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/tools/grid.service';
 import { MagnetismService } from '@app/services/tools/magnetism.service';
@@ -33,6 +35,8 @@ describe('Service: MagicWand', () => {
     let gridStub: GridService;
     let selectionStub: SelectionService;
     let controlMock: ControlGroup;
+    let autoSave: AutomaticSaveService;
+    let canvasResizerStub: CanvasResizeService;
 
     let canvas: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
@@ -40,12 +44,14 @@ describe('Service: MagicWand', () => {
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'isPreviewCanvasBlank']);
-        magicWandService = new MagicWandService(drawServiceSpy, magnetismStub, undoRedoStub, rotationStub);
+        canvasResizerStub = new CanvasResizeService(gridStub, undoRedoStub);
+        autoSave = new AutomaticSaveService(canvasResizerStub, drawServiceSpy,undoRedoStub);
+        magicWandService = new MagicWandService(drawServiceSpy, magnetismStub, undoRedoStub, rotationStub, autoSave);
         magnetismStub = new MagnetismService(gridStub);
         gridStub = new GridService(drawServiceSpy);
         undoRedoStub = new UndoRedoService(drawServiceSpy);
         rotationStub = new RotationService(drawServiceSpy);
-        selectionStub = new SelectionService(drawServiceSpy, magnetismStub, rotationStub);
+        selectionStub = new SelectionService(drawServiceSpy, magnetismStub, rotationStub, autoSave);
 
         controlMock = new ControlGroup(drawServiceSpy);
         selectionStub['controlGroup'] = controlMock;
