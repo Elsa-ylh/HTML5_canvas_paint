@@ -22,8 +22,6 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterContentInit, AfterViewInit {
-    private readonly RELOAD_TIMEOUT: number = 1500; // milliseconds
-
     constructor(
         private drawingService: DrawingService,
         public toolService: ToolService,
@@ -53,8 +51,6 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
         return ToolUsed.Stamp;
     }
 
-    // On utilise ce canvas pour dessiner sans affecter le dessin final, aussi utilisé pour sauvegarder
-    // une version du dessin avant de l'appliquer au final.
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizingPreview', { static: false }) canvasResizingPreview: ElementRef<HTMLCanvasElement>;
@@ -91,15 +87,6 @@ export class DrawingComponent implements AfterContentInit, AfterViewInit {
             ResizeDirection.verticalAndHorizontal,
             this.canvasResizeService,
         );
-
-        // https://stackoverflow.com/a/40239459/14068057
-        // to make sure everything is lock and loaded
-        if (!window.location.hash) {
-            window.location.hash = 'loaded';
-            setTimeout(() => {
-                window.location.reload();
-            }, this.RELOAD_TIMEOUT);
-        }
     }
 
     setCanvasBackgroundColor(): void {
