@@ -16,6 +16,5 @@ export class StampAction extends AbsUndoRedo {
     apply(): void {
         this.stampService.saveCanvas(this.image, this.mouseCenterX, this.mouseCenterY);
         this.drawingService.baseCtx.drawImage(this.image, this.mouseCenterX, this.mouseCenterY);
-        this.stampService.isUndoRedo = true;
     }
 }

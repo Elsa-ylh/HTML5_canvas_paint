@@ -107,7 +107,7 @@ export const dataUserGuide: UserGuide[] = [
         isTool: 'Dessiner',
         description:
             "Cet outil est aussi similaire au crayon. Cependant, la forme de sa pointe doit être une mince ligne plutôt que d’être ronde.. Vous pouvez configurer les attributs suivants : la longueur de la ligne en pixels et l'angle d’orientation de la ligne en degrés. Il vous est aussi possible de changer l’angle de la ligne à l’aide de la roulette de votre souris. À chaque cran de roulette, une rotation de 15 degrés est effectuée. Si vous maintenez la touche Alt de votre clavier pendant cette action, la rotation sera de 1 degré.",
-        gifPath: '',
+        gifPath: 'assets/user_guide/plume.gif',
         screenshotPath: '',
     },
 
@@ -191,14 +191,14 @@ export const dataUserGuide: UserGuide[] = [
         description:
             'L’application vous permez d’afficher une grille superposée à la surface de dessin et de son contenu. Son point d’origine est le coin supérieur gauche de la surface. Il vous est possible d’activer ou de désactiver la grille, de lui assigner une valeur d’opacité et finalement de lui indiquer la taille (en pixels) des carrés la composant.',
         gifPath: '',
-        screenshotPath: '',
+        screenshotPath: 'assets/user_guide/grille.PNG',
     },
     {
         title: 'Magnétisme',
         isTool: 'Dessiner',
         description:
             "Lorsque vous choisissez d'activer cette option , chaque fois qu’une boite englobante est déplacée à l’aide de la souris celle-ci se « collera » ou s’alignera sur la ligne de grille la plus près. Vous pouvez choisir le point utilisé pour l'alignement sur la grille parmi les 9 points suivants : un des quatre points de contrôle, un des quatre coins de la boîte englobante ou le centre de la boîte. Cette option peut être activée / désactivée avec la touche M.",
-        gifPath: '',
+        gifPath: 'assets/user_guide/magnetisme.gif',
         screenshotPath: '',
     },
     {
@@ -206,7 +206,7 @@ export const dataUserGuide: UserGuide[] = [
         isTool: 'Dessiner',
         description:
             "Cet outil vous permet d’apposer de petites images sur votre dessin. Pour l’utiliser, il vous suffit d'effectuer un simple clic du bouton gauche à l’endroit où vous désirez apposer l’image. Le clic doit être fait sur la surface de dessin. Il est possible d'apposer une image partiellement. La barre latérale secondaire vous permet de configurer le facteur de mise à échelle de l’étampe, l'angle d’orientation de l’étampe (en degrés) et le choix d’image.",
-        gifPath: '',
+        gifPath: 'assets/user_guide/etampe.gif',
         screenshotPath: '',
     },
     {
@@ -214,7 +214,7 @@ export const dataUserGuide: UserGuide[] = [
         isTool: 'Dessiner',
         description:
             "Cet outil vous permet d’écrire des chaines de caractères sur la surface de dessin. Pendant l’édition du texte, il vous est possible de vous déplacer dans le texte avec les touches directionnelles (flèches) du clavier ainsi que de supprimer avec la touche de retour arrière (Backspace) ou la touche de suppression (Delete). Pour terminer la création de votre texte, il vous suffit de cliquer à l’extérieur la zone de création ou de sélectionner un autre outil. Attention, toute partie de votre texte se trouvant en dehors de la surface de dessin sera perdue. Le panneau d’attributs vous permet de modifier votre texte avec les configurations suivantes : police du texte, taille de la police, texte en gras et/ou italique et alignement du texte : gauche, centre, droit. La touche T vous permet de sélectionner l'outil texte. ",
-        gifPath: '',
+        gifPath: 'assets/user_guide/texte.gif',
         screenshotPath: '',
     },
     {
@@ -222,7 +222,7 @@ export const dataUserGuide: UserGuide[] = [
         isTool: 'Dessiner',
         description:
             'Cet outil simule un effet de peinture en aérosol : un jet de peinture est vaporisé sous le pointeur de la souris lorsque le bouton est enfoncé. La barre latérale secondaire vous permet de modifier les attributs suivants : le nombre d’émissions par seconde, le diamètre du jet en pixels et le diamètre des gouttelettes composant le jet',
-        gifPath: '',
+        gifPath: 'assets/user_guide/aerosol.gif',
         screenshotPath: '',
     },
 
