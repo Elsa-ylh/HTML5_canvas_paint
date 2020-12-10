@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
+import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TextService } from '@app/services/tools/text.service';
@@ -33,7 +35,8 @@ describe('TextAction', () => {
     let baseStub: CanvasRenderingContext2D;
     let previewStub: CanvasRenderingContext2D;
     let canvas: HTMLCanvasElement;
-
+    let automaticSaveStub: AutomaticSaveService;
+    let canvasResizeStub: CanvasResizeService;
     beforeEach(() => {
         primaryColor = '#000000';
         sizeFont = 16;
@@ -44,7 +47,8 @@ describe('TextAction', () => {
         drawingStub = new DrawingService();
         colorStub = new ColorService(drawingStub);
         undoRedoStub = new UndoRedoService(drawingStub);
-        textStub = new TextService(drawingStub, colorStub, undoRedoStub);
+        automaticSaveStub = new AutomaticSaveService(canvasResizeStub, drawingStub, undoRedoStub);
+        textStub = new TextService(drawingStub, colorStub, undoRedoStub, automaticSaveStub);
 
         textActionStub = new TextAction(
             mousePosition,
