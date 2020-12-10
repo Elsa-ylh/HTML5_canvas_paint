@@ -89,7 +89,7 @@ describe('DrawingComponent', () => {
 
             selectionRectangleStub = new SelectionRectangleService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
             selectionEllipseStub = new SelectionEllipseService(drawingStub, magnetismStub, rotationStub, undoRedoStub);
-            textServiceStub = new TextService(drawingStub, colorStub, undoRedoStub);
+            textServiceStub = new TextService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             stampServiceStub = new StampService(drawingStub, undoRedoStub);
             featherStub = new FeatherService(drawingStub, colorStub, undoRedoStub, autoSaveStub);
             magnetismStub = new MagnetismService(gridStub);

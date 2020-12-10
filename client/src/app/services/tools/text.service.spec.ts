@@ -3,6 +3,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
+import { AutomaticSaveService } from '@app/services/automatic-save/automatic-save.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TextService } from './text.service';
@@ -19,6 +20,7 @@ describe('Service: Text', () => {
     let textService: TextService;
     let mouseEvent0: MouseEvent;
 
+    let automaticSaveServiceSpy: jasmine.SpyObj<AutomaticSaveService>;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let colorServiceSpy: jasmine.SpyObj<ColorService>;
 
@@ -28,10 +30,12 @@ describe('Service: Text', () => {
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        automaticSaveServiceSpy = jasmine.createSpyObj('AutomaticSaveService', ['save']);
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'clearEffectTool']);
         colorServiceSpy = jasmine.createSpyObj('ColorService', ['getprimaryColor', 'getsecondaryColor']);
         TestBed.configureTestingModule({
             providers: [
+                { provide: AutomaticSaveService, useValue: automaticSaveServiceSpy },
                 { provide: DrawingService, useValue: drawServiceSpy },
                 { provide: ColorService, useValue: colorServiceSpy },
             ],
