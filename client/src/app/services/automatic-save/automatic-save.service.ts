@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { LoadAction } from '@app/classes/undo-redo/load-action';
 import { Vec2 } from '@app/classes/vec2';
 import { CanvasResizeService } from '@app/services/canvas/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -77,10 +76,10 @@ export class AutomaticSaveService {
         this.canvasResize.canvasSize.y = heightNb;
         const image = new Image();
         image.src = this.canvas;
-        const actionLoadImg = new LoadAction(image, heightNb, widthNb, this.drawingService, this.canvasResize);
+        // const actionLoadImg = new LoadAction(image, heightNb, widthNb, this.drawingService, this.canvasResize);
         this.undoRedoService.clearUndo();
         this.undoRedoService.clearRedo();
-        this.undoRedoService.loadImage(actionLoadImg);
+        // this.undoRedoService.loadImage(actionLoadImg);
         return true;
     }
 }
